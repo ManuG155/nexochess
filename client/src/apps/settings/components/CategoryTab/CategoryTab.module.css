@@ -1,15 +1,31 @@
 .wrapper {
-    padding: 5px;
-    padding-left: 10px;
+    display: flex;
+
+    align-items: center;
+
     box-sizing: border-box;
+
     width: 100%;
-    
-    border-radius: 5px;
+    min-height: 44px;
+
+    padding:
+        9px
+        12px;
+
+    border-radius: 6px;
 
     cursor: pointer;
-    transition-duration: 0.3s;
+
+    transition:
+        background-color 0.15s ease,
+        transform 0.15s ease;
 }
 
+
 .wrapper:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color:
+        rgba(255, 255, 255, 0.07) !important;
+
+    transform:
+        translateX(2px);
 }

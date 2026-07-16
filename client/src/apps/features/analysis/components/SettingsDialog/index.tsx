@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import Dialog from "@/components/common/Dialog";
 
 import EngineOptionsArea from "./EngineOptionsArea";
-import ClassificationOptionsArea from "./ClassificationOptionsArea";
 import OtherOptionsArea from "./OtherOptionsArea";
 
 import SettingsDialogProps from "./SettingsDialogProps";
@@ -18,6 +17,7 @@ function SettingsDialog({ onClose }: SettingsDialogProps) {
     return <Dialog
         className={styles.settingsDialog}
         onClose={onClose}
+        closeOnBackdrop
     >
         <div className={styles.header} style={{ paddingRight: "50px" }}>
             <img
@@ -33,7 +33,6 @@ function SettingsDialog({ onClose }: SettingsDialogProps) {
         <div className={styles.content}>
             <EngineOptionsArea/>
 
-            <ClassificationOptionsArea/>
 
             <OtherOptionsArea/>
         </div>

@@ -13,6 +13,13 @@
     src: url("../public/fonts/nunito.ttf")
 }
 
+@font-face {
+    font-family: "Roboto Slab";
+    src: url("../public/fonts/roboto-slab/RobotoSlab-Regular.ttf");
+    font-weight: 400;
+    font-style: normal;
+}
+
 :root {
     --ui-blue: #467de8;
     --ui-lavender: #625eb1;
@@ -35,20 +42,23 @@ body {
 }
 
 * {
-    font-family: "Noto Sans";
+    font-family: "Roboto Slab", "Roboto", Arial, sans-serif;
 }
 
-::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-
-    background-color: #424242;
+button,
+input,
+textarea,
+select {
+    font-family: "Roboto Slab", "Roboto", Arial, sans-serif;
 }
 
-::-webkit-scrollbar-thumb {
-    background-color: white;
+* {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
-::-webkit-scrollbar-corner {
-    background-color: #919191;
+*::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
 }

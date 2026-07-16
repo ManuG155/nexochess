@@ -11,7 +11,13 @@
             "blue": "Azul",
             "ice": "Hielo",
             "marshmallow": "Malvavisco"
-        }
+        },
+        "coordinates": {
+    "title": "Coordenadas",
+    "position": "Posición",
+    "inside": "Dentro",
+    "outside": "Fuera"
+}
     },
     "bugReporting": {
         "title": "Reporte de Errores",

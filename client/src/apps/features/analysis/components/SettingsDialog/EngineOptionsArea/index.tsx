@@ -42,10 +42,6 @@ function EngineOptionsArea() {
             label: t("settings.engine.suggestionArrows.continuation"),
             value: EngineArrowType.TOP_CONTINUATION
         },
-        {
-            label: t("settings.engine.suggestionArrows.alternative"),
-            value: EngineArrowType.TOP_ALTERNATIVE
-        }
     ], [i18n.language]);
 
     return <>

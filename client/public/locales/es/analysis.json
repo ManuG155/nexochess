@@ -34,6 +34,16 @@
         },
         "addNodePrompt": "Reproducir algunos movimientos..."
     },
+    "analysis": {
+    "title": "Análisis",
+    "arrowAppearance": "Aspecto de las flechas",
+    "arrowWidth": "Anchura de la flecha (px)",
+    "headLength": "Longitud de la cabeza (px)",
+    "headWidth": "Anchura de la cabeza (px)",
+    "bestMoveColour": "Flecha del mejor movimiento",
+    "manualColour": "Flechas manuales",
+    "other": "Otros"
+    },
     "stateTreeTraverser": {
         "beginning": "Ir al inicio",
         "back": "Última jugada",
@@ -66,7 +76,7 @@
         "classifications": {
             "brilliant": " es brillante",
             "best": "es la mejor jugada",
-            "excellent": "Es excelente",
+            "excellent": "es excelente",
             "okay": "es una jugada correcta",
             "inaccuracy": " es una imprecisión",
             "mistake": " es un error",

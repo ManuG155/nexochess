@@ -125,6 +125,53 @@ function BoardAndPieces() {
                 onClick={() => setBoardColours(preset.light, preset.dark)}
             />)}
         </div>
+        <b className={categoryStyles.subheader}>
+    {t("boardAndPieces.coordinates.title")}
+</b>
+
+<Separator className={categoryStyles.separator} />
+
+<div className={styles.coordinateRow}>
+    <span>
+        {t("boardAndPieces.coordinates.position")}
+    </span>
+
+    <div className={styles.segmentedControl}>
+        <button
+            type="button"
+            className={`${styles.segmentButton} ${
+                settings.themes.board.coordinates == "inside"
+                    ? styles.segmentButtonActive
+                    : ""
+            }`}
+            onClick={() => {
+                setSettings(draft => {
+                    draft.themes.board.coordinates = "inside";
+                    return draft;
+                });
+            }}
+        >
+            {t("boardAndPieces.coordinates.inside")}
+        </button>
+
+        <button
+            type="button"
+            className={`${styles.segmentButton} ${
+                settings.themes.board.coordinates == "outside"
+                    ? styles.segmentButtonActive
+                    : ""
+            }`}
+            onClick={() => {
+                setSettings(draft => {
+                    draft.themes.board.coordinates = "outside";
+                    return draft;
+                });
+            }}
+        >
+            {t("boardAndPieces.coordinates.outside")}
+        </button>
+    </div>
+</div>
     </div>;
 }
 

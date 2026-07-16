@@ -10,8 +10,11 @@
     justify-content: center;
     align-items: center;
     gap: 10px;
+
     padding: 7px 15px;
+
     box-sizing: border-box;
+
     min-width: 130px;
     min-height: 55px;
 
@@ -21,4 +24,9 @@
 .boardContainer {
     display: flex;
     width: 100%;
+}
+
+.chessboardWrapper {
+    position: relative;
+    flex-shrink: 0;
 }

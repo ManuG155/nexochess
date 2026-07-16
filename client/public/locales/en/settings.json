@@ -30,6 +30,16 @@
             "irreversibleAction": "Please remember that this action is irreversible."
         }
     },
+        "analysis": {
+            "title": "Analysis",
+            "arrowAppearance": "Arrow appearance",
+            "arrowWidth": "Arrow width (px)",
+            "headLength": "Arrowhead length (px)",
+            "headWidth": "Arrowhead width (px)",
+            "bestMoveColour": "Best move arrow",
+            "manualColour": "Manual arrows",
+            "other": "Other"
+    },
     "boardAndPieces": {
         "title": "Board and Pieces",
         "boardColour": "Board Colour",
@@ -43,7 +53,13 @@
             "ice": "Ice",
             "marshmallow": "Marshmallow",
             "pillow": "Pillow"
-        }
+        },
+        "coordinates": {
+    "title": "Coordinates",
+    "position": "Position", 
+    "inside": "Inside",
+    "outside": "Outside"
+}
     },
     "bugReporting": {
         "title": "Bug Reporting",

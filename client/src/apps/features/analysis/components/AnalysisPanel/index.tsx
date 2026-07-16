@@ -1,5 +1,4 @@
 import React, { lazy } from "react";
-import { useTranslation } from "react-i18next";
 
 import AnalysisTab from "@analysis/constants/AnalysisTab";
 import useSettingsStore from "@/stores/SettingsStore";
@@ -26,7 +25,6 @@ function AnalysisPanel({
     className,
     style
 }: AnalysisPanelProps) {
-    const { t } = useTranslation("analysis");
 
     const settings = useSettingsStore(state => state.settings.analysis);
 
@@ -44,16 +42,7 @@ function AnalysisPanel({
         className={`${styles.wrapper} ${className}`}
         style={style}
     >
-        <div className={styles.components}>
-            <div className={styles.title}>
-                {t("title")}
-            </div>
-
-            <OptionsToolbar/>
-
-            {gameAnalysisOpen && <TabBar/>}
-
-            <AnalysisProgress/>
+        <div className={styles.title}>
 
             {(gameAnalysisOpen && settings.engine.enabled)
                 && <RealtimeEngineArea/>

@@ -1,84 +1,199 @@
 .wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
     box-sizing: border-box;
-    padding: 20px 0;
-    width: min(1100px, 100%);
+
+    width: min(1250px, 100%);
+
+    padding:
+        30px
+        40px
+        50px;
 }
 
-.separator {
-    width: 100%;
 
-    border: 1px solid var(--ui-shade-6);
-    border-radius: 5px;
-}
-
-.titleContainer {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.titleContainer > img {
-    width: 40px;
-    height: 40px;
-}
-
-.titleContainer > span {
-    font-family: "Nunito";
-    font-size: 1.7rem;
-    font-weight: 700;
-    color: white;
-}
-
+/*
+ * Layout principal:
+ *
+ * menú | contenido
+ */
 .settingsContainer {
-    display: flex;
-    gap: 20px;
-    padding: 10px 40px;
-    box-sizing: border-box;
+    display: grid;
+
+    grid-template-columns:
+        255px
+        minmax(0, 1fr);
+
+    align-items: start;
+
+    gap: 42px;
+
     width: 100%;
 
     color: white;
 }
 
-@media (max-width: 900px) {
-    .settingsContainer {
-        flex-direction: column-reverse;
-        align-items: center;
-        gap: 10px;
-    }
-}
 
-@media (max-width: 450px) {
-    .settingsContainer {
-        padding: 10px 20px;
-    }
-}
-
+/*
+ * CONTENIDO
+ */
 .settings {
-    flex-grow: 1;
-    flex-shrink: 1;
+    min-width: 0;
     width: 100%;
 }
 
-.categories {
-    flex-shrink: 0;
-    padding: 10px;
-    box-sizing: border-box;
-    width: 340px;
-    height: fit-content;
-    
-    border: 2px solid var(--ui-shade-4);
-    border-radius: 10px;
-    background-color: var(--ui-shade-2);
 
-    overflow: hidden;
+/*
+ * MENÚ LATERAL
+ */
+.categories {
+    position: sticky;
+    top: 90px;
+
+    box-sizing: border-box;
+
+    width: 100%;
+
+    padding:
+        6px
+        18px
+        6px
+        0;
+
+    border-right:
+        1px solid
+        rgba(255, 255, 255, 0.13);
+
+    background: transparent;
 }
 
+
+/*
+ * Cada elemento del menú
+ */
+.categoryTab {
+    box-sizing: border-box;
+
+    min-height: 48px;
+
+    margin-bottom: 3px;
+
+    padding:
+        8px
+        12px !important;
+
+    border-radius: 6px;
+
+    font-size: 1rem;
+}
+
+
+/*
+ * Icono + texto
+ */
+.categoryLabel {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    width: 100%;
+}
+
+
+/*
+ * Caja del icono
+ */
+.categoryIcon {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    flex-shrink: 0;
+
+    width: 28px;
+    height: 28px;
+
+    color:
+        rgba(255, 255, 255, 0.62);
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    font-size: 1.15rem;
+    font-weight: 700;
+
+    user-select: none;
+}
+
+
+/*
+ * Separador entre categorías
+ * y enlaces auxiliares
+ */
+.separator {
+    box-sizing: border-box;
+
+    width: calc(100% - 12px);
+
+    margin:
+        12px
+        6px;
+
+    border: 0;
+
+    border-top:
+        1px solid
+        rgba(255, 255, 255, 0.14);
+}
+
+
+/*
+ * Tablet / móvil
+ */
 @media (max-width: 900px) {
-    .categories {
-        width: 100%;
+
+    .wrapper {
+        padding:
+            20px
+            25px
+            40px;
     }
+
+
+    .settingsContainer {
+        grid-template-columns: 1fr;
+
+        gap: 25px;
+    }
+
+
+    .categories {
+        position: static;
+
+        padding:
+            0
+            0
+            18px;
+
+        border-right: 0;
+
+        border-bottom:
+            1px solid
+            rgba(255, 255, 255, 0.13);
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .wrapper {
+        padding:
+            15px
+            15px
+            30px;
+    }
+
 }
