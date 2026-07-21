@@ -19,6 +19,43 @@ router.use(path,
     express.json({ limit: "1mb" })
 );
 
+function parseOptionalNumber(
+    value: unknown
+) {
+
+    if (
+        typeof value
+        != "string"
+
+        ||
+
+        value.trim()
+        == ""
+    ) {
+
+        return undefined;
+    }
+
+
+    const parsed =
+        Number(
+            value
+        );
+
+
+    if (
+        !Number.isFinite(
+            parsed
+        )
+    ) {
+
+        return undefined;
+    }
+
+
+    return parsed;
+}
+
 router.post(path, async (req, res) => {
     const serializedStateTree: SerializedStateTreeNode = req.body;
 
@@ -28,11 +65,50 @@ router.post(path, async (req, res) => {
     const stateTree = deserializeNode(serializedStateTree);
 
     try {
-        const gameAnalysis = getGameAnalysis(stateTree, {
-            includeBrilliant: req.query.brilliant == "true",
-            includeCritical: req.query.critical == "true",
-            includeTheory: req.query.theory == "true"
-        });
+        const gameAnalysis = getGameAnalysis(
+    stateTree,
+    {
+        includeBrilliant:
+            req
+                .query
+                .brilliant
+            == "true",
+
+        includeCritical:
+            req
+                .query
+                .critical
+            == "true",
+
+        includeTheory:
+            req
+                .query
+                .theory
+            == "true",
+
+
+        whiteRating:
+
+            parseOptionalNumber(
+
+                req
+                    .query
+                    .whiteRating
+
+            ),
+
+
+        blackRating:
+
+            parseOptionalNumber(
+
+                req
+                    .query
+                    .blackRating
+
+            )
+    }
+);
 
         res.json({
             ...gameAnalysis,

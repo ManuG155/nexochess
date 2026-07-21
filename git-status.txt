@@ -1,0 +1,24 @@
+﻿ M client/public/locales/es/analysis.json
+ M client/src/apps/features/analysis/components/AnalysisPanel/AnalysisPanel.module.css
+ M client/src/apps/features/analysis/components/AnalysisPanel/index.tsx
+ M client/src/apps/features/analysis/components/Board/Board.module.css
+ M client/src/apps/features/analysis/components/Board/index.tsx
+ M client/src/apps/features/analysis/components/EvaluationBar/EvaluationBar.module.css
+ M client/src/apps/features/analysis/components/EvaluationBar/index.tsx
+ M client/src/apps/features/analysis/components/report/EvaluationGraph/EvaluationGraph.module.css
+ M client/src/apps/features/analysis/components/report/EvaluationGraph/TooltipRenderer.tsx
+ M client/src/apps/features/analysis/components/report/EvaluationGraph/index.tsx
+ M client/src/apps/features/analysis/constants/classifications.ts
+ M client/src/apps/features/analysis/hooks/useAnalyseGame.ts
+ M client/src/apps/features/analysis/lib/reporter.ts
+ M client/src/apps/settings/components/categories/BoardAndPieces/BoardAndPieces.module.css
+ M client/src/apps/settings/components/categories/BoardAndPieces/index.tsx
+ M client/src/components/layout/NavigationBar/NavigationBar.module.css
+ M client/src/components/layout/NavigationBar/index.tsx
+ M server/src/routes/api/analysis/analyse.ts
+ M shared/src/constants/Classification.ts
+ M shared/src/lib/reporter/classification/pointLoss.ts
+ M shared/src/lib/reporter/classify.ts
+ M shared/src/lib/reporter/types/AnalysisOptions.ts
+?? client/src/apps/features/analysis/components/AnalysisPanel/GameSummaryPanel/
+?? shared/src/lib/reporter/classification/miss.ts

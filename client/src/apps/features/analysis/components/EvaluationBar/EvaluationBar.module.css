@@ -1,19 +1,145 @@
 .evaluationBar {
     position: relative;
-    min-width: 40px;
+
+    /*
+     * No dejamos que Flexbox
+     * comprima la barra.
+     */
+    flex-shrink: 0;
+
+    /*
+     * Las dos zonas quedan
+     * contenidas dentro
+     * de la propia barra.
+     */
+    overflow: hidden;
+
+    /*
+     * Un redondeo muy pequeño.
+     *
+     * No queremos que parezca
+     * un botón o una tarjeta.
+     */
+    border-radius: 2px;
+
+    /*
+     * Línea interior extremadamente
+     * tenue para delimitar la barra
+     * sobre fondos oscuros.
+     */
+    box-shadow:
+        inset 0 0 0 1px
+        rgba(0, 0, 0, 0.12);
 }
 
+
+/*
+ * Zona animada de la barra.
+ *
+ * Esta capa ocupa físicamente
+ * siempre el 100%.
+ *
+ * Lo único que cambia es
+ * su escala vertical.
+ *
+ * Por ejemplo:
+ *
+ * scaleY(0.50)
+ * scaleY(0.63)
+ * scaleY(0.21)
+ *
+ * Mucho más eficiente que
+ * animar directamente "height".
+ */
 .overBar {
-    width: 100%;
-
-    transition: height 0.5s ease-out;
-}
-
-.evaluationText {
-    display: flex;
-    justify-content: center;
-
     position: absolute;
 
+    top: 0;
+    left: 0;
+
     width: 100%;
+    height: 100%;
+
+    /*
+     * La barra crece/decrece
+     * desde arriba.
+     */
+    transform-origin:
+        top center;
+
+    /*
+     * Animación suave.
+     *
+     * Empieza rápida pero
+     * desacelera de forma limpia.
+     */
+    transition:
+        transform
+        500ms
+        cubic-bezier(
+            0.16,
+            1,
+            0.3,
+            1
+        );
+
+    /*
+     * Le indicamos al navegador
+     * que este elemento va
+     * a cambiar su transform.
+     *
+     * Esto favorece que la
+     * animación se gestione
+     * mediante composición GPU.
+     */
+    will-change: transform;
+}
+
+
+/*
+ * Número:
+ *
+ * 4.7
+ * 1.8
+ * etc.
+ */
+.evaluationText {
+    position: absolute;
+
+    left: 0;
+
+    z-index: 2;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+
+    /*
+     * La barra es bastante fina,
+     * así que usamos una fuente
+     * compacta.
+     */
+    font-size: 0.68rem;
+
+    font-weight: 700;
+
+    line-height: 1;
+
+    /*
+     * El texto nunca debe
+     * bloquear clics.
+     */
+    pointer-events: none;
+
+    /*
+     * Pequeña transición cuando
+     * cambia de lado/color.
+     */
+    transition:
+        color
+        200ms
+        ease;
 }

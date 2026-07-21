@@ -1,135 +1,163 @@
 .wrapper {
     display: flex;
+
     justify-content: space-between;
     align-items: center;
+
     gap: 10px;
-    padding: 0 10px;
+
     box-sizing: border-box;
+
     width: 100%;
     height: 65px;
-    z-index: 100;
+
+    padding: 0 10px;
+
     position: sticky;
+
     top: 0;
 
-    background-color: var(--ui-shade-2);
+    z-index: 100;
+
+    background-color:
+        var(--ui-shade-2);
+
     color: white;
 
     overflow-x: auto;
 }
 
+
 .wrapper::-webkit-scrollbar {
     height: 5px;
 }
 
+
+/*
+ * Botón de menú para
+ * pantallas pequeñas.
+ */
 .menuButton {
     display: none;
 
     cursor: pointer;
+
     transition-duration: 0.3s;
 }
+
 
 .menuButton:hover {
     transform: scale(1.05);
 }
 
+
 @media (max-width: 800px) {
+
     .menuButton {
         display: block;
     }
+
 }
 
+
+/*
+ * Logo WintrChess.
+ */
 @media (max-width: 1000px) {
+
     .typographyText {
         display: none;
     }
+
 }
 
+
 @media (max-width: 800px) {
+
     .typographyText {
         display: flex;
     }
+
 }
 
+
 @media (max-width: 700px) {
+
     .typographyText {
         display: none;
     }
+
 }
 
+
+/*
+ * Contenedores horizontales
+ * principales.
+ */
 .section {
     display: flex;
+
     align-items: center;
+
     gap: 10px;
+
     flex-shrink: 0;
+
     height: 100%;
 }
 
+
+/*
+ * Navegación principal:
+ *
+ * Analysis
+ * Archive
+ * News
+ * Flip Board
+ * Share
+ */
 .tabs {
     display: flex;
+
     flex-shrink: 0;
+
     margin-left: 5px;
+
     max-width: 100%;
+
     height: 100%;
 }
 
+
 @media (max-width: 800px) {
+
     .tabs {
         display: none;
     }
+
 }
 
-.support {
-    background: linear-gradient(
-        -225deg, #22e1FF 0%, #1d8fe1 48%, #625eb1 100%
-    );
-}
 
-.signIn {
-    gap: 5px;
-    padding: 7px;
-    padding-right: 10px;
-
-    font-family: "Nunito";    
-}
-
-.settings {
-    padding: 7px;
-    
-    background-color: var(--ui-shade-2);
-}
-
-.profileMenu {
-    padding: 0 5px;
-
-    user-select: none;
-}
-
-.profileIcon {
-    display: none;
-    height: 35px;
-}
-
-@media (max-width: 450px) {
-    .profileUsername {
-        display: none;
-    }
-
-    .profileIcon {
-        display: inline;
-    }
-}
-
-.profileImage {
-    height: 42px;
-    aspect-ratio: 1 / 1;
-
-    border-radius: 50%;
-    background-color: aquamarine;
-}
-
+/*
+ * ACCIONES DE NAVEGACIÓN
+ *
+ * Flip Board
+ * Share
+ *
+ * Esta clase replica visualmente
+ * HoverDropdown.
+ *
+ * Por eso se comportan igual que:
+ *
+ * Analysis
+ * Archive
+ * News
+ */
 .navAction {
     display: flex;
+
     align-items: center;
+
     gap: 10px;
 
     height: 100%;
@@ -139,6 +167,7 @@
     border: 0;
 
     background: transparent;
+
     color: white;
 
     font-size: 1.1rem;
@@ -148,6 +177,14 @@
     transition-duration: 0.3s;
 }
 
+
+/*
+ * Línea azul inferior
+ * al pasar el cursor.
+ *
+ * Es el mismo efecto que usan
+ * Analysis / Archive / News.
+ */
 .navAction:hover {
     box-shadow:
         0 -3px 0 0
@@ -158,14 +195,74 @@
         rgba(0, 0, 0, 0.15);
 }
 
+
+/*
+ * Tamaño de los iconos
+ * de Flip Board y Share.
+ */
 .navAction img {
     width: 25px;
     height: 25px;
+
+    object-fit: contain;
 }
 
-.topAction {
+
+/*
+ * SIGN IN.
+ */
+.signIn {
+    gap: 5px;
+
+    padding: 7px;
+
+    padding-right: 10px;
+}
+
+
+/*
+ * SETTINGS.
+ *
+ * Se queda arriba a la derecha.
+ *
+ * No tiene la animación azul
+ * porque no forma parte
+ * de la navegación principal.
+ */
+.settings {
     padding: 7px;
 
     background-color:
         var(--ui-shade-2);
+}
+
+
+/*
+ * Menú del usuario autenticado.
+ */
+.profileMenu {
+    padding: 0 5px;
+
+    user-select: none;
+}
+
+
+.profileIcon {
+    display: none;
+
+    height: 35px;
+}
+
+
+@media (max-width: 450px) {
+
+    .profileUsername {
+        display: none;
+    }
+
+
+    .profileIcon {
+        display: inline;
+    }
+
 }

@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
     ResponsiveContainer,
     XAxis,
@@ -9,49 +10,131 @@ import {
     ReferenceLine,
     ReferenceDot
 } from "recharts";
+
 import { max } from "lodash-es";
 
-import { StateTreeNode } from "shared/types/game/position/StateTreeNode";
-import Evaluation from "shared/types/game/position/Evaluation";
-import { defaultEvaluation } from "shared/constants/utils";
-import PieceColour from "shared/constants/PieceColour";
-import { Classification } from "shared/constants/Classification";
-import { getTopEngineLine } from "shared/types/game/position/EngineLine";
-import { classificationColours } from "@analysis/constants/classifications";
+import {
+    StateTreeNode
+} from "shared/types/game/position/StateTreeNode";
+
+import Evaluation from
+    "shared/types/game/position/Evaluation";
+
+import {
+    defaultEvaluation
+} from "shared/constants/utils";
+
+import PieceColour from
+    "shared/constants/PieceColour";
+
+import {
+    Classification
+} from "shared/constants/Classification";
+
+import {
+    getTopEngineLine
+} from "shared/types/game/position/EngineLine";
+
+import {
+    classificationColours
+} from "@analysis/constants/classifications";
 
 import EvaluationGraphPoint from "./Point";
-import TooltipRenderer from "./TooltipRenderer";
-import EvaluationGraphProps from "./EvaluationGraphProps";
-import * as styles from "./EvaluationGraph.module.css";
 
-const highlightedClassifications: Classification[] = [
-    Classification.BRILLIANT,
-    Classification.CRITICAL,
-    Classification.INACCURACY,
-    Classification.MISTAKE,
-    Classification.BLUNDER
-];
+import TooltipRenderer from
+    "./TooltipRenderer";
 
+import EvaluationGraphProps from
+    "./EvaluationGraphProps";
+
+import * as styles from
+    "./EvaluationGraph.module.css";
+
+
+/*
+ * Clasificaciones que aparecen
+ * destacadas como puntos de color
+ * en el gráfico.
+ */
+const highlightedClassifications:
+    Classification[] = [
+
+        Classification.BRILLIANT,
+
+        Classification.CRITICAL,
+
+        Classification.INACCURACY,
+
+        Classification.MISTAKE,
+
+        Classification.BLUNDER
+    ];
+
+
+/*
+ * Convierte una evaluación real
+ * del motor en la posición vertical
+ * utilizada por el gráfico.
+ */
 function getGraphY(
     node: StateTreeNode,
     evaluation: Evaluation,
     graphHeight: number
 ) {
-    if (evaluation.type == "mate") {
-        if (evaluation.value == 0) {
-            if (node.state.moveColour == undefined) {
-                return graphHeight / 2;
+
+    /*
+     * Posiciones de mate.
+     */
+    if (
+        evaluation.type
+        == "mate"
+    ) {
+
+        if (
+            evaluation.value
+            == 0
+        ) {
+
+            if (
+                node.state.moveColour
+                == undefined
+            ) {
+
+                return (
+                    graphHeight / 2
+                );
             }
 
-            return node.state.moveColour == PieceColour.WHITE
-                ? graphHeight : 0;
+
+            return (
+                node.state.moveColour
+                == PieceColour.WHITE
+            )
+                ? graphHeight
+                : 0;
         }
 
-        return evaluation.value >= 0 ? graphHeight : 0;
+
+        return (
+            evaluation.value >= 0
+        )
+            ? graphHeight
+            : 0;
     }
 
-    return evaluation.value + (graphHeight / 2);
+
+    /*
+     * Evaluación normal
+     * en centipawns.
+     */
+    return (
+        evaluation.value
+        + (
+            graphHeight / 2
+        )
+    );
 }
+
 
 function EvaluationGraph({
     className,
@@ -60,115 +143,430 @@ function EvaluationGraph({
     selectedIndex,
     onPointClick
 }: EvaluationGraphProps) {
+
+    /*
+     * Buscamos la evaluación absoluta
+     * más extrema de toda la partida.
+     *
+     * Se utiliza para dimensionar
+     * verticalmente el gráfico.
+     */
     const absoluteHighestValue = max(
-        nodes.map(node => Math.abs(
-            getTopEngineLine(node.state.engineLines)?.evaluation.value || 0
-        ))
+
+        nodes.map(
+            node => Math.abs(
+
+                getTopEngineLine(
+                    node.state.engineLines
+                )?.evaluation.value
+
+                || 0
+            )
+        )
+
     ) || 0;
 
-    const yAxisPadding = absoluteHighestValue * 0.2;
 
-    const dataPoints = nodes.map((node, index) => {
-        const evaluation = getTopEngineLine(node.state.engineLines)?.evaluation
-            || defaultEvaluation;
+    /*
+     * Dejamos algo de margen vertical
+     * para que los picos no queden
+     * totalmente pegados al borde.
+     */
+    const yAxisPadding =
+        absoluteHighestValue
+        * 0.2;
 
-        const graphHeight = (absoluteHighestValue + yAxisPadding) * 2;
 
-        return {
-            nodeId: node.id,
-            state: node.state,
-            evaluation: evaluation,
-            x: index,
-            y: getGraphY(node, evaluation, graphHeight)
-        } as EvaluationGraphPoint;
-    });
+    /*
+     * Convertimos cada posición
+     * de la partida en un punto
+     * del gráfico.
+     */
+    const dataPoints = nodes.map(
+        (
+            node,
+            index
+        ) => {
 
-    const highlightedPoints = dataPoints.filter(point => (
-        point.state.classification
-        && highlightedClassifications.includes(
-            point.state.classification
-        )
-    ));
+            const evaluation =
+                getTopEngineLine(
+                    node.state.engineLines
+                )?.evaluation
 
-    const selectedPoint = dataPoints[selectedIndex];
+                || defaultEvaluation;
 
-    const selectedPointColour = selectedPoint?.state.classification
-        ? classificationColours[selectedPoint.state.classification]
-        : "gray";
 
-    return <div className={styles.wrapper}>
-        <ResponsiveContainer
-            width={style?.width || "100%"}
-            height={style?.height || 100}
+            const graphHeight = (
+                absoluteHighestValue
+                + yAxisPadding
+            ) * 2;
+
+
+            return {
+
+                nodeId:
+                    node.id,
+
+                state:
+                    node.state,
+
+                evaluation:
+                    evaluation,
+
+                x:
+                    index,
+
+                y:
+                    getGraphY(
+                        node,
+                        evaluation,
+                        graphHeight
+                    )
+
+            } as EvaluationGraphPoint;
+        }
+    );
+
+
+    /*
+     * Puntos con clasificaciones
+     * especialmente importantes.
+     */
+    const highlightedPoints =
+        dataPoints.filter(
+            point => (
+
+                point.state.classification
+
+                &&
+
+                highlightedClassifications.includes(
+                    point.state
+                        .classification
+                )
+            )
+        );
+
+
+    /*
+     * Movimiento actualmente
+     * seleccionado en la revisión.
+     */
+    const selectedPoint =
+        dataPoints[
+            selectedIndex
+        ];
+
+
+    /*
+     * Color de la línea vertical
+     * del movimiento seleccionado.
+     *
+     * Si tiene clasificación:
+     * usamos su color.
+     *
+     * Si no:
+     * gris.
+     */
+    const selectedPointColour =
+        selectedPoint
+            ?.state
+            .classification
+
+            ? classificationColours[
+                selectedPoint
+                    .state
+                    .classification
+            ]
+
+            : "gray";
+
+
+    return (
+        <div
+            className={
+                styles.wrapper
+            }
         >
-            <AreaChart
-                className={`${styles.chart} ${className}`}
-                margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
-                data={dataPoints}
-                onClick={event => {
-                    const payload = event.activePayload?.at(0)?.payload;
-                    if (!payload) return;
 
-                    onPointClick?.(payload as EvaluationGraphPoint);
-                }}
+            <ResponsiveContainer
+                width={
+                    style?.width
+                    || "100%"
+                }
+
+                height={
+                    style?.height
+                    || 100
+                }
             >
-                <XAxis hide dataKey="x"/>
-                <YAxis hide domain={[
-                    0, absoluteHighestValue * 2 + (yAxisPadding * 2)
-                ]}/>
 
-                <Area
-                    dataKey="y"
-                    type="monotone"
-                    fill="#fff"
-                    fillOpacity={1}
-                    strokeWidth={0}
-                    isAnimationActive={false}
-                />
+                <AreaChart
+                    className={
+                        `${styles.chart} ${className}`
+                    }
 
-                <ReferenceLine
-                    y={absoluteHighestValue + yAxisPadding}
-                    stroke="gray"
-                    strokeOpacity={0.5}
-                    strokeWidth={2}
-                />
+                    margin={{
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: 0
+                    }}
 
-                {selectedPoint && <>
-                    <ReferenceLine
-                        x={selectedPoint.x}
-                        stroke={selectedPointColour}
-                        strokeWidth={2}
+                    data={
+                        dataPoints
+                    }
+
+                    onClick={event => {
+    const payload =
+        event.activePayload?.at(0)?.payload;
+
+    if (!payload) {
+        return;
+    }
+
+    onPointClick?.(
+        payload as EvaluationGraphPoint
+    );
+}}
+                >
+
+                    {/*
+                     * Los ejes existen
+                     * internamente,
+                     * pero no se muestran.
+                     */}
+                    <XAxis
+                        hide
+                        dataKey="x"
                     />
 
-                    <ReferenceDot
-                        x={selectedPoint.x}
-                        y={selectedPoint.y}
-                        r={4}
-                        fill={selectedPointColour}
+
+                    <YAxis
+                        hide
+
+                        domain={[
+                            0,
+
+                            absoluteHighestValue
+                            * 2
+
+                            +
+
+                            (
+                                yAxisPadding
+                                * 2
+                            )
+                        ]}
+                    />
+
+
+                    {/*
+                     * Área blanca principal
+                     * que representa
+                     * la evolución.
+                     */}
+                    <Area
+                        dataKey="y"
+
+                        type="monotone"
+
+                        fill="#FFFFFF"
+
+                        fillOpacity={1}
+
                         strokeWidth={0}
+
+                        isAnimationActive={
+                            false
+                        }
                     />
-                </>}
 
-                {highlightedPoints.map(point => <ReferenceDot
-                    key={point.nodeId}
-                    x={point.x}
-                    y={point.y}
-                    r={3}
-                    fill={classificationColours[point.state.classification!]}
-                    strokeWidth={0}
-                />)}
 
-                <Tooltip content={({ label }) => {
-                    const point = typeof label == "number"
-                        && dataPoints[label];
+                    {/*
+                     * Línea horizontal central:
+                     *
+                     * evaluación 0.00.
+                     */}
+                    <ReferenceLine
+                        y={
+                            absoluteHighestValue
+                            + yAxisPadding
+                        }
 
-                    return point
-                        ? <TooltipRenderer dataPoint={point} />
-                        : null;
-                }}/>
-            </AreaChart>
-        </ResponsiveContainer>
-    </div>;
+                        stroke={
+                            "rgba(120, 120, 120, 0.55)"
+                        }
+
+                        strokeWidth={
+                            1
+                        }
+                    />
+
+
+                    {/*
+                     * TOOLTIP DEL CURSOR.
+                     *
+                     * Cuando movemos el ratón
+                     * sobre el gráfico:
+                     *
+                     * - aparece el tooltip;
+                     * - aparece una línea vertical;
+                     * - la línea es tenue;
+                     * - es discontinua.
+                     *
+                     * Esto NO sustituye
+                     * la línea del movimiento
+                     * seleccionado.
+                     */}
+                    <Tooltip
+                        cursor={{
+                            stroke:
+                                "rgba(255, 255, 255, 0.32)",
+
+                            strokeWidth:
+                                1,
+
+                            strokeDasharray:
+                                "4 4"
+                        }}
+
+                        content={({
+                            label
+                        }) => {
+
+                            const point =
+                                typeof label
+                                == "number"
+
+                                &&
+
+                                dataPoints[
+                                    label
+                                ];
+
+
+                            return point
+
+                                ? (
+                                    <TooltipRenderer
+                                        dataPoint={
+                                            point
+                                        }
+                                    />
+                                )
+
+                                : null;
+                        }}
+                    />
+
+
+                    {/*
+                     * MOVIMIENTO SELECCIONADO.
+                     *
+                     * Línea sólida.
+                     *
+                     * Es independiente
+                     * de la línea discontinua
+                     * del cursor.
+                     */}
+                    {selectedPoint && (
+                        <>
+
+                            <ReferenceLine
+                                x={
+                                    selectedPoint.x
+                                }
+
+                                stroke={
+                                    selectedPointColour
+                                }
+
+                                strokeWidth={
+                                    2
+                                }
+                            />
+
+
+                            <ReferenceDot
+                                x={
+                                    selectedPoint.x
+                                }
+
+                                y={
+                                    selectedPoint.y
+                                }
+
+                                r={
+                                    4
+                                }
+
+                                fill={
+                                    selectedPointColour
+                                }
+
+                                strokeWidth={
+                                    0
+                                }
+                            />
+
+                        </>
+                    )}
+
+
+                    {/*
+                     * Puntos de clasificaciones
+                     * relevantes:
+                     *
+                     * brillante,
+                     * crítica,
+                     * imprecisión,
+                     * error,
+                     * blunder.
+                     */}
+                    {highlightedPoints.map(
+                        point => (
+
+                            <ReferenceDot
+                                key={
+                                    point.nodeId
+                                }
+
+                                x={
+                                    point.x
+                                }
+
+                                y={
+                                    point.y
+                                }
+
+                                r={
+                                    3
+                                }
+
+                                fill={
+                                    classificationColours[
+                                        point
+                                            .state
+                                            .classification!
+                                    ]
+                                }
+
+                                strokeWidth={
+                                    0
+                                }
+                            />
+
+                        )
+                    )}
+
+                </AreaChart>
+
+            </ResponsiveContainer>
+
+        </div>
+    );
 }
+
 
 export default EvaluationGraph;

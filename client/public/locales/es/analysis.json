@@ -70,20 +70,36 @@
     "accuraciesCard": {
         "title": "Precisiones"
     },
-    "classifiedMoveCard": {
+        "classifiedMoveCard": {
         "unknownError": "No se ha podido cargar la clasificación.",
         "insufficientLines": "Asegúrese de que la jugada anterior sea evaluada completamente para una clasificación.",
         "classifications": {
-            "brilliant": " es brillante",
+            "brilliant": "es brillante",
+            "critical": "es una jugada genial",
             "best": "es la mejor jugada",
             "excellent": "es excelente",
-            "okay": "es una jugada correcta",
-            "inaccuracy": " es una imprecisión",
-            "mistake": " es un error",
-            "blunder": " es un error grave",
-            "forced": " es forzado",
+            "okay": "es una buena jugada",
+            "inaccuracy": "es una imprecisión",
+            "mistake": "es un error",
+            "miss": "es una omisión",
+            "blunder": "es un error grave",
+            "forced": "es forzada",
             "theory": "es teórica",
             "risky": "es una idea arriesgada"
         }
+    },
+    "classifications": {
+        "brilliant": "Brillante",
+        "critical": "Genial",
+        "best": "Mejor",
+        "excellent": "Excelente",
+        "okay": "Bueno",
+        "inaccuracy": "Imprecisión",
+        "mistake": "Error",
+        "miss": "Omisión",
+        "blunder": "Error grave",
+        "forced": "Forzada",
+        "theory": "Libro",
+        "risky": "Arriesgada"
     }
 }

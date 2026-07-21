@@ -33,11 +33,46 @@ function useAnalyseGame(
     const executeCaptcha = useAltcha();
 
     return async () => {
-        const analyseResult = await analyseStateTree(analysisGame.stateTree, {
-            includeBrilliant: settings.classifications.included.brilliant,
-            includeCritical: settings.classifications.included.critical,
-            includeTheory: settings.classifications.included.theory
-        });
+        const analyseResult = await analyseStateTree(
+    analysisGame.stateTree,
+    {
+        includeBrilliant:
+            settings
+                .classifications
+                .included
+                .brilliant,
+
+        includeCritical:
+            settings
+                .classifications
+                .included
+                .critical,
+
+        includeTheory:
+            settings
+                .classifications
+                .included
+                .theory,
+
+
+        /*
+         * Pasamos el rating
+         * de la modalidad contenido
+         * en el PGN/importación.
+         */
+        whiteRating:
+            analysisGame
+                .players
+                .white
+                .rating,
+
+        blackRating:
+            analysisGame
+                .players
+                .black
+                .rating
+    }
+);
 
         // For any errors, display message or reset CAPTCHA
         if (analyseResult.status == StatusCodes.UNAUTHORIZED) {

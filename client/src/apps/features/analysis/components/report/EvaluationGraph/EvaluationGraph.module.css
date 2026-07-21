@@ -1,36 +1,141 @@
 .wrapper {
     display: flex;
+
     flex-direction: column;
+
     gap: 5px;
+
     padding: 5px;
-    border-radius: 10px;
-    background-color: var(--ui-shade-4);
+
+    border-radius: 8px;
+
+    background-color:
+        var(--ui-shade-4);
 }
 
+
+/*
+ * Superficie principal
+ * del gráfico.
+ */
 .chart {
-    border-radius: 10px;
-    background-color: #1f1f1f;
+    border-radius: 8px;
 
-    cursor: pointer !important;
-    overflow: hidden;
+    background-color:
+        #1f1f1f;
+
+    cursor:
+        pointer !important;
+
+    overflow:
+        hidden;
 }
 
+
+/*
+ * TOOLTIP
+ *
+ * Pequeño, limpio
+ * y muy ligero.
+ */
 .tooltip {
     display: flex;
+
     flex-direction: column;
-    padding: 5px;
 
-    border: 1px solid black;
-    border-radius: 5px;
-    background-color: rgba(255, 255, 255, 0.75);
+    align-items: flex-start;
+
+    gap: 2px;
+
+    min-width: 52px;
+
+    padding:
+        6px 9px;
+
+    border:
+        1px solid
+        rgba(0, 0, 0, 0.25);
+
+    border-radius:
+        4px;
+
+    background-color:
+        rgba(
+            245,
+            245,
+            245,
+            0.95
+        );
+
+    color:
+        #403D39;
+
+    box-shadow:
+        0 2px 7px
+        rgba(
+            0,
+            0,
+            0,
+            0.18
+        );
+
+    pointer-events:
+        none;
 }
 
+
+/*
+ * Evaluación principal.
+ *
+ * Ejemplo:
+ *
+ * +2.28
+ * -1.83
+ */
 .tooltipEvaluation {
-    display: flex;
-    align-items: center;
-    gap: 5px;
+    font-size:
+        0.82rem;
+
+    font-weight:
+        700;
+
+    line-height:
+        1.1;
+
+    color:
+        #403D39;
+
+    white-space:
+        nowrap;
 }
 
+
+/*
+ * Movimiento.
+ *
+ * Ejemplo:
+ *
+ * Nxe5
+ * Qxd3
+ */
 .tooltipMove {
-    font-size: 0.9rem;
+    font-size:
+        0.7rem;
+
+    font-weight:
+        500;
+
+    line-height:
+        1.1;
+
+    color:
+        rgba(
+            64,
+            61,
+            57,
+            0.75
+        );
+
+    white-space:
+        nowrap;
 }

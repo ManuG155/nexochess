@@ -1,70 +1,193 @@
 .wrapper {
     display: flex;
     flex-direction: column;
+
     box-sizing: border-box;
 
     border-radius: 10px;
-    background-color: var(--ui-shade-3);
 
-    overflow-x: hidden;
+    background-color:
+        transparent;
+
+    overflow-x:
+        hidden;
 }
 
+
+/*
+ * CONTENIDO PRINCIPAL
+ */
 .components {
     display: flex;
     flex-grow: 1;
     flex-direction: column;
+
     gap: 10px;
+
+    min-height: 0;
+
     padding: 10px;
 
     overflow-y: auto;
-    overscroll-behavior: contain;
+
+    overscroll-behavior:
+        contain;
 }
 
-.title {
-    text-align: center;
-    padding: 5px 10px;
 
-    border-radius: 10px;
-    background-color: var(--ui-blue);
-    color: white;
-    font-family: "Nunito";
-    font-weight: 600;
-    font-size: 2.5rem;
-
-    overflow-wrap: break-word;
-}
-
-@media (max-width: 900px) {
-    .title {
-        display: none;
-    }
-}
-
-.traverserContainer {
+/*
+ * CABECERA TEMPORAL
+ * DEL MODO REVIEW.
+ */
+.reviewHeader {
     display: flex;
-    justify-content: center;
+
+    justify-content:
+        flex-start;
+
+    align-items:
+        center;
+
     width: 100%;
 }
 
-@media (max-width: 900px) {
-    .traverserContainer {
-        box-sizing: border-box;
-        padding: 0 10px;
-        position: fixed;
-        bottom: 10px;
-        left: 0;
-    }
+
+/*
+ * Flecha temporal para
+ * volver al resumen.
+ *
+ * En un bloque posterior
+ * la refinaremos visualmente.
+ */
+.reviewBackButton {
+    display: flex;
+
+    justify-content:
+        center;
+
+    align-items:
+        center;
+
+    width: 34px;
+    height: 34px;
+
+    padding: 0;
+
+    border: 0;
+
+    border-radius:
+        7px;
+
+    background-color:
+        rgba(
+            255,
+            255,
+            255,
+            0.08
+        );
+
+    color:
+        #FFFFFF;
+
+    font-size:
+        1.2rem;
+
+    cursor:
+        pointer;
+
+    transition:
+        background-color
+        150ms
+        ease;
 }
 
+
+.reviewBackButton:hover {
+    background-color:
+        rgba(
+            255,
+            255,
+            255,
+            0.14
+        );
+}
+
+
+/*
+ * CONTENEDOR DE:
+ *
+ * |< ← ▶ → >|
+ */
+.traverserContainer {
+    display: flex;
+
+    justify-content:
+        center;
+
+    width: 100%;
+}
+
+
+/*
+ * Toolbar de navegación.
+ *
+ * Más adelante esto
+ * desaparecerá como bloque
+ * y serán cinco botones
+ * flotantes individuales.
+ */
 .traverser {
-    width: min(100%, 420px);
-    background-color: #1b1c1e;
+    width:
+        min(
+            100%,
+            420px
+        );
+
+    background-color:
+        #1B1C1E;
 }
 
-@media (max-width: 900px) {
-    .traverser {
-        border-radius: 10px;
-        background-color: #27292f;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+
+/*
+ * PANTALLAS PEQUEÑAS
+ */
+@media (
+    max-width: 900px
+) {
+
+    .traverserContainer {
+        position:
+            fixed;
+
+        bottom:
+            10px;
+
+        left:
+            0;
+
+        box-sizing:
+            border-box;
+
+        padding:
+            0 10px;
     }
+
+
+    .traverser {
+        border-radius:
+            10px;
+
+        background-color:
+            #27292F;
+
+        box-shadow:
+            0 0 10px
+            rgba(
+                0,
+                0,
+                0,
+                0.5
+            );
+    }
+
 }

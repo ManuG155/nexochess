@@ -14,7 +14,9 @@ import ShareDialog from
     "@analysis/components/ShareDialog";
 
 import Typography from "@/components/Typography";
+
 import Button from "@/components/common/Button";
+
 import BlurBackground from
     "@/components/layout/BlurBackground";
 
@@ -40,9 +42,6 @@ import iconIconsArchive from
 import iconIconsNews from
     "@assets/img/icons/news.png";
 
-import iconKofi from
-    "@assets/img/kofi.svg";
-
 import iconInterfaceSignin from
     "@assets/img/interface/sign_in.svg";
 
@@ -60,42 +59,101 @@ import iconShare from
 
 
 function NavigationBar() {
+
+    /*
+     * Usamos traducciones de:
+     *
+     * common
+     * analysis
+     */
     const { t } = useTranslation([
         "common",
         "analysis"
     ]);
 
+
+    /*
+     * Información del usuario autenticado.
+     */
     const {
         profile,
         status
     } = useAuthedProfile();
 
-    const [sidebarOpen, setSidebarOpen] =
-        useState(false);
 
-    const [shareOpen, setShareOpen] =
-        useState(false);
+    /*
+     * Control del menú lateral para
+     * pantallas pequeñas.
+     */
+    const [
+        sidebarOpen,
+        setSidebarOpen
+    ] = useState(false);
 
 
+    /*
+     * Control del diálogo de compartir.
+     */
+    const [
+        shareOpen,
+        setShareOpen
+    ] = useState(false);
+
+
+    /*
+     * Solo mostramos Flip Board y Share
+     * cuando estamos en la página Analysis.
+     */
     const onAnalysisPage =
         location.pathname.startsWith(
             "/analysis"
         );
 
 
-    const analysisGame =
-        useAnalysisGameStore(
-            state => state.analysisGame
+    /*
+     * Partida actualmente cargada.
+     *
+     * ShareDialog necesita esta información.
+     */
+    const analysisGame = useAnalysisGameStore(
+        state => state.analysisGame
+    );
+
+
+    /*
+     * Nodo actual del árbol de posiciones.
+     *
+     * ShareDialog también lo necesita.
+     */
+    const currentStateTreeNode =
+        useAnalysisBoardStore(
+            state =>
+                state.currentStateTreeNode
         );
 
 
-    const {
-        currentStateTreeNode,
-        boardFlipped,
-        setBoardFlipped
-    } = useAnalysisBoardStore();
+    /*
+     * Estado de orientación del tablero.
+     */
+    const boardFlipped =
+        useAnalysisBoardStore(
+            state => state.boardFlipped
+        );
 
 
+    /*
+     * Función para cambiar
+     * la orientación del tablero.
+     */
+    const setBoardFlipped =
+        useAnalysisBoardStore(
+            state => state.setBoardFlipped
+        );
+
+
+    /*
+     * Cerrar sesión.
+     */
     async function signOut() {
         await authClient.signOut();
 
@@ -106,17 +164,38 @@ function NavigationBar() {
     return (
         <div className={styles.wrapper}>
 
+            {/*
+             * =====================================================
+             * ZONA IZQUIERDA
+             * =====================================================
+             *
+             * Logo
+             * Analysis
+             * Archive
+             * News
+             * Flip Board
+             * Share
+             */}
             <div className={styles.section}>
 
+                {/*
+                 * Logo + botón menú móvil
+                 */}
                 <div className={styles.section}>
+
                     <img
-                        className={styles.menuButton}
-                        src={iconInterfaceMenu}
+                        className={
+                            styles.menuButton
+                        }
+                        src={
+                            iconInterfaceMenu
+                        }
                         height={35}
                         onClick={() => (
                             setSidebarOpen(true)
                         )}
                     />
+
 
                     <Typography
                         textClassName={
@@ -124,13 +203,22 @@ function NavigationBar() {
                         }
                         includeIcon
                     />
+
                 </div>
 
 
+                {/*
+                 * Navegación principal
+                 */}
                 <div className={styles.tabs}>
 
+                    {/*
+                     * ANALYSIS
+                     */}
                     <HoverDropdown
-                        icon={iconIconsAnalysis}
+                        icon={
+                            iconIconsAnalysis
+                        }
                         url="/analysis"
                     >
                         {t(
@@ -140,8 +228,13 @@ function NavigationBar() {
                     </HoverDropdown>
 
 
+                    {/*
+                     * ARCHIVE
+                     */}
                     <HoverDropdown
-                        icon={iconIconsArchive}
+                        icon={
+                            iconIconsArchive
+                        }
                         url="/archive"
                     >
                         {t(
@@ -151,8 +244,13 @@ function NavigationBar() {
                     </HoverDropdown>
 
 
+                    {/*
+                     * NEWS
+                     */}
                     <HoverDropdown
-                        icon={iconIconsNews}
+                        icon={
+                            iconIconsNews
+                        }
                         url="/news"
                     >
                         {t(
@@ -162,6 +260,16 @@ function NavigationBar() {
                     </HoverDropdown>
 
 
+                    {/*
+                     * FLIP BOARD
+                     *
+                     * Solo en /analysis.
+                     *
+                     * Usa nuestra clase navAction
+                     * para tener la misma animación
+                     * inferior azul que Analysis,
+                     * Archive y News.
+                     */}
                     {onAnalysisPage && (
                         <button
                             type="button"
@@ -181,8 +289,50 @@ function NavigationBar() {
 
                             <span>
                                 {t(
-                                    "optionsToolbar.flipBoard",
-                                    { ns: "analysis" }
+                                    "optionsToolbar"
+                                    + ".flipBoard",
+                                    {
+                                        ns:
+                                            "analysis"
+                                    }
+                                )}
+                            </span>
+                        </button>
+                    )}
+
+
+                    {/*
+                     * SHARE
+                     *
+                     * Ahora vive al lado
+                     * de Flip Board.
+                     *
+                     * Ya NO estará como
+                     * icono suelto a la derecha.
+                     */}
+                    {onAnalysisPage && (
+                        <button
+                            type="button"
+                            className={
+                                styles.navAction
+                            }
+                            onClick={() => (
+                                setShareOpen(true)
+                            )}
+                        >
+                            <img
+                                src={iconShare}
+                                alt=""
+                            />
+
+                            <span>
+                                {t(
+                                    "optionsToolbar"
+                                    + ".share",
+                                    {
+                                        ns:
+                                            "analysis"
+                                    }
                                 )}
                             </span>
                         </button>
@@ -193,60 +343,23 @@ function NavigationBar() {
             </div>
 
 
+            {/*
+             * =====================================================
+             * ZONA DERECHA
+             * =====================================================
+             *
+             * Usuario / Sign In
+             * Settings
+             *
+             * NO Ko-fi.
+             * NO Share.
+             */}
             <div className={styles.section}>
 
-                <a
-                    href="https://ko-fi.com/wintrcat"
-                    target="_blank"
-                >
-                    <Button
-                        className={styles.support}
-                        icon={iconKofi}
-                        tooltipId={
-                            "navigation-bar-support"
-                        }
-                    />
-                </a>
-
-
-                <Tooltip
-                    id="navigation-bar-support"
-                    content={t(
-                        "navigationBar.tooltips.support",
-                        { ns: "common" }
-                    )}
-                    delayShow={500}
-                />
-
-
-                {onAnalysisPage && (
-                    <>
-                        <Button
-                            className={
-                                styles.topAction
-                            }
-                            icon={iconShare}
-                            iconSize="28px"
-                            tooltipId={
-                                "navigation-bar-share"
-                            }
-                            onClick={() => (
-                                setShareOpen(true)
-                            )}
-                        />
-
-                        <Tooltip
-                            id="navigation-bar-share"
-                            content={t(
-                                "optionsToolbar.share",
-                                { ns: "analysis" }
-                            )}
-                            delayShow={500}
-                        />
-                    </>
-                )}
-
-
+                {/*
+                 * Mientras se comprueba
+                 * la sesión del usuario.
+                 */}
                 {status == "pending" && (
                     <span>
                         {t(
@@ -257,6 +370,9 @@ function NavigationBar() {
                 )}
 
 
+                {/*
+                 * USUARIO CON SESIÓN INICIADA
+                 */}
                 {status == "success" && (
                     <HoverDropdown
                         dropdownClassName={
@@ -274,7 +390,10 @@ function NavigationBar() {
                                         "navigationBar"
                                         + ".profileMenu"
                                         + ".signOut",
-                                        { ns: "common" }
+                                        {
+                                            ns:
+                                                "common"
+                                        }
                                     ),
 
                                 onClick:
@@ -282,6 +401,7 @@ function NavigationBar() {
                             }
                         ]}
                     >
+
                         <span
                             className={
                                 styles.profileUsername
@@ -289,6 +409,7 @@ function NavigationBar() {
                         >
                             {profile.username}
                         </span>
+
 
                         <img
                             className={
@@ -298,12 +419,17 @@ function NavigationBar() {
                                 iconInterfaceAccount
                             }
                         />
+
                     </HoverDropdown>
                 )}
 
 
+                {/*
+                 * USUARIO NO AUTENTICADO
+                 */}
                 {status == "error" && (
                     <a href="/signin">
+
                         <Button
                             className={
                                 styles.signIn
@@ -314,22 +440,33 @@ function NavigationBar() {
                             iconSize="28px"
                         >
                             {t(
-                                "navigationBar.signIn",
-                                { ns: "common" }
+                                "navigationBar"
+                                + ".signIn",
+                                {
+                                    ns:
+                                        "common"
+                                }
                             )}
                         </Button>
+
                     </a>
                 )}
 
 
                 {/*
-                 * ÚNICO ACCESO A SETTINGS.
-                 * Siempre arriba a la derecha.
+                 * SETTINGS
+                 *
+                 * Este es el ÚNICO acceso
+                 * principal a Settings.
+                 *
+                 * Siempre está visible
+                 * arriba a la derecha.
                  */}
                 <a href="/settings">
+
                     <Button
                         className={
-                            styles.topAction
+                            styles.settings
                         }
                         icon={
                             iconIconsSettings
@@ -339,11 +476,14 @@ function NavigationBar() {
                             "navigation-bar-settings"
                         }
                     />
+
                 </a>
 
 
                 <Tooltip
-                    id="navigation-bar-settings"
+                    id={
+                        "navigation-bar-settings"
+                    }
                     content={t(
                         "settings",
                         { ns: "common" }
@@ -354,9 +494,15 @@ function NavigationBar() {
             </div>
 
 
+            {/*
+             * Fondo desenfocado
+             * cuando se abre el Sidebar.
+             */}
             {sidebarOpen && (
                 <BlurBackground
-                    style={{ zIndex: 1000 }}
+                    style={{
+                        zIndex: 1000
+                    }}
                     onClick={() => (
                         setSidebarOpen(false)
                     )}
@@ -364,9 +510,13 @@ function NavigationBar() {
             )}
 
 
+            {/*
+             * Sidebar móvil.
+             */}
             <Sidebar
                 style={{
                     zIndex: 1001,
+
                     transition:
                         "left 0.3s ease",
 
@@ -381,9 +531,20 @@ function NavigationBar() {
             />
 
 
+            {/*
+             * SHARE DIALOG.
+             *
+             * Sigue existiendo exactamente
+             * igual que antes.
+             *
+             * Lo único que hemos cambiado
+             * es el botón que lo abre.
+             */}
             {shareOpen && (
                 <ShareDialog
-                    game={analysisGame}
+                    game={
+                        analysisGame
+                    }
                     currentNode={
                         currentStateTreeNode
                     }
