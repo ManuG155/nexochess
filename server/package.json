@@ -4,6 +4,7 @@
         "check": "tsc --noEmit"
     },
     "dependencies": {
+        "@express-rate-limit/cluster-memory-store": "^0.3.1",
         "altcha-lib": "^1.2.0",
         "bcrypt": "^6.0.0",
         "better-auth": "^1.6.25",
@@ -12,6 +13,7 @@
         "cookie-parser": "^1.4.6",
         "dotenv": "^16.4.5",
         "express": "^4.19.2",
+        "express-rate-limit": "^8.6.0",
         "http-status-codes": "^2.3.0",
         "lodash-es": "^4.17.21",
         "mongodb": "^6.17.0",

@@ -1,4 +1,9 @@
 import express from "express";
+import { rateLimit } from "express-rate-limit";
+import {
+    ClusterMemoryStorePrimary,
+    ClusterMemoryStoreWorker
+} from "@express-rate-limit/cluster-memory-store";
 import cluster from "cluster";
 import os from "os";
 import cookieParser from "cookie-parser";
@@ -19,6 +24,9 @@ const coreCount = os.cpus().length;
 
 async function main() {
     if (cluster.isPrimary) {
+        const rateLimitStore = new ClusterMemoryStorePrimary();
+        rateLimitStore.init();
+
         console.log("starting server...");
         for (let i = 0; i < coreCount; i++) cluster.fork();
 
@@ -28,6 +36,27 @@ async function main() {
     await connectDatabase();
 
     const app = express();
+
+    const apiRateLimiter = rateLimit({
+        windowMs: 15 * 60 * 1000,
+        limit: 300,
+        standardHeaders: "draft-8",
+        legacyHeaders: false,
+        store: new ClusterMemoryStoreWorker({ prefix: "api" }),
+        message: { error: "Too many requests. Please try again later." }
+    });
+
+    const authRateLimiter = rateLimit({
+        windowMs: 15 * 60 * 1000,
+        limit: 20,
+        standardHeaders: "draft-8",
+        legacyHeaders: false,
+        store: new ClusterMemoryStoreWorker({ prefix: "auth" }),
+        skipSuccessfulRequests: true,
+        message: {
+            error: "Too many authentication attempts. Please try again later."
+        }
+    });
 
     app.use(cookieParser());
     app.use(hostnameWhitelist);
@@ -39,8 +68,8 @@ async function main() {
     );
 
     // Normal endpoints
-    app.all("/auth/account/*", toNodeHandler(getAuth()));
-    app.use("/", mainRouter);
+    app.all("/auth/account/*", authRateLimiter, toNodeHandler(getAuth()));
+    app.use("/", apiRateLimiter, mainRouter);
 
     // Start listening for requests
     app.listen(port, () => {
