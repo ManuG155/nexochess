@@ -1,10 +1,11 @@
 import React, { lazy, Suspense } from "react";
 import ReactDOM from "react-dom/client";
+
+import I18nGate from "@/components/layout/I18nGate";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ToastContainer } from "react-toastify";
 
-import LoadingPlaceholder from "@/components/layout/LoadingPlaceholder";
 
 const Login = lazy(() => import("./pages/Login"));
 
@@ -26,9 +27,7 @@ const queryClient = new QueryClient();
 function App() {
     return <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-            <Suspense fallback={
-                <LoadingPlaceholder style={{ height: "100vh" }} />
-            }>
+            <Suspense fallback={null}>
                 <Routes>
                     <Route path="/internal/login" element={<Login/>} />
 
@@ -54,4 +53,8 @@ function App() {
     </QueryClientProvider>;
 }
 
-root.render(<App/>);
+root.render(
+    <I18nGate>
+        <App/>
+    </I18nGate>
+);

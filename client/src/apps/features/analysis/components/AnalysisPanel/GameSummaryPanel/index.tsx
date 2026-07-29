@@ -1,6 +1,9 @@
 import React, {
-    useMemo
+    useEffect,
+    useMemo,
+    useState
 } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
     Classification
@@ -12,6 +15,12 @@ import useAnalysisGameStore from
 import useAnalysisBoardStore from
     "@analysis/stores/AnalysisBoardStore";
 
+import useAnalysisProgressStore from
+    "@analysis/stores/AnalysisProgressStore";
+
+import AnalysisStatus from
+    "@analysis/constants/AnalysisStatus";
+
 import {
     classificationColours,
     classificationImages
@@ -19,6 +28,9 @@ import {
 
 import EvaluationGraphArea from
     "../GameReport/EvaluationGraphArea";
+
+import AnalysisProgress from
+    "../AnalysisProgress";
 
 import {
     GamePhase,
@@ -31,863 +43,495 @@ import * as styles from
 import iconDefaultProfileImage from
     "@assets/img/defaultprofileimage.png";
 
+import {
+    useAuthedProfile
+} from "@/hooks/api/useProfile";
+
+import useSettingsStore from
+    "@/stores/SettingsStore";
+
+import {
+    CoachSummaryState,
+    getCoachById,
+    getCoachSummaryLine
+} from "@analysis/lib/coach";
+
+import CoachPicker from
+    "../CoachPicker";
+
+import CoachPortrait from
+    "../CoachPortrait";
+
 
 interface GameSummaryPanelProps {
-
-    onStartReview:
-        () => void;
-
+    onStartReview: () => void;
 }
-
 
 /*
  * ORDEN EXACTO
  * QUE QUEREMOS MOSTRAR.
  */
 const moveClassificationRows = [
-
     {
-        label:
-            "Brilliant",
-
-        classification:
-            Classification.BRILLIANT
+        translationKey: "brilliant",
+        classification: Classification.BRILLIANT
     },
-
     {
-        label:
-            "Great",
-
-        classification:
-            Classification.CRITICAL
+        translationKey: "great",
+        classification: Classification.CRITICAL
     },
-
     {
-        label:
-            "Book",
-
-        classification:
-            Classification.THEORY
+        translationKey: "book",
+        classification: Classification.THEORY
     },
-
     {
-        label:
-            "Best",
-
-        classification:
-            Classification.BEST
+        translationKey: "best",
+        classification: Classification.BEST
     },
-
     {
-        label:
-            "Excellent",
-
-        classification:
-            Classification.EXCELLENT
+        translationKey: "excellent",
+        classification: Classification.EXCELLENT
     },
-
     {
-        label:
-            "Good",
-
-        classification:
-            Classification.OKAY
+        translationKey: "good",
+        classification: Classification.OKAY
     },
-
     {
-        label:
-            "Inaccuracy",
-
-        classification:
-            Classification.INACCURACY
+        translationKey: "inaccuracy",
+        classification: Classification.INACCURACY
     },
-
     {
-        label:
-            "Mistake",
-
-        classification:
-            Classification.MISTAKE
+        translationKey: "mistake",
+        classification: Classification.MISTAKE
     },
-
     {
-        label:
-            "Miss",
-
-        classification:
-            Classification.MISS
+        translationKey: "miss",
+        classification: Classification.MISS
     },
-
     {
-        label:
-            "Blunder",
-
-        classification:
-            Classification.BLUNDER
+        translationKey: "blunder",
+        classification: Classification.BLUNDER
     }
-
 ] as const;
 
-
-/*
- * Clasificación visual
- * de una fase según
- * su puntuación.
- */
-function getScoreClassification(
-    score:
-        number | null
-) {
-
-    if (
-        score == null
-    ) {
-        return null;
-    }
-
-
-    if (
-        score >= 96
-    ) {
-        return Classification.BRILLIANT;
-    }
-
-
-    if (
-        score >= 90
-    ) {
-        return Classification.BEST;
-    }
-
-
-    if (
-        score >= 82
-    ) {
-        return Classification.EXCELLENT;
-    }
-
-
-    if (
-        score >= 72
-    ) {
-        return Classification.OKAY;
-    }
-
-
-    if (
-        score >= 62
-    ) {
-        return Classification.INACCURACY;
-    }
-
-
-    if (
-        score >= 48
-    ) {
-        return Classification.MISTAKE;
-    }
-
-
+function getScoreClassification(score: number | null) {
+    if (score == null) return null;
+    if (score >= 96) return Classification.BRILLIANT;
+    if (score >= 90) return Classification.BEST;
+    if (score >= 82) return Classification.EXCELLENT;
+    if (score >= 72) return Classification.OKAY;
+    if (score >= 62) return Classification.INACCURACY;
+    if (score >= 48) return Classification.MISTAKE;
     return Classification.BLUNDER;
 }
 
-
-/*
- * Devuelve:
- *
- * 78.6
- *
- * o
- *
- * —
- */
-function formatAccuracy(
-    value:
-        number | null
-) {
-
-    return value != null
-        ? value.toFixed(1)
-        : "—";
+function formatAccuracy(value: number | null) {
+    return value != null ? value.toFixed(1) : "—";
 }
 
-
-/*
- * AVATAR.
- *
- * Si falla la imagen importada
- * desde Chess.com/Lichess/etc,
- * usamos el avatar por defecto.
- */
 function PlayerAvatar({
     image,
     username
 }: {
-    image?:
-        string;
-
-    username:
-        string;
+    image?: string;
+    username: string;
 }) {
-
     return (
         <img
-            className={
-                styles.playerAvatar
-            }
-
-            src={
-                image
-                || iconDefaultProfileImage
-            }
-
-            alt={
-                username
-            }
-
-            onError={
-                event => {
-
-                    event.currentTarget.src =
-                        iconDefaultProfileImage;
-                }
-            }
+            className={styles.playerAvatar}
+            src={image || iconDefaultProfileImage}
+            alt={username}
+            onError={event => {
+                event.currentTarget.src = iconDefaultProfileImage;
+            }}
         />
     );
 }
 
-
-/*
- * ICONO DE FASE.
- */
 function PhaseIcon({
     score
 }: {
-    score:
-        number | null;
+    score: number | null;
 }) {
+    const classification = getScoreClassification(score);
 
-    const classification =
-        getScoreClassification(
-            score
-        );
-
-
-    if (
-        !classification
-    ) {
-
-        return (
-            <span
-                className={
-                    styles.noPhase
-                }
-            >
-                —
-            </span>
-        );
+    if (!classification) {
+        return <span className={styles.noPhase}>—</span>;
     }
-
 
     return (
         <img
-            className={
-                styles.phaseIcon
-            }
-
-            src={
-                classificationImages[
-                    classification
-                ]
-            }
-
+            className={styles.phaseIcon}
+            src={classificationImages[classification]}
             alt=""
-            title={
-                score?.toFixed(1)
-            }
+            title={score?.toFixed(1)}
         />
     );
 }
 
+function getRequesterName(
+    profileUsername: string | undefined,
+    whiteUsername: string,
+    blackUsername: string
+) {
+    if (!profileUsername) return null;
+
+    const lower = profileUsername.toLowerCase();
+
+    if (whiteUsername && whiteUsername.toLowerCase() == lower) {
+        return whiteUsername;
+    }
+
+    if (blackUsername && blackUsername.toLowerCase() == lower) {
+        return blackUsername;
+    }
+
+    return null;
+}
+
+function prefixCoachLine(
+    line: string,
+    requesterName: string | null,
+    coachState: CoachSummaryState
+) {
+    if (!requesterName) return line;
+
+    return `${requesterName}, ${line.charAt(0).toLowerCase()}${line.slice(1)}`;
+}
+
+function personaliseCoachLine(
+    line: string,
+    requesterName: string | null,
+    coachState: CoachSummaryState
+) {
+    return prefixCoachLine(line, requesterName, coachState);
+}
 
 function GameSummaryPanel({
     onStartReview
 }: GameSummaryPanelProps) {
+    const { t: tCoach, i18n } = useTranslation("coach", {
+        useSuspense: false
+    });
+    const { t: tAnalysis } = useTranslation("analysis", {
+        useSuspense: false
+    });
 
-    const analysisGame =
-        useAnalysisGameStore(
-            state =>
-                state.analysisGame
-        );
+    const analysisGame = useAnalysisGameStore(state => state.analysisGame);
 
+    const analysisStatus = useAnalysisProgressStore(state => state.analysisStatus);
+    const evaluationProgress = useAnalysisProgressStore(state => state.evaluationProgress);
 
-    /*
-     * Nos suscribimos también
-     * al contador de actualizaciones.
-     *
-     * Así el summary se recalcula
-     * cuando cambian datos del árbol.
-     */
-    const currentStateTreeNodeUpdate =
-        useAnalysisBoardStore(
-            state =>
-                state
-                    .currentStateTreeNodeUpdate
-        );
-
-
-    const metrics = useMemo(
-        () => (
-
-            getGameSummaryMetrics(
-                analysisGame
-            )
-
-        ),
-        [
-            analysisGame,
-            currentStateTreeNodeUpdate
-        ]
+    const currentStateTreeNodeUpdate = useAnalysisBoardStore(
+        state => state.currentStateTreeNodeUpdate
     );
 
+    const { profile } = useAuthedProfile();
+    const { settings, setSettings } = useSettingsStore();
 
-    const whitePlayer =
-        analysisGame.players.white;
+    const [isCoachPickerOpen, setIsCoachPickerOpen] = useState(false);
+    const [coachMessage, setCoachMessage] = useState("");
 
+    const metrics = useMemo(
+        () => getGameSummaryMetrics(analysisGame),
+        [analysisGame, currentStateTreeNodeUpdate]
+    );
 
-    const blackPlayer =
-        analysisGame.players.black;
+    const whitePlayer = analysisGame.players.white;
+    const blackPlayer = analysisGame.players.black;
 
+    const phaseRows: Array<{
+        translationKey: GamePhase;
+        phase: GamePhase;
+    }> = [
+        { translationKey: "opening", phase: "opening" },
+        { translationKey: "middlegame", phase: "middlegame" },
+        { translationKey: "endgame", phase: "endgame" }
+    ];
 
-    const phaseRows:
-        Array<{
-            label: string;
-            phase: GamePhase;
-        }> = [
+    const selectedCoach = getCoachById(settings.appearance.selectedCoach);
 
-            {
-                label:
-                    "Opening",
+    const hasCompletedAnalysis = metrics.white.accuracy != null
+        || metrics.black.accuracy != null
+        || metrics.white.estimatedRating != null
+        || metrics.black.estimatedRating != null;
 
-                phase:
-                    "opening"
-            },
+    const coachState: CoachSummaryState = analysisStatus == AnalysisStatus.INACTIVE
+        ? (hasCompletedAnalysis ? "ready" : "idle")
+        : "analysing";
 
-            {
-                label:
-                    "Middlegame",
+    const requesterName = getRequesterName(
+        profile?.username,
+        whitePlayer.username || "",
+        blackPlayer.username || ""
+    );
 
-                phase:
-                    "middlegame"
-            },
+    useEffect(() => {
+        const randomLine = getCoachSummaryLine(
+            selectedCoach,
+            coachState,
+            tCoach
+        );
+        setCoachMessage(
+            personaliseCoachLine(randomLine, requesterName, coachState)
+        );
+    }, [
+        selectedCoach.id,
+        coachState,
+        requesterName,
+        i18n.resolvedLanguage,
+        tCoach
+    ]);
 
-            {
-                label:
-                    "Endgame",
+    const portraitSpeechText = settings.coach.animations
+        ? coachMessage
+        : "";
 
-                phase:
-                    "endgame"
-            }
-
-        ];
-
+    const displayProgress = analysisStatus == AnalysisStatus.AWAITING_CAPTCHA
+        ? 1
+        : Math.max(0, Math.min(1, evaluationProgress));
 
     return (
-        <section
-            className={
-                styles.wrapper
-            }
-        >
-
+        <section className={styles.wrapper}>
             <div
-                className={
-                    styles.scrollArea
-                }
+                className={[
+                    styles.scrollArea,
+                    !settings.coach.enabled
+                        ? styles.scrollAreaWithoutCoach
+                        : ""
+                ].filter(Boolean).join(" ")}
             >
-
-                {/*
-                 * ===============================
-                 * CABECERA
-                 * ===============================
-                 */}
-                <h2
-                    className={
-                        styles.title
-                    }
-                >
-                    Game summary
+                <h2 className={styles.title}>
+                    {tAnalysis("gameSummary.title")}
                 </h2>
 
-
                 {/*
-                 * ===============================
-                 * GRÁFICO
-                 * ===============================
+                 * AnalysisProgress sigue montado de forma invisible porque
+                 * contiene el puente que dispara la generación del informe
+                 * cuando termina la evaluación del motor. Sin este componente,
+                 * el flujo se quedaba bloqueado al 100% en AWAITING_CAPTCHA.
                  */}
-                <div
-                    className={
-                        styles.graphCard
-                    }
-                >
-
-                    <EvaluationGraphArea />
-
+                <div className={styles.analysisProgressBridge}>
+                    <AnalysisProgress />
                 </div>
 
-
-                {/*
-                 * ===============================
-                 * JUGADORES + ACCURACY
-                 * ===============================
-                 */}
-                <section
-                    className={
-                        styles.playersSection
-                    }
-                >
-
-                    <div
-                        className={
-                            styles.playersGrid
-                        }
-                    >
-
-                        {/*
-                         * BLANCAS
-                         */}
-                        <div
-                            className={
-                                styles.playerColumn
-                            }
+                {settings.coach.enabled && (
+                    <section className={styles.coachSection}>
+                        <button
+                            type="button"
+                            className={styles.coachPortraitButton}
+                            onClick={() => setIsCoachPickerOpen(true)}
+                            aria-label={tCoach("picker.choose")}
                         >
-
-                            <span
-                                className={
-                                    styles.playerName
+                            <CoachPortrait
+                                className={styles.coachPortrait}
+                                coach={selectedCoach}
+                                baseExpression={
+                                    coachState == "analysing"
+                                        ? "thinking"
+                                        : "idle"
                                 }
-                            >
-
-                                {
-                                    whitePlayer
-                                        .username
-
-                                    || "White"
-                                }
-
-                            </span>
-
-
-                            <PlayerAvatar
-                                image={
-                                    whitePlayer.image
-                                }
-
-                                username={
-                                    whitePlayer
-                                        .username
-
-                                    || "White"
-                                }
+                                speechText={portraitSpeechText}
+                                animationsEnabled={settings.coach.animations}
                             />
+                        </button>
 
+                        <div className={styles.coachBubble}>
+                            <p className={styles.coachMessage}>
+                                {coachMessage}
+                            </p>
 
-                            <div
-                                className={
-                                    styles.accuracyBox
-                                }
-                            >
-
-                                {
-                                    formatAccuracy(
-                                        metrics
-                                            .white
-                                            .accuracy
-                                    )
-                                }
-
-                            </div>
-
-                        </div>
-
-
-                        {/*
-                         * NEGRAS
-                         */}
-                        <div
-                            className={
-                                styles.playerColumn
-                            }
-                        >
-
-                            <span
-                                className={
-                                    styles.playerName
-                                }
-                            >
-
-                                {
-                                    blackPlayer
-                                        .username
-
-                                    || "Black"
-                                }
-
-                            </span>
-
-
-                            <PlayerAvatar
-                                image={
-                                    blackPlayer.image
-                                }
-
-                                username={
-                                    blackPlayer
-                                        .username
-
-                                    || "Black"
-                                }
-                            />
-
-
-                            <div
-                                className={
-                                    styles.accuracyBox
-                                }
-                            >
-
-                                {
-                                    formatAccuracy(
-                                        metrics
-                                            .black
-                                            .accuracy
-                                    )
-                                }
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-
-                {/*
-                 * ===============================
-                 * CLASIFICACIONES
-                 * ===============================
-                 */}
-                <section
-                    className={
-                        styles.moveTableSection
-                    }
-                >
-
-                    {moveClassificationRows.map(
-                        row => {
-
-                            const colour =
-                                row.classification
-
-                                    ? classificationColours[
-                                        row
-                                            .classification
-                                    ]
-
-                                    : "#F87171";
-
-
-                            const whiteCount =
-                                row.classification
-
-                                    ? metrics
-                                        .white
-                                        .classificationCounts[
-                                            row
-                                                .classification
-                                        ]
-
-                                    : 0;
-
-
-                            const blackCount =
-                                row.classification
-
-                                    ? metrics
-                                        .black
-                                        .classificationCounts[
-                                            row
-                                                .classification
-                                        ]
-
-                                    : 0;
-
-
-                            return (
-
-                                <div
-                                    key={
-                                        row.label
-                                    }
-
-                                    className={
-                                        styles.moveRow
-                                    }
-                                >
-
-                                    <span
-                                        className={
-                                            styles.moveLabel
-                                        }
-                                    >
-                                        {
-                                            row.label
-                                        }
-                                    </span>
-
-
-                                    <span
-                                        className={
-                                            styles.moveCount
-                                        }
-
-                                        style={{
-                                            color:
-                                                colour
-                                        }}
-                                    >
-                                        {
-                                            whiteCount
-                                        }
-                                    </span>
-
-
+                            {coachState == "analysing" && (
+                                <>
                                     <div
-                                        className={
-                                            styles.moveIconCell
-                                        }
+                                        className={styles.coachProgressTrack}
+                                        role="progressbar"
+                                        aria-valuemin={0}
+                                        aria-valuemax={100}
+                                        aria-valuenow={Math.round(displayProgress * 100)}
                                     >
-
-                                        {row.classification
-
-                                            ? (
-                                                <img
-                                                    className={
-                                                        styles.moveIcon
-                                                    }
-
-                                                    src={
-                                                        classificationImages[
-                                                            row
-                                                                .classification
-                                                        ]
-                                                    }
-
-                                                    alt=""
-                                                />
-                                            )
-
-                                            : (
-                                                <span
-                                                    className={
-                                                        styles.missIcon
-                                                    }
-                                                >
-                                                    ×
-                                                </span>
-                                            )
-                                        }
-
+                                        <div
+                                            className={styles.coachProgressFill}
+                                            style={{ width: `${displayProgress * 100}%` }}
+                                        />
                                     </div>
 
+                                    <div className={styles.coachProgressPercentage}>
+                                        {Math.round(displayProgress * 100)}%
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </section>
+                )}
 
-                                    <span
-                                        className={
-                                            styles.moveCount
-                                        }
+                <div
+                    className={[
+                        styles.graphCard,
+                        !settings.coach.enabled
+                            ? styles.graphCardWithoutCoach
+                            : ""
+                    ].filter(Boolean).join(" ")}
+                >
+                    <EvaluationGraphArea />
+                </div>
 
-                                        style={{
-                                            color:
-                                                colour
-                                        }}
-                                    >
-                                        {
-                                            blackCount
-                                        }
-                                    </span>
+                <section className={styles.playersSection}>
+                    <div className={styles.playersGrid}>
+                        <div className={styles.playerColumn}>
+                            <span className={styles.playerName}>
+                                {whitePlayer.username || tAnalysis("gameSummary.white")}
+                            </span>
 
-                                </div>
-                            );
-                        }
-                    )}
+                            <PlayerAvatar
+                                image={whitePlayer.image}
+                                username={whitePlayer.username || tAnalysis("gameSummary.white")}
+                            />
 
+                            <div className={styles.accuracyBox}>
+                                {formatAccuracy(metrics.white.accuracy)}
+                            </div>
+                        </div>
+
+                        <div className={styles.playerColumn}>
+                            <span className={styles.playerName}>
+                                {blackPlayer.username || tAnalysis("gameSummary.black")}
+                            </span>
+
+                            <PlayerAvatar
+                                image={blackPlayer.image}
+                                username={blackPlayer.username || tAnalysis("gameSummary.black")}
+                            />
+
+                            <div className={styles.accuracyBox}>
+                                {formatAccuracy(metrics.black.accuracy)}
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
+                <section className={styles.moveTableSection}>
+                    {moveClassificationRows.map(row => {
+                        const colour = row.classification
+                            ? classificationColours[row.classification]
+                            : "#F87171";
 
-                {/*
-                 * ===============================
-                 * RENDIMIENTO POR FASES
-                 * ===============================
-                 */}
-                <section
-                    className={
-                        styles.phaseSection
-                    }
-                >
+                        const whiteCount = row.classification
+                            ? metrics.white.classificationCounts[row.classification]
+                            : 0;
 
-                    {/*
-                     * GAME RATING
-                     */}
-                    <div
-                        className={
-                            styles.phaseRow
-                        }
-                    >
+                        const blackCount = row.classification
+                            ? metrics.black.classificationCounts[row.classification]
+                            : 0;
 
-                        <span
-                            className={
-                                styles.phaseLabel
-                            }
-                        >
-                            Game rating
-                        </span>
-
-
-                        <span
-                            className={
-                                styles.gameRating
-                            }
-                        >
-
-                            {
-                                metrics
-                                    .white
-                                    .estimatedRating
-                                ?? "—"
-                            }
-
-                        </span>
-
-
-                        <span
-                            className={
-                                styles.gameRating
-                            }
-                        >
-
-                            {
-                                metrics
-                                    .black
-                                    .estimatedRating
-                                ?? "—"
-                            }
-
-                        </span>
-
-                    </div>
-
-
-                    {phaseRows.map(
-                        row => (
-
+                        return (
                             <div
-                                key={
-                                    row.phase
-                                }
-
-                                className={
-                                    styles.phaseRow
-                                }
+                                key={row.translationKey}
+                                className={styles.moveRow}
                             >
-
-                                <span
-                                    className={
-                                        styles.phaseLabel
-                                    }
-                                >
-                                    {
-                                        row.label
-                                    }
+                                <span className={styles.moveLabel}>
+                                    {tAnalysis(
+                                        `gameSummary.classifications.${row.translationKey}`
+                                    )}
                                 </span>
 
-
-                                <div
-                                    className={
-                                        styles.phaseValue
-                                    }
+                                <span
+                                    className={styles.moveCount}
+                                    style={{ color: colour }}
                                 >
+                                    {whiteCount}
+                                </span>
 
-                                    <PhaseIcon
-                                        score={
-                                            metrics
-                                                .white
-                                                .phaseScores[
-                                                    row.phase
-                                                ]
-                                        }
-                                    />
-
+                                <div className={styles.moveIconCell}>
+                                    {row.classification ? (
+                                        <img
+                                            className={styles.moveIcon}
+                                            src={classificationImages[row.classification]}
+                                            alt=""
+                                        />
+                                    ) : (
+                                        <span className={styles.missIcon}>
+                                            ×
+                                        </span>
+                                    )}
                                 </div>
 
-
-                                <div
-                                    className={
-                                        styles.phaseValue
-                                    }
+                                <span
+                                    className={styles.moveCount}
+                                    style={{ color: colour }}
                                 >
-
-                                    <PhaseIcon
-                                        score={
-                                            metrics
-                                                .black
-                                                .phaseScores[
-                                                    row.phase
-                                                ]
-                                        }
-                                    />
-
-                                </div>
-
+                                    {blackCount}
+                                </span>
                             </div>
-
-                        )
-                    )}
-
+                        );
+                    })}
                 </section>
 
+                <section className={styles.phaseSection}>
+                    <div className={styles.phaseRow}>
+                        <span className={styles.phaseLabel}>
+                            {tAnalysis("gameSummary.gameRating")}
+                        </span>
+
+                        <span className={styles.gameRating}>
+                            {metrics.white.estimatedRating ?? "—"}
+                        </span>
+
+                        <span className={styles.gameRating}>
+                            {metrics.black.estimatedRating ?? "—"}
+                        </span>
+                    </div>
+
+                    {phaseRows.map(row => (
+                        <div
+                            key={row.phase}
+                            className={styles.phaseRow}
+                        >
+                            <span className={styles.phaseLabel}>
+                                {tAnalysis(
+                                    `gameSummary.phases.${row.translationKey}`
+                                )}
+                            </span>
+
+                            <div className={styles.phaseValue}>
+                                <PhaseIcon score={metrics.white.phaseScores[row.phase]} />
+                            </div>
+
+                            <div className={styles.phaseValue}>
+                                <PhaseIcon score={metrics.black.phaseScores[row.phase]} />
+                            </div>
+                        </div>
+                    ))}
+                </section>
             </div>
 
+            {analysisStatus == AnalysisStatus.INACTIVE && (
+                <div className={styles.footer}>
+                    <button
+                        type="button"
+                        className={styles.startReviewButton}
+                        onClick={onStartReview}
+                    >
+                        {tAnalysis("gameSummary.startReview")}
+                    </button>
+                </div>
+            )}
 
-            {/*
-             * ===============================
-             * START REVIEW
-             * ===============================
-             */}
-            <div
-                className={
-                    styles.footer
-                }
-            >
-
-                <button
-                    type="button"
-
-                    className={
-                        styles.startReviewButton
-                    }
-
-                    onClick={
-                        onStartReview
-                    }
-                >
-                    Start Review
-                </button>
-
-            </div>
-
+            {settings.coach.enabled && isCoachPickerOpen && (
+                <CoachPicker
+                    selectedCoach={selectedCoach}
+                    onClose={() => setIsCoachPickerOpen(false)}
+                    onConfirm={coachId => {
+                        setSettings(draft => {
+                            draft.appearance.selectedCoach = coachId;
+                            return draft;
+                        });
+                        setIsCoachPickerOpen(false);
+                    }}
+                />
+            )}
         </section>
     );
 }
-
 
 export default GameSummaryPanel;

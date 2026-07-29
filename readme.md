@@ -1,44 +1,89 @@
-> [!IMPORTANT]
-> Looking for maintainers! Please join [the Discord server](https://discord.com/invite/XxtsAzPyCb) and open a ticket to apply :)
+# NexoChess
 
-<h1 align="center">
-    <a href="https://wintrchess.com"><img width="175" src="https://github.com/user-attachments/assets/9a33a746-c9cd-43b8-b17b-564f3f6ce4a2" /></a>
-    <br>
-    WintrChess
-</h1>
+NexoChess is a free chess game analyser focused on clear game reviews, move classifications and an accessible experience for players of every level.
 
-<p align="center">
-    A website that analyses Chess games with move classifications, for free.
-</p>
+> **Pre-release status:** the production website is planned for [www.nexochess.com](https://www.nexochess.com). The domain and public source repository must be configured before launch.
 
-<p align="center">
-    📌 <a href="https://wintrchess.com/"><b>wintrchess.com</b></a>
-</p>
+## Product principles
 
-<img width="1000" alt="image" src="https://github.com/user-attachments/assets/77d98631-07d4-4ccc-83ef-32f6b3e1d6dd" />
+- Analysing a game does not require an account.
+- The local Archive remains available without signing in.
+- Accounts are optional and are intended for cross-device storage and account-specific features.
+- Stockfish 17 runs in the user's browser for the core engine analysis.
+- The project remains free and open source under the GNU GPL v3.
 
-> Originally <a href="https://github.com/wintrcat/freechess">Game Report</a>, the platform has been rebuilt with many more features!
+## Project structure
 
-## 📂 Project
+NexoChess is a TypeScript monorepo with three workspaces:
 
-The WintrChess repository is a monorepo made up of three packages:
+### `client`
 
-#### `client`
-The frontend for the website built with React and TypeScript.
+React frontend, browser-side analysis workflow, Stockfish workers and local persistence.
 
-#### `server`
-The backend for the website where the website content is served, and where any API endpoints will live.
+### `server`
 
-#### `shared`
-Libraries, some types and common logic is stored here and can be accessed by both other packages.
+Express backend for authentication, account features, server-backed storage and API endpoints.
 
-## 📚 Documentation
+### `shared`
 
-[Hosting WintrChess locally](https://github.com/WintrCat/wintrchess/blob/master/docs/hosting.md)
+Types and chess-analysis logic shared by the client and server.
 
-[Contributing to the project](https://github.com/WintrCat/wintrchess/blob/master/docs/contributing.md)
+## Local development
 
-## ☕ Support
+### Requirements
 
-If you like this project or find it useful, consider buying me a little coffee! Everything is appreciated so much 💙
-[https://ko-fi.com/wintrcat](https://ko-fi.com/wintrcat)
+- Node.js 22 or later
+- npm
+- Docker Desktop with Docker Compose
+
+### Setup
+
+Create your local environment file from the provided example and fill in the required secrets:
+
+```sh
+cp .env.example .env
+```
+
+On Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Install dependencies:
+
+```sh
+npm install
+```
+
+Check the client TypeScript build:
+
+```sh
+npm run check -w client
+```
+
+Build and run the application with Docker:
+
+```sh
+docker compose up -d --build
+```
+
+The local application is available at:
+
+```text
+http://localhost:8080
+```
+
+See [`docs/hosting.md`](docs/hosting.md) for environment variables, Google OAuth and production deployment notes.
+
+## Licensing and upstream project
+
+NexoChess is a modified version of [WintrChess](https://github.com/WintrCat/wintrchess), originally created by WintrCat. The original project and this modified version are distributed under the GNU General Public License version 3.
+
+NexoChess is an independent project and is not presented as the official WintrChess website or as a product of WintrCat.
+
+The complete GPL text is available in [`LICENSE`](LICENSE). Third-party components and release obligations are documented in [`ATTRIBUTIONS.md`](ATTRIBUTIONS.md).
+
+## Contributing
+
+Read [`docs/contributing.md`](docs/contributing.md) before modifying the project. Several mature subsystems are intentionally protected from incidental changes.

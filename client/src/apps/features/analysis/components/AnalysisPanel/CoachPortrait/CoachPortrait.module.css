@@ -1,0 +1,510 @@
+.root {
+    position: relative;
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    transform-origin: 50% 100%;
+
+    isolation: isolate;
+}
+
+.layer {
+    position: absolute;
+    inset: 0;
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+    object-position: center bottom;
+
+    pointer-events: none;
+    user-select: none;
+}
+
+.baseLayer {
+    z-index: 1;
+
+    opacity: 1;
+
+    transform: translate3d(0, 0, 0) scale(1);
+}
+
+.incomingLayer {
+    z-index: 2;
+
+    opacity: 0;
+
+    will-change: opacity, transform;
+}
+
+.transition_soft {
+    transform: translate3d(0, 2px, 0) scale(0.992);
+
+    transition:
+        opacity 150ms ease-out,
+        transform 190ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.transition_positive {
+    transform: translate3d(0, 4px, 0) scale(0.965);
+
+    transition:
+        opacity 135ms ease-out,
+        transform 210ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.transition_negative {
+    transform: translate3d(-1px, 1px, 0) rotate(-0.45deg) scale(0.988);
+
+    transition:
+        opacity 165ms ease-out,
+        transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.transition_surprised {
+    transform: translate3d(0, 3px, 0) scale(0.945);
+
+    transition:
+        opacity 100ms ease-out,
+        transform 175ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.transition_blink {
+    opacity: 1;
+
+    transform: translate3d(0, 0, 0) scale(1);
+
+    transition: none;
+}
+
+.incomingVisible {
+    opacity: 1;
+
+    transform: translate3d(0, 0, 0) rotate(0) scale(1);
+}
+
+/*
+ * Foxy V1: una base fija, una capa de parpadeo instantánea y una boca SVG.
+ * Ninguna de las capas completas se funde a transparente.
+ */
+.foxyRoot {
+    overflow: visible;
+}
+
+.foxyIdleLayer {
+    z-index: 1;
+
+    visibility: visible;
+    opacity: 1 !important;
+
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+}
+
+.foxyBlinkLayer {
+    z-index: 2;
+
+    visibility: hidden;
+    opacity: 0;
+
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    will-change: visibility, opacity;
+
+    transition: none;
+}
+
+.foxyBlinkVisible {
+    visibility: visible;
+    opacity: 1;
+}
+
+.foxyMouth {
+    position: absolute;
+    z-index: 3;
+
+    top: 48.9%;
+    left: 42.6%;
+
+    width: 14.8%;
+    height: 8.2%;
+
+    overflow: visible;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transform: scaleY(0.12);
+    transform-origin: 50% 14%;
+
+    transition:
+        opacity 28ms linear,
+        transform 58ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.foxyMouthOpening {
+    fill: #25120e;
+    stroke: #170b08;
+    stroke-width: 4;
+    stroke-linejoin: round;
+}
+
+.foxyMouthTongue {
+    fill: #a94e48;
+
+    opacity: 0.88;
+}
+
+.foxyMouth_closed {
+    opacity: 0;
+
+    transform: scaleY(0.10);
+}
+
+.foxyMouth_half {
+    opacity: 1;
+
+    transform: scaleY(0.48);
+}
+
+.foxyMouth_open {
+    opacity: 1;
+
+    transform: scaleY(0.9);
+}
+
+
+
+.fogRoot {
+    overflow: visible;
+}
+
+.fogIdleLayer {
+    z-index: 1;
+
+    visibility: visible;
+    opacity: 1 !important;
+
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+}
+
+.fogBlinkLayer {
+    z-index: 2;
+
+    visibility: hidden;
+    opacity: 0;
+
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    will-change: visibility, opacity;
+
+    transition: none;
+}
+
+.fogBlinkVisible {
+    visibility: visible;
+    opacity: 1;
+}
+
+.fogMouth {
+    position: absolute;
+    z-index: 3;
+
+    top: 47.65%;
+    left: 44.45%;
+
+    width: 11.4%;
+    height: 6.2%;
+
+    overflow: visible;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transform: scaleY(0.10);
+    transform-origin: 50% 16%;
+
+    transition:
+        opacity 24ms linear,
+        transform 54ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.fogMouthOpening {
+    fill: #3a1c17;
+    stroke: #21100d;
+    stroke-width: 3.4;
+    stroke-linejoin: round;
+}
+
+.fogMouthLowerLip {
+    fill: none;
+    stroke: #a9635e;
+    stroke-width: 3.4;
+    stroke-linecap: round;
+
+    opacity: 0.68;
+}
+
+.fogMouth_closed {
+    opacity: 0;
+
+    transform: scaleY(0.05);
+}
+
+.fogMouth_half {
+    opacity: 0.95;
+
+    transform: scaleY(0.52);
+}
+
+.fogMouth_open {
+    opacity: 1;
+
+    transform: scaleY(0.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .incomingLayer,
+    .foxyMouth,
+    .fogMouth {
+        transition: none;
+    }
+}
+
+
+.cybeRoot {
+    overflow: visible;
+}
+
+.cybeIdleLayer {
+    z-index: 1;
+
+    visibility: visible;
+    opacity: 1 !important;
+
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+}
+
+.cybeBlinkLayer {
+    z-index: 2;
+
+    visibility: hidden;
+    opacity: 0;
+
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    will-change: visibility, opacity;
+
+    transition: none;
+}
+
+.cybeBlinkVisible {
+    visibility: visible;
+    opacity: 1;
+}
+
+.cybeMouth {
+    position: absolute;
+    z-index: 3;
+
+    top: 40.8%;
+    left: 42.9%;
+
+    width: 14.2%;
+    height: 8.4%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+
+    overflow: visible;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transform: translate3d(0, 0, 0) scale(0.92);
+    transform-origin: center;
+
+    transition:
+        opacity 36ms linear,
+        transform 70ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.cybeMouthActive {
+    opacity: 1;
+
+    transform: translate3d(0, 0, 0) scale(1);
+}
+
+/*
+ * El marco se dibuja aparte para poder reducir únicamente el contorno
+ * sin alterar el tamaño, la posición ni la animación de las cinco ondas.
+ */
+.cybeMouth::before {
+    content: "";
+
+    position: absolute;
+    z-index: 0;
+
+    top: 50%;
+    left: 50%;
+
+    width: 76%;
+    height: 68%;
+
+    box-sizing: border-box;
+
+    border: 1.35px solid rgba(51, 224, 255, 0.92);
+    border-radius: 48% 48% 56% 56% / 38% 38% 62% 62%;
+
+    background:
+        radial-gradient(
+            ellipse at 50% 38%,
+            rgba(15, 95, 126, 0.18),
+            rgba(1, 12, 22, 0.88) 72%
+        );
+
+    box-shadow:
+        inset 0 0 4px rgba(35, 218, 255, 0.26),
+        0 0 4px rgba(35, 218, 255, 0.42);
+
+    transform: translate(-50%, -50%);
+}
+
+.cybeWaveform {
+    position: relative;
+    z-index: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5.2%;
+
+    width: 66%;
+    height: 62%;
+}
+
+.cybeWaveBar {
+    display: block;
+    flex: 0 0 9.5%;
+
+    min-height: 2px;
+
+    border-radius: 999px;
+
+    background: #3de8ff;
+
+    box-shadow:
+        0 0 3px rgba(61, 232, 255, 0.95),
+        0 0 7px rgba(22, 194, 255, 0.68);
+
+    transition:
+        height 62ms cubic-bezier(0.2, 0.8, 0.2, 1),
+        filter 62ms linear;
+
+    will-change: height;
+}
+
+.cybeWaveBar:nth-child(3) {
+    background: #75f3ff;
+
+    box-shadow:
+        0 0 4px rgba(117, 243, 255, 1),
+        0 0 9px rgba(22, 194, 255, 0.78);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cybeMouth,
+    .cybeWaveBar {
+        transition: none;
+    }
+}
+
+.maxRooksRoot {
+    overflow: visible;
+}
+
+.maxRooksIdleLayer {
+    z-index: 1;
+
+    visibility: visible;
+    opacity: 1 !important;
+
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+}
+
+.maxRooksBlinkLayer {
+    z-index: 2;
+
+    visibility: hidden;
+    opacity: 0;
+
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    will-change: visibility, opacity;
+
+    transition: none;
+}
+
+.maxRooksBlinkVisible {
+    visibility: visible;
+    opacity: 1;
+}
+
+.maxRooksMouth {
+    z-index: 3;
+
+    visibility: hidden;
+    opacity: 0;
+
+    transform: translate3d(0, 0, 0) scaleY(0.12);
+    transform-origin: 50% 38.8%;
+    backface-visibility: hidden;
+    will-change: opacity, transform;
+
+    transition:
+        opacity 24ms linear,
+        transform 66ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.maxRooksMouth_closed {
+    visibility: hidden;
+    opacity: 0;
+
+    transform: translate3d(0, 0, 0) scaleY(0.10);
+}
+
+.maxRooksMouth_half {
+    visibility: visible;
+    opacity: 0.96;
+
+    transform: translate3d(0, 0, 0) scaleY(0.64);
+}
+
+.maxRooksMouth_open {
+    visibility: visible;
+    opacity: 1;
+
+    transform: translate3d(0, 0, 0) scaleY(1);
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+    .maxRooksMouth {
+        transition: none;
+    }
+}

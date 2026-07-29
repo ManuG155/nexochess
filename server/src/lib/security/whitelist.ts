@@ -4,10 +4,16 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+const productionHostname = /^(?:[a-z0-9-]+\.)*nexochess\.com$/i;
+const developmentHostnames = [
+    /^localhost$/i,
+    /^127\.0\.0\.1$/
+];
+
 const whitelistedHostnames = [
-    /^(.+\.)?wintrchess\.com$/,
+    productionHostname,
     ...(process.env.NODE_ENV == "development"
-        ? [/localhost/] : []
+        ? developmentHostnames : []
     )
 ];
 

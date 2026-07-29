@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
 
+import I18nGate from "@/components/layout/I18nGate";
+
 import PageWrapper from "@/components/layout/PageWrapper";
 import HelpCenter from "./pages/HelpCenter";
 import { removeDefaultConsentLink } from "@/lib/consent";
@@ -22,4 +24,8 @@ function App() {
     </PageWrapper>;
 }
 
-root.render(<App/>);
+root.render(
+    <I18nGate>
+        <App/>
+    </I18nGate>
+);

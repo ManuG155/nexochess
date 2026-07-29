@@ -12,14 +12,8 @@ import useAnalysisGameStore from
 import useAnalysisBoardStore from
     "@analysis/stores/AnalysisBoardStore";
 
-import ClassifiedMoveCard from
-    "@analysis/components/report/ClassifiedMoveCard";
-
 import StateTreeTraverser from
     "@/components/chess/StateTreeTraverser";
-
-import AnalysisProgress from
-    "./AnalysisProgress";
 
 import RealtimeEngineArea from
     "./RealtimeEngineArea";
@@ -29,6 +23,12 @@ import GameSelection from
 
 import GameAnalysis from
     "./GameAnalysis";
+
+import EvaluationGraphArea from
+    "./GameReport/EvaluationGraphArea";
+
+import CoachMoveReaction from
+    "./CoachMoveReaction";
 
 import GameSummaryPanel from
     "./GameSummaryPanel";
@@ -64,10 +64,16 @@ function AnalysisPanel({
     /*
      * Ajustes del análisis.
      */
-    const settings =
+    const analysisSettings =
         useSettingsStore(
             state =>
                 state.settings.analysis
+        );
+
+    const coachSettings =
+        useSettingsStore(
+            state =>
+                state.settings.coach
         );
 
 
@@ -91,16 +97,6 @@ function AnalysisPanel({
                 state.gameAnalysisOpen
         );
 
-
-    /*
-     * Posición actualmente
-     * mostrada en el tablero.
-     */
-    const currentNode =
-        useAnalysisBoardStore(
-            state =>
-                state.currentStateTreeNode
-        );
 
 
     /*
@@ -234,22 +230,6 @@ function AnalysisPanel({
             >
 
                 {/*
-                 * PROGRESO DEL ANÁLISIS.
-                 *
-                 * De momento lo conservamos.
-                 *
-                 * En un bloque posterior
-                 * vamos a:
-                 *
-                 * - ocultar "Solving CAPTCHA";
-                 * - mostrar progreso limpio;
-                 * - sincronizar tablero
-                 *   con movimiento analizado.
-                 */}
-                <AnalysisProgress />
-
-
-                {/*
                  * =================================================
                  * 1. NO HAY PARTIDA ANALIZADA
                  * =================================================
@@ -311,97 +291,113 @@ function AnalysisPanel({
                     sidePanelMode
                     == "review"
                 ) && (
-                    <>
 
-                        {/*
-                         * Cabecera temporal
-                         * de la revisión.
-                         *
-                         * Más adelante
-                         * la convertiremos
-                         * en nuestra cabecera
-                         * compacta B + C.
-                         */}
+                    <section
+                        className={
+                            styles.reviewCard
+                        }
+                    >
+
                         <div
-                            className={
-                                styles.reviewHeader
-                            }
+                            className={[
+                                styles.reviewScrollArea,
+                                !coachSettings.enabled
+                                    ? styles.reviewScrollAreaWithoutCoach
+                                    : ""
+                            ].filter(Boolean).join(" ")}
                         >
 
-                            <button
-                                type="button"
-
+                            {/*
+                             * Flecha discreta para volver
+                             * al resumen de la partida.
+                             *
+                             * Forma parte de la misma tarjeta
+                             * visual que todo el contenido
+                             * de revisión.
+                             */}
+                            <div
                                 className={
-                                    styles.reviewBackButton
-                                }
-
-                                onClick={
-                                    backToSummary
-                                }
-
-                                aria-label={
-                                    "Volver al resumen"
+                                    styles.reviewHeader
                                 }
                             >
-                                ←
-                            </button>
+
+                                <button
+                                    type="button"
+
+                                    className={
+                                        styles.reviewBackButton
+                                    }
+
+                                    onClick={
+                                        backToSummary
+                                    }
+
+                                    aria-label={
+                                        "Volver al resumen"
+                                    }
+
+                                    title={
+                                        "Volver al resumen"
+                                    }
+                                >
+                                    ←
+                                </button>
+
+                            </div>
+
+
+                            {/*
+                             * Motor en tiempo real.
+                             */}
+                            {analysisSettings.engine.enabled && (
+
+                                <RealtimeEngineArea />
+
+                            )}
+
+
+                            {/*
+                             * Reacción espontánea del coach en
+                             * momentos críticos del review.
+                             */}
+                            {coachSettings.enabled && (
+                                <CoachMoveReaction />
+                            )}
+
+
+                            {/*
+                             * Gráfico de evaluación de la partida.
+                             * Permanece visible junto al coach y permite
+                             * saltar directamente a cualquier movimiento.
+                             */}
+                            <div
+                                className={
+                                    styles.reviewGraphArea
+                                }
+                            >
+                                <EvaluationGraphArea />
+                            </div>
+
+
+                            {/*
+                             * Lista/árbol de movimientos.
+                             *
+                             * Tiene su propio scroll independiente:
+                             * el coach permanece visible
+                             * mientras recorremos toda la partida.
+                             */}
+                            <div
+                                className={
+                                    styles.reviewMovesArea
+                                }
+                            >
+                                <GameAnalysis />
+                            </div>
 
                         </div>
 
+                    </section>
 
-
-                        {/*
-                         * Motor en tiempo real.
-                         */}
-                        {settings.engine.enabled && (
-
-                            <RealtimeEngineArea />
-
-                        )}
-
-
-                        {/*
-                         * Clasificación
-                         * de la jugada actual.
-                         */}
-                        {(
-                            currentNode.state.move
-
-                            &&
-
-                            !settings
-                                .classifications
-                                .hide
-
-                            &&
-
-                            (
-                                settings
-                                    .engine
-                                    .enabled
-
-                                ||
-
-                                currentNode
-                                    .state
-                                    .classification
-                            )
-                        ) && (
-
-                            <ClassifiedMoveCard />
-
-                        )}
-
-
-                        {/*
-                         * Lista/árbol de movimientos.
-                         *
-                         * Este es el antiguo
-                         * modo "Analysis".
-                         */}
-                        <GameAnalysis />
-
-                    </>
                 )}
 
             </div>

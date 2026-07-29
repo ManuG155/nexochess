@@ -1,9 +1,8 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import TypographyProps from "./TypographyProps";
 import * as styles from "./Typography.module.css";
-
-import iconLogo from "@assets/img/logo.svg";
 
 function Typography({
     includeIcon,
@@ -15,32 +14,41 @@ function Typography({
     textStyle,
     onClick
 }: TypographyProps) {
-    return <div
-        className={`${styles.wrapper} ${className}`}
-        style={{ cursor: onClick && "pointer", ...style }}
-        onClick={onClick}
-    >
-        {includeIcon
-            && <img
-                className={iconClassName}
-                style={{ height: 40, ...iconStyle }}
-                src={iconLogo}
-                title="WINTR"
+    const { t } = useTranslation("common");
+
+    return (
+        <div
+            className={`${styles.wrapper} ${className || ""}`}
+            style={{ cursor: onClick ? "pointer" : undefined, ...style }}
+            onClick={onClick}
+        >
+            {includeIcon && (
+                <img
+                    className={[
+                        styles.iconMark,
+                        iconClassName
+                    ].filter(Boolean).join(" ")}
+                    style={iconStyle}
+                    src="/img/nexochess-icon-white.png"
+                    alt=""
+                    aria-hidden="true"
+                    draggable={false}
+                />
+            )}
+
+            <img
+                className={[
+                    styles.wordmark,
+                    textClassName
+                ].filter(Boolean).join(" ")}
+                style={textStyle}
+                src="/img/nexochess-white.png"
+                alt="NexoChess"
+                title={`NexoChess — ${t("footer.tagline")}`}
                 draggable={false}
             />
-        }
-
-        <span
-            className={`${styles.title} ${textClassName}`}
-            style={textStyle}
-        >
-            Wintr
-
-            <b style={{ letterSpacing: 0 }}>
-                Chess
-            </b>
-        </span>
-    </div>;
+        </div>
+    );
 }
 
 export default Typography;

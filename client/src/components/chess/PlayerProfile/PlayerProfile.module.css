@@ -3,28 +3,190 @@
     align-items: center;
     gap: 10px;
 
+    width: 100%;
+    min-width: 0;
+
     color: white;
 }
 
 .profileImage {
-    width: 40px;
-    height: 40px;
+    flex: 0 0 auto;
 
-    border-radius: 5px;
+    width: 44px;
+    height: 44px;
+
+    object-fit: cover;
+
+    border-radius: 6px;
     background-color: var(--ui-shade-4);
 }
 
-.title {
-    padding: 0 3px;
+.profileContent {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
 
-    border-radius: 5px;
+    min-width: 0;
+}
+
+.identityLine {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    min-width: 0;
+
+    line-height: 1.15;
+}
+
+.title {
+    flex: 0 0 auto;
+
+    padding: 1px 4px;
+
+    border-radius: 4px;
     background-color: rgb(180, 20, 20);
+
+    font-size: 0.72rem;
+    font-weight: 800;
 }
 
 .username {
+    overflow: hidden;
+
     color: white;
+
+    font-size: 1rem;
+    font-weight: 750;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .rating {
-    color: grey;
+    flex: 0 0 auto;
+
+    color: rgba(255, 255, 255, 0.58);
+
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.flag {
+    flex: 0 0 auto;
+
+    width: 20px;
+    height: 20px;
+
+    object-fit: contain;
+
+    line-height: 1;
+}
+
+.materialLine {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    min-height: 18px;
+}
+
+.capturedPieces {
+    min-width: 0;
+
+    color: rgba(255, 255, 255, 0.78);
+
+    font-family:
+        "Segoe UI Symbol",
+        "Noto Sans Symbols 2",
+        sans-serif;
+
+    font-size: 1rem;
+    line-height: 1;
+
+    letter-spacing: -2px;
+    white-space: nowrap;
+}
+
+.materialAdvantage {
+    flex: 0 0 auto;
+
+    color: #a9c96b;
+
+    font-size: 0.86rem;
+    font-weight: 800;
+}
+
+.clock {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+
+    box-sizing: border-box;
+
+    min-width: 118px;
+    height: 44px;
+    margin-left: auto;
+    padding: 0 12px;
+
+    border-radius: 4px;
+
+    font-variant-numeric: tabular-nums;
+}
+
+.clockActive {
+    color: #262422;
+    background-color: #f4f4f4;
+}
+
+.clockInactive {
+    color: rgba(255, 255, 255, 0.55);
+    background-color: #262422;
+}
+
+.clockIcon {
+    width: 26px;
+    height: 26px;
+}
+
+.clockValue {
+    margin-left: auto;
+
+    font-size: 1.85rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+@media (max-width: 650px) {
+    .profileImage {
+        width: 38px;
+        height: 38px;
+    }
+
+    .username {
+        font-size: 0.92rem;
+    }
+
+    .rating {
+        font-size: 0.8rem;
+    }
+
+    .clock {
+        min-width: 92px;
+        height: 40px;
+        padding: 0 9px;
+    }
+
+    .clockIcon {
+        width: 22px;
+        height: 22px;
+    }
+
+    .clockValue {
+        font-size: 1.5rem;
+    }
 }

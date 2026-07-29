@@ -1,6 +1,5 @@
 import React from "react";
-
-import { formatDate } from "shared/lib/utils/date";
+import { useTranslation } from "react-i18next";
 
 import ProfileCardProps from "./ProfileCardProps";
 import * as styles from "./ProfileCard.module.css";
@@ -10,6 +9,9 @@ function ProfileCard({
     style,
     profile
 }: ProfileCardProps) {
+    const { t, i18n } = useTranslation("otherPages");
+    const locale = i18n.resolvedLanguage || i18n.language;
+
     return <div
         className={`${styles.wrapper} ${className}`}
         style={{
@@ -38,8 +40,13 @@ function ProfileCard({
                 </span>
 
                 <span>
-                    Member since{" "}
-                    {formatDate(new Date(profile.createdAt))}
+                    {t("profile.memberSince", {
+                        date: new Intl.DateTimeFormat(locale, {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric"
+                        }).format(new Date(profile.createdAt))
+                    })}
                 </span>
             </div>
         </>}

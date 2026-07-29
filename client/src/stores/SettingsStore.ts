@@ -34,7 +34,20 @@ const settingsSchema = z.object({
                 theory: z.boolean()
             })
         }),
-        simpleNotation: z.boolean()
+        simpleNotation: z.boolean(),
+        showTimer: z.boolean()
+    }),
+    appearance: z.object({
+        selectedCoach: z.enum([
+            "fog",
+            "foxy",
+            "cybe",
+            "max_rooks"
+        ])
+    }),
+    coach: z.object({
+        enabled: z.boolean(),
+        animations: z.boolean()
     }),
     themes: z.object({
         board: z.object({
@@ -77,7 +90,15 @@ export const defaultSettings: Settings = {
                 theory: true
             }
         },
-        simpleNotation: false
+        simpleNotation: false,
+        showTimer: true
+    },
+    appearance: {
+        selectedCoach: "fog"
+    },
+    coach: {
+        enabled: true,
+        animations: true
     },
     themes: {
         board: {
@@ -85,7 +106,7 @@ export const defaultSettings: Settings = {
             lightSquareColour: "#f0d9b5",
             coordinates: "outside"
         },
-        piece: ""
+        piece: "cburnett"
     },
     bugReportingMode: false
 };
@@ -98,7 +119,24 @@ function fetchSettings() {
     if (value == null) return defaultSettingsCopy;
 
     try {
-        return merge(defaultSettingsCopy, JSON.parse(value));
+        const storedSettings = JSON.parse(value);
+
+        /*
+         * Migrate the previous Appearance > Show coach setting into the
+         * dedicated coach section. Existing users keep their choice and
+         * animations remain enabled by default. The old voice option is
+         * discarded because coach audio no longer exists.
+         */
+        if (storedSettings.coach == null) {
+            storedSettings.coach = {
+                enabled: storedSettings.appearance?.showCoach ?? true,
+                animations: true
+            };
+        } else {
+            delete storedSettings.coach.voice;
+        }
+
+        return merge(defaultSettingsCopy, storedSettings);
     } catch {
         return defaultSettingsCopy;
     }

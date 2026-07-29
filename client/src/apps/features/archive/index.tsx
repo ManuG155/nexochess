@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
 
+import I18nGate from "@/components/layout/I18nGate";
+
 import ads from "@/constants/advertisements";
 import PageWrapper from "@/components/layout/PageWrapper";
 import Advertisement from "@/components/Advertisement";
@@ -32,4 +34,8 @@ function App() {
     </PageWrapper>;
 }
 
-root.render(<App/>);
+root.render(
+    <I18nGate>
+        <App/>
+    </I18nGate>
+);

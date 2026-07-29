@@ -1,44 +1,107 @@
 .wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 60px;
-    padding: 15px;
+    display: grid;
+    grid-template-columns: minmax(230px, 1fr) auto;
+    align-items: start;
+    gap: 26px 54px;
     box-sizing: border-box;
     width: 100%;
+    padding: 28px clamp(18px, 4vw, 58px) 20px;
 
-    background-color: var(--ui-shade-2);
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    background:
+        radial-gradient(circle at 8% 0%, rgba(70, 125, 232, 0.08), transparent 30%),
+        var(--ui-shade-2);
     color: white;
 }
 
-.section {
+.brandSection {
     display: flex;
     flex-direction: column;
-}
-
-.section a {
-    color: white;
-}
-
-.links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 60px;
+    align-items: flex-start;
+    gap: 7px;
 }
 
 .typographyIcon {
-    width: 30px;
-    height: 30px !important;
+    width: 155px;
+    height: auto !important;
+    max-width: 100%;
 }
 
 .typographyText {
-    font-size: 1.5rem;
+    display: block;
 }
 
-.copyrightNotice {
-    font-size: 0.85rem;
+.tagline {
+    max-width: 38ch;
+    margin: 2px 0 0;
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 0.87rem;
+    line-height: 1.45;
 }
 
-.link {
-    text-decoration: underline;
+.copyrightNotice,
+.licenseNotice {
+    color: rgba(255, 255, 255, 0.42);
+    font-size: 0.75rem;
+}
+
+.links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(150px, 1fr));
+    gap: 8px 34px;
+}
+
+.linkGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.linkGroup a,
+.linkButton {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 0;
+
+    border: 0;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.76);
+    font: inherit;
+    font-size: 0.84rem;
+    text-align: left;
+    text-decoration: none;
     cursor: pointer;
+
+    transition: color 0.18s ease, transform 0.18s ease;
+}
+
+.linkGroup a:hover,
+.linkButton:hover {
+    color: white;
+    transform: translateX(3px);
+}
+
+.licenseNotice {
+    grid-column: 1 / -1;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+@media (max-width: 720px) {
+    .wrapper {
+        grid-template-columns: 1fr;
+        gap: 22px;
+    }
+
+    .links {
+        width: 100%;
+    }
+}
+
+@media (max-width: 430px) {
+    .links {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
 }

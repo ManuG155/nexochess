@@ -141,6 +141,7 @@ function EvaluationGraph({
     style,
     nodes,
     selectedIndex,
+    visibleNodeCount,
     onPointClick
 }: EvaluationGraphProps) {
 
@@ -154,17 +155,28 @@ function EvaluationGraph({
     const absoluteHighestValue = max(
 
         nodes.map(
-            node => Math.abs(
+            (
+                node,
+                index
+            ) => {
 
-                getTopEngineLine(
-                    node.state.engineLines
-                )?.evaluation.value
+                if (
+                    visibleNodeCount != undefined
+                    && index >= visibleNodeCount
+                ) {
+                    return 0;
+                }
 
-                || 0
-            )
+                return Math.abs(
+                    getTopEngineLine(
+                        node.state.engineLines
+                    )?.evaluation.value
+                    || 0
+                );
+            }
         )
 
-    ) || 0;
+    ) || 1;
 
 
     /*
@@ -188,11 +200,14 @@ function EvaluationGraph({
             index
         ) => {
 
-            const evaluation =
+            const topEngineLine =
                 getTopEngineLine(
                     node.state.engineLines
-                )?.evaluation
+                );
 
+
+            const evaluation =
+                topEngineLine?.evaluation
                 || defaultEvaluation;
 
 
@@ -200,6 +215,11 @@ function EvaluationGraph({
                 absoluteHighestValue
                 + yAxisPadding
             ) * 2;
+
+
+            const isVisible =
+                visibleNodeCount == undefined
+                || index < visibleNodeCount;
 
 
             return {
@@ -217,11 +237,16 @@ function EvaluationGraph({
                     index,
 
                 y:
-                    getGraphY(
-                        node,
-                        evaluation,
-                        graphHeight
+                    (
+                        isVisible
+                        && topEngineLine
                     )
+                        ? getGraphY(
+                            node,
+                            evaluation,
+                            graphHeight
+                        )
+                        : null
 
             } as EvaluationGraphPoint;
         }
@@ -235,6 +260,10 @@ function EvaluationGraph({
     const highlightedPoints =
         dataPoints.filter(
             point => (
+
+                point.y != null
+
+                &&
 
                 point.state.classification
 
@@ -446,7 +475,10 @@ function EvaluationGraph({
                                 ];
 
 
-                            return point
+                            return (
+                                point
+                                && point.y != null
+                            )
 
                                 ? (
                                     <TooltipRenderer
@@ -470,7 +502,10 @@ function EvaluationGraph({
                      * de la línea discontinua
                      * del cursor.
                      */}
-                    {selectedPoint && (
+                    {(
+                        selectedPoint
+                        && selectedPoint.y != null
+                    ) && (
                         <>
 
                             <ReferenceLine
@@ -537,7 +572,7 @@ function EvaluationGraph({
                                 }
 
                                 y={
-                                    point.y
+                                    point.y!
                                 }
 
                                 r={

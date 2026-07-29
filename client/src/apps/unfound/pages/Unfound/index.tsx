@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import Button from "@/components/common/Button";
 import ButtonColour from "@/components/common/Button/Colour";
@@ -9,13 +10,16 @@ import iconUnfoundgame from "@assets/img/unfoundgame.gif";
 import iconInterfaceBack from "@assets/img/interface/back.svg";
 
 function Unfound() {
+    const { t } = useTranslation("common");
+
     return <div className={styles.wrapper}>
         <h1 className={styles.errorCode}>404</h1>
-        <span>Looks like you're lost.</span>
+        <span>{t("notFound.message")}</span>
 
         <img
             className={styles.image}
             src={iconUnfoundgame}
+            alt=""
         />
 
         <a href="/">
@@ -27,7 +31,7 @@ function Unfound() {
                     padding: "5px 10px"
                 }}
             >
-                Return Home
+                {t("notFound.returnHome")}
             </Button>
         </a>
     </div>;

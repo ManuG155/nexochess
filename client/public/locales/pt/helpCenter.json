@@ -1,15 +1,109 @@
 {
-    "title": "Central de Ajuda",
-    "contact": {
-        "title": "Contate-nos",
-        "message": "Se precisar entrar em contato conosco, pode enviar um e-mail para:"
-    },
+  "pageTitle": "NexoChess — Central de ajuda",
+  "hero": {
+    "eyebrow": "Suporte NexoChess",
+    "title": "Como podemos ajudar?",
+    "subtitle": "Encontre respostas claras, aprenda a forma mais rápida de importar uma partida e volte à análise em poucos cliques.",
+    "languagesBadge": "11 idiomas"
+  },
+  "actions": {
+    "openAnalysis": "Abrir o analisador",
+    "contact": "Falar com o suporte"
+  },
+  "topics": {
+    "eyebrow": "Acesso rápido",
+    "title": "Tópicos populares",
+    "subtitle": "Vá direto à parte do NexoChess de que você precisa.",
     "analysis": {
-        "title": "Analisando um jogo",
-        "part1": "Você pode analisar suas partidas de xadrez no",
-        "part2": "Página de análise WintrChess",
-        "part3": "As avaliações do Stockfish, as porcentagens de precisão e as classificações de movimentos - para que você possa encontrar os seus brilhantes e gafes - são fornecidos gratuitamente. Você encontrará um quadro de análise no centro da página, qual é onde você pode ver os movimentos do jogo que você selecionou. Para selecionar um jogo, você precisa usar o seletor de jogo que fornecemos na barra lateral da direita. Parece assim:",
-        "part4": "Você pode entrar em qualquer jogo usando o PGN. Se você quiser, você também pode selecionar um jogo da sua conta do Chess.com ou Lichess se você fornecer seu nome de usuário. Você precisará clicar no botão \"Pesquisar jogos\" para navegar pelos jogos na sua conta, e pode selecionar qualquer um deles apenas clicando sobre eles. Por último, você pode inserir uma única posição no FEN. De qualquer forma, você será capaz de adicionar movimentos manualmente após importar um jogo, que serão todos avaliados e classificados na mosca.",
-        "part5": "Após selecionar um jogo, basta clicar no botão \"Analisar\" para iniciar a análise. Também pode apenas mover uma peça no tabuleiro se quiser começar da posição inicial."
+      "title": "Analisar uma partida",
+      "description": "Importe uma partida e inicie uma revisão completa com Stockfish.",
+      "action": "Começar"
+    },
+    "import": {
+      "title": "Métodos de importação",
+      "description": "Saiba quando usar PGN, FEN, Chess.com ou Lichess.",
+      "action": "Ver opções"
+    },
+    "archive": {
+      "title": "Seu Arquivo",
+      "description": "Encontre análises salvas localmente e sincronizadas.",
+      "action": "Abrir Arquivo"
+    },
+    "settings": {
+      "title": "Configurações e idioma",
+      "description": "Altere aparência, treinador, motor e idioma.",
+      "action": "Abrir configurações"
     }
+  },
+  "steps": {
+    "eyebrow": "Primeiros passos",
+    "title": "Da partida à revisão em três passos",
+    "subtitle": "Sem configuração complicada e sem conta obrigatória no fluxo básico.",
+    "choose": {
+      "title": "Escolha uma origem",
+      "description": "Selecione PGN, FEN, Chess.com ou Lichess no painel de importação."
+    },
+    "import": {
+      "title": "Adicione sua partida",
+      "description": "Cole a notação, envie um arquivo ou digite um usuário público."
+    },
+    "review": {
+      "title": "Analise e revise",
+      "description": "Inicie a análise, leia o resumo e examine cada lance com seu treinador."
+    }
+  },
+  "imports": {
+    "eyebrow": "Guia de importação",
+    "title": "Quatro formas de começar",
+    "subtitle": "Use a opção que combina com o local onde sua partida está armazenada.",
+    "pgn": {
+      "title": "Colar ou enviar uma partida",
+      "description": "Use um PGN completo ou envie um arquivo .pgn."
+    },
+    "chessCom": {
+      "title": "Explorar partidas do Chess.com",
+      "description": "Digite um usuário público para escolher uma partida recente ou carregar a mais nova."
+    },
+    "lichess": {
+      "title": "Explorar partidas do Lichess",
+      "description": "Digite um usuário público para ver partidas públicas recentes."
+    },
+    "fen": {
+      "title": "Analisar uma posição",
+      "description": "Digite uma FEN para estudar apenas uma posição específica."
+    }
+  },
+  "faq": {
+    "eyebrow": "Perguntas frequentes",
+    "title": "O que vale saber",
+    "subtitle": "O essencial sobre contas, armazenamento, motor e privacidade.",
+    "account": {
+      "question": "Preciso de conta para analisar partidas?",
+      "answer": "Não. Você pode analisar partidas e usar o Arquivo local sem criar conta. A conta só é necessária para sincronização opcional entre dispositivos."
+    },
+    "archive": {
+      "question": "Onde minhas análises são salvas?",
+      "answer": "As análises como visitante ficam no navegador atual. Ao entrar, dados compatíveis também podem ser associados à sua conta."
+    },
+    "engine": {
+      "question": "Qual motor o NexoChess usa?",
+      "answer": "O NexoChess usa Stockfish 17 para avaliar posições e gerar as linhas usadas na revisão."
+    },
+    "languages": {
+      "question": "Como o idioma é escolhido?",
+      "answer": "Na primeira visita, o NexoChess segue o idioma do navegador quando disponível. Você pode alterá-lo nas configurações de Aparência."
+    },
+    "privacy": {
+      "question": "Preciso de conta para manter partidas locais?",
+      "answer": "Não. O Arquivo local funciona sem conta. Entrar é opcional e serve para sincronização e recursos da conta."
+    }
+  },
+  "contact": {
+    "eyebrow": "Ainda com dúvidas?",
+    "title": "Fale com o NexoChess",
+    "message": "Conte o problema, o navegador usado e o que você estava fazendo quando aconteceu.",
+    "copy": "Copiar email",
+    "copied": "Email copiado"
+  },
+  "navigationTitle": "Central de ajuda"
 }

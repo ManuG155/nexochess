@@ -55,9 +55,20 @@
     position: absolute;
 
     top: 0;
-    left: 0;
 
-    width: 100%;
+    /*
+     * Sobredibujamos 1px a izquierda y derecha.
+     *
+     * A ciertos niveles de zoom del navegador (por ejemplo 90%),
+     * el redondeo subpíxel de una capa transformada puede dejar una
+     * línea de 1px del color base visible en uno de los bordes.
+     * Como el contenedor usa overflow: hidden, este pequeño overscan
+     * queda recortado y elimina la costura sin alterar el ancho visual.
+     */
+    left: -1px;
+    right: -1px;
+
+    width: auto;
     height: 100%;
 
     /*

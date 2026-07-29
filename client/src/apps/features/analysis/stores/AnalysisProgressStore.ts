@@ -7,12 +7,14 @@ import AnalysisStatus from "@analysis/constants/AnalysisStatus";
 interface AnalysisProgressStore {
     evaluationController?: AbortController;
     evaluationProgress: number;
+    evaluationVisibleNodeCount: number;
     analysisStatus: AnalysisStatus;
     analysisError?: string;
     realtimeClassifyError?: string;
 
     setEvaluationController: (controller?: AbortController) => void;
     setEvaluationProgress: (progress: number) => void;
+    setEvaluationVisibleNodeCount: (count: number) => void;
     setAnalysisStatus: (status: AnalysisStatus) => void;
     setAnalysisError: (error?: string) => void;
     setRealtimeClassifyError: (error?: string) => void;
@@ -20,6 +22,7 @@ interface AnalysisProgressStore {
 
 const useAnalysisProgressStore = create<AnalysisProgressStore>(set => ({
     evaluationProgress: 0,
+    evaluationVisibleNodeCount: 0,
     analysisStatus: AnalysisStatus.INACTIVE,
 
     setEvaluationController(controller) {
@@ -28,6 +31,10 @@ const useAnalysisProgressStore = create<AnalysisProgressStore>(set => ({
 
     setEvaluationProgress(progress) {
         set({ evaluationProgress: progress });
+    },
+
+    setEvaluationVisibleNodeCount(count) {
+        set({ evaluationVisibleNodeCount: count });
     },
 
     setAnalysisStatus(status) {

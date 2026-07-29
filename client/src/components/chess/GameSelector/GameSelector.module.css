@@ -1,70 +1,358 @@
 .wrapper {
+    position: relative;
+
     display: flex;
     flex-direction: column;
+    gap: 10px;
 
+    box-sizing: border-box;
+    width: 100%;
+
+    color: rgba(255, 255, 255, 0.94);
+}
+
+.sourceTabs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+
+    padding: 5px;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    background: rgba(14, 15, 18, 0.44);
+}
+
+.sourceTab {
+    min-width: 0;
+    padding: 9px 7px;
+
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.58);
+
+    font-size: 0.87rem;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        color 150ms ease,
+        background-color 150ms ease,
+        transform 150ms ease;
+}
+
+.sourceTab:hover {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.sourceTab:active {
+    transform: translateY(1px);
+}
+
+.sourceTabActive {
     color: white;
+    background: #35435a;
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+        0 4px 12px rgba(0, 0, 0, 0.18);
 }
 
-.gameSourceSection {
-    display: flex;  
+.editorCard {
+    overflow: hidden;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 13px;
+    background: #202329;
+
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.16);
 }
 
-.gameSourceLabel {
+.fieldHeader {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+
+    padding: 13px 14px 11px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.fieldHeading {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.fieldLabel {
+    color: rgba(255, 255, 255, 0.94);
+    font-size: 0.94rem;
+    font-weight: 800;
+}
+
+.fieldHelper {
+    color: rgba(255, 255, 255, 0.48);
+    font-size: 0.72rem;
+    line-height: 1.35;
+}
+
+.fieldActions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 5px;
+}
+
+.utilityButton {
+    display: inline-flex;
     align-items: center;
-    text-align: center;
+    gap: 5px;
 
-    padding: 10px;
-    width: 50%;
+    padding: 6px 8px;
 
-    border-top-left-radius: 10px;
-    background-color: var(--ui-shade-5);
-    font-size: 1.1rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.045);
+    color: rgba(255, 255, 255, 0.68);
+
+    font-size: 0.72rem;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        color 150ms ease,
+        background-color 150ms ease;
 }
 
-@media (max-width: 375px) {
-    .gameSourceLabel {
-        font-size: 1rem;
-    }
+.utilityButton img {
+    width: 13px;
+    height: 13px;
+    opacity: 0.68;
 }
 
-.gameSourceSelector {
-    text-align: center;
-    width: 50%;
-    padding: 10px 0;
-
-    border: none;
-    border-top-right-radius: 10px;
-    background-color: var(--ui-shade-6);
+.utilityButton:hover {
     color: white;
-    font-size: 1.1rem;
-
-    transition-duration: 0.3s;
-}
-
-.gameSourceSelector:hover {
-    filter: brightness(1.1)
+    background: rgba(255, 255, 255, 0.09);
 }
 
 .selectorField {
+    display: block;
+
     box-sizing: border-box;
     width: 100%;
-    padding: 10px;
 
-    border: none;
-    background-color: var(--ui-shade-4);
-    color: white;
-    font-size: 1rem;
+    padding: 14px;
 
-    resize: none;
+    border: 0;
+    outline: 0;
+    background: #17191e;
+    color: rgba(255, 255, 255, 0.92);
+
+    font-family: "Noto Sans", "Nunito", Arial, sans-serif;
+    font-size: 0.78rem;
+    line-height: 1.55;
+
+    resize: vertical;
+
+    transition: background-color 150ms ease;
+}
+
+.selectorField:focus {
+    background: #15171b;
+}
+
+.selectorField::placeholder {
+    color: rgba(255, 255, 255, 0.28);
+}
+
+.selectorFieldExpanded {
+    min-height: 164px;
+    max-height: 300px;
+}
+
+.selectorFieldCompact {
+    min-height: 76px;
+    max-height: 150px;
+}
+
+.gamePreview {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    padding: 10px 14px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(70, 125, 232, 0.08);
+}
+
+.previewTitle {
+    color: rgba(255, 255, 255, 0.46);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.previewPlayers {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 9px;
+
+    font-size: 0.78rem;
+}
+
+.previewPlayers span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.previewPlayers span:last-child {
+    text-align: right;
+}
+
+.previewPlayers strong {
+    padding: 3px 7px;
+
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.82);
+
+    font-size: 0.7rem;
+}
+
+.fieldFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+
+    padding: 9px 14px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    background: #1d2025;
+}
+
+.readyStatus,
+.emptyStatus {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    min-width: 0;
+
+    color: rgba(255, 255, 255, 0.56);
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.statusDot {
+    flex: 0 0 auto;
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.24);
+}
+
+.readyStatus {
+    color: #9ad6af;
+}
+
+.readyStatus .statusDot {
+    background: #67c58b;
+    box-shadow: 0 0 0 4px rgba(103, 197, 139, 0.1);
+}
+
+.characterCount {
+    flex: 0 0 auto;
+
+    color: rgba(255, 255, 255, 0.31);
+    font-size: 0.68rem;
+}
+
+.feedback {
+    padding: 8px 14px;
+
+    border-top: 1px solid rgba(70, 125, 232, 0.18);
+    background: rgba(70, 125, 232, 0.09);
+    color: #aebfe4;
+
+    font-size: 0.72rem;
+    text-align: center;
 }
 
 .selectorButton {
     width: 100%;
+    min-height: 43px;
 
-    background-color: var(--ui-shade-5);
-    border-radius: 0 0 10px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #343943;
+    color: rgba(255, 255, 255, 0.9);
 
-    overflow-wrap: anywhere;
+    font-size: 0.9rem;
+    font-weight: 750;
+}
+
+.dropHint {
+    margin-top: -3px;
+
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.68rem;
+    text-align: center;
+}
+
+.dropOverlay {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+
+    border: 2px dashed rgba(126, 162, 233, 0.68);
+    border-radius: 14px;
+    background: rgba(24, 28, 35, 0.95);
+    color: white;
+
+    pointer-events: none;
+}
+
+.dropOverlay img {
+    width: 38px;
+    height: 38px;
+}
+
+.dragActive {
+    filter: none;
+}
+
+@media (max-width: 540px) {
+    .sourceTabs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .fieldHeader {
+        flex-direction: column;
+    }
+
+    .fieldActions {
+        width: 100%;
+    }
+
+    .utilityButton {
+        flex: 1;
+        justify-content: center;
+    }
 }

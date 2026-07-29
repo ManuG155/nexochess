@@ -1,49 +1,135 @@
 {
-    "loading": "正在加载……",
-    "back": "返回",
-    "settings": "设置",
-    "error": "错误",
-    "reset": "重置",
-    "enabled": "已启用",
-    "disabled": "已禁用",
-    "navigationBar": {
-        "support": "支持",
-        "signIn": "登入",
-        "tooltips": {
-            "support": "支持我们❤",
-            "help": "帮助中心"
-        }
+  "loading": "正在加载……",
+  "back": "返回",
+  "settings": "设置",
+  "error": "错误",
+  "unknownError": "发生未知错误。",
+  "reset": "重置",
+  "enabled": "已启用",
+  "disabled": "已禁用",
+  "edit": "编辑",
+  "confirm": "确认",
+  "cancel": "取消",
+  "navigationBar": {
+    "support": "支持",
+    "signIn": "登入",
+    "tooltips": {
+      "support": "支持我们❤",
+      "help": "帮助中心"
     },
-    "sidebar": {
-        "analysis": "复盘分析",
-        "archive": "存档",
-        "news": "新闻"
+    "profileMenu": {
+      "profile": "个人资料",
+      "signOut": "退出登录"
     },
-    "footer": {
-        "privacyPolicy": "隐私政策"
+    "openAnalysis": "打开 NexoChess 分析"
+  },
+  "sidebar": {
+    "analysis": "复盘分析",
+    "archive": "存档",
+    "news": "新闻"
+  },
+  "footer": {
+    "privacySettings": "隐私设置",
+    "language": "语言",
+    "languagesDialog": {
+      "eyebrow": "语言",
+      "select": "选择语言",
+      "description": "NexoChess 会在此浏览器中记住你的选择。",
+      "search": "搜索语言",
+      "current": "当前",
+      "noResults": "没有符合搜索条件的语言。",
+      "helpTitle": "帮助改进翻译",
+      "helpDescription": "发现表达不清或翻译错误？请告诉我们语言、页面和建议文本。",
+      "help": "提交翻译建议",
+      "helpSubject": "NexoChess 翻译建议",
+      "helpBody": "你好，NexoChess：\n\n我想对 {{language}} 翻译提出改进建议。\n\n页面或区域：\n当前文本：\n建议文本：\n原因或背景：\n\n谢谢。"
     },
-    "confirmDialog": {
-        "yes": "是",
-        "no": "否"
-    },
-    "gameListing": {
-        "gameResults": {
-            "unopinionated": {
-                "win": "白方获胜",
-                "draw": "和棋",
-                "lose": "黑方获胜",
-                "unknown": "未知"
-            },
-            "opinionated": {
-                "win": "获胜",
-                "draw": "和棋",
-                "lose": "落败",
-                "unknown": "未知的"
-            }
-        }
-    },
-    "bugReportWidget": {
-        "tooltip": "复制控制台日志",
-        "toast": "控制台日志已复制！"
+    "termsOfService": "服务条款",
+    "privacyPolicy": "隐私政策",
+    "openSource": "源代码与许可证",
+    "copyright": "版权所有 © {{year}} NexoChess",
+    "tagline": "串联每一步，读懂整盘棋。",
+    "license": "代码采用 GPL-3.0 许可证",
+    "navigationLabel": "页脚导航",
+    "contact": "联系我们"
+  },
+  "confirmDialog": {
+    "yes": "是",
+    "no": "否"
+  },
+  "shareGame": {
+    "copyFEN": "复制 FEN",
+    "copyFENToast": "FEN 已复制！",
+    "copyPGN": "复制 PGN",
+    "copyPGNToast": "PGN 已复制！"
+  },
+  "gameListing": {
+    "gameResults": {
+      "unopinionated": {
+        "win": "白方获胜",
+        "draw": "和棋",
+        "lose": "黑方获胜",
+        "unknown": "未知"
+      },
+      "opinionated": {
+        "win": "获胜",
+        "draw": "和棋",
+        "lose": "落败",
+        "unknown": "未知的"
+      }
     }
+  },
+  "account": {
+    "fields": {
+      "email": "电子邮箱",
+      "displayName": "显示名称",
+      "username": "用户名"
+    },
+    "errors": {
+      "accountNotFound": "不存在使用此邮箱的账户。",
+      "emailTaken": "已有账户使用此邮箱。",
+      "usernameTaken": "该用户名已被占用。",
+      "invalidEmail": "电子邮箱格式无效。",
+      "unverifiedEmail": "请验证您的电子邮箱。",
+      "displayNameInvalid": "显示名称包含无效字符。",
+      "displayNameTooShort": "显示名称至少需要 3 个字符。",
+      "displayNameTooLong": "显示名称不能超过 24 个字符。",
+      "usernameAlphanumeric": "用户名只能包含字母、数字和下划线。",
+      "usernameTooShort": "用户名至少需要 3 个字符。",
+      "usernameTooLong": "用户名不能超过 20 个字符。",
+      "passwordTooShort": "密码至少需要 8 个字符。",
+      "passwordTooLong": "密码不能超过 128 个字符。",
+      "passwordNoMatch": "两次输入的密码不一致。",
+      "incorrectEmailPassword": "电子邮箱或密码错误。",
+      "verificationCooldown": "请等待 60 秒后再发送新的验证链接。"
+    },
+    "placeholders": {
+      "email": "电子邮箱…",
+      "displayName": "显示名称…",
+      "username": "用户名…",
+      "password": "密码…",
+      "confirmPassword": "确认密码…"
+    },
+    "verificationMessage": "验证链接已发送到您的邮箱。请查看收件箱以继续。"
+  },
+  "bugReportWidget": {
+    "tooltip": "复制控制台日志",
+    "toast": "控制台日志已复制！"
+  },
+  "close": "关闭",
+  "save": "保存",
+  "saving": "正在保存…",
+  "remove": "移除",
+  "add": "添加",
+  "change": "更改",
+  "delete": "删除",
+  "password": "密码",
+  "confirmPassword": "确认密码",
+  "notFound": {
+    "message": "您好像迷路了。",
+    "returnHome": "返回首页"
+  },
+  "chess": {
+    "capturedPieces": "已吃掉的棋子"
+  }
 }

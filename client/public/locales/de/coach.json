@@ -1,0 +1,134 @@
+{
+  "picker": {
+    "title": "Wähle deinen Trainer",
+    "close": "Trainerauswahl schließen",
+    "select": "Trainer auswählen",
+    "choose": "Trainer wählen"
+  },
+  "progress": {
+    "reviewing": "Gib mir einen Moment, während ich deine Partie prüfe:",
+    "aria": "Fortschritt der Partieanalyse: {{progress}} %"
+  },
+  "summary": {
+    "fog": {
+      "picker": [
+        "Pixie hier. Ich behalte jede ungedeckte Figur ruhig im Blick... miau."
+      ],
+      "idle": [
+        "Lade eine Partie, und ich prüfe sie ruhig und sorgfältig. Prrr."
+      ],
+      "analysing": [
+        "Einen Moment, während ich jeden Zug untersuche. Prrr..."
+      ],
+      "ready": [
+        "Analyse abgeschlossen. Sehen wir uns die entscheidenden Momente an. Miau."
+      ]
+    },
+    "foxy": {
+      "picker": [
+        "Foxy hier. Wenn sich in der Stellung ein Trick versteckt, spüre ich ihn auf."
+      ],
+      "idle": [
+        "Lade eine Partie, und ich suche nach den taktischen Wendepunkten."
+      ],
+      "analysing": [
+        "Einen Moment, während ich die listigen Ideen aufspüre..."
+      ],
+      "ready": [
+        "Fertig. Ich habe die schärfsten Momente für dich gefunden."
+      ]
+    },
+    "cybe": {
+      "picker": [
+        "BEEP. Cybe online. Präzision zuerst, Drama später."
+      ],
+      "idle": [
+        "SYSTEM IM LEERLAUF. Partieeingabe erforderlich."
+      ],
+      "analysing": [
+        "ANALYSE LÄUFT. BEEP. Bitte warten..."
+      ],
+      "ready": [
+        "PROZESS ABGESCHLOSSEN. Kritische Abweichungen erkannt."
+      ]
+    },
+    "max_rooks": {
+      "picker": [
+        "Max Rooks hier. Wir bleiben prinzipientreu und praktisch."
+      ],
+      "idle": [
+        "Zeig mir die Partie, und ich erkläre, was wirklich wichtig war."
+      ],
+      "analysing": [
+        "Gib mir einen Moment, um die Partie sorgfältig zu prüfen."
+      ],
+      "ready": [
+        "Die Analyse ist fertig. Gehen wir die wichtigsten Entscheidungen durch."
+      ]
+    }
+  },
+  "dynamic": {
+    "start": "Beginnen wir am Anfang. Wähle unten einen Zug oder nutze die Steuerung.",
+    "reviewing": "Prüfe {{move}}...",
+    "classifications": {
+      "brilliant": "{{move}} ist brillant und findet eine sehr starke Idee.",
+      "critical": "{{move}} ist in einem kritischen Moment ein großartiger Zug.",
+      "best": "{{move}} ist der beste Zug in dieser Stellung.",
+      "excellent": "{{move}} ist ein ausgezeichneter und präziser Zug.",
+      "okay": "{{move}} ist solide und hält die Stellung unter Kontrolle.",
+      "inaccuracy": "{{move}} ist eine Ungenauigkeit und gibt einen Teil des Vorteils ab.",
+      "mistake": "{{move}} ist ein Fehler und macht die Stellung schwieriger.",
+      "miss": "{{move}} verpasst eine wichtige Gelegenheit.",
+      "blunder": "{{move}} ist ein grober Fehler und verändert die Bewertung deutlich.",
+      "theory": "{{move}} folgt der Theorie der {{opening}}.",
+      "theoryUnknown": "{{move}} folgt einer bekannten Eröffnungsvariante.",
+      "forced": "{{move}} ist erzwungen. Die Alternativen sind deutlich schlechter.",
+      "risky": "{{move}} ist riskant und gibt dem Gegner praktische Chancen."
+    },
+    "betterMove": "{{best}} war stärker.",
+    "mateAllowed": "Der Zug erlaubt Matt in {{mate}}.",
+    "evaluationLoss": "Die Bewertung fällt um ungefähr {{loss}} Bauern."
+  },
+  "catchphrases": {
+    "fog": {
+      "prefixes": [
+        "Mrrp...",
+        "Miau.",
+        "Prrr..."
+      ],
+      "suffixes": [
+        "Prrr."
+      ]
+    },
+    "foxy": {
+      "prefixes": [
+        "Heh...",
+        "Yip.",
+        "Schnüffel, schnüffel..."
+      ],
+      "suffixes": [
+        "Gut gejagt."
+      ]
+    },
+    "cybe": {
+      "prefixes": [
+        "BEEP.",
+        "SEQUENZ GEPRÜFT.",
+        "MUSTER ERFASST."
+      ],
+      "suffixes": [
+        "Analyse gespeichert."
+      ]
+    },
+    "max_rooks": {
+      "prefixes": [
+        "Hm.",
+        "In der Tat.",
+        "Durchaus."
+      ],
+      "suffixes": [
+        "Merke dir diese Idee."
+      ]
+    }
+  }
+}

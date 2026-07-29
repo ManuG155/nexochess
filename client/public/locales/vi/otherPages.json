@@ -1,11 +1,65 @@
 {
+    "archive": {
+        "title": "Kho ván đấu",
+        "selected": "Đã chọn {{amount}}",
+        "selectAll": "Chọn tất cả",
+        "deleteSelected": "Xóa mục đã chọn",
+        "deleteConfirm": "Bạn có chắc muốn xóa {{amount}} ván không? Không thể hoàn tác thao tác này.",
+        "error": "Đã xảy ra lỗi không xác định khi tải kho ván đấu.",
+        "description": "Mỗi lần phân tích hoàn tất đều được lưu tự động. Ván của khách ở lại thiết bị này; ván của người đã đăng nhập cũng có trong tài khoản.",
+        "emptyTitle": "Chưa có ván nào được phân tích",
+        "emptyDescription": "Hãy phân tích một ván và nó sẽ tự động xuất hiện ở đây.",
+        "analyseGame": "Phân tích ván đấu",
+        "card": {
+            "white": "Trắng",
+            "black": "Đen",
+            "select": "Chọn ván đã lưu",
+            "analysedGame": "Ván đã phân tích",
+            "savedLocally": "Đã lưu trên thiết bị này",
+            "players": "Người chơi",
+            "elo": "Elo",
+            "accuracy": "Độ chính xác",
+            "unknownOpening": "Không xác định được khai cuộc",
+            "moves_one": "{{count}} nước",
+            "moves_other": "{{count}} nước",
+            "finalPosition": "Vị trí cuối",
+            "movesLabel": "nước"
+        }
+    },
     "news": {
         "title": "Tin tức",
-        "titleDescription": "Nhận bản cập nhật mới nhất từ nền tảng WintrChess",
+        "titleDescription": "Nhận bản cập nhật mới nhất từ nền tảng NexoChess",
         "error": "Có lỗi khi tải tin tức.",
         "article": {
             "unfound": "Chúng tôi không tìm được bài viết này.",
             "error": "Có lỗi khi tải bài viết này."
         }
+    },
+    "signIn": {
+        "loginTitle": "Đăng nhập vào tài khoản",
+        "loginButtonGoogle": "Đăng nhập bằng Google",
+        "loginButtonEmail": "Đăng nhập",
+        "loginError": "Có sự cố khi đăng nhập tài khoản.",
+        "registerTitle": "Tạo tài khoản",
+        "registerButtonGoogle": "Đăng ký bằng Google",
+        "registerButtonEmail": "Đăng ký",
+        "registerError": "Có sự cố khi tạo tài khoản.",
+        "alternative": "hoặc",
+        "loginPageButton": "Tôi đã có tài khoản.",
+        "registerPageButton": "Bạn mới đến? Tạo tài khoản!",
+        "legalMessage": "Khi tiếp tục, bạn đồng ý với <terms>Điều khoản dịch vụ</terms> và <privacy>Chính sách quyền riêng tư</privacy> của chúng tôi.",
+        "loginDescription": "Tiếp tục phân tích các ván đấu và truy cập kho lưu trữ đám mây.",
+        "registerDescription": "Tạo tài khoản để sử dụng kho lưu trữ trên nhiều thiết bị.",
+        "loginPending": "Đang đăng nhập…",
+        "registerPending": "Đang tạo tài khoản…",
+        "newUser": "Mới dùng NexoChess?",
+        "createAccount": "Tạo tài khoản",
+        "existingUser": "Đã có tài khoản?"
+    },
+    "resetPassword": {
+        "message": "Nhập và xác nhận mật khẩu mới cho tài khoản."
+    },
+    "profile": {
+        "memberSince": "Thành viên từ {{date}}"
     }
 }

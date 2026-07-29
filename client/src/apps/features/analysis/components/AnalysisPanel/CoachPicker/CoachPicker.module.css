@@ -1,0 +1,275 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+
+    background: rgba(8, 8, 8, 0.78);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.dialog {
+    box-sizing: border-box;
+
+    width: min(560px, 100%);
+    max-height: min(88vh, 760px);
+
+    padding: 20px;
+
+    border-radius: 16px;
+
+    background: #2B2A27;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+
+    overflow-y: auto;
+}
+
+.dialog::-webkit-scrollbar {
+    width: 8px;
+}
+
+.dialog::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    margin-bottom: 18px;
+}
+
+.title {
+    margin: 0;
+
+    color: #FFFFFF;
+
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+
+.closeButton {
+    width: 34px;
+    height: 34px;
+
+    border: 0;
+    border-radius: 10px;
+
+    background: transparent;
+    color: rgba(255, 255, 255, 0.82);
+
+    font-size: 2rem;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.lead {
+    display: grid;
+    grid-template-columns: 84px minmax(0, 1fr);
+    gap: 8px;
+    align-items: center;
+
+    margin-bottom: 18px;
+}
+
+.leadImage {
+    justify-self: center;
+
+    width: 76px;
+    height: 76px;
+
+    object-fit: contain;
+    object-position: center bottom;
+}
+
+.leadBubble {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    box-sizing: border-box;
+
+    min-height: 76px;
+
+    padding: 16px 18px;
+
+    border-radius: 18px;
+
+    background: #FFFFFF;
+    color: #302E2B;
+
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+/*
+ * Triángulo real unido al borde del bocadillo.
+ * Al solaparse un píxel se evita la hendidura oscura
+ * que producía el antiguo cuadrado rotado.
+ */
+.leadBubble::before {
+    content: "";
+
+    position: absolute;
+    left: -17px;
+    top: 50%;
+
+    width: 18px;
+    height: 28px;
+
+    background: #FFFFFF;
+
+    clip-path: polygon(100% 0, 100% 100%, 0 50%);
+    transform: translateY(-50%);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+
+    padding: 10px 10px 14px;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+
+    background: #34322F;
+
+    cursor: pointer;
+}
+
+.cardActive {
+    border-color: #9BCB4F;
+    box-shadow: 0 0 0 1px #9BCB4F inset;
+}
+
+.cardImageWrap {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 142px;
+
+    border-radius: 12px;
+
+    background: rgba(0, 0, 0, 0.18);
+}
+
+.cardImage {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+    object-position: center bottom;
+}
+
+.check {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 24px;
+    height: 24px;
+
+    border-radius: 999px;
+
+    background: #9BCB4F;
+    color: #1E1E1E;
+
+    font-size: 0.95rem;
+    font-weight: 800;
+}
+
+.cardName {
+    color: #FFFFFF;
+
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.confirmButton {
+    width: 100%;
+
+    margin-top: 18px;
+    padding: 14px 18px;
+
+    border: 0;
+    border-radius: 11px;
+
+    background: #81B64C;
+    color: #FFFFFF;
+
+    font-family: inherit;
+    font-size: 1.08rem;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition: background-color 150ms ease, transform 150ms ease;
+}
+
+.confirmButton:hover {
+    background: #75A743;
+}
+
+.confirmButton:active {
+    transform: translateY(1px);
+}
+
+@media (max-width: 640px) {
+    .overlay {
+        padding: 12px;
+    }
+
+    .dialog {
+        padding: 16px;
+    }
+
+    .lead {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .leadImage {
+        justify-self: start;
+    }
+
+    .leadBubble::before {
+        display: none;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cardImageWrap {
+        height: 128px;
+    }
+}

@@ -13,18 +13,66 @@ export function isGameFromChessCom(game: Game) {
     return headers["Site"] == "Chess.com";
 }
 
+export interface ChessComProfileDetails {
+    image: string;
+    country?: string;
+}
+
+function normaliseCountry(country?: unknown) {
+    if (typeof country != "string") {
+        return undefined;
+    }
+
+    return country
+        .trim()
+        .split("/")
+        .filter(Boolean)
+        .at(-1)
+        ?.toUpperCase();
+}
+
+export async function getChessComProfileDetails(
+    username: string
+): Promise<ChessComProfileDetails> {
+    if (!username) {
+        return {
+            image: iconDefaultProfileImage
+        };
+    }
+
+    try {
+        const profileResponse = await fetch(
+            `https://api.chess.com/pub/player/${username}`
+        );
+
+        if (!profileResponse.ok) {
+            return {
+                image: iconDefaultProfileImage
+            };
+        }
+
+        const profile = await profileResponse.json();
+
+        return {
+            image: profile.avatar || iconDefaultProfileImage,
+            country: normaliseCountry(profile.country)
+        };
+
+    } catch {
+        return {
+            image: iconDefaultProfileImage
+        };
+    }
+}
+
 export async function getChessComProfileImage(
     username: string
 ): Promise<string> {
-    if (!username) return iconDefaultProfileImage;
-
-    const profileResponse = await fetch(
-        `https://api.chess.com/pub/player/${username}`
+    const profile = await getChessComProfileDetails(
+        username
     );
 
-    const profile = await profileResponse.json();
-
-    return profile.avatar || iconDefaultProfileImage;
+    return profile.image;
 }
 
 export async function getChessComProfileImages(game: Game) {
@@ -33,8 +81,13 @@ export async function getChessComProfileImages(game: Game) {
 
     const headers = board.getHeaders();
 
+    const [ white, black ] = await Promise.all([
+        getChessComProfileDetails(headers["White"]),
+        getChessComProfileDetails(headers["Black"])
+    ]);
+
     return {
-        white: await getChessComProfileImage(headers["White"]),
-        black: await getChessComProfileImage(headers["Black"])
+        white,
+        black
     };
 }

@@ -14,21 +14,6 @@ import Separator from "@/components/common/Separator";
 import * as categoryStyles from "../Category.module.css";
 import * as styles from "./Analysis.module.css";
 
-const engineVersionOptions = [
-    {
-        label: "Stockfish 17 (68 MB)",
-        value: EngineVersion.STOCKFISH_17
-    },
-    {
-        label: "Stockfish 17 Lite",
-        value: EngineVersion.STOCKFISH_17_LITE
-    },
-    {
-        label: "Stockfish 17 (Compatibility)",
-        value: EngineVersion.STOCKFISH_17_ASM
-    }
-];
-
 const arrowColours = [
     { name: "green", value: "#97bf5b" },
     { name: "orange", value: "#f1b24a" },
@@ -46,6 +31,24 @@ function Analysis() {
 
     const { settings, setSettings } = useSettingsStore();
 
+    const engineVersionOptions = useMemo(() => [
+        {
+            label: t("settings.engine.options.full", { ns: "analysis" }),
+            value: EngineVersion.STOCKFISH_17
+        },
+        {
+            label: t("settings.engine.options.lite", { ns: "analysis" }),
+            value: EngineVersion.STOCKFISH_17_LITE
+        },
+        {
+            label: t(
+                "settings.engine.options.compatibility",
+                { ns: "analysis" }
+            ),
+            value: EngineVersion.STOCKFISH_17_ASM
+        }
+    ], [i18n.language, t]);
+
     const engineArrowOptions = useMemo(() => [
         {
             label: t("disabled", { ns: "common" }),
@@ -58,7 +61,7 @@ function Analysis() {
             ),
             value: EngineArrowType.TOP_CONTINUATION
         }
-    ], [i18n.language]);
+    ], [i18n.language, t]);
 
     const arrowStyle = settings.analysis.arrowStyle;
 
@@ -281,7 +284,7 @@ function Analysis() {
                             <button
                                 key={`suggestion-${colour.name}`}
                                 type="button"
-                                aria-label={colour.name}
+                                aria-label={t(`analysis.colours.${colour.name}`)}
                                 className={`${styles.swatch} ${
                                     arrowStyle.suggestionColour
                                         == colour.value
@@ -313,7 +316,7 @@ function Analysis() {
                             <button
                                 key={`manual-${colour.name}`}
                                 type="button"
-                                aria-label={colour.name}
+                                aria-label={t(`analysis.colours.${colour.name}`)}
                                 className={`${styles.swatch} ${
                                     arrowStyle.manualColour
                                         == colour.value
@@ -365,6 +368,20 @@ function Analysis() {
                             draft.analysis.simpleNotation =
                                 checked;
 
+                            return draft;
+                        })}
+                    />
+                </div>
+
+                <div className={styles.valueSetting}>
+                    <span>{t("analysis.showTimer")}</span>
+
+                    <SwitchSetting
+                        defaultChecked={
+                            settings.analysis.showTimer
+                        }
+                        onChange={checked => setSettings(draft => {
+                            draft.analysis.showTimer = checked;
                             return draft;
                         })}
                     />

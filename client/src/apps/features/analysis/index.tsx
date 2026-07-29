@@ -1,5 +1,7 @@
-import React, { lazy, useEffect } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import ReactDOM from "react-dom/client";
+
+import I18nGate from "@/components/layout/I18nGate";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { useAltcha } from "@/apps/features/analysis/hooks/useAltcha";
@@ -31,10 +33,21 @@ function App() {
             footerClassName={styles.footer}
         >
             <Routes>
-                <Route path="/analysis" element={<Analysis/>} />
+                <Route
+                    path="/analysis"
+                    element={
+                        <Suspense fallback={null}>
+                            <Analysis/>
+                        </Suspense>
+                    }
+                />
             </Routes>
         </PageWrapper>
     </BrowserRouter>;
 }
 
-root.render(<App/>);
+root.render(
+    <I18nGate>
+        <App/>
+    </I18nGate>
+);

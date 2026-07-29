@@ -1,4 +1,31 @@
 {
+    "archive": {
+        "title": "खेळ संग्रह",
+        "selected": "{{amount}} निवडले",
+        "selectAll": "सर्व निवडा",
+        "deleteSelected": "निवडलेले हटवा",
+        "deleteConfirm": "तुम्हाला {{amount}} खेळ हटवायचे आहेत का? ही कृती पूर्ववत करता येणार नाही.",
+        "error": "खेळ संग्रह लोड करताना अज्ञात त्रुटी आली.",
+        "description": "प्रत्येक पूर्ण विश्लेषण आपोआप जतन होते. अतिथी खेळ या उपकरणावर राहतात; साइन इन केलेले खेळ खात्यातही उपलब्ध असतात.",
+        "emptyTitle": "अजून विश्लेषित खेळ नाहीत",
+        "emptyDescription": "एखाद्या खेळाचे विश्लेषण करा आणि तो आपोआप येथे दिसेल.",
+        "analyseGame": "खेळाचे विश्लेषण करा",
+        "card": {
+            "white": "पांढरा",
+            "black": "काळा",
+            "select": "संग्रहित खेळ निवडा",
+            "analysedGame": "विश्लेषित खेळ",
+            "savedLocally": "या उपकरणावर जतन केले",
+            "players": "खेळाडू",
+            "elo": "Elo",
+            "accuracy": "अचूकता",
+            "unknownOpening": "ओपनिंग ओळखली नाही",
+            "moves_one": "{{count}} चाल",
+            "moves_other": "{{count}} चाली",
+            "finalPosition": "अंतिम स्थिती",
+            "movesLabel": "चाली"
+        }
+    },
     "news": {
         "title": "वृत्तपत्र",
         "titleDescription": "विंटरचेस प्लॅटफॉर्मवर नवीनतम अपडेट्स मिळवा",
@@ -7,5 +34,32 @@
             "unfound": "आम्हाला हा लेख सापडला नाही.",
             "error": "या लेखाला लोड करताना एक चूक आली."
         }
+    },
+    "signIn": {
+        "loginTitle": "तुमच्या खात्यात साइन इन करा",
+        "loginButtonGoogle": "Google ने साइन इन करा",
+        "loginButtonEmail": "साइन इन",
+        "loginError": "खात्यात साइन इन करताना अडचण आली.",
+        "registerTitle": "खाते तयार करा",
+        "registerButtonGoogle": "Google ने नोंदणी करा",
+        "registerButtonEmail": "नोंदणी करा",
+        "registerError": "खाते तयार करताना अडचण आली.",
+        "alternative": "किंवा",
+        "loginPageButton": "माझ्याकडे आधीच खाते आहे.",
+        "registerPageButton": "नवीन आहात? खाते तयार करा!",
+        "legalMessage": "पुढे गेल्यास तुम्ही आमच्या <terms>सेवेच्या अटी</terms> आणि <privacy>गोपनीयता धोरणाशी</privacy> सहमत होता.",
+        "loginDescription": "खेळांचे विश्लेषण सुरू ठेवा आणि क्लाउड संग्रह वापरा.",
+        "registerDescription": "तुमचा संग्रह अनेक उपकरणांवर उपलब्ध ठेवण्यासाठी खाते तयार करा.",
+        "loginPending": "साइन इन होत आहे…",
+        "registerPending": "खाते तयार होत आहे…",
+        "newUser": "NexoChess वर नवीन आहात?",
+        "createAccount": "खाते तयार करा",
+        "existingUser": "आधीच खाते आहे?"
+    },
+    "resetPassword": {
+        "message": "तुमच्या खात्यासाठी नवीन पासवर्ड टाका आणि पुष्टी करा."
+    },
+    "profile": {
+        "memberSince": "{{date}} पासून सदस्य"
     }
 }

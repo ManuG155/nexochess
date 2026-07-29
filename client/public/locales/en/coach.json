@@ -1,0 +1,134 @@
+{
+  "picker": {
+    "title": "Choose your coach",
+    "close": "Close coach picker",
+    "select": "Select coach",
+    "choose": "Choose coach"
+  },
+  "progress": {
+    "reviewing": "Give me a moment while I review your game:",
+    "aria": "Game review progress: {{progress}}%"
+  },
+  "summary": {
+    "fog": {
+      "picker": [
+        "Pixie here. I will calmly watch every loose piece... meow."
+      ],
+      "idle": [
+        "Load a game and I will take a calm, careful look. Prrr."
+      ],
+      "analysing": [
+        "Give me a moment while I inspect every move. Prrr..."
+      ],
+      "ready": [
+        "Review complete. Let us look at the moments that mattered. Meow."
+      ]
+    },
+    "foxy": {
+      "picker": [
+        "Foxy here. If the position hides a trick, I will sniff it out."
+      ],
+      "idle": [
+        "Load a game and I will hunt for the tactical turns."
+      ],
+      "analysing": [
+        "One moment while I sniff out the sneaky moments..."
+      ],
+      "ready": [
+        "Done. I have the sharp moments lined up for you."
+      ]
+    },
+    "cybe": {
+      "picker": [
+        "BEEP. Cybe online. Precision first, drama second."
+      ],
+      "idle": [
+        "SYSTEM IDLE. Game input requested."
+      ],
+      "analysing": [
+        "ANALYSIS RUNNING. BEEP. Please stand by..."
+      ],
+      "ready": [
+        "PROCESS COMPLETE. Critical deviations identified."
+      ]
+    },
+    "max_rooks": {
+      "picker": [
+        "Max Rooks here. We will keep it principled and practical."
+      ],
+      "idle": [
+        "Show me the game and I will explain what mattered most."
+      ],
+      "analysing": [
+        "Allow me a moment while I examine the game carefully."
+      ],
+      "ready": [
+        "The review is ready. Let us go through the key decisions."
+      ]
+    }
+  },
+  "dynamic": {
+    "start": "Let us start from the beginning. Select a move below or use the controls.",
+    "reviewing": "Reviewing {{move}}...",
+    "classifications": {
+      "brilliant": "{{move}} is brilliant. It finds a very strong idea.",
+      "critical": "{{move}} is a great move at a critical moment.",
+      "best": "{{move}} is the best move in the position.",
+      "excellent": "{{move}} is an excellent and precise move.",
+      "okay": "{{move}} is a solid move that keeps the position under control.",
+      "inaccuracy": "{{move}} is an inaccuracy and gives away part of the advantage.",
+      "mistake": "{{move}} is a mistake and makes the position harder to play.",
+      "miss": "{{move}} misses an important opportunity.",
+      "blunder": "{{move}} is a blunder and changes the evaluation sharply.",
+      "theory": "{{move}} follows the {{opening}}.",
+      "theoryUnknown": "{{move}} follows established opening theory.",
+      "forced": "{{move}} is forced. The alternatives are clearly worse.",
+      "risky": "{{move}} is risky and gives the opponent practical chances."
+    },
+    "betterMove": "{{best}} was stronger.",
+    "mateAllowed": "It allows mate in {{mate}}.",
+    "evaluationLoss": "The evaluation falls by about {{loss}} pawns."
+  },
+  "catchphrases": {
+    "fog": {
+      "prefixes": [
+        "Mrrp...",
+        "Meow.",
+        "Prrr..."
+      ],
+      "suffixes": [
+        "Prrr."
+      ]
+    },
+    "foxy": {
+      "prefixes": [
+        "Heh...",
+        "Yip.",
+        "Sniff, sniff..."
+      ],
+      "suffixes": [
+        "Nicely hunted."
+      ]
+    },
+    "cybe": {
+      "prefixes": [
+        "BEEP.",
+        "SEQUENCE CHECKED.",
+        "PATTERN LOCKED."
+      ],
+      "suffixes": [
+        "Analysis stored."
+      ]
+    },
+    "max_rooks": {
+      "prefixes": [
+        "Hm.",
+        "Indeed.",
+        "Quite."
+      ],
+      "suffixes": [
+        "Remember the idea."
+      ]
+    }
+  }
+}

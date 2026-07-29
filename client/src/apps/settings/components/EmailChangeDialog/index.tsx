@@ -11,7 +11,6 @@ import authClient from "@/lib/auth";
 
 import {
     VerifyStatus,
-    verifyButtonStrings,
     editProfileStrings,
     verifyButtonColours
 } from "@/apps/settings/constants/utils";
@@ -21,7 +20,7 @@ import * as settingsStyles from "../../index.module.css";
 import * as styles from "./EmailChangeDialog.module.css";
 
 function EmailChangeDialog({ onClose }: EmailChangeDialogProps) {
-    const { t } = useTranslation(["settings", "common"]);
+    const { t, i18n } = useTranslation(["settings", "common"]);
 
     const [ email, setEmail ] = useState("");
     
@@ -29,38 +28,88 @@ function EmailChangeDialog({ onClose }: EmailChangeDialogProps) {
     const [ verifyError, setVerifyError ] = useState<string>();
 
     const buttonMessages = useMemo(() => ({
-        unsent: t(`${verifyButtonStrings}.unsent`),
-        sending: t(`${verifyButtonStrings}.sending`),
-        sent: t(`${verifyButtonStrings}.sent`)
-    }), []);
+        unsent: t(`${editProfileStrings}.email.changeButton.unsent`),
+        sending: t(`${editProfileStrings}.email.changeButton.sending`),
+        sent: t(`${editProfileStrings}.email.changeButton.sent`)
+    }), [i18n.language]);
+
+    function getChangeEmailError(error: {
+        code?: string;
+        status?: number;
+    }) {
+        const code = error.code?.toUpperCase();
+
+        if (code == "EMAIL_IS_THE_SAME") {
+            return t(`${editProfileStrings}.email.same`);
+        }
+
+        if ([
+            "USER_ALREADY_EXISTS",
+            "EMAIL_ALREADY_EXISTS",
+            "EMAIL_ALREADY_IN_USE",
+            "EMAIL_TAKEN"
+        ].includes(code || "")) {
+            return t(`${editProfileStrings}.email.taken`);
+        }
+
+        if ([
+            "EMAIL_NOT_VERIFIED",
+            "EMAIL_VERIFICATION_REQUIRED"
+        ].includes(code || "")) {
+            return t(`${editProfileStrings}.email.currentNotVerified`);
+        }
+
+        if (
+            error.status == 401
+            || ["UNAUTHORIZED", "INVALID_SESSION", "SESSION_EXPIRED"]
+                .includes(code || "")
+        ) {
+            return t(`${editProfileStrings}.email.sessionExpired`);
+        }
+
+        if (error.status == 429 || code == "TOO_MANY_REQUESTS") {
+            return t(`${editProfileStrings}.email.cooldown`);
+        }
+
+        return t(`${editProfileStrings}.email.sendFailed`);
+    }
 
     async function changeEmail() {
-        if (verifyStatus == "sent") return;
+        if (verifyStatus != "unsent") return;
 
-        if (!schemas.email.safeParse(email).success)
-            return setVerifyError(t(accountErrors.INVALID_EMAIL.message));
+        const normalisedEmail = email.trim().toLowerCase();
 
-        setVerifyStatus("sending");
-
-        const response = await authClient.changeEmail({
-            callbackURL: "/settings/account",
-            newEmail: email
-        });
-
-        if (response.error) {
-            setVerifyStatus("unsent");
-            
-            if (response.error.code == "EMAIL_IS_THE_SAME") {
-                setVerifyError(t(`${editProfileStrings}.email.same`));
-            } else {
-                setVerifyError(t("unknownError", { ns: "common" }));
-            }
-
+        if (!schemas.email.safeParse(normalisedEmail).success) {
+            setVerifyError(t(accountErrors.INVALID_EMAIL.message));
             return;
         }
 
         setVerifyError(undefined);
-        setVerifyStatus("sent");
+        setVerifyStatus("sending");
+
+        try {
+            const response = await authClient.changeEmail({
+                callbackURL: "/settings/user",
+                newEmail: normalisedEmail
+            }, {
+                headers: {
+                    "x-nexochess-language": i18n.resolvedLanguage
+                        || i18n.language
+                }
+            });
+
+            if (response.error) {
+                setVerifyStatus("unsent");
+                setVerifyError(getChangeEmailError(response.error));
+                return;
+            }
+
+            setEmail(normalisedEmail);
+            setVerifyStatus("sent");
+        } catch {
+            setVerifyStatus("unsent");
+            setVerifyError(t(`${editProfileStrings}.email.sendFailed`));
+        }
     }
 
     return <Dialog className={styles.wrapper} onClose={onClose}>

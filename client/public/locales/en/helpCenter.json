@@ -1,15 +1,109 @@
 {
-    "title": "Help Center",
-    "contact": {
-        "title": "Contact Us",
-        "message": "If you need to contact us, you can send an email to:"
-    },
+  "pageTitle": "NexoChess — Help Center",
+  "hero": {
+    "eyebrow": "NexoChess support",
+    "title": "How can we help?",
+    "subtitle": "Find clear answers, learn the fastest way to import a game and get back to analysing in a few clicks.",
+    "languagesBadge": "11 languages"
+  },
+  "actions": {
+    "openAnalysis": "Open the analyser",
+    "contact": "Contact support"
+  },
+  "topics": {
+    "eyebrow": "Quick access",
+    "title": "Popular topics",
+    "subtitle": "Jump straight to the part of NexoChess you need.",
     "analysis": {
-        "title": "Analysing a game",
-        "part1": "You can analyse your Chess games on the",
-        "part2": "WintrChess Analysis page",
-        "part3": ". Stockfish evaluations, accuracy percentages and move classifications - so that you can find your brilliancies and blunders - are provided free of charge. You will find an analysis board in the centre of the page, which is where you can view the moves of the game you have selected. To select a game, you need to use the game selector we have provided on the right-hand sidebar. It looks like this:",
-        "part4": "You can enter any game using its PGN. If you would like, you can also select a game from your Chess.com or Lichess account if you provide your username. You will need to click the \"Search Games\" button to browse the games on your account, and can select any of them just by clicking them. Lastly, you can enter a single FEN position. In any case, you will be able to add moves manually after you import a game, which will all be evaluated and classified on the fly.",
-        "part5": "After you've selected a game, just click the \"Analyse\" button to begin the analysis. You can also just move a piece on the board if you'd like to begin from the starting position."
+      "title": "Analyse a game",
+      "description": "Import a game and start a full Stockfish review.",
+      "action": "Start now"
+    },
+    "import": {
+      "title": "Import methods",
+      "description": "Learn when to use PGN, FEN, Chess.com or Lichess.",
+      "action": "See options"
+    },
+    "archive": {
+      "title": "Your Archive",
+      "description": "Find locally saved and synced analyses.",
+      "action": "Open Archive"
+    },
+    "settings": {
+      "title": "Settings and language",
+      "description": "Change appearance, coach, engine and language.",
+      "action": "Open settings"
     }
+  },
+  "steps": {
+    "eyebrow": "Getting started",
+    "title": "From game to review in three steps",
+    "subtitle": "No complicated setup and no account required for the basic flow.",
+    "choose": {
+      "title": "Choose a source",
+      "description": "Select PGN, FEN, Chess.com or Lichess in the import panel."
+    },
+    "import": {
+      "title": "Add your game",
+      "description": "Paste the notation, upload a file or enter a public username."
+    },
+    "review": {
+      "title": "Analyse and review",
+      "description": "Start the analysis, read the summary and inspect every move with your coach."
+    }
+  },
+  "imports": {
+    "eyebrow": "Import guide",
+    "title": "Four ways to begin",
+    "subtitle": "Use the option that best matches where your game is stored.",
+    "pgn": {
+      "title": "Paste or upload a game",
+      "description": "Use a full PGN copied from any chess platform or upload a .pgn file."
+    },
+    "chessCom": {
+      "title": "Browse Chess.com games",
+      "description": "Enter a public username to select a recent game or load the latest one."
+    },
+    "lichess": {
+      "title": "Browse Lichess games",
+      "description": "Enter a public username to browse recent public games."
+    },
+    "fen": {
+      "title": "Analyse a position",
+      "description": "Enter a FEN when you only need to study one specific position."
+    }
+  },
+  "faq": {
+    "eyebrow": "Common questions",
+    "title": "Things worth knowing",
+    "subtitle": "The essentials about accounts, storage, the engine and privacy.",
+    "account": {
+      "question": "Do I need an account to analyse games?",
+      "answer": "No. You can analyse games and use the local Archive without creating an account. An account is only needed for optional synchronisation across devices."
+    },
+    "archive": {
+      "question": "Where are my analyses saved?",
+      "answer": "Guest analyses are stored in the current browser. When you sign in, compatible data can also be associated with your account for cross-device access."
+    },
+    "engine": {
+      "question": "Which chess engine does NexoChess use?",
+      "answer": "NexoChess uses Stockfish 17 to evaluate positions and produce the engine lines used by the review."
+    },
+    "languages": {
+      "question": "How is the language selected?",
+      "answer": "On the first visit, NexoChess follows your browser language when it is supported. You can change it manually at any time in Appearance settings."
+    },
+    "privacy": {
+      "question": "Is an account required to keep my local games?",
+      "answer": "No. The local Archive works without an account. Signing in is optional and is intended for synchronisation and account features."
+    }
+  },
+  "contact": {
+    "eyebrow": "Still stuck?",
+    "title": "Talk to NexoChess",
+    "message": "Send us the problem, the browser you use and what you were doing when it happened.",
+    "copy": "Copy email",
+    "copied": "Email copied"
+  },
+  "navigationTitle": "Help Center"
 }

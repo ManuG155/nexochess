@@ -1,11 +1,65 @@
 {
+    "archive": {
+        "title": "Archivo de partidas",
+        "selected": "{{amount}} seleccionadas",
+        "selectAll": "Seleccionar todas",
+        "deleteSelected": "Eliminar seleccionadas",
+        "deleteConfirm": "¿Seguro que quieres eliminar {{amount}} partida(s)? Esta acción es irreversible.",
+        "error": "Ha ocurrido un error al cargar el archivo de partidas.",
+        "description": "Cada análisis completado se guarda automáticamente. Las partidas de invitado permanecen en este dispositivo; las de usuarios con sesión también están disponibles desde su cuenta.",
+        "emptyTitle": "Todavía no hay partidas analizadas",
+        "emptyDescription": "Analiza una partida y aparecerá aquí automáticamente.",
+        "analyseGame": "Analizar una partida",
+        "card": {
+            "white": "Blancas",
+            "black": "Negras",
+            "select": "Seleccionar partida archivada",
+            "analysedGame": "Partida analizada",
+            "savedLocally": "Guardada en este dispositivo",
+            "players": "Jugadores",
+            "elo": "Elo",
+            "accuracy": "Precisión",
+            "unknownOpening": "Apertura no identificada",
+            "moves_one": "{{count}} jugada",
+            "moves_other": "{{count}} jugadas",
+            "finalPosition": "Posición final",
+            "movesLabel": "jugadas"
+        }
+    },
     "news": {
         "title": "Diario",
-        "titleDescription": "Obtén las últimas actualizaciones de la plataforma WintrChess",
-        "error": "Se produjo un error al cargar el periódico.",
+        "titleDescription": "Consulta las últimas novedades de NexoChess",
+        "error": "Ha ocurrido un error al cargar las noticias.",
         "article": {
-            "unfound": "No hemos podido encontrar este artículo.",
-            "error": "Se ha producido un error al cargar este artículo."
+            "unfound": "No hemos encontrado este artículo.",
+            "error": "Ha ocurrido un error al cargar este artículo."
         }
+    },
+    "signIn": {
+        "loginTitle": "Inicia sesión en tu cuenta",
+        "loginDescription": "Continúa analizando tus partidas y accede a tu archivo en la nube.",
+        "loginButtonGoogle": "Iniciar sesión con Google",
+        "loginButtonEmail": "Iniciar sesión",
+        "loginPending": "Iniciando sesión…",
+        "loginError": "Ha ocurrido un problema al iniciar sesión.",
+        "registerTitle": "Crea una cuenta",
+        "registerDescription": "Crea tu cuenta para mantener el archivo disponible entre dispositivos.",
+        "registerButtonGoogle": "Registrarse con Google",
+        "registerButtonEmail": "Registrarse",
+        "registerPending": "Creando cuenta…",
+        "registerError": "Ha ocurrido un problema al crear la cuenta.",
+        "alternative": "o",
+        "loginPageButton": "Ya tengo una cuenta.",
+        "registerPageButton": "¿Eres nuevo? Crea una cuenta.",
+        "newUser": "¿Primera vez en NexoChess?",
+        "createAccount": "Crear una cuenta",
+        "existingUser": "¿Ya tienes una cuenta?",
+        "legalMessage": "Al continuar, aceptas nuestros <terms>Términos del servicio</terms> y nuestra <privacy>Política de privacidad</privacy>."
+    },
+    "resetPassword": {
+        "message": "Introduce y confirma una nueva contraseña para tu cuenta."
+    },
+    "profile": {
+        "memberSince": "Miembro desde {{date}}"
     }
 }

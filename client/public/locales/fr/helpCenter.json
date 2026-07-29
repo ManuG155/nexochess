@@ -1,15 +1,109 @@
 {
-    "title": "Centre d'Aide",
-    "contact": {
-        "title": "Contactez-nous",
-        "message": "Si vous voulez nous contacter, vous pouvez envoyer un mail à l'adresse :"
-    },
+  "pageTitle": "NexoChess — Centre d’aide",
+  "hero": {
+    "eyebrow": "Assistance NexoChess",
+    "title": "Comment pouvons-nous vous aider ?",
+    "subtitle": "Trouvez des réponses claires, apprenez à importer rapidement une partie et reprenez votre analyse en quelques clics.",
+    "languagesBadge": "11 langues"
+  },
+  "actions": {
+    "openAnalysis": "Ouvrir l'analyseur",
+    "contact": "Contacter l'assistance"
+  },
+  "topics": {
+    "eyebrow": "Accès rapide",
+    "title": "Sujets populaires",
+    "subtitle": "Accédez directement à la partie de NexoChess dont vous avez besoin.",
     "analysis": {
-        "title": "Analyser une partie",
-        "part1": "Vous pouvez analyser vos parties d'échecs sur la",
-        "part2": "Page d'analyse WintrChess",
-        "part3": "Évaluations de Stockfisch, pourcentage de précision et classification des coups - pour que vous puissiez trouver vos brillants coups et vos gaffes - sont donnés gratuitement. Vous trouverez un plateau d'analyse au milieu de la page, où vous pouvez voir les coups de la partie que vous avez sélectionné. Pour sélectionner une partie, vous devez utiliser le sélectionneur de partie situé à droite. Il ressemble à cela :",
-        "part4": "Vous pouvez entrer la partie de votre choix en utilisant son PGN. Si vous voulez, vous pouvez aussi sélectionner une partie depuis votre compte Chess.com ou Lichess.org en indiquant votre nom d'utilisateur. Vous devrez ensuite cliquer sur le bouton \"Chercher les parties\" pour parcourir les parties de votre compte, puis sélectionner l'une d'entre-elles en cliquant dessus. Enfin, vous pouvez entrer une position spécifique en utilisant son FEN. Dans tous les cas, vous pouvez ajouter des coups manuellement après avoir importé la partie, ce qui sera évalué et classifié à la volée.",
-        "part5": "Après avoir sélectionné une partie, cliquez sur le bouton \"Analyse\" pour commencer l'analyse. Vous pouvez aussi déplacer une pièce sur le plateau si vous voulez commencer à partir de la position de départ."
+      "title": "Analyser une partie",
+      "description": "Importez une partie et lancez une analyse complète avec Stockfish.",
+      "action": "Commencer"
+    },
+    "import": {
+      "title": "Méthodes d'importation",
+      "description": "Découvrez quand utiliser PGN, FEN, Chess.com ou Lichess.",
+      "action": "Voir les options"
+    },
+    "archive": {
+      "title": "Votre archives",
+      "description": "Retrouvez les analyses locales et synchronisées.",
+      "action": "Ouvrir l'archives"
+    },
+    "settings": {
+      "title": "Paramètres et langue",
+      "description": "Modifiez l'apparence, l'entraîneur, le moteur et la langue.",
+      "action": "Ouvrir les paramètres"
     }
+  },
+  "steps": {
+    "eyebrow": "Bien démarrer",
+    "title": "De la partie à l'analyse en trois étapes",
+    "subtitle": "Aucune configuration complexe et aucun compte requis pour le parcours de base.",
+    "choose": {
+      "title": "Choisissez une source",
+      "description": "Sélectionnez PGN, FEN, Chess.com ou Lichess dans le panneau d'importation."
+    },
+    "import": {
+      "title": "Ajoutez votre partie",
+      "description": "Collez la notation, importez un fichier ou saisissez un nom d'utilisateur public."
+    },
+    "review": {
+      "title": "Analysez et révisez",
+      "description": "Lancez l'analyse, consultez le résumé et examinez chaque coup avec votre entraîneur."
+    }
+  },
+  "imports": {
+    "eyebrow": "Guide d'importation",
+    "title": "Quatre façons de commencer",
+    "subtitle": "Choisissez la méthode adaptée à l’endroit où votre partie est enregistrée.",
+    "pgn": {
+      "title": "Coller ou importer une partie",
+      "description": "Utilisez un PGN complet copié depuis une plateforme ou chargez un fichier .pgn."
+    },
+    "chessCom": {
+      "title": "Parcourir les parties Chess.com",
+      "description": "Saisissez un nom public pour choisir une partie récente ou charger la dernière."
+    },
+    "lichess": {
+      "title": "Parcourir les parties Lichess",
+      "description": "Saisissez un nom public pour consulter les parties publiques récentes."
+    },
+    "fen": {
+      "title": "Analyser une position",
+      "description": "Saisissez une FEN pour étudier uniquement une position précise."
+    }
+  },
+  "faq": {
+    "eyebrow": "Questions fréquentes",
+    "title": "À savoir",
+    "subtitle": "Les points essentiels sur les comptes, le stockage, le moteur et la confidentialité.",
+    "account": {
+      "question": "Faut-il un compte pour analyser des parties ?",
+      "answer": "Non. Vous pouvez analyser des parties et utiliser l'archives locale sans compte. Le compte sert uniquement à la synchronisation facultative entre appareils."
+    },
+    "archive": {
+      "question": "Où sont enregistrées mes analyses ?",
+      "answer": "Les analyses invitées sont stockées dans le navigateur actuel. En vous connectant, les données compatibles peuvent aussi être liées à votre compte."
+    },
+    "engine": {
+      "question": "Quel moteur utilise NexoChess ?",
+      "answer": "NexoChess utilise Stockfish 17 pour évaluer les positions et produire les variantes de l'analyse."
+    },
+    "languages": {
+      "question": "Comment la langue est-elle choisie ?",
+      "answer": "Lors de la première visite, NexoChess suit la langue du navigateur si elle est disponible. Vous pouvez ensuite la modifier dans les paramètres Apparence."
+    },
+    "privacy": {
+      "question": "Un compte est-il nécessaire pour conserver mes parties locales ?",
+      "answer": "Non. L'archives locale fonctionne sans compte. La connexion est facultative et sert à la synchronisation et aux fonctions de compte."
+    }
+  },
+  "contact": {
+    "eyebrow": "Toujours bloqué ?",
+    "title": "Contactez NexoChess",
+    "message": "Indiquez-nous le problème, votre navigateur et ce que vous faisiez au moment où il est survenu.",
+    "copy": "Copier l'adresse",
+    "copied": "Adresse copiée"
+  },
+  "navigationTitle": "Centre d’aide"
 }

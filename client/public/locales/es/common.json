@@ -1,39 +1,135 @@
 {
-    "loading": "Cargando...",
-    "back": "Volver",
-    "settings": "Configuraciones",
-    "error": "Error",
-    "reset": "Restaurar",
-    "navigationBar": {
-        "support": "Ayude",
-        "tooltips": {
-            "support": "Apoyanos ❤️",
-            "help": "Centro de Ayuda"
-        }
+  "loading": "Cargando…",
+  "back": "Volver",
+  "settings": "Ajustes",
+  "error": "Error",
+  "unknownError": "Ha ocurrido un error desconocido.",
+  "reset": "Restablecer",
+  "enabled": "Activado",
+  "disabled": "Desactivado",
+  "edit": "Editar",
+  "confirm": "Confirmar",
+  "cancel": "Cancelar",
+  "close": "Cerrar",
+  "save": "Guardar",
+  "saving": "Guardando…",
+  "remove": "Eliminar",
+  "add": "Añadir",
+  "change": "Cambiar",
+  "delete": "Eliminar",
+  "password": "Contraseña",
+  "confirmPassword": "Confirmar contraseña",
+  "navigationBar": {
+    "support": "Apoyar",
+    "signIn": "Iniciar sesión",
+    "openAnalysis": "Abrir el análisis de NexoChess",
+    "tooltips": {
+      "support": "Apoya NexoChess",
+      "help": "Centro de ayuda"
     },
-    "sidebar": {
-        "analysis": "Análisis",
-        "archive": "Archivo",
-        "news": "Noticias"
-    },
-    "gameListing": {
-        "gameResults": {
-            "unopinionated": {
-                "win": "Victoria del Blanco",
-                "draw": "Tablas",
-                "lose": "Victoria del Negro",
-                "unknown": "Desconocido"
-            },
-            "opinionated": {
-                "win": "Victoria",
-                "draw": "Tablas",
-                "lose": "Derrota",
-                "unknown": "Desconocido"
-            }
-        }
-    },
-    "bugReportWidget": {
-        "tooltip": "Copiar Registros de Consola",
-        "toast": "Registros de Consola Copiados!"
+    "profileMenu": {
+      "profile": "Perfil",
+      "signOut": "Cerrar sesión"
     }
+  },
+  "sidebar": {
+    "analysis": "Análisis",
+    "archive": "Archivo",
+    "news": "Noticias"
+  },
+  "footer": {
+    "privacySettings": "Preferencias de privacidad",
+    "language": "Idioma",
+    "languagesDialog": {
+      "eyebrow": "Idioma",
+      "select": "Elige tu idioma",
+      "description": "NexoChess recordará esta elección en este navegador.",
+      "search": "Buscar idiomas",
+      "current": "Actual",
+      "noResults": "Ningún idioma coincide con la búsqueda.",
+      "helpTitle": "Ayuda a mejorar una traducción",
+      "helpDescription": "¿Has visto una frase confusa o incorrecta? Envíanos el idioma, la página y tu propuesta.",
+      "help": "Proponer una traducción",
+      "helpSubject": "Propuesta de traducción para NexoChess",
+      "helpBody": "Hola, NexoChess:\n\nMe gustaría proponer una mejora para la traducción al {{language}}.\n\nPágina o sección:\nTexto actual:\nTexto propuesto:\nMotivo o contexto:\n\nGracias."
+    },
+    "termsOfService": "Términos del servicio",
+    "privacyPolicy": "Política de privacidad",
+    "openSource": "Código fuente y licencias",
+    "copyright": "Derechos de autor © {{year}} NexoChess",
+    "tagline": "Conecta las jugadas. Entiende la partida.",
+    "license": "Código bajo licencia GPL-3.0",
+    "navigationLabel": "Navegación del pie de página",
+    "contact": "Contacto"
+  },
+  "confirmDialog": {
+    "yes": "Sí",
+    "no": "No"
+  },
+  "shareGame": {
+    "copyFEN": "Copiar FEN",
+    "copyFENToast": "¡FEN copiado!",
+    "copyPGN": "Copiar PGN",
+    "copyPGNToast": "¡PGN copiado!"
+  },
+  "gameListing": {
+    "gameResults": {
+      "unopinionated": {
+        "win": "Ganaron las blancas",
+        "draw": "Tablas",
+        "lose": "Ganaron las negras",
+        "unknown": "Desconocido"
+      },
+      "opinionated": {
+        "win": "Victoria",
+        "draw": "Tablas",
+        "lose": "Derrota",
+        "unknown": "Desconocido"
+      }
+    }
+  },
+  "account": {
+    "fields": {
+      "email": "Correo electrónico",
+      "displayName": "Nombre visible",
+      "username": "Nombre de usuario"
+    },
+    "errors": {
+      "accountNotFound": "No existe ninguna cuenta con este correo.",
+      "emailTaken": "Ya existe una cuenta con este correo.",
+      "usernameTaken": "Este nombre de usuario ya está en uso.",
+      "invalidEmail": "La dirección de correo no es válida.",
+      "unverifiedEmail": "Verifica tu dirección de correo.",
+      "displayNameInvalid": "El nombre visible contiene caracteres no válidos.",
+      "displayNameTooShort": "El nombre visible debe tener al menos 3 caracteres.",
+      "displayNameTooLong": "El nombre visible no puede superar los 24 caracteres.",
+      "usernameAlphanumeric": "El nombre de usuario solo puede contener letras, números y guiones bajos.",
+      "usernameTooShort": "El nombre de usuario debe tener al menos 3 caracteres.",
+      "usernameTooLong": "El nombre de usuario no puede superar los 20 caracteres.",
+      "passwordTooShort": "La contraseña debe tener al menos 8 caracteres.",
+      "passwordTooLong": "La contraseña no puede superar los 128 caracteres.",
+      "passwordNoMatch": "Las contraseñas no coinciden.",
+      "incorrectEmailPassword": "El correo o la contraseña son incorrectos.",
+      "verificationCooldown": "Espera 60 segundos antes de solicitar otro enlace de verificación."
+    },
+    "placeholders": {
+      "email": "Correo electrónico…",
+      "displayName": "Nombre visible…",
+      "username": "Nombre de usuario…",
+      "password": "Contraseña…",
+      "confirmPassword": "Confirmar contraseña…"
+    },
+    "verificationMessage": "Te hemos enviado un enlace de verificación. Revisa tu bandeja de entrada para continuar."
+  },
+  "bugReportWidget": {
+    "tooltip": "Copiar registros de consola",
+    "toast": "¡Registros de consola copiados!"
+  },
+  "notFound": {
+    "message": "Parece que te has perdido.",
+    "returnHome": "Volver al inicio"
+  },
+  "chess": {
+    "capturedPieces": "Piezas capturadas"
+  }
 }

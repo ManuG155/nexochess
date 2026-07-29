@@ -1,45 +1,135 @@
 {
-    "loading": "Chargement...",
-    "back": "Retour",
-    "settings": "Paramètres",
-    "error": "Erreur",
-    "reset": "Réinitialiser",
-    "enabled": "Activé",
-    "disabled": "Désactivé",
-    "navigationBar": {
-        "support": "Aide",
-        "tooltips": {
-            "support": "Nous soutenir ❤",
-            "help": "Assistance"
-        }
+  "loading": "Chargement...",
+  "back": "Retour",
+  "settings": "Paramètres",
+  "error": "Erreur",
+  "unknownError": "Une erreur inconnue est survenue.",
+  "reset": "Réinitialiser",
+  "enabled": "Activé",
+  "disabled": "Désactivé",
+  "edit": "Modifier",
+  "confirm": "Confirmer",
+  "cancel": "Annuler",
+  "navigationBar": {
+    "support": "Aide",
+    "signIn": "Se connecter",
+    "tooltips": {
+      "support": "Nous soutenir ❤",
+      "help": "Assistance"
     },
-    "sidebar": {
-        "analysis": "Analyse",
-        "archive": "Archiver",
-        "news": "Actualités"
+    "profileMenu": {
+      "profile": "Profil",
+      "signOut": "Se déconnecter"
     },
-    "confirmDialog": {
-        "yes": "Oui",
-        "no": "Non"
+    "openAnalysis": "Ouvrir l’analyse NexoChess"
+  },
+  "sidebar": {
+    "analysis": "Analyse",
+    "archive": "Archiver",
+    "news": "Actualités"
+  },
+  "footer": {
+    "privacySettings": "Paramètres de confidentialité",
+    "language": "Langue",
+    "languagesDialog": {
+      "eyebrow": "Langue",
+      "select": "Choisissez votre langue",
+      "description": "NexoChess mémorisera ce choix dans ce navigateur.",
+      "search": "Rechercher une langue",
+      "current": "Actuelle",
+      "noResults": "Aucune langue ne correspond à la recherche.",
+      "helpTitle": "Améliorer une traduction",
+      "helpDescription": "Une phrase vous semble incorrecte ou peu claire ? Indiquez la langue, la page et votre proposition.",
+      "help": "Proposer une traduction",
+      "helpSubject": "Suggestion de traduction NexoChess",
+      "helpBody": "Bonjour NexoChess,\n\nJe souhaite proposer une amélioration de la traduction {{language}}.\n\nPage ou section :\nTexte actuel :\nTexte proposé :\nContexte :\n\nMerci."
     },
-    "gameListing": {
-        "gameResults": {
-            "unopinionated": {
-                "win": "Les Blancs ont gagné",
-                "draw": "Égalité",
-                "lose": "Les Noirs ont gagné",
-                "unknown": "Inconnu"
-            },
-            "opinionated": {
-                "win": "Victoire",
-                "draw": "Égalité",
-                "lose": "Défaite",
-                "unknown": "Inconnu"
-            }
-        }
-    },
-    "bugReportWidget": {
-        "tooltip": "Copier les logs de la console",
-        "toast": "Logs de la console copiés !"
+    "termsOfService": "Conditions d’utilisation",
+    "privacyPolicy": "Politique de confidentialité",
+    "openSource": "Code source et licences",
+    "copyright": "Droits d’auteur © {{year}} NexoChess",
+    "tagline": "Reliez les coups. Comprenez la partie.",
+    "license": "Code sous licence GPL-3.0",
+    "navigationLabel": "Navigation du pied de page",
+    "contact": "Contact"
+  },
+  "confirmDialog": {
+    "yes": "Oui",
+    "no": "Non"
+  },
+  "shareGame": {
+    "copyFEN": "Copier la FEN",
+    "copyFENToast": "FEN copiée !",
+    "copyPGN": "Copier le PGN",
+    "copyPGNToast": "PGN copié !"
+  },
+  "gameListing": {
+    "gameResults": {
+      "unopinionated": {
+        "win": "Les Blancs ont gagné",
+        "draw": "Égalité",
+        "lose": "Les Noirs ont gagné",
+        "unknown": "Inconnu"
+      },
+      "opinionated": {
+        "win": "Victoire",
+        "draw": "Égalité",
+        "lose": "Défaite",
+        "unknown": "Inconnu"
+      }
     }
+  },
+  "account": {
+    "fields": {
+      "email": "Adresse e-mail",
+      "displayName": "Nom affiché",
+      "username": "Nom d’utilisateur"
+    },
+    "errors": {
+      "accountNotFound": "Aucun compte n’existe avec cette adresse e-mail.",
+      "emailTaken": "Un compte utilise déjà cette adresse e-mail.",
+      "usernameTaken": "Ce nom d’utilisateur est déjà pris.",
+      "invalidEmail": "Adresse e-mail invalide.",
+      "unverifiedEmail": "Veuillez vérifier votre adresse e-mail.",
+      "displayNameInvalid": "Le nom affiché contient des caractères invalides.",
+      "displayNameTooShort": "Le nom affiché doit contenir au moins 3 caractères.",
+      "displayNameTooLong": "Le nom affiché ne peut pas dépasser 24 caractères.",
+      "usernameAlphanumeric": "Le nom d’utilisateur ne peut contenir que des lettres, des chiffres et des tirets bas.",
+      "usernameTooShort": "Le nom d’utilisateur doit contenir au moins 3 caractères.",
+      "usernameTooLong": "Le nom d’utilisateur ne peut pas dépasser 20 caractères.",
+      "passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères.",
+      "passwordTooLong": "Le mot de passe ne peut pas dépasser 128 caractères.",
+      "passwordNoMatch": "Les mots de passe ne correspondent pas.",
+      "incorrectEmailPassword": "Adresse e-mail ou mot de passe incorrect.",
+      "verificationCooldown": "Veuillez attendre 60 secondes avant d’envoyer un nouveau lien de vérification."
+    },
+    "placeholders": {
+      "email": "Adresse e-mail…",
+      "displayName": "Nom affiché…",
+      "username": "Nom d’utilisateur…",
+      "password": "Mot de passe…",
+      "confirmPassword": "Confirmer le mot de passe…"
+    },
+    "verificationMessage": "Nous vous avons envoyé un lien de vérification. Consultez votre boîte de réception pour continuer."
+  },
+  "bugReportWidget": {
+    "tooltip": "Copier les logs de la console",
+    "toast": "Logs de la console copiés !"
+  },
+  "close": "Fermer",
+  "save": "Enregistrer",
+  "saving": "Enregistrement…",
+  "remove": "Supprimer",
+  "add": "Ajouter",
+  "change": "Modifier",
+  "delete": "Supprimer",
+  "password": "Mot de passe",
+  "confirmPassword": "Confirmer le mot de passe",
+  "notFound": {
+    "message": "On dirait que vous vous êtes perdu.",
+    "returnHome": "Retour à l’accueil"
+  },
+  "chess": {
+    "capturedPieces": "Pièces capturées"
+  }
 }

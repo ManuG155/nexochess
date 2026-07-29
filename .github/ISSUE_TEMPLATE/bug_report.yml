@@ -1,0 +1,67 @@
+name: Bug report
+description: Report a reproducible problem in NexoChess
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include passwords, OAuth secrets, session cookies or private user data. Security vulnerabilities must be reported privately to contact@nexochess.com.
+  - type: input
+    id: version
+    attributes:
+      label: NexoChess version or deployment
+      placeholder: v0.9.0-beta.1 or www.nexochess.com
+    validations:
+      required: true
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      options:
+        - Chrome
+        - Brave
+        - Firefox
+        - Edge
+        - Safari
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Operating system and device
+      placeholder: Windows 11 desktop, Android phone...
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Give the smallest reliable sequence that causes the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add screenshots, console errors or a non-sensitive sample PGN when useful.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I have removed personal data and credentials from this report.
+          required: true
+        - label: I searched existing issues for the same problem.
+          required: true

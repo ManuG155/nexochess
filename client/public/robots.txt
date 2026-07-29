@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /analysis
+Allow: /help
+Allow: /terms
+Allow: /privacy
+Disallow: /api/
+Disallow: /auth/
+Disallow: /archive
+Disallow: /internal
+Disallow: /settings
+Disallow: /signin
+Disallow: /signup
+
+Sitemap: https://www.nexochess.com/sitemap.xml

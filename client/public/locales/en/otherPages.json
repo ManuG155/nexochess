@@ -5,11 +5,30 @@
         "selectAll": "Select all",
         "deleteSelected": "Delete selected",
         "deleteConfirm": "Are you sure you want to delete {{amount}} game(s)? This action is irreversible.",
-        "error": "An unknown error occurred while trying to load your game archive."
+        "error": "An unknown error occurred while trying to load your game archive.",
+        "description": "Every completed analysis is saved automatically. Guest games stay on this device; signed-in games are also available from your account.",
+        "emptyTitle": "No analysed games yet",
+        "emptyDescription": "Analyse a game and it will appear here automatically.",
+        "analyseGame": "Analyse a game",
+        "card": {
+            "white": "White",
+            "black": "Black",
+            "select": "Select archived game",
+            "analysedGame": "Analysed game",
+            "savedLocally": "Saved on this device",
+            "players": "Players",
+            "elo": "Elo",
+            "accuracy": "Accuracy",
+            "unknownOpening": "Opening not identified",
+            "moves_one": "{{count}} move",
+            "moves_other": "{{count}} moves",
+            "finalPosition": "Final position",
+            "movesLabel": "moves"
+        }
     },
     "news": {
         "title": "Newspaper",
-        "titleDescription": "Get the latest updates on the WintrChess platform",
+        "titleDescription": "Get the latest updates on the NexoChess platform",
         "error": "There was an error while loading the newspaper.",
         "article": {
             "unfound": "We couldn't find this article.",
@@ -28,9 +47,19 @@
         "alternative": "or",
         "loginPageButton": "I already have an account.",
         "registerPageButton": "New? Create an account!",
-        "legalMessage": "By signing in, you agree to our Privacy Policy and Terms of Service."
+        "legalMessage": "By continuing, you agree to our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>.",
+        "loginDescription": "Continue analysing your games and access your cloud Archive.",
+        "registerDescription": "Create your account to keep your Archive available across devices.",
+        "loginPending": "Signing in…",
+        "registerPending": "Creating account…",
+        "newUser": "New to NexoChess?",
+        "createAccount": "Create an account",
+        "existingUser": "Already have an account?"
     },
     "resetPassword": {
         "message": "Enter and confirm a new password for your account."
+    },
+    "profile": {
+        "memberSince": "Member since {{date}}"
     }
 }

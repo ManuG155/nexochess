@@ -8,7 +8,11 @@ import * as styles from "./AnalyseButton.module.css";
 
 import iconAnalysis from "@assets/img/interface/analysis.svg";
 
-function AnalyseButton({ style, onClick }: AnalyseButtonProps) {
+function AnalyseButton({
+    style,
+    disabled,
+    onClick
+}: AnalyseButtonProps) {
     const { t } = useTranslation("analysis");
 
     return <Button
@@ -16,6 +20,7 @@ function AnalyseButton({ style, onClick }: AnalyseButtonProps) {
         style={style}
         icon={iconAnalysis}
         iconSize="30px"
+        disabled={disabled}
         onClick={onClick}
     >
         {t("analyseButton")}

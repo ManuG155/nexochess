@@ -2,10 +2,12 @@ import { Types } from "mongoose";
 import { gzipSync, gunzipSync } from "zlib";
 import { Compressed, compress, decompress } from "compress-json";
 import { Buffer } from "buffer";
-import { omit } from "lodash-es";
 
 import { SerializedAnalysedGame } from "shared/types/game/AnalysedGame";
-import { ArchivedGame, ArchivedGameMetadata } from "shared/types/game/ArchivedGame";
+import {
+    ArchivedGame,
+    ArchivedGameMetadata
+} from "shared/types/game/ArchivedGame";
 import { SerializedStateTreeNode } from "shared/types/game/position/StateTreeNode";
 import renderStateTree from "shared/lib/stateTree/render";
 import ArchivedGameModel from "@/database/models/ArchivedGame";
@@ -18,9 +20,15 @@ export async function archiveAnalysedGame(
         compress(game.stateTree)
     );
 
+    const {
+        pgn: _pgn,
+        stateTree: _stateTree,
+        ...metadata
+    } = game;
+
     return {
-        ...omit(game, ["pgn", "stateTree"]),
-        userId: userId,
+        ...metadata,
+        userId,
         gzippedStateTree: gzipSync(Buffer.from(packedStateTree))
     };
 }
@@ -34,10 +42,16 @@ export async function unarchiveAnalysedGame(
 
     const stateTree: SerializedStateTreeNode = decompress(packedStateTree);
 
+    const {
+        userId: _userId,
+        gzippedStateTree: _gzippedStateTree,
+        ...metadata
+    } = archivedGame;
+
     return {
-        ...omit(archivedGame, ["userId", "gzippedStateTree"]),
+        ...metadata,
         pgn: renderStateTree(stateTree, archivedGame),
-        stateTree: stateTree
+        stateTree
     };
 }
 
@@ -56,6 +70,8 @@ export function getArchivedGameMetadata<T extends ArchivedGameMetadata>(
         initialPosition: game.initialPosition,
         players: game.players,
         timeControl: game.timeControl,
-        variant: game.variant
+        variant: game.variant,
+        archiveSummary: game.archiveSummary,
+        archiveSource: "account"
     };
 }

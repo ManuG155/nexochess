@@ -1,0 +1,169 @@
+.section {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 8px 0 12px;
+}
+
+.headingBlock {
+    margin-bottom: 16px;
+}
+
+.sectionTitle {
+    margin: 0;
+    font-family: "Nunito", sans-serif;
+    font-size: 1.32rem;
+    line-height: 1.2;
+}
+
+.sectionDescription {
+    max-width: 720px;
+    margin: 6px 0 0;
+    color: rgba(255, 255, 255, 0.58);
+    font-size: 0.92rem;
+    line-height: 1.45;
+}
+
+.boardThemeGrid,
+.pieceThemeGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    width: 100%;
+}
+
+.themeCard,
+.pieceCard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    box-sizing: border-box;
+    min-width: 0;
+    padding: 10px;
+    color: white;
+    border: 2px solid transparent;
+    border-radius: 9px;
+    background: #262422;
+    cursor: pointer;
+    transition: border-color 120ms ease, background 120ms ease, transform 120ms ease;
+}
+
+.themeCard:hover,
+.pieceCard:hover {
+    background: #302e2b;
+    transform: translateY(-1px);
+}
+
+.selected {
+    border-color: #81b64c;
+    box-shadow: 0 0 0 1px rgba(129, 182, 76, 0.28);
+}
+
+.boardSwatch {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    overflow: hidden;
+    width: 100%;
+    aspect-ratio: 1.35;
+    border-radius: 5px;
+}
+
+.boardSwatch > span {
+    display: block;
+}
+
+.cardLabel {
+    overflow: hidden;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 0.83rem;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.check {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    color: #17220f;
+    border-radius: 50%;
+    background: #81b64c;
+    font-size: 0.82rem;
+    font-weight: 900;
+}
+
+.customColours {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    margin-top: 18px;
+}
+
+.pieceSample {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    min-height: 92px;
+    padding: 8px;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: 5px;
+    background: #1d1c1a;
+}
+
+
+.pieceSample > * {
+    flex: 0 0 auto;
+    max-width: calc((100% - 20px) / 3);
+}
+
+.pieceNote {
+    margin: 14px 0 0;
+    color: rgba(255, 255, 255, 0.46);
+    font-size: 0.82rem;
+    line-height: 1.45;
+}
+
+.coordinatesRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    width: 100%;
+}
+
+/*
+ * No outer card here: the preview lives directly on the settings page.
+ * Using react-chessboard itself guarantees a perfectly square, symmetric
+ * 8x8 preview rather than recreating the board manually with CSS.
+ */
+.previewArea {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 6px 0 14px;
+    overflow-x: auto;
+}
+
+.previewArea > div {
+    flex: 0 0 auto;
+}
+
+@media (max-width: 680px) {
+    .boardThemeGrid,
+    .pieceThemeGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .coordinatesRow {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

@@ -1,4 +1,63 @@
 {
+    "account": {
+        "title": "账户",
+        "editProfile": {
+            "title": "编辑个人资料",
+            "displayName": {
+                "message": "输入新的显示名称。"
+            },
+            "username": {
+                "message": "输入新的用户名。",
+                "alreadyExists": "已有账户使用该用户名。"
+            },
+            "email": {
+                "verification": "请输入新的电子邮箱地址。应用更改前，我们会向你当前的邮箱发送批准链接。",
+                "verificationButton": {
+                    "unsent": "发送验证邮件",
+                    "sending": "正在发送邮件…",
+                    "sent": "验证邮件已发送",
+                    "cooldown": "请稍后再试。"
+                },
+                "same": "您已经在使用此电子邮箱。",
+                "changeButton": {
+                    "unsent": "申请更改邮箱",
+                    "sending": "正在发送确认邮件…",
+                    "sent": "请检查当前邮箱"
+                },
+                "taken": "已有账户正在使用此电子邮箱地址。",
+                "currentNotVerified": "更改邮箱前，请先验证当前邮箱地址。",
+                "sessionExpired": "会话已过期。请重新登录后再试。",
+                "cooldown": "请求次数过多。请稍候再试。",
+                "sendFailed": "无法发起邮箱更改，请重试。"
+            }
+        },
+        "manageAccount": {
+            "title": "管理账户",
+            "resetPassword": "重置密码",
+            "resetPasswordDialog": "我们会发送一封包含链接的邮件，您可通过该链接创建新密码。",
+            "deleteAccount": "删除账户",
+            "deleteAccountDialog": "请在输入框中键入以下内容以确认删除账户：",
+            "irreversibleAction": "请注意，此操作无法撤销。"
+        }
+    },
+    "analysis": {
+        "title": "分析",
+        "arrowAppearance": "箭头外观",
+        "arrowWidth": "箭头宽度（像素）",
+        "headLength": "箭头尖长度（像素）",
+        "headWidth": "箭头尖宽度（像素）",
+        "bestMoveColour": "最佳着法箭头",
+        "manualColour": "手动画箭头",
+        "other": "其他",
+        "showTimer": "显示计时器",
+        "colours": {
+            "green": "绿色",
+            "orange": "橙色",
+            "blue": "蓝色",
+            "red": "红色",
+            "purple": "紫色"
+        }
+    },
     "boardAndPieces": {
         "title": "棋盘和棋子",
         "boardColour": "棋盘颜色",
@@ -11,12 +70,129 @@
             "blue": "蓝色",
             "ice": "冰",
             "marshmallow": "棉花糖",
-            "pillow": "枕头"
+            "pillow": "软垫"
+        },
+        "coordinates": {
+            "title": "坐标",
+            "position": "位置",
+            "inside": "棋盘内",
+            "outside": "棋盘外"
         }
     },
     "bugReporting": {
         "title": "缺陷报告",
         "bugReportingMode": "缺陷报告模式",
         "bugReportingModeDescription": "帮助我们找到和修复缺陷。缺陷报告模式激活你的屏幕下方角落里的一个小部件，你可以点击它来复制控制台日志。"
+    },
+    "privacy": "隐私",
+    "user": {
+        "title": "用户",
+        "description": "管理您的 NexoChess 身份与账户安全。",
+        "email": "电子邮箱",
+        "password": "密码",
+        "username": "用户名",
+        "dateOfBirth": "出生日期",
+        "optional": "可选",
+        "change": "更改",
+        "add": "添加",
+        "checking": "正在检查您的 NexoChess 账户…",
+        "notSet": "未设置",
+        "save": "保存",
+        "saving": "正在保存…",
+        "remove": "移除",
+        "usernameTaken": "该用户名已被占用。",
+        "usernameUpdateFailed": "无法更新用户名。",
+        "usernamePlaceholder": "新用户名…",
+        "usernameDialog": "选择显示在 NexoChess 账户中的用户名。",
+        "guest": {
+            "title": "您正在以访客身份使用 NexoChess",
+            "description": "已分析的对局会保存在本设备的本地存档中。请从右上角菜单登录，以管理电子邮箱、密码、用户名和可选的出生日期。"
+        },
+        "dateOfBirthDialog": {
+            "description": "可选。此信息保持私密，并可随时删除。",
+            "invalid": "请输入 1900 年至今天之间的有效日期。"
+        },
+        "delete": {
+            "title": "删除账户",
+            "description": "永久删除您的账户及其云端存档。仅保存在本设备上的对局不会受到影响。",
+            "confirm": "输入 {{username}} 以确认永久删除账户。",
+            "usernameMismatch": "用户名不匹配。"
+        }
+    },
+    "appearance": {
+        "title": "外观",
+        "language": {
+            "title": "语言",
+            "description": "选择 NexoChess 界面和账户邮件使用的语言。"
+        },
+        "boardTheme": {
+            "title": "棋盘主题",
+            "description": "选择棋盘配色。活动主题和赞助主题不会显示。",
+            "lightSquares": "浅色格",
+            "darkSquares": "深色格",
+            "colourPlaceholder": "颜色…",
+            "presets": {
+                "walnut": "胡桃木",
+                "green": "绿色",
+                "blue": "蓝色",
+                "slate": "石板灰",
+                "ice": "冰蓝",
+                "sand": "沙色",
+                "rose": "玫瑰色",
+                "purple": "紫色",
+                "charcoal": "炭灰",
+                "ocean": "海洋",
+                "mint": "薄荷",
+                "orange": "橙色"
+            }
+        },
+        "pieces": {
+            "title": "棋子样式",
+            "description": "选择标准棋子系列。活动和赞助棋子不会显示。",
+            "note": "Chess.com 的 Neo 棋子因版权限制未包含；这里提供的是标准开放替代方案。"
+        },
+        "coordinates": {
+            "title": "坐标",
+            "description": "选择坐标显示在棋盘内侧还是外侧。",
+            "inside": "棋盘内",
+            "outside": "棋盘外"
+        },
+        "preview": {
+            "title": "预览",
+            "description": "下方会同时预览您选择的棋盘和棋子。"
+        }
+    },
+    "coach": {
+        "title": "教练",
+        "description": "控制教练是否在对局分析期间显示并播放动画。",
+        "enabled": {
+            "title": "启用教练",
+            "description": "在对局总结和复盘中显示所选教练及其评论。"
+        },
+        "animations": {
+            "title": "教练动画",
+            "description": "启用眨眼和嘴部动作。关闭后将使用静态头像。"
+        }
+    },
+    "privacySection": {
+        "title": "隐私",
+        "description": "管理 NexoChess 在此浏览器中保存的数据，并查看适用于账户的政策。",
+        "preferences": {
+            "title": "数据偏好",
+            "description": "查看网站使用的可选同意项目。设置、身份验证和本地存档所需的必要存储无法在此关闭。",
+            "manage": "管理偏好"
+        },
+        "archive": {
+            "title": "本地对局存档",
+            "description": "访客分析仅保存在此浏览器中。清除浏览器数据或使用下方按钮会永久删除这些本地对局。",
+            "clear": "清空本地存档",
+            "cleared": "已清空此设备上的本地存档。",
+            "confirm": "删除此设备上本地保存的所有对局吗？此操作无法撤销。"
+        },
+        "policies": {
+            "title": "政策",
+            "privacy": "隐私政策",
+            "terms": "服务条款"
+        }
     }
 }

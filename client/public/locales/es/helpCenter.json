@@ -1,15 +1,109 @@
 {
-    "title": "Centro de Ayuda",
-    "contact": {
-        "title": "Contáctenos",
-        "message": "Si necesita contactarnos, puede enviar un correo electrónico a:"
-    },
+  "pageTitle": "NexoChess — Centro de ayuda",
+  "hero": {
+    "eyebrow": "Soporte de NexoChess",
+    "title": "¿En qué podemos ayudarte?",
+    "subtitle": "Encuentra respuestas claras, aprende la forma más rápida de importar una partida y vuelve al análisis en pocos clics.",
+    "languagesBadge": "11 idiomas"
+  },
+  "actions": {
+    "openAnalysis": "Abrir el analizador",
+    "contact": "Contactar con soporte"
+  },
+  "topics": {
+    "eyebrow": "Acceso rápido",
+    "title": "Temas populares",
+    "subtitle": "Ve directamente a la parte de NexoChess que necesitas.",
     "analysis": {
-        "title": "Analizando una partida",
-        "part1": "Puedes analizar tus partidas de ajedrez en el",
-        "part2": "Página de Análisis de WintrChess",
-        "part3": "Las evaluaciones de Stockfish, los porcentajes de precisión y las clasificaciones de movimiento - para que usted pueda encontrar sus aciertos y errores - se proporcionan de forma gratuita. Encontrarás un tablero de análisis en el centro de la página, donde puedes ver los movimientos del juego que has seleccionado. Para seleccionar un juego, necesitas usar el selector de juego que hemos proporcionado en la barra lateral derecha. Se ve así:",
-        "part4": "Puedes cargar cualquier juego usando su PGN. Si lo deseas, también puedes seleccionar un juego de tu  cuenta de Chess.com o Lichess proporcionando tu nombre de usuario. Necesitarás hacer clic en el botón \"Buscar juegos\" para navegar por los juegos en tu cuenta, y puede seleccionar cualquiera simplemente haciendo clic en ellos. Por último, puede cargar una  posición FEN específica. En cualquier caso, podrás añadir movimientos manualmente después de importar un juego, que serán evaluados y clasificados sobre la marcha.",
-        "part5": "Después de seleccionar una partida, simplemente haga clic en el botón \"Analizar\" para comenzar el análisis. También puedes mover una pieza en el tablero si quieres empezar desde la posición inicial."
+      "title": "Analizar una partida",
+      "description": "Importa una partida e inicia una revisión completa con Stockfish.",
+      "action": "Empezar"
+    },
+    "import": {
+      "title": "Métodos de importación",
+      "description": "Descubre cuándo usar PGN, FEN, Chess.com o Lichess.",
+      "action": "Ver opciones"
+    },
+    "archive": {
+      "title": "Tu Archivo",
+      "description": "Encuentra los análisis guardados localmente y sincronizados.",
+      "action": "Abrir Archivo"
+    },
+    "settings": {
+      "title": "Ajustes e idioma",
+      "description": "Cambia apariencia, entrenador, motor e idioma.",
+      "action": "Abrir ajustes"
     }
+  },
+  "steps": {
+    "eyebrow": "Primeros pasos",
+    "title": "De la partida a la revisión en tres pasos",
+    "subtitle": "Sin configuraciones complicadas y sin cuenta obligatoria para el flujo básico.",
+    "choose": {
+      "title": "Elige una fuente",
+      "description": "Selecciona PGN, FEN, Chess.com o Lichess en el panel de importación."
+    },
+    "import": {
+      "title": "Añade tu partida",
+      "description": "Pega la notación, sube un archivo o introduce un usuario público."
+    },
+    "review": {
+      "title": "Analiza y revisa",
+      "description": "Inicia el análisis, consulta el resumen y revisa cada jugada con tu entrenador."
+    }
+  },
+  "imports": {
+    "eyebrow": "Guía de importación",
+    "title": "Cuatro formas de empezar",
+    "subtitle": "Utiliza la opción que mejor encaje con el lugar donde tienes la partida.",
+    "pgn": {
+      "title": "Pegar o subir una partida",
+      "description": "Usa un PGN completo copiado desde cualquier plataforma o sube un archivo .pgn."
+    },
+    "chessCom": {
+      "title": "Buscar partidas de Chess.com",
+      "description": "Introduce un usuario público para elegir una partida reciente o cargar la última."
+    },
+    "lichess": {
+      "title": "Buscar partidas de Lichess",
+      "description": "Introduce un usuario público para explorar sus partidas públicas recientes."
+    },
+    "fen": {
+      "title": "Analizar una posición",
+      "description": "Introduce una FEN cuando solo quieras estudiar una posición concreta."
+    }
+  },
+  "faq": {
+    "eyebrow": "Preguntas frecuentes",
+    "title": "Cosas que conviene saber",
+    "subtitle": "Lo esencial sobre cuentas, almacenamiento, motor y privacidad.",
+    "account": {
+      "question": "¿Necesito una cuenta para analizar partidas?",
+      "answer": "No. Puedes analizar partidas y usar el Archivo local sin crear una cuenta. La cuenta solo es necesaria para la sincronización opcional entre dispositivos."
+    },
+    "archive": {
+      "question": "¿Dónde se guardan mis análisis?",
+      "answer": "Los análisis como invitado se guardan en el navegador actual. Al iniciar sesión, los datos compatibles también pueden asociarse a tu cuenta para acceder desde otros dispositivos."
+    },
+    "engine": {
+      "question": "¿Qué motor de ajedrez utiliza NexoChess?",
+      "answer": "NexoChess utiliza Stockfish 17 para evaluar posiciones y generar las líneas del motor empleadas en la revisión."
+    },
+    "languages": {
+      "question": "¿Cómo se elige el idioma?",
+      "answer": "En la primera visita, NexoChess utiliza el idioma del navegador cuando está disponible. Puedes cambiarlo manualmente en los ajustes de Apariencia."
+    },
+    "privacy": {
+      "question": "¿Necesito cuenta para conservar mis partidas locales?",
+      "answer": "No. El Archivo local funciona sin cuenta. Iniciar sesión es opcional y está pensado para sincronización y funciones de cuenta."
+    }
+  },
+  "contact": {
+    "eyebrow": "¿Sigues atascado?",
+    "title": "Habla con NexoChess",
+    "message": "Cuéntanos el problema, el navegador que utilizas y qué estabas haciendo cuando ocurrió.",
+    "copy": "Copiar correo",
+    "copied": "Correo copiado"
+  },
+  "navigationTitle": "Centro de ayuda"
 }

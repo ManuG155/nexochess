@@ -1,0 +1,179 @@
+.introduction {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.introduction > span {
+    color: rgba(255, 255, 255, 0.62);
+}
+
+.rows {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 9px;
+    overflow: hidden;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    min-height: 66px;
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.row:last-child {
+    border-bottom: 0;
+}
+
+.rowText {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.rowText b {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rowText small {
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.68rem;
+    font-weight: 600;
+}
+
+.rowText span {
+    overflow: hidden;
+    color: rgba(255, 255, 255, 0.62);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.password {
+    letter-spacing: 0.12em;
+}
+
+.dangerZone {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(239, 118, 118, 0.24);
+}
+
+.dangerZone > span {
+    max-width: 640px;
+    color: rgba(255, 255, 255, 0.58);
+}
+
+.dangerZone button {
+    margin-top: 5px;
+}
+
+.dateDialog {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    box-sizing: border-box;
+    width: min(460px, calc(100vw - 24px));
+    padding: 26px;
+    color: white;
+}
+
+.dialogHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-right: 38px;
+}
+
+.dialogHeader b {
+    font-size: 1.25rem;
+}
+
+.dialogHeader span {
+    color: rgba(255, 255, 255, 0.62);
+    line-height: 1.4;
+}
+
+.dateInput {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    background: var(--ui-shade-2);
+    color: white;
+    color-scheme: dark;
+    font: inherit;
+}
+
+.dialogActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+@media (max-width: 520px) {
+    .row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .row button {
+        align-self: stretch;
+    }
+}
+
+.guestCard {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.guestIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.guestCard > div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.guestCard p {
+    max-width: 680px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.62);
+    line-height: 1.5;
+}

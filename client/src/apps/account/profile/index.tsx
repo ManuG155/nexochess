@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
+
+import I18nGate from "@/components/layout/I18nGate";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import PageWrapper from "@/components/layout/PageWrapper";
@@ -27,4 +29,8 @@ function App() {
     </BrowserRouter>;
 }
 
-root.render(<App/>);
+root.render(
+    <I18nGate>
+        <App/>
+    </I18nGate>
+);

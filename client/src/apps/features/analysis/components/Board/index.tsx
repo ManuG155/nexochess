@@ -8,11 +8,18 @@ import {
 import { Chess, Move, PieceSymbol } from "chess.js";
 
 import { defaultRootNode } from "shared/constants/utils";
+import PieceColour from "shared/constants/PieceColour";
 import { isMovePromotion } from "shared/lib/utils/chess";
 
 import useResizeObserver from "@/hooks/useResizeObserver";
 import useSettingsStore from "@/stores/SettingsStore";
+import AnalysisStatus from "@analysis/constants/AnalysisStatus";
+import useAnalysisProgressStore from "@analysis/stores/AnalysisProgressStore";
 import PlayerProfile from "@/components/chess/PlayerProfile";
+import {
+    createCustomPieces,
+    normalisePieceTheme
+} from "@/lib/chessAppearance";
 
 import EvaluationBar from "../EvaluationBar";
 
@@ -45,6 +52,137 @@ function getPieceType(piece: Piece) {
 }
 
 
+const INITIAL_PIECE_COUNTS: Record<
+    "w" | "b",
+    Record<PieceSymbol, number>
+> = {
+    w: {
+        p: 8,
+        n: 2,
+        b: 2,
+        r: 2,
+        q: 1,
+        k: 1
+    },
+    b: {
+        p: 8,
+        n: 2,
+        b: 2,
+        r: 2,
+        q: 1,
+        k: 1
+    }
+};
+
+
+const MATERIAL_VALUES: Record<PieceSymbol, number> = {
+    p: 1,
+    n: 3,
+    b: 3,
+    r: 5,
+    q: 9,
+    k: 0
+};
+
+
+const CAPTURED_PIECE_ORDER: PieceSymbol[] = [
+    "p",
+    "n",
+    "b",
+    "r",
+    "q"
+];
+
+
+const CAPTURED_PIECE_SYMBOLS: Record<
+    "w" | "b",
+    Partial<Record<PieceSymbol, string>>
+> = {
+    w: {
+        p: "♙",
+        n: "♘",
+        b: "♗",
+        r: "♖",
+        q: "♕"
+    },
+    b: {
+        p: "♟",
+        n: "♞",
+        b: "♝",
+        r: "♜",
+        q: "♛"
+    }
+};
+
+
+function getMaterialSnapshot(fen: string) {
+    const board = new Chess(fen);
+
+    const counts: Record<
+        "w" | "b",
+        Record<PieceSymbol, number>
+    > = {
+        w: { p: 0, n: 0, b: 0, r: 0, q: 0, k: 0 },
+        b: { p: 0, n: 0, b: 0, r: 0, q: 0, k: 0 }
+    };
+
+    for (const rank of board.board()) {
+        for (const piece of rank) {
+            if (!piece) continue;
+
+            counts[piece.color][piece.type]++;
+        }
+    }
+
+    function getCapturedPieces(
+        capturedColour: "w" | "b"
+    ) {
+        const pieces: string[] = [];
+
+        for (const type of CAPTURED_PIECE_ORDER) {
+            const missing = Math.max(
+                0,
+                INITIAL_PIECE_COUNTS[capturedColour][type]
+                - counts[capturedColour][type]
+            );
+
+            const symbol =
+                CAPTURED_PIECE_SYMBOLS[capturedColour][type];
+
+            if (!symbol) continue;
+
+            for (let index = 0; index < missing; index++) {
+                pieces.push(symbol);
+            }
+        }
+
+        return pieces;
+    }
+
+    function getMaterialValue(colour: "w" | "b") {
+        return Object.entries(counts[colour])
+            .reduce(
+                (total, [ type, count ]) =>
+                    total
+                    + MATERIAL_VALUES[type as PieceSymbol]
+                    * count,
+                0
+            );
+    }
+
+    const whiteMaterial = getMaterialValue("w");
+    const blackMaterial = getMaterialValue("b");
+    const materialDifference = whiteMaterial - blackMaterial;
+
+    return {
+        capturedByWhite: getCapturedPieces("b"),
+        capturedByBlack: getCapturedPieces("w"),
+        whiteAdvantage: Math.max(0, materialDifference),
+        blackAdvantage: Math.max(0, -materialDifference)
+    };
+}
+
+
 function Board({
     className,
     style,
@@ -63,6 +201,56 @@ function Board({
 }: BoardProps) {
 
     const squares = useSquares();
+
+
+    /*
+     * Material visible alrededor del tablero.
+     *
+     * Se recalcula únicamente cuando cambia la FEN, así que durante Review
+     * avanza exactamente con la posición seleccionada y durante el análisis
+     * progresivo acompaña al tablero movimiento a movimiento.
+     */
+    const materialSnapshot = useMemo(
+        () => getMaterialSnapshot(node.state.fen),
+        [ node.state.fen ]
+    );
+
+
+    /*
+     * Los relojes quedan guardados como snapshot dentro de cada nodo cuando
+     * el PGN contiene comentarios [%clk ...]. Al avanzar por Review, el tiempo
+     * mostrado cambia exactamente con la posición seleccionada.
+     */
+    const clockSnapshot = node.state.clocks;
+
+
+    const activeClockColour = useMemo(
+        () => (
+            new Chess(node.state.fen).turn() == "w"
+                ? PieceColour.WHITE
+                : PieceColour.BLACK
+        ),
+        [ node.state.fen ]
+    );
+
+
+    /*
+     * Durante el análisis progresivo desactivamos las animaciones internas
+     * de react-chessboard y forzamos un tablero limpio por posición.
+     *
+     * La cola visual de useEvaluateGame ya controla el ritmo. Mantener además
+     * la animación propia del componente provocaba que varias transiciones se
+     * solapasen: el resaltado avanzaba, pero algunas piezas podían quedarse
+     * congeladas o desaparecer temporalmente.
+     */
+    const analysisStatus =
+        useAnalysisProgressStore(
+            state => state.analysisStatus
+        );
+
+
+    const progressiveAnalysisActive =
+        analysisStatus != AnalysisStatus.INACTIVE;
 
 
     /*
@@ -93,6 +281,24 @@ function Board({
 
     const coordinatesOutside =
         coordinatePosition == "outside";
+
+
+    const showTimer = useSettingsStore(
+        state => state.settings.analysis.showTimer
+    );
+
+
+    const selectedPieceTheme = useSettingsStore(
+        state => normalisePieceTheme(
+            state.settings.themes.piece
+        )
+    );
+
+
+    const customPieces = useMemo(
+        () => createCustomPieces(selectedPieceTheme),
+        [ selectedPieceTheme ]
+    );
 
 
     /*
@@ -321,6 +527,45 @@ function Board({
             : whiteProfile;
 
 
+    const topProfileColour =
+        flipped
+            ? PieceColour.WHITE
+            : PieceColour.BLACK;
+
+
+    const bottomProfileColour =
+        flipped
+            ? PieceColour.BLACK
+            : PieceColour.WHITE;
+
+
+    function getCapturedPiecesForColour(
+        colour: PieceColour
+    ) {
+        return colour == PieceColour.WHITE
+            ? materialSnapshot.capturedByWhite
+            : materialSnapshot.capturedByBlack;
+    }
+
+
+    function getMaterialAdvantageForColour(
+        colour: PieceColour
+    ) {
+        return colour == PieceColour.WHITE
+            ? materialSnapshot.whiteAdvantage
+            : materialSnapshot.blackAdvantage;
+    }
+
+
+    function getClockForColour(
+        colour: PieceColour
+    ) {
+        return colour == PieceColour.WHITE
+            ? clockSnapshot?.white
+            : clockSnapshot?.black;
+    }
+
+
     function onSquareClick(
         square: Square,
         piece?: Piece
@@ -504,8 +749,11 @@ function Board({
                     }
 
                     style={{
-                        borderRadius:
-                            "7px 7px 0 0",
+                        paddingLeft:
+                            evaluationReservedWidth,
+
+                        marginBottom:
+                            6,
 
                         ...profileStyle
                     }}
@@ -514,6 +762,35 @@ function Board({
                     <PlayerProfile
                         profile={
                             topProfile
+                        }
+
+                        colour={
+                            topProfileColour
+                        }
+
+                        capturedPieces={
+                            getCapturedPiecesForColour(
+                                topProfileColour
+                            )
+                        }
+
+                        materialAdvantage={
+                            getMaterialAdvantageForColour(
+                                topProfileColour
+                            )
+                        }
+
+                        clockSeconds={
+                            showTimer
+                                ? getClockForColour(
+                                    topProfileColour
+                                )
+                                : undefined
+                        }
+
+                        clockActive={
+                            activeClockColour
+                            == topProfileColour
                         }
                     />
 
@@ -615,6 +892,18 @@ function Board({
                          * TABLERO REAL
                          */}
                         <Chessboard
+                            /*
+                             * IMPORTANTE:
+                             * No usamos una key dependiente del nodo durante
+                             * el análisis. Cambiar la key desmontaba y volvía
+                             * a montar todo react-chessboard en cada posición,
+                             * causando un parpadeo negro/blanco muy breve.
+                             *
+                             * La cola visual ya entrega las FEN en orden y,
+                             * con animationDuration=0 durante el análisis, basta
+                             * con actualizar position para cambiar de posición
+                             * limpiamente sin remontar el tablero.
+                             */
                             position={
                                 node.state.fen
                             }
@@ -731,6 +1020,11 @@ function Board({
                             }
 
 
+                            customPieces={
+                                customPieces
+                            }
+
+
                             customLightSquareStyle={
                                 theme
                                     ?.lightSquareColour
@@ -760,7 +1054,9 @@ function Board({
 
 
                             animationDuration={
-                                165
+                                progressiveAnalysisActive
+                                    ? 0
+                                    : 165
                             }
 
 
@@ -926,8 +1222,13 @@ function Board({
                     }
 
                     style={{
-                        borderRadius:
-                            "0 0 7px 7px",
+                        paddingLeft:
+                            evaluationReservedWidth,
+
+                        marginTop:
+                            coordinatesOutside
+                                ? 2
+                                : 6,
 
                         ...profileStyle
                     }}
@@ -936,6 +1237,35 @@ function Board({
                     <PlayerProfile
                         profile={
                             bottomProfile
+                        }
+
+                        colour={
+                            bottomProfileColour
+                        }
+
+                        capturedPieces={
+                            getCapturedPiecesForColour(
+                                bottomProfileColour
+                            )
+                        }
+
+                        materialAdvantage={
+                            getMaterialAdvantageForColour(
+                                bottomProfileColour
+                            )
+                        }
+
+                        clockSeconds={
+                            showTimer
+                                ? getClockForColour(
+                                    bottomProfileColour
+                                )
+                                : undefined
+                        }
+
+                        clockActive={
+                            activeClockColour
+                            == bottomProfileColour
                         }
                     />
 

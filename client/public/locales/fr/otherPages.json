@@ -1,11 +1,65 @@
 {
+    "archive": {
+        "title": "Archives des parties",
+        "selected": "{{amount}} sélectionné(s)",
+        "selectAll": "Tout sélectionner",
+        "deleteSelected": "Supprimer la sélection",
+        "deleteConfirm": "Voulez-vous vraiment supprimer {{amount}} partie(s) ? Cette action est irréversible.",
+        "error": "Une erreur inconnue est survenue lors du chargement de vos archives.",
+        "description": "Chaque analyse terminée est enregistrée automatiquement. Les parties des invités restent sur cet appareil ; celles des utilisateurs connectés sont aussi disponibles dans leur compte.",
+        "emptyTitle": "Aucune partie analysée pour le moment",
+        "emptyDescription": "Analysez une partie et elle apparaîtra automatiquement ici.",
+        "analyseGame": "Analyser une partie",
+        "card": {
+            "white": "Blancs",
+            "black": "Noirs",
+            "select": "Sélectionner la partie archivée",
+            "analysedGame": "Partie analysée",
+            "savedLocally": "Enregistrée sur cet appareil",
+            "players": "Joueurs",
+            "elo": "Elo",
+            "accuracy": "Précision",
+            "unknownOpening": "Ouverture non identifiée",
+            "moves_one": "{{count}} coup",
+            "moves_other": "{{count}} coups",
+            "finalPosition": "Position finale",
+            "movesLabel": "coups"
+        }
+    },
     "news": {
         "title": "Journal",
-        "titleDescription": "Obtenez les dernières mises à jour sur la plateforme WintrChess",
+        "titleDescription": "Obtenez les dernières mises à jour sur la plateforme NexoChess",
         "error": "Une erreur s'est produite durant le chargement du journal.",
         "article": {
             "unfound": "Nous n'avons pas trouvé cet article.",
             "error": "Une erreur est survenue lors du chargement de cet l'article."
         }
+    },
+    "signIn": {
+        "loginTitle": "Connectez-vous à votre compte",
+        "loginButtonGoogle": "Se connecter avec Google",
+        "loginButtonEmail": "Se connecter",
+        "loginError": "Un problème est survenu lors de la connexion.",
+        "registerTitle": "Créer un compte",
+        "registerButtonGoogle": "S’inscrire avec Google",
+        "registerButtonEmail": "S’inscrire",
+        "registerError": "Un problème est survenu lors de la création du compte.",
+        "alternative": "ou",
+        "loginPageButton": "J’ai déjà un compte.",
+        "registerPageButton": "Nouveau ? Créez un compte !",
+        "legalMessage": "En continuant, vous acceptez nos <terms>Conditions d’utilisation</terms> et notre <privacy>Politique de confidentialité</privacy>.",
+        "loginDescription": "Continuez à analyser vos parties et accédez à vos archives dans le cloud.",
+        "registerDescription": "Créez un compte pour retrouver vos archives sur tous vos appareils.",
+        "loginPending": "Connexion…",
+        "registerPending": "Création du compte…",
+        "newUser": "Nouveau sur NexoChess ?",
+        "createAccount": "Créer un compte",
+        "existingUser": "Vous avez déjà un compte ?"
+    },
+    "resetPassword": {
+        "message": "Saisissez et confirmez un nouveau mot de passe pour votre compte."
+    },
+    "profile": {
+        "memberSince": "Membre depuis le {{date}}"
     }
 }

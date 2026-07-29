@@ -39,9 +39,6 @@ import iconIconsAnalysis from
 import iconIconsArchive from
     "@assets/img/icons/archive.png";
 
-import iconIconsNews from
-    "@assets/img/icons/news.png";
-
 import iconInterfaceSignin from
     "@assets/img/interface/sign_in.svg";
 
@@ -172,7 +169,6 @@ function NavigationBar() {
              * Logo
              * Analysis
              * Archive
-             * News
              * Flip Board
              * Share
              */}
@@ -197,12 +193,17 @@ function NavigationBar() {
                     />
 
 
-                    <Typography
-                        textClassName={
-                            styles.typographyText
-                        }
-                        includeIcon
-                    />
+                    <a
+                        className={styles.logoLink}
+                        href="/analysis"
+                        aria-label={t("navigationBar.openAnalysis", { ns: "common" })}
+                    >
+                        <Typography
+                            iconClassName={styles.typographyIcon}
+                            textClassName={styles.typographyText}
+                            includeIcon
+                        />
+                    </a>
 
                 </div>
 
@@ -245,30 +246,14 @@ function NavigationBar() {
 
 
                     {/*
-                     * NEWS
-                     */}
-                    <HoverDropdown
-                        icon={
-                            iconIconsNews
-                        }
-                        url="/news"
-                    >
-                        {t(
-                            "sidebar.news",
-                            { ns: "common" }
-                        )}
-                    </HoverDropdown>
-
-
-                    {/*
                      * FLIP BOARD
                      *
                      * Solo en /analysis.
                      *
                      * Usa nuestra clase navAction
                      * para tener la misma animación
-                     * inferior azul que Analysis,
-                     * Archive y News.
+                     * inferior azul que Analysis
+                     * y Archive.
                      */}
                     {onAnalysisPage && (
                         <button

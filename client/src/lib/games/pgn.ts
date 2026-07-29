@@ -16,12 +16,77 @@ function parseResultString(result: string, colour: PieceColour) {
     return result == winningResult ? GameResult.WIN : GameResult.LOSE;
 }
 
+
+function parseRatingChange(
+    headers: Record<string, string>,
+    colour: "White" | "Black"
+) {
+    const raw = (
+        headers[`${colour}RatingDiff`]
+        || headers[`${colour}EloDiff`]
+        || headers[`${colour}RatingChange`]
+    );
+
+    if (!raw) return undefined;
+
+    const value = Number(raw.replace(/^\+/, ""));
+
+    return Number.isFinite(value) ? value : undefined;
+}
+
+function parsePgnDate(headers: Record<string, string>) {
+    const rawDate = headers["UTCDate"] || headers["Date"];
+
+    if (!rawDate || !/^\d{4}\.\d{2}\.\d{2}$/.test(rawDate)) {
+        return undefined;
+    }
+
+    const [year, month, day] = rawDate.split(".").map(Number);
+    const rawTime = headers["UTCTime"] || headers["EndTime"] || "";
+    const timeMatch = rawTime.match(/^(\d{2}):(\d{2})(?::(\d{2}))?/);
+
+    const hour = timeMatch ? Number(timeMatch[1]) : 12;
+    const minute = timeMatch ? Number(timeMatch[2]) : 0;
+    const second = timeMatch?.[3] ? Number(timeMatch[3]) : 0;
+
+    const date = new Date(Date.UTC(
+        year,
+        month - 1,
+        day,
+        hour,
+        minute,
+        second
+    ));
+
+    if (
+        Number.isNaN(date.getTime())
+        || date.getUTCFullYear() != year
+        || date.getUTCMonth() != month - 1
+        || date.getUTCDate() != day
+    ) {
+        return undefined;
+    }
+
+    return date.toISOString();
+}
+
+function getCountryHeader(
+    headers: Record<string, string>,
+    colour: "White" | "Black"
+) {
+    return (
+        headers[`${colour}Country`]
+        || headers[`${colour}Federation`]
+        || headers[`${colour}Fed`]
+    );
+}
+
 function parsePgn(pgn: string): Game {
-    const sanitisedPGN = pgn.replace(/("])\n(\d+\.)/, "$1\n\n$2");
+    const sanitisedPGN = pgn.replace(/(\"])\n(\d+\.)/, "$1\n\n$2");
 
     const game = parseGame(sanitisedPGN);
 
-    const headers = game.tags as any;
+    const headers = (game.tags ?? {}) as unknown as Record<string, string>;
 
     const variant = headers["Variant"] == "Chess960"
         ? Variant.CHESS960 : Variant.STANDARD;
@@ -41,7 +106,9 @@ function parsePgn(pgn: string): Game {
                 username: headers["White"] || "White",
                 title: headers["WhiteTitle"],
                 rating: isNaN(ratings.white) ? undefined : ratings.white,
+                ratingChange: parseRatingChange(headers, "White"),
                 image: headers["WhiteUrl"],
+                country: getCountryHeader(headers, "White"),
                 result: parseResultString(
                     headers["Result"],
                     PieceColour.WHITE
@@ -51,7 +118,9 @@ function parsePgn(pgn: string): Game {
                 username: headers["Black"] || "Black",
                 title: headers["BlackTitle"],
                 rating: isNaN(ratings.black) ? undefined : ratings.black,
+                ratingChange: parseRatingChange(headers, "Black"),
                 image: headers["BlackUrl"],
+                country: getCountryHeader(headers, "Black"),
                 result: parseResultString(
                     headers["Result"],
                     PieceColour.BLACK
@@ -59,7 +128,8 @@ function parsePgn(pgn: string): Game {
             }
         },
         variant: variant,
-        initialPosition: initialPosition
+        initialPosition: initialPosition,
+        date: parsePgnDate(headers)
     };
 }
 

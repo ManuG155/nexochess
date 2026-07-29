@@ -109,11 +109,29 @@ function useImportGame() {
 
         // Load profile images from Chess.com if it is possible
         if (isGameFromChessCom(importedGame!)) {
-            getChessComProfileImages(importedGame!).then(images => {
-                analysisGame.players.white.image = images.white;
-                analysisGame.players.black.image = images.black;
+            getChessComProfileImages(importedGame!).then(profiles => {
+                analysisGame.players.white.image = profiles.white.image;
+                analysisGame.players.black.image = profiles.black.image;
 
-                setAnalysisGame(analysisGame);
+                analysisGame.players.white.country =
+                    profiles.white.country
+                    || analysisGame.players.white.country;
+
+                analysisGame.players.black.country =
+                    profiles.black.country
+                    || analysisGame.players.black.country;
+
+                setAnalysisGame({
+                    ...analysisGame,
+                    players: {
+                        white: {
+                            ...analysisGame.players.white
+                        },
+                        black: {
+                            ...analysisGame.players.black
+                        }
+                    }
+                });
             });
         }
 

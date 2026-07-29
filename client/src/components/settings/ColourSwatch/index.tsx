@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { HexColorPicker, HexColorInput } from "react-colorful";
 
 import ColourSwatchProps from "./ColourSwatchProps";
@@ -10,6 +11,8 @@ function ColourSwatch({
     open,
     onToggle
 }: ColourSwatchProps) {
+    const { t } = useTranslation("settings");
+
     return <div className={styles.wrapper}>
         <div
             className={styles.swatch}
@@ -37,7 +40,7 @@ function ColourSwatch({
                     className={styles.pickerInput}
                     color={colour}
                     onChange={onColourChange}
-                    placeholder="Colour..."
+                    placeholder={t("appearance.boardTheme.colourPlaceholder")}
                 />
             </div>
         }

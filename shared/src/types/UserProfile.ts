@@ -3,6 +3,7 @@ export interface UserProfile {
     username: string;
     roles: string[];
     createdAt: string;
+    dateOfBirth?: string;
 }
 
 export interface AuthedUserProfile extends UserProfile {

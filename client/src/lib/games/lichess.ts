@@ -96,12 +96,14 @@ async function getLichessGames(
                 white: {
                     username: whiteUsername,
                     rating: game.players.white.rating,
+                    ratingChange: game.players.white.ratingDiff,
                     title: game.players.white.user?.title,
                     result: results[PieceColour.WHITE]
                 },
                 black: {
                     username: blackUsername,
                     rating: game.players.black.rating,
+                    ratingChange: game.players.black.ratingDiff,
                     title: game.players.black.user?.title,
                     result: results[PieceColour.BLACK]
                 }

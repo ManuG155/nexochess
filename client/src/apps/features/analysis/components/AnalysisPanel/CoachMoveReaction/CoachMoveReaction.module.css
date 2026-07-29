@@ -1,0 +1,121 @@
+.wrapper {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 18px;
+
+    box-sizing: border-box;
+
+    width: 100%;
+    min-width: 0;
+
+    padding: 8px 4px 10px;
+}
+
+.portraitButton {
+    display: flex;
+    flex: 0 0 136px;
+    align-items: center;
+    justify-content: center;
+
+    width: 136px;
+    height: 136px;
+
+    padding: 0;
+
+    border: 0;
+    border-radius: 12px;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    transition: transform 150ms ease;
+}
+
+.portraitButton:hover {
+    transform: translateY(-1px);
+}
+
+.portraitButton:focus-visible {
+    outline: 2px solid rgba(129, 182, 76, 0.8);
+    outline-offset: 2px;
+}
+
+.portrait {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+    object-position: center bottom;
+}
+
+.bubble {
+    position: relative;
+
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+
+    box-sizing: border-box;
+
+    min-width: 0;
+    min-height: 112px;
+
+    padding: 22px 26px;
+
+    border-radius: 18px;
+
+    background: #FFFFFF;
+    color: #302E2B;
+
+    font-size: 1.22rem;
+    font-weight: 700;
+    line-height: 1.42;
+
+    overflow-wrap: anywhere;
+
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+/*
+ * El triángulo forma una sola silueta con el bocadillo.
+ * Se solapa un píxel para que nunca aparezca una ranura oscura.
+ */
+.bubble::before {
+    content: "";
+
+    position: absolute;
+    left: -19px;
+    top: 50%;
+
+    width: 20px;
+    height: 30px;
+
+    background: #FFFFFF;
+
+    clip-path: polygon(100% 0, 100% 100%, 0 50%);
+    transform: translateY(-50%);
+}
+
+@media (max-width: 640px) {
+    .wrapper {
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .portraitButton {
+        flex-basis: 88px;
+
+        width: 88px;
+        height: 88px;
+    }
+
+    .bubble {
+        min-height: 82px;
+
+        padding: 16px 18px;
+
+        font-size: 1rem;
+    }
+}

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: mailto:contact@nexochess.com?subject=NexoChess%20security%20report
+    about: Report vulnerabilities privately instead of opening a public issue.
+  - name: General contact
+    url: mailto:contact@nexochess.com
+    about: Questions that are not bugs or feature requests.

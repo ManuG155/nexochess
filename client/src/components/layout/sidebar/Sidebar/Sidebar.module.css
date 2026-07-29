@@ -37,6 +37,13 @@
     background-color: rgba(0, 0, 0, 0.15);
 }
 
+.titleLink {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    text-decoration: none;
+}
+
 .title {
     display: flex;
     justify-content: center;

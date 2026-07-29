@@ -1,6 +1,53 @@
-node_modules
-*/dist
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output and reports
+dist/
+*/dist/
+build/
+coverage/
+.nyc_output/
+*.tsbuildinfo
+
+# Runtime secrets and local configuration
 .env
-.vs
-.VSCodeCounter
-.vscode
+.env.*
+!.env.example
+
+# Logs and temporary files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.tmp
+*.temp
+.cache/
+
+# IDE and operating system
+.vscode/
+.vs/
+.VSCodeCounter/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local databases and containers
+.mongo-data/
+.docker-data/
+
+# Local replacement packages, patches and review artefacts
+/*.zip
+/git-diff*.patch
+/git-status*.txt
+/PATCH-MANIFEST.json
+/PATCH-NOTES.txt
+/V[0-9]*-README.txt
+/wintrchess-openings-v2/
+/wintrchess-review-movelist-v3-pack/
+/.nexochess-backup/
+/release-artifacts/
+
+# Local test artefacts
+playwright-report/
+test-results/

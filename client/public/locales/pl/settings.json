@@ -1,4 +1,63 @@
 {
+    "account": {
+        "title": "Konto",
+        "editProfile": {
+            "title": "Edytuj profil",
+            "displayName": {
+                "message": "Wprowadź nową nazwę wyświetlaną."
+            },
+            "username": {
+                "message": "Wprowadź nową nazwę użytkownika.",
+                "alreadyExists": "Konto z tą nazwą użytkownika już istnieje."
+            },
+            "email": {
+                "verification": "Wpisz nowy adres e-mail. Przed zastosowaniem zmiany wyślemy link zatwierdzający na Twój obecny adres.",
+                "verificationButton": {
+                    "unsent": "Wyślij e-mail weryfikacyjny",
+                    "sending": "Wysyłanie wiadomości…",
+                    "sent": "Wysłano e-mail weryfikacyjny",
+                    "cooldown": "Spróbuj ponownie później."
+                },
+                "same": "Już używasz tego adresu e-mail.",
+                "changeButton": {
+                    "unsent": "Poproś o zmianę e-maila",
+                    "sending": "Wysyłanie potwierdzenia…",
+                    "sent": "Sprawdź obecny e-mail"
+                },
+                "taken": "Istnieje już konto korzystające z tego adresu e-mail.",
+                "currentNotVerified": "Zweryfikuj obecny adres e-mail przed jego zmianą.",
+                "sessionExpired": "Sesja wygasła. Zaloguj się ponownie i spróbuj jeszcze raz.",
+                "cooldown": "Wysłano zbyt wiele żądań. Odczekaj chwilę i spróbuj ponownie.",
+                "sendFailed": "Nie udało się rozpocząć zmiany adresu e-mail. Spróbuj ponownie."
+            }
+        },
+        "manageAccount": {
+            "title": "Zarządzaj kontem",
+            "resetPassword": "Zresetuj hasło",
+            "resetPasswordDialog": "Wyślemy e-mail z linkiem umożliwiającym utworzenie nowego hasła.",
+            "deleteAccount": "Usuń konto",
+            "deleteAccountDialog": "Potwierdź usunięcie konta, wpisując w polu następujący tekst:",
+            "irreversibleAction": "Pamiętaj, że tej operacji nie można cofnąć."
+        }
+    },
+    "analysis": {
+        "title": "Analiza",
+        "arrowAppearance": "Wygląd strzałek",
+        "arrowWidth": "Szerokość strzałki (px)",
+        "headLength": "Długość grotu (px)",
+        "headWidth": "Szerokość grotu (px)",
+        "bestMoveColour": "Strzałka najlepszego ruchu",
+        "manualColour": "Ręczne strzałki",
+        "other": "Inne",
+        "showTimer": "Pokaż licznik czasu",
+        "colours": {
+            "green": "Zielony",
+            "orange": "Pomarańczowy",
+            "blue": "Niebieski",
+            "red": "Czerwony",
+            "purple": "Fioletowy"
+        }
+    },
     "boardAndPieces": {
         "title": "Szachownica i figury",
         "boardColour": "Kolor tablicy",
@@ -10,12 +69,130 @@
             "tournament": "Turniej",
             "blue": "Niebieski",
             "ice": "Lód",
-            "marshmallow": "Pianka"
+            "marshmallow": "Pianka",
+            "pillow": "Poduszka"
+        },
+        "coordinates": {
+            "title": "Współrzędne",
+            "position": "Położenie",
+            "inside": "Wewnątrz",
+            "outside": "Na zewnątrz"
         }
     },
     "bugReporting": {
         "title": "Zgłaszanie błędu",
         "bugReportingMode": "Tryb zgłaszania błędów",
         "bugReportingModeDescription": "Pomóż nam znaleźć i naprawić błędy. Tryb raportowania błędów aktywuje mały widżet w dolnym rogu ekranu, który możesz kliknąć, aby skopiować logi konsoli."
+    },
+    "privacy": "Prywatność",
+    "user": {
+        "title": "Użytkownik",
+        "description": "Zarządzaj swoją tożsamością NexoChess i bezpieczeństwem konta.",
+        "email": "E-mail",
+        "password": "Hasło",
+        "username": "Nazwa użytkownika",
+        "dateOfBirth": "Data urodzenia",
+        "optional": "Opcjonalne",
+        "change": "Zmień",
+        "add": "Dodaj",
+        "checking": "Sprawdzanie konta NexoChess…",
+        "notSet": "Nie ustawiono",
+        "save": "Zapisz",
+        "saving": "Zapisywanie…",
+        "remove": "Usuń",
+        "usernameTaken": "Ta nazwa użytkownika jest już zajęta.",
+        "usernameUpdateFailed": "Nie udało się zaktualizować nazwy użytkownika.",
+        "usernamePlaceholder": "Nowa nazwa użytkownika…",
+        "usernameDialog": "Wybierz nazwę użytkownika wyświetlaną na koncie NexoChess.",
+        "guest": {
+            "title": "Używasz NexoChess jako gość",
+            "description": "Przeanalizowane partie pozostają w lokalnym archiwum na tym urządzeniu. Zaloguj się z menu w prawym górnym rogu, aby zarządzać e-mailem, hasłem, nazwą użytkownika i opcjonalną datą urodzenia."
+        },
+        "dateOfBirthDialog": {
+            "description": "Opcjonalne. Ta informacja pozostaje prywatna i może zostać usunięta w dowolnym momencie.",
+            "invalid": "Wprowadź prawidłową datę między rokiem 1900 a dniem dzisiejszym."
+        },
+        "delete": {
+            "title": "Usuń konto",
+            "description": "Trwale usuń konto i jego archiwum w chmurze. Partie zapisane wyłącznie na tym urządzeniu nie zostaną usunięte.",
+            "confirm": "Wpisz {{username}}, aby potwierdzić trwałe usunięcie konta.",
+            "usernameMismatch": "Nazwa użytkownika nie jest zgodna."
+        }
+    },
+    "appearance": {
+        "title": "Wygląd",
+        "language": {
+            "title": "Język",
+            "description": "Wybierz język interfejsu NexoChess i wiadomości dotyczących konta."
+        },
+        "boardTheme": {
+            "title": "Motyw szachownicy",
+            "description": "Wybierz paletę szachownicy. Motywy wydarzeń i sponsorów są celowo pominięte.",
+            "lightSquares": "Jasne pola",
+            "darkSquares": "Ciemne pola",
+            "colourPlaceholder": "Kolor…",
+            "presets": {
+                "walnut": "Orzech",
+                "green": "Zielony",
+                "blue": "Niebieski",
+                "slate": "Łupek",
+                "ice": "Lód",
+                "sand": "Piasek",
+                "rose": "Różowy",
+                "purple": "Fioletowy",
+                "charcoal": "Grafit",
+                "ocean": "Oceaniczny",
+                "mint": "Mięta",
+                "orange": "Pomarańczowy"
+            }
+        },
+        "pieces": {
+            "title": "Zestaw figur",
+            "description": "Wybierz standardową rodzinę figur. Zestawy wydarzeń i sponsorów są pominięte.",
+            "note": "Grafika Neo z Chess.com nie jest dołączona, ponieważ jest własnościowa; dostępne zestawy to standardowe otwarte alternatywy."
+        },
+        "coordinates": {
+            "title": "Współrzędne",
+            "description": "Wybierz, czy współrzędne mają być wyświetlane wewnątrz, czy na zewnątrz szachownicy.",
+            "inside": "Wewnątrz",
+            "outside": "Na zewnątrz"
+        },
+        "preview": {
+            "title": "Podgląd",
+            "description": "Wybrana szachownica i figury są pokazane razem poniżej."
+        }
+    },
+    "coach": {
+        "title": "Trener",
+        "description": "Określ, czy trener ma być widoczny i animowany podczas analizy partii.",
+        "enabled": {
+            "title": "Włącz trenera",
+            "description": "Pokaż wybranego trenera i jego komentarze w podsumowaniu i analizie."
+        },
+        "animations": {
+            "title": "Animacje trenera",
+            "description": "Włącz mruganie i ruch ust. Wyłącz, aby używać statycznego portretu."
+        }
+    },
+    "privacySection": {
+        "title": "Prywatność",
+        "description": "Kontroluj dane zapisywane przez NexoChess w tej przeglądarce i zapoznaj się z zasadami dotyczącymi konta.",
+        "preferences": {
+            "title": "Preferencje danych",
+            "description": "Przejrzyj opcjonalne zgody używane przez witrynę. Niezbędnej pamięci dla ustawień, uwierzytelniania i lokalnego archiwum nie można tutaj wyłączyć.",
+            "manage": "Zarządzaj preferencjami"
+        },
+        "archive": {
+            "title": "Lokalne archiwum partii",
+            "description": "Analizy gościa są zapisywane wyłącznie w tej przeglądarce. Wyczyszczenie danych przeglądarki lub użycie przycisku poniżej trwale usunie lokalne partie.",
+            "clear": "Wyczyść lokalne archiwum",
+            "cleared": "Lokalne archiwum na tym urządzeniu zostało wyczyszczone.",
+            "confirm": "Usunąć wszystkie partie zapisane lokalnie na tym urządzeniu? Tej operacji nie można cofnąć."
+        },
+        "policies": {
+            "title": "Zasady",
+            "privacy": "Polityka prywatności",
+            "terms": "Warunki korzystania"
+        }
     }
 }

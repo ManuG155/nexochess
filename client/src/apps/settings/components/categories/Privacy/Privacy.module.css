@@ -1,0 +1,86 @@
+.introduction {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.introduction > span,
+.copy p {
+    max-width: 720px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.62);
+    line-height: 1.5;
+}
+
+.section,
+.linksSection,
+.infoCard {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    width: 100%;
+    padding: 6px 0;
+}
+
+.infoCard {
+    flex-direction: row;
+    align-items: flex-start;
+    box-sizing: border-box;
+    padding: 14px;
+    border: 1px solid rgba(90, 141, 229, 0.18);
+    border-radius: 12px;
+    background: rgba(70, 125, 232, 0.075);
+}
+
+.infoIcon {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(89, 153, 105, 0.2);
+    color: #9ed1aa;
+    font-size: 0.78rem;
+    font-weight: 900;
+}
+
+.copy {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.copy h2,
+.linksSection h2 {
+    margin: 0;
+    font-family: "Nunito", "Noto Sans", sans-serif;
+    font-size: 1.18rem;
+}
+
+.section button {
+    min-width: 180px;
+    font-size: 0.96rem;
+}
+
+.links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.links a {
+    padding: 9px 13px;
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.035);
+    color: rgba(255, 255, 255, 0.82);
+    text-decoration: none;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.links a:hover {
+    border-color: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.075);
+}
