@@ -11,6 +11,7 @@ function Button({
     iconSize,
     highlighted,
     tooltipId,
+    ariaLabel,
     disabled,
     onClick
 }: ButtonProps) {
@@ -26,10 +27,12 @@ function Button({
         disabled={disabled}
         onClick={onClick}
         data-tooltip-id={tooltipId}
+        aria-label={ariaLabel}
     >
         {icon && <img
             src={icon}
             height={iconSize || "22px"}
+            alt=""
         />}
 
         {children}

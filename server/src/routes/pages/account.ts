@@ -5,9 +5,26 @@ import appRouter from "@/lib/appRouter";
 
 const router = Router();
 
-router.get(/^\/(signin|signup)/,
-    appRouter("account/signin.html")
+const authPageRouter = appRouter(
+    "account/signin.html",
+    async req => {
+        const signingUp = req.path.startsWith("/signup");
+
+        return signingUp
+            ? {
+                AUTH_TITLE: "Create Account",
+                AUTH_DESCRIPTION: "Create a NexoChess account to sync your Archive across devices.",
+                AUTH_CANONICAL: "https://www.nexochess.com/signup"
+            }
+            : {
+                AUTH_TITLE: "Sign In",
+                AUTH_DESCRIPTION: "Sign in to your NexoChess account.",
+                AUTH_CANONICAL: "https://www.nexochess.com/signin"
+            };
+    }
 );
+
+router.get(/^\/(signin|signup)\/?$/, authPageRouter);
 
 // Profile page route disabled until the page is useful
 // router.get("/profile/:username", async (req, res, next) => {

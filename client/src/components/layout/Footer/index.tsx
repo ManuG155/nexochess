@@ -1,72 +1,61 @@
-import React, { lazy, Suspense, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import Typography from "@/components/Typography";
-import Dialog from "@/components/common/Dialog";
-import LoadingPlaceholder from "../LoadingPlaceholder";
-import { manageDataConsent } from "@/lib/consent";
+import LanguagesDialog from "@/components/settings/LanguagesDialog";
 
 import FooterProps from "./FooterProps";
 import * as styles from "./Footer.module.css";
 
-const LanguagesDialog = lazy(() => import(
-    "@/components/settings/LanguagesDialog"
-));
-
-function LoadingDialog() {
-    return <Dialog>
-        <LoadingPlaceholder/>
-    </Dialog>;
-}
-
 function Footer({ className, style }: FooterProps) {
     const { t } = useTranslation(["common", "helpCenter"]);
+    const [languagesOpen, setLanguagesOpen] = useState(false);
 
-    const copyrightYear = useMemo(() => (
-        new Date().getFullYear()
-    ), []);
-
-    const [ languagesOpen, setLanguagesOpen ] = useState(false);
+    const copyrightYear = useMemo(
+        () => new Date().getFullYear(),
+        []
+    );
 
     return <footer
-        className={`${styles.wrapper} ${className}`}
+        className={`${styles.wrapper} ${className || ""}`}
         style={style}
     >
-        <div className={styles.section}>
+        <div className={styles.brandSection}>
             <Typography
                 iconClassName={styles.typographyIcon}
                 textClassName={styles.typographyText}
                 includeIcon
             />
 
-            <span className={styles.copyrightNotice}>
-                Copyright © {copyrightYear} wintrchess.com
-            </span>
+            <p className={styles.tagline}>
+                {t("footer.tagline")}
+            </p>
 
             <span className={styles.copyrightNotice}>
-                All rights reserved
+                {t("footer.copyright", { year: copyrightYear })}
             </span>
         </div>
 
-        <div className={styles.links}>
-            <div className={styles.section}>
+        <nav className={styles.links} aria-label={t("footer.navigationLabel")}>
+            <div className={styles.linkGroup}>
                 <a href="/help">
-                    {t("title", { ns: "helpCenter" })}
+                    {t("navigationTitle", { ns: "helpCenter" })}
                 </a>
 
-                <span className={styles.link} onClick={manageDataConsent}>
-                    {t("footer.privacySettings")}
-                </span>
-
-                <span
-                    className={styles.link}
+                <button
+                    type="button"
+                    className={styles.linkButton}
                     onClick={() => setLanguagesOpen(true)}
                 >
                     {t("footer.language")}
-                </span>
+                </button>
+
+                <a href="mailto:contact@nexochess.com">
+                    {t("footer.contact")}
+                </a>
             </div>
 
-            <div className={styles.section}>
+            <div className={styles.linkGroup}>
                 <a href="/terms">
                     {t("footer.termsOfService")}
                 </a>
@@ -75,17 +64,19 @@ function Footer({ className, style }: FooterProps) {
                     {t("footer.privacyPolicy")}
                 </a>
 
-                <a href="https://github.com/WintrCat/wintrchess">
+                <a href="/source">
                     {t("footer.openSource")}
                 </a>
             </div>
-        </div>
+        </nav>
 
-        <Suspense fallback={<LoadingDialog/>}>
-            {languagesOpen && <LanguagesDialog
-                onClose={() => setLanguagesOpen(false)}
-            />}
-        </Suspense>
+        <span className={styles.licenseNotice}>
+            {t("footer.license")}
+        </span>
+
+        {languagesOpen && <LanguagesDialog
+            onClose={() => setLanguagesOpen(false)}
+        />}
     </footer>;
 }
 

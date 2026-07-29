@@ -1,0 +1,231 @@
+{
+  "common": {
+    "legalLabel": "法律与透明度",
+    "contents": "本页目录",
+    "updated": "最后更新：2026年7月28日",
+    "contactTitle": "有疑问或个人数据请求？",
+    "contactDescription": "请通过 NexoChess 官方联系邮箱向我们发送请求。",
+    "contactButton": "联系 NexoChess"
+  },
+  "terms": {
+    "pageTitle": "服务条款 — NexoChess",
+    "title": "服务条款",
+    "summary": "使用 NexoChess、创建可选账户或导入棋局进行分析时适用的规则。",
+    "plainTitle": "核心内容",
+    "plainSummary": "请合法使用 NexoChess，只提交你有权处理的棋局，并将电脑分析视为参考而非保证。",
+    "sections": {
+      "scope": {
+        "title": "适用范围与接受",
+        "paragraphs": [
+          "本条款适用于访问 nexochess.com 上的 NexoChess 及相关服务。联系邮箱：contact@nexochess.com。",
+          "使用 NexoChess 即表示你接受本条款。如果不同意，请勿使用本服务。"
+        ]
+      },
+      "service": {
+        "title": "NexoChess 提供的服务",
+        "paragraphs": [
+          "NexoChess 提供棋局导入、Stockfish 分析、走法分类、总结及相关工具。核心分析可在浏览器中运行，账户和同步功能可能使用我们的服务器。",
+          "引擎评估属于估算，可能因搜索深度、硬件、设置和版本而不同。"
+        ]
+      },
+      "accounts": {
+        "title": "可选账户",
+        "paragraphs": [
+          "主要分析功能无需账户。账户可用于在设备之间同步棋局、偏好设置和账户功能。",
+          "你应提供准确资料、保护登录凭据，并在怀疑未经授权访问时通知我们。可在账户设置中或通过邮件申请删除账户。"
+        ]
+      },
+      "acceptableUse": {
+        "title": "允许的使用方式",
+        "paragraphs": [
+          "你可以出于个人、教育和合法目的使用 NexoChess。"
+        ],
+        "bullets": [
+          "不得攻击、过载、探测或干扰服务。",
+          "不得上传恶意内容，或以损害服务及其他用户的方式进行自动访问。",
+          "不得利用 NexoChess 侵犯版权、隐私、合同权利或法律。",
+          "不得冒充 NexoChess，或虚假声称与其他国际象棋平台存在官方关系。"
+        ]
+      },
+      "gameContent": {
+        "title": "你提交的棋局与内容",
+        "paragraphs": [
+          "你保留对所提交 PGN、FEN 及其他材料的权利。你仅授予 NexoChess 为处理、分析、显示以及在选择云存储时保存这些内容所必需的有限许可。",
+          "仅提交你有权使用的内容。Chess.com 或 Lichess 的公开标识仅用于获取你选择的公开棋局。"
+        ]
+      },
+      "thirdParties": {
+        "title": "第三方服务",
+        "paragraphs": [
+          "NexoChess 可能使用 Google 登录、Brevo 交易邮件，以及 Chess.com 或 Lichess 的公开服务导入棋局。各提供商适用其自己的条款与政策。",
+          "NexoChess 独立运营，未获得上述提供商的背书。"
+        ]
+      },
+      "openSource": {
+        "title": "开源软件与许可证",
+        "paragraphs": [
+          "NexoChess 基于 GPL-3.0 软件，并包含 Stockfish 等其他开源组件。“源代码与许可证”页面说明如何获取与当前 NexoChess 版本对应的源代码，并列出上游项目。",
+          "开源组件继续受各自许可证约束。品牌名称和标志归其各自所有者。"
+        ]
+      },
+      "availability": {
+        "title": "可用性与服务变更",
+        "paragraphs": [
+          "我们可能维护、修改、暂停或停止 NexoChess 的部分功能。我们会尽力保持可靠，但不保证持续可用、永久存储或与所有设备兼容。",
+          "请自行导出或保存对你重要的信息。"
+        ]
+      },
+      "liability": {
+        "title": "免责声明与责任",
+        "paragraphs": [
+          "NexoChess 按现状和可用性提供。分析仅供参考，不保证棋力提升、比赛结果或完全无误。",
+          "在法律允许的最大范围内，NexoChess 不对间接损失、数据丢失或因依赖引擎输出造成的损失负责。法律不可排除的权利和责任不受影响。"
+        ]
+      },
+      "changes": {
+        "title": "条款变更",
+        "paragraphs": [
+          "当服务、法律或供应商发生变化时，我们可能更新本条款。页面顶部日期为最新修订日期。",
+          "在合理可行时，重大变更会在服务中提示。生效后继续使用即适用更新后的条款。"
+        ]
+      }
+    }
+  },
+  "privacy": {
+    "pageTitle": "隐私政策 — NexoChess",
+    "title": "隐私政策",
+    "summary": "清楚说明 NexoChess 在浏览器中保存什么、可选账户增加什么，以及哪些供应商协助我们运营。",
+    "plainTitle": "隐私概览",
+    "plainSummary": "访客分析可仅保留在浏览器中。账户会增加服务器存储和身份验证。NexoChess 目前不使用行为广告或可选分析 Cookie。",
+    "sections": {
+      "controller": {
+        "title": "谁负责处理数据",
+        "paragraphs": [
+          "NexoChess 负责本政策所述个人数据。隐私问题和权利请求可发送至 contact@nexochess.com。",
+          "本政策适用于 nexochess.com 和 NexoChess 网页应用。"
+        ]
+      },
+      "dataCollected": {
+        "title": "我们可能处理的数据",
+        "paragraphs": [
+          "处理的数据取决于你如何使用 NexoChess。"
+        ],
+        "bullets": [
+          "浏览器数据：语言、外观、分析设置和本地保存的棋局。",
+          "账户数据：电子邮箱、用户名、身份验证记录、会话和偏好设置。",
+          "Google 登录数据：选择该方式时 Google 提供的基本账户信息。",
+          "棋局数据：PGN、FEN、棋手姓名、公开用户名、分析结果和档案元数据。",
+          "运行数据：IP 地址、请求元数据、安全事件和为运行与保护服务所需的有限服务器日志。",
+          "你发送至 contact@nexochess.com 的消息。"
+        ]
+      },
+      "purposes": {
+        "title": "数据用途",
+        "paragraphs": [
+          "我们处理数据以提供分析、记住设置、维护本地或同步档案、验证账户、发送账户邮件、防止滥用、排查故障并回复支持或法律请求。",
+          "我们目前不使用行为广告或可选分析 Cookie。如未来改变，在提供必要信息并取得所需同意前，不会启用非必要跟踪。"
+        ]
+      },
+      "browserStorage": {
+        "title": "浏览器存储与本地档案",
+        "paragraphs": [
+          "NexoChess 使用 localStorage 和 IndexedDB 实现语言与设置记忆、保留最近一次导入，以及在本地档案中保存访客棋局。",
+          "这些数据会保留在该浏览器中，直至你在 NexoChess 或浏览器中删除。清除数据、隐私浏览或更换设备可能导致数据不可用。"
+        ]
+      },
+      "accounts": {
+        "title": "账户与身份验证",
+        "paragraphs": [
+          "创建账户后，账户数据和同步档案会存入我们的数据库。密码由身份验证系统处理，不会以可读明文保存。",
+          "使用 Google 登录时，由 Google 完成身份验证并提供创建或关联账户所需的信息。验证、重置密码和更改邮箱的邮件均由 contact@nexochess.com 发出。"
+        ]
+      },
+      "providers": {
+        "title": "服务提供商与外部平台",
+        "paragraphs": [
+          "我们只在运营服务所必需时使用提供商。"
+        ],
+        "bullets": [
+          "Google：可选 OAuth 登录。",
+          "Brevo：账户交易邮件。",
+          "托管、数据库和安全提供商：应用交付、存储、备份和保护。",
+          "Chess.com 与 Lichess：按你的请求获取公开棋局。"
+        ]
+      },
+      "retention": {
+        "title": "数据保留期限",
+        "paragraphs": [
+          "本地数据会保留到你或浏览器删除。账户数据在账户有效期间保存，删除账户后仅在安全、备份或法律义务所需的有限期间保留。",
+          "运行日志仅保留合理期限。不再需要的数据会被删除或匿名化。"
+        ]
+      },
+      "rights": {
+        "title": "你的权利",
+        "paragraphs": [
+          "根据你所在地区，你可能有权请求访问、更正、删除、限制、反对或数据可携带，并在处理依据为同意时撤回同意。",
+          "请向 contact@nexochess.com 提交请求。你也可向西班牙数据保护机构或所在国家的主管机构投诉。"
+        ]
+      },
+      "children": {
+        "title": "未成年人",
+        "paragraphs": [
+          "NexoChess 不面向 14 岁以下儿童。如果当地法律要求更高的独立同意年龄，则适用该年龄。",
+          "如果你认为儿童在未获必要许可时提供了个人数据，请联系我们进行审查和删除。"
+        ]
+      },
+      "changes": {
+        "title": "政策变更",
+        "paragraphs": [
+          "当 NexoChess、供应商或适用法律发生变化时，我们可能更新本政策。修订日期显示在顶部。",
+          "在合理可行时，重大变更会在服务中突出显示。"
+        ]
+      }
+    },
+    "resources": {
+      "title": "关联提供商的隐私信息",
+      "description": "以下链接说明当你选择这些独立服务时，其如何处理数据。",
+      "google": "Google 隐私政策",
+      "brevo": "Brevo 隐私政策",
+      "chessCom": "Chess.com 隐私政策",
+      "lichess": "Lichess 隐私政策"
+    }
+  },
+  "source": {
+    "pageTitle": "源代码与许可证 — NexoChess",
+    "title": "源代码与许可证",
+    "summary": "了解如何获取 NexoChess 源代码，以及上游项目与许可证之间的关系。",
+    "nexochess": {
+      "title": "NexoChess 源代码",
+      "description": "向用户提供的 NexoChess 版本所对应的源代码以 GPL-3.0 提供。配置后主按钮会打开我们的仓库；否则会生成源代码请求邮件。",
+      "openRepository": "打开 NexoChess 仓库",
+      "requestSource": "请求源代码",
+      "requestSubject": "申请 NexoChess 源代码",
+      "requestBody": "您好：\\n\\n我希望获取或查看与当前 NexoChess 版本对应的源代码。\\n\\n谢谢。",
+      "requestInstructions": "公开代码仓库上线后会在此显示。在此之前，你可以发送申请，说明需要当前已发布版本所对应的源代码。",
+      "copyEmail": "复制联系邮箱",
+      "copied": "邮箱已复制",
+      "openEmail": "打开邮件应用"
+    },
+    "upstream": {
+      "badge": "上游项目",
+      "title": "基于 WintrChess",
+      "description": "NexoChess 是基于 WintrCat 的 WintrChess 修改并独立品牌化的版本。此链接用于标明上游项目，并不能替代 NexoChess 自身的源代码仓库。",
+      "open": "打开 WintrChess 上游项目"
+    },
+    "stockfish": {
+      "title": "Stockfish",
+      "description": "国际象棋分析由 Stockfish 17 驱动。Stockfish 是以 GPL-3.0 发布的自由软件。",
+      "open": "打开 Stockfish 源代码"
+    },
+    "licenses": {
+      "badge": "第三方软件",
+      "title": "许可证与署名",
+      "description": "NexoChess 还包含具有各自许可证的库、字体、图标和数据。仓库中包含相应许可证通知与署名文件。",
+      "contact": "查看许可证与署名"
+    },
+    "notice": {
+      "title": "商业使用不会取消开源义务",
+      "description": "NexoChess 可以商业运营并继续免费供用户使用。所列许可证仍适用于被分发的软件。"
+    }
+  }
+}

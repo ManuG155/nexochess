@@ -1,4 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, {
+    useEffect,
+    useMemo,
+    useRef,
+    useState
+} from "react";
 import { useTranslation } from "react-i18next";
 import { trim } from "lodash-es";
 
@@ -6,6 +11,7 @@ import { Game, getColourPlayed } from "shared/types/game/Game";
 import PieceColour from "shared/constants/PieceColour";
 import {
     GameSource,
+    GameSourceData,
     GameSourceType,
     GameSelectorButton
 } from "@/components/chess/GameSelector/GameSource";
@@ -20,6 +26,8 @@ import * as styles from "./GameSelector.module.css";
 
 import iconInterfaceSearch from "@assets/img/interface/search.svg";
 import iconInterfaceUpload from "@assets/img/interface/upload.svg";
+import iconInterfaceCopy from "@assets/img/interface/copy.svg";
+import iconInterfaceClose from "@assets/img/interface/close.svg";
 
 const sourcePlaceholderKeys: Record<GameSourceType, string> = {
     PGN: "pgn",
@@ -27,6 +35,20 @@ const sourcePlaceholderKeys: Record<GameSourceType, string> = {
     CHESS_COM: "chessCom",
     LICHESS: "lichess"
 };
+
+interface PgnPreview {
+    white?: string;
+    black?: string;
+    result?: string;
+}
+
+function getPgnTag(pgn: string, tag: string): string | undefined {
+    const match = pgn.match(
+        new RegExp(`\\[${tag}\\s+"([^"]*)"\\]`, "i")
+    );
+
+    return match?.[1]?.trim() || undefined;
+}
 
 function GameSelector({
     style,
@@ -68,8 +90,30 @@ function GameSelector({
     });
 
     const [ searchMenuOpen, setSearchMenuOpen ] = useState(false);
+    const [ feedbackKey, setFeedbackKey ] = useState<string>();
+    const [ dragActive, setDragActive ] = useState(false);
 
-    // Emit selected game when it updates
+    const dragDepth = useRef(0);
+
+    const pgnPreview = useMemo<PgnPreview | null>(() => {
+        if (gameSource.key != GameSource.PGN.key) return null;
+        if (!currentFieldInput.trim()) return null;
+
+        const preview = {
+            white: getPgnTag(currentFieldInput, "White"),
+            black: getPgnTag(currentFieldInput, "Black"),
+            result: getPgnTag(currentFieldInput, "Result")
+        };
+
+        return preview.white || preview.black || preview.result
+            ? preview
+            : null;
+    }, [currentFieldInput, gameSource.key]);
+
+    const hasInput = currentFieldInput.trim().length > 0;
+    const selectedServiceGame = serviceGames[gameSource.key];
+    const isReady = hasInput || Boolean(selectedServiceGame);
+
     useEffect(() => {
         if (gameSource.selectorButton == GameSelectorButton.SEARCH_GAMES) {
             return onGameSelect?.(serviceGames[gameSource.key]);
@@ -77,6 +121,17 @@ function GameSelector({
 
         onGameSelect?.(currentFieldInput || null);
     }, [currentFieldInput, serviceGames]);
+
+    useEffect(() => {
+        if (!feedbackKey) return;
+
+        const timeout = window.setTimeout(
+            () => setFeedbackKey(undefined),
+            2600
+        );
+
+        return () => window.clearTimeout(timeout);
+    }, [feedbackKey]);
 
     function updateFieldInput(value: string) {
         const updatedFieldInputs = {
@@ -90,95 +145,273 @@ function GameSelector({
         setSavedFieldInput(gameSource.key, value);
     }
 
+    function selectGameSource(source: GameSourceData) {
+        setGameSource(source);
+        setFeedbackKey(undefined);
+        setDragActive(false);
+
+        if (!saveLocalStorage) return;
+        setSavedGameSource(source.key);
+    }
+
     function openGameSearchMenu() {
         if (currentFieldInput.length == 0) return;
 
         setSearchMenuOpen(true);
     }
 
-    return <div className={styles.wrapper} style={style}>
-        <div className={styles.gameSourceSection}>
-            <div className={styles.gameSourceLabel}>
-                {t("gameSelector.sourceLabel")}
-            </div>
+    async function importPgnFile(file?: File) {
+        if (!file || !file.name.toLowerCase().endsWith(".pgn")) {
+            setFeedbackKey("gameSelector.fileError");
+            return;
+        }
 
-            <select
-                className={styles.gameSourceSelector}
-                onChange={event => {
-                    const newGameSource = Object.values(GameSource).find(
-                        source => source.key == event.target.value
-                    ) || GameSource.PGN;
+        const pgn = await file.text();
 
-                    setGameSource(newGameSource);
+        if (!pgn.trim()) {
+            setFeedbackKey("gameSelector.fileError");
+            return;
+        }
 
-                    if (!saveLocalStorage) return;
-                    setSavedGameSource(newGameSource.key);
-                }}
-                value={gameSource.key}
-            >
-                {Object.values(GameSource)
-                    .map(source => <option key={source.key} value={source.key}>
-                        {source.title}
-                    </option>)
-                }
-            </select>
+        updateFieldInput(pgn);
+        setFeedbackKey("gameSelector.fileSuccess");
+    }
+
+    async function pasteFromClipboard() {
+        if (!navigator.clipboard?.readText) {
+            setFeedbackKey("gameSelector.clipboardError");
+            return;
+        }
+
+        try {
+            const text = await navigator.clipboard.readText();
+
+            if (!text.trim()) {
+                setFeedbackKey("gameSelector.clipboardEmpty");
+                return;
+            }
+
+            updateFieldInput(text);
+            setFeedbackKey("gameSelector.clipboardSuccess");
+        } catch {
+            setFeedbackKey("gameSelector.clipboardError");
+        }
+    }
+
+    function onDragEnter(event: React.DragEvent<HTMLDivElement>) {
+        if (gameSource.key != GameSource.PGN.key) return;
+
+        event.preventDefault();
+        dragDepth.current += 1;
+        setDragActive(true);
+    }
+
+    function onDragOver(event: React.DragEvent<HTMLDivElement>) {
+        if (gameSource.key != GameSource.PGN.key) return;
+
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "copy";
+    }
+
+    function onDragLeave(event: React.DragEvent<HTMLDivElement>) {
+        if (gameSource.key != GameSource.PGN.key) return;
+
+        event.preventDefault();
+        dragDepth.current = Math.max(0, dragDepth.current - 1);
+
+        if (dragDepth.current == 0) setDragActive(false);
+    }
+
+    async function onDrop(event: React.DragEvent<HTMLDivElement>) {
+        if (gameSource.key != GameSource.PGN.key) return;
+
+        event.preventDefault();
+        dragDepth.current = 0;
+        setDragActive(false);
+
+        await importPgnFile(event.dataTransfer.files.item(0) || undefined);
+    }
+
+    const inputKey = sourcePlaceholderKeys[gameSource.key];
+
+    return <div
+        className={`${styles.wrapper} ${dragActive ? styles.dragActive : ""}`}
+        style={style}
+        onDragEnter={onDragEnter}
+        onDragOver={onDragOver}
+        onDragLeave={onDragLeave}
+        onDrop={onDrop}
+    >
+        <div
+            className={styles.sourceTabs}
+            role="tablist"
+            aria-label={t("gameSelector.sourceTabsLabel")}
+        >
+            {Object.values(GameSource).map(source => (
+                <button
+                    key={source.key}
+                    type="button"
+                    role="tab"
+                    aria-selected={gameSource.key == source.key}
+                    className={`${styles.sourceTab} ${
+                        gameSource.key == source.key
+                            ? styles.sourceTabActive
+                            : ""
+                    }`}
+                    onClick={() => selectGameSource(source)}
+                >
+                    {source.title}
+                </button>
+            ))}
         </div>
 
-        <textarea
-            className={styles.selectorField}
-            placeholder={t(
-                "gameSelector.sourcePlaceholders."
-                + sourcePlaceholderKeys[gameSource.key]
+        <div className={styles.editorCard}>
+            <div className={styles.fieldHeader}>
+                <div className={styles.fieldHeading}>
+                    <span className={styles.fieldLabel}>
+                        {t(`gameSelector.inputLabels.${inputKey}`)}
+                    </span>
+
+                    <span className={styles.fieldHelper}>
+                        {t(`gameSelector.helperText.${inputKey}`)}
+                    </span>
+                </div>
+
+                <div className={styles.fieldActions}>
+                    {gameSource.key == GameSource.PGN.key && (
+                        <button
+                            type="button"
+                            className={styles.utilityButton}
+                            onClick={pasteFromClipboard}
+                        >
+                            <img src={iconInterfaceCopy} alt="" />
+                            {t("gameSelector.pasteButton")}
+                        </button>
+                    )}
+
+                    {hasInput && (
+                        <button
+                            type="button"
+                            className={styles.utilityButton}
+                            onClick={() => updateFieldInput("")}
+                        >
+                            <img src={iconInterfaceClose} alt="" />
+                            {t("gameSelector.clearButton")}
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            <textarea
+                className={`${styles.selectorField} ${
+                    gameSource.expandField
+                        ? styles.selectorFieldExpanded
+                        : styles.selectorFieldCompact
+                }`}
+                placeholder={t(
+                    "gameSelector.sourcePlaceholders."
+                    + inputKey
+                )}
+                value={currentFieldInput}
+                spellCheck={false}
+                onChange={event => updateFieldInput(event.target.value)}
+                onKeyDown={event => {
+                    if (event.key != "Enter") return;
+                    if (
+                        gameSource.selectorButton
+                        != GameSelectorButton.SEARCH_GAMES
+                    ) return;
+
+                    event.preventDefault();
+                    openGameSearchMenu();
+                }}
+            />
+
+            {pgnPreview && (
+                <div className={styles.gamePreview}>
+                    <span className={styles.previewTitle}>
+                        {t("gameSelector.preview.title")}
+                    </span>
+
+                    <div className={styles.previewPlayers}>
+                        <span title={t("gameSelector.preview.white")}>
+                            {pgnPreview.white || t("gameSelector.preview.unknown")}
+                        </span>
+
+                        <strong>{pgnPreview.result || "—"}</strong>
+
+                        <span title={t("gameSelector.preview.black")}>
+                            {pgnPreview.black || t("gameSelector.preview.unknown")}
+                        </span>
+                    </div>
+                </div>
             )}
-            style={{
-                height: gameSource.expandField ? "170px" : "70px",
-                borderRadius: gameSource.selectorButton != undefined
-                    ? undefined : "0 0 10px 10px"
-            }}
-            value={currentFieldInput}
-            onChange={event => updateFieldInput(event.target.value)}
-            onKeyDown={event => {
-                if (event.key != "Enter") return;
-                if (
-                    gameSource.selectorButton
-                    != GameSelectorButton.SEARCH_GAMES
-                ) return;
 
-                event.preventDefault();
-                openGameSearchMenu();
-            }}
-        />
+            <div className={styles.fieldFooter}>
+                <span className={isReady ? styles.readyStatus : styles.emptyStatus}>
+                    <span className={styles.statusDot} />
+                    {t(
+                        isReady
+                            ? "gameSelector.ready"
+                            : "gameSelector.empty"
+                    )}
+                </span>
 
-        {gameSource.selectorButton == GameSelectorButton.SEARCH_GAMES
-            && <Button
+                <span className={styles.characterCount}>
+                    {t("gameSelector.characters", {
+                        count: currentFieldInput.length
+                    })}
+                </span>
+            </div>
+
+            {feedbackKey && (
+                <div className={styles.feedback} role="status">
+                    {t(feedbackKey)}
+                </div>
+            )}
+        </div>
+
+        {gameSource.selectorButton == GameSelectorButton.SEARCH_GAMES && (
+            <Button
                 className={styles.selectorButton}
                 icon={iconInterfaceSearch}
-                iconSize="25px"
+                iconSize="22px"
+                disabled={!hasInput}
                 onClick={openGameSearchMenu}
             >
                 {t("gameSelector.searchGamesButton")}
             </Button>
-        }
+        )}
 
-        {gameSource.selectorButton == GameSelectorButton.UPLOAD_FILE
-            && <FileUploader
+        {gameSource.selectorButton == GameSelectorButton.UPLOAD_FILE && (
+            <FileUploader
                 extensions={[".pgn"]}
                 onFilesUpload={async files => {
-                    const pgn = await files.item(0)?.text();
-                    if (!pgn) return;
-
-                    updateFieldInput(pgn);
+                    await importPgnFile(files.item(0) || undefined);
                 }}
             >
                 <Button
                     className={styles.selectorButton}
                     icon={iconInterfaceUpload}
-                    iconSize="25px"
+                    iconSize="22px"
                 >
                     {t("gameSelector.uploadPGNButton")}
                 </Button>
             </FileUploader>
-        }
+        )}
+
+        {gameSource.key == GameSource.PGN.key && (
+            <span className={styles.dropHint}>
+                {t("gameSelector.dropHint")}
+            </span>
+        )}
+
+        {dragActive && (
+            <div className={styles.dropOverlay}>
+                <img src={iconInterfaceUpload} alt="" />
+                <strong>{t("gameSelector.dropOverlay")}</strong>
+            </div>
+        )}
         
         {searchMenuOpen && <GameSearchMenu
             username={trim(currentFieldInput)}

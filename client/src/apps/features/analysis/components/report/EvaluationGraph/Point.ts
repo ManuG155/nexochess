@@ -6,7 +6,7 @@ interface EvaluationGraphPoint {
     state: BoardState;
     evaluation: Evaluation;
     x: number;
-    y: number;
+    y: number | null;
 }
 
 export default EvaluationGraphPoint;

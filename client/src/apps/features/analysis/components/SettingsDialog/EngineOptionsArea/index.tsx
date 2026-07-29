@@ -13,25 +13,25 @@ import SwitchSetting from "@/components/settings/SwitchSetting";
 
 import * as styles from "../SettingsDialog.module.css";
 
-const engineVersionOptions = [
-    {
-        label: "Stockfish 17 (68 MB)",
-        value: EngineVersion.STOCKFISH_17
-    },
-    {
-        label: "Stockfish 17 Lite (Recommended)",
-        value: EngineVersion.STOCKFISH_17_LITE
-    },
-    {
-        label: "Stockfish 17 (Compatibility)",
-        value: EngineVersion.STOCKFISH_17_ASM
-    }
-];
-
 function EngineOptionsArea() {
     const { t, i18n } = useTranslation(["analysis", "common"]);
 
     const { settings, setSettings } = useSettingsStore();
+
+    const engineVersionOptions = useMemo(() => [
+        {
+            label: t("settings.engine.options.full"),
+            value: EngineVersion.STOCKFISH_17
+        },
+        {
+            label: t("settings.engine.options.liteRecommended"),
+            value: EngineVersion.STOCKFISH_17_LITE
+        },
+        {
+            label: t("settings.engine.options.compatibility"),
+            value: EngineVersion.STOCKFISH_17_ASM
+        }
+    ], [i18n.language, t]);
 
     const engineArrowsOptions = useMemo(() => [
         {
@@ -42,11 +42,7 @@ function EngineOptionsArea() {
             label: t("settings.engine.suggestionArrows.continuation"),
             value: EngineArrowType.TOP_CONTINUATION
         },
-        {
-            label: t("settings.engine.suggestionArrows.alternative"),
-            value: EngineArrowType.TOP_ALTERNATIVE
-        }
-    ], [i18n.language]);
+    ], [i18n.language, t]);
 
     return <>
         <span className={styles.header}>

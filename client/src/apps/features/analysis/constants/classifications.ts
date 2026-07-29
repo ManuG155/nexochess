@@ -15,6 +15,17 @@ import iconClassificationsRisky from "@assets/img/classifications/risky.png";
 import iconClassificationsLoading from "@assets/img/classifications/loading.png";
 import iconClassificationsError from "@assets/img/classifications/error.png";
 
+const iconClassificationsMiss =
+    `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+            <circle cx="32" cy="32" r="30" fill="#f87171"/>
+            <path d="M20 20 L44 44 M44 20 L20 44"
+                stroke="white"
+                stroke-width="8"
+                stroke-linecap="round"/>
+        </svg>
+    `)}`;
+
 export const classificationImages = {
     [Classification.BRILLIANT]: iconClassificationsBrilliant,
     [Classification.CRITICAL]: iconClassificationsCritical,
@@ -23,6 +34,7 @@ export const classificationImages = {
     [Classification.OKAY]: iconClassificationsOkay,
     [Classification.INACCURACY]: iconClassificationsInaccuracy,
     [Classification.MISTAKE]: iconClassificationsMistake,
+    [Classification.MISS]: iconClassificationsMiss,
     [Classification.BLUNDER]: iconClassificationsBlunder,
     [Classification.FORCED]: iconClassificationsForced,
     [Classification.THEORY]: iconClassificationsTheory,
@@ -41,6 +53,7 @@ export const classificationColours = {
     [Classification.OKAY]: "#97af8b",
     [Classification.INACCURACY]: "#f4bf44",
     [Classification.MISTAKE]: "#e28c28",
+    [Classification.MISS]: "#ff6b6b",
     [Classification.BLUNDER]: "#c93230",
     [Classification.FORCED]: "#97af8b",
     [Classification.THEORY]: "#a88764",
@@ -55,6 +68,7 @@ export const classificationNames = {
     [Classification.OKAY]: "classifications.okay",
     [Classification.INACCURACY]: "classifications.inaccuracy",
     [Classification.MISTAKE]: "classifications.mistake",
+    [Classification.MISS]: "classifications.miss",
     [Classification.BLUNDER]: "classifications.blunder",
     [Classification.FORCED]: "classifications.forced",
     [Classification.THEORY]: "classifications.theory",

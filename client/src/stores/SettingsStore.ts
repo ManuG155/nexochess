@@ -19,6 +19,13 @@ const settingsSchema = z.object({
             threads: z.number().min(1).max(64),
             suggestionArrows: z.enum(EngineArrowType)
         }),
+        arrowStyle: z.object({
+            width: z.number().min(4).max(40),
+            headLength: z.number().min(8).max(64),
+            headWidth: z.number().min(8).max(64),
+            suggestionColour: z.string(),
+            manualColour: z.string()
+        }),
         classifications: z.object({
             hide: z.boolean(),
             included: z.object({
@@ -27,12 +34,26 @@ const settingsSchema = z.object({
                 theory: z.boolean()
             })
         }),
-        simpleNotation: z.boolean()
+        simpleNotation: z.boolean(),
+        showTimer: z.boolean()
+    }),
+    appearance: z.object({
+        selectedCoach: z.enum([
+            "fog",
+            "foxy",
+            "cybe",
+            "max_rooks"
+        ])
+    }),
+    coach: z.object({
+        enabled: z.boolean(),
+        animations: z.boolean()
     }),
     themes: z.object({
         board: z.object({
             darkSquareColour: z.string().regex(/^#.{6}$/),
-            lightSquareColour: z.string().regex(/^#.{6}$/)
+            lightSquareColour: z.string().regex(/^#.{6}$/),
+            coordinates: z.enum(["inside", "outside"])
         }),
         piece: z.string()
     }),
@@ -52,7 +73,14 @@ export const defaultSettings: Settings = {
             timeLimitEnabled: false,
             timeLimit: 1,
             threads: 4,
-            suggestionArrows: EngineArrowType.DISABLED
+            suggestionArrows: EngineArrowType.TOP_CONTINUATION
+        },
+        arrowStyle: {
+            width: 16,
+            headLength: 32,
+            headWidth: 40,
+            suggestionColour: "#97bf5b",
+            manualColour: "#f1b24a"
         },
         classifications: {
             hide: false,
@@ -62,14 +90,23 @@ export const defaultSettings: Settings = {
                 theory: true
             }
         },
-        simpleNotation: false
+        simpleNotation: false,
+        showTimer: true
+    },
+    appearance: {
+        selectedCoach: "fog"
+    },
+    coach: {
+        enabled: true,
+        animations: true
     },
     themes: {
         board: {
             darkSquareColour: "#b58863",
-            lightSquareColour: "#f0d9b5"
+            lightSquareColour: "#f0d9b5",
+            coordinates: "outside"
         },
-        piece: ""
+        piece: "cburnett"
     },
     bugReportingMode: false
 };
@@ -82,7 +119,24 @@ function fetchSettings() {
     if (value == null) return defaultSettingsCopy;
 
     try {
-        return merge(defaultSettingsCopy, JSON.parse(value));
+        const storedSettings = JSON.parse(value);
+
+        /*
+         * Migrate the previous Appearance > Show coach setting into the
+         * dedicated coach section. Existing users keep their choice and
+         * animations remain enabled by default. The old voice option is
+         * discarded because coach audio no longer exists.
+         */
+        if (storedSettings.coach == null) {
+            storedSettings.coach = {
+                enabled: storedSettings.appearance?.showCoach ?? true,
+                animations: true
+            };
+        } else {
+            delete storedSettings.coach.voice;
+        }
+
+        return merge(defaultSettingsCopy, storedSettings);
     } catch {
         return defaultSettingsCopy;
     }

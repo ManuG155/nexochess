@@ -1,4 +1,63 @@
 {
+    "account": {
+        "title": "Tài khoản",
+        "editProfile": {
+            "title": "Chỉnh sửa hồ sơ",
+            "displayName": {
+                "message": "Nhập tên hiển thị mới."
+            },
+            "username": {
+                "message": "Nhập tên người dùng mới.",
+                "alreadyExists": "Đã có tài khoản sử dụng tên người dùng này."
+            },
+            "email": {
+                "verification": "Nhập địa chỉ email mới. Chúng tôi sẽ gửi liên kết phê duyệt đến địa chỉ hiện tại trước khi áp dụng thay đổi.",
+                "verificationButton": {
+                    "unsent": "Gửi email xác minh",
+                    "sending": "Đang gửi email…",
+                    "sent": "Đã gửi email xác minh",
+                    "cooldown": "Vui lòng thử lại sau."
+                },
+                "same": "Bạn đang sử dụng địa chỉ email này.",
+                "changeButton": {
+                    "unsent": "Yêu cầu đổi email",
+                    "sending": "Đang gửi xác nhận…",
+                    "sent": "Kiểm tra email hiện tại"
+                },
+                "taken": "Đã có tài khoản sử dụng địa chỉ email này.",
+                "currentNotVerified": "Hãy xác minh email hiện tại trước khi thay đổi.",
+                "sessionExpired": "Phiên đăng nhập đã hết hạn. Hãy đăng nhập lại rồi thử lại.",
+                "cooldown": "Có quá nhiều yêu cầu. Hãy chờ một lúc rồi thử lại.",
+                "sendFailed": "Không thể bắt đầu thay đổi email. Vui lòng thử lại."
+            }
+        },
+        "manageAccount": {
+            "title": "Quản lý tài khoản",
+            "resetPassword": "Đặt lại mật khẩu",
+            "resetPasswordDialog": "Chúng tôi sẽ gửi email có liên kết để bạn tạo mật khẩu mới.",
+            "deleteAccount": "Xóa tài khoản",
+            "deleteAccountDialog": "Xác nhận xóa tài khoản bằng cách nhập nội dung sau vào ô:",
+            "irreversibleAction": "Hãy nhớ rằng thao tác này không thể hoàn tác."
+        }
+    },
+    "analysis": {
+        "title": "Phân tích",
+        "arrowAppearance": "Kiểu mũi tên",
+        "arrowWidth": "Độ rộng mũi tên (px)",
+        "headLength": "Chiều dài đầu mũi tên (px)",
+        "headWidth": "Độ rộng đầu mũi tên (px)",
+        "bestMoveColour": "Mũi tên nước tốt nhất",
+        "manualColour": "Mũi tên thủ công",
+        "other": "Khác",
+        "showTimer": "Hiển thị bộ đếm thời gian",
+        "colours": {
+            "green": "Xanh lá",
+            "orange": "Cam",
+            "blue": "Xanh dương",
+            "red": "Đỏ",
+            "purple": "Tím"
+        }
+    },
     "boardAndPieces": {
         "title": "Quân cờ và Bàn cờ",
         "boardColour": "Màu bàn cờ",
@@ -12,6 +71,12 @@
             "ice": "Băng",
             "marshmallow": "Kẹo dẻo",
             "pillow": "Gối"
+        },
+        "coordinates": {
+            "title": "Tọa độ",
+            "position": "Vị trí",
+            "inside": "Bên trong",
+            "outside": "Bên ngoài"
         }
     },
     "bugReporting": {
@@ -19,5 +84,115 @@
         "bugReportingMode": "Chế độ báo lỗi",
         "bugReportingModeDescription": "Hãy giúp chúng tôi tìm và sửa lỗi. Chế độ báo lỗi kích hoạt một cửa sổ nhỏ ở góc dưới màn hình mà bạn có thể nhấn vào để sao chép nhật ký console."
     },
-    "privacy": "Quyền riêng tư"
+    "privacy": "Quyền riêng tư",
+    "user": {
+        "title": "Người dùng",
+        "description": "Quản lý danh tính NexoChess và bảo mật tài khoản.",
+        "email": "Email",
+        "password": "Mật khẩu",
+        "username": "Tên người dùng",
+        "dateOfBirth": "Ngày sinh",
+        "optional": "Không bắt buộc",
+        "change": "Thay đổi",
+        "add": "Thêm",
+        "checking": "Đang kiểm tra tài khoản NexoChess…",
+        "notSet": "Chưa đặt",
+        "save": "Lưu",
+        "saving": "Đang lưu…",
+        "remove": "Xóa",
+        "usernameTaken": "Tên người dùng này đã được sử dụng.",
+        "usernameUpdateFailed": "Không thể cập nhật tên người dùng.",
+        "usernamePlaceholder": "Tên người dùng mới…",
+        "usernameDialog": "Chọn tên người dùng hiển thị trên tài khoản NexoChess.",
+        "guest": {
+            "title": "Bạn đang dùng NexoChess với tư cách khách",
+            "description": "Các ván đã phân tích vẫn nằm trong kho cục bộ trên thiết bị này. Đăng nhập từ menu góc trên bên phải để quản lý email, mật khẩu, tên người dùng và ngày sinh tùy chọn."
+        },
+        "dateOfBirthDialog": {
+            "description": "Không bắt buộc. Thông tin này được giữ riêng tư và có thể xóa bất cứ lúc nào.",
+            "invalid": "Nhập ngày hợp lệ từ năm 1900 đến hôm nay."
+        },
+        "delete": {
+            "title": "Xóa tài khoản",
+            "description": "Xóa vĩnh viễn tài khoản và kho đám mây. Các ván chỉ lưu trên thiết bị này không bị ảnh hưởng.",
+            "confirm": "Nhập {{username}} để xác nhận xóa tài khoản vĩnh viễn.",
+            "usernameMismatch": "Tên người dùng không khớp."
+        }
+    },
+    "appearance": {
+        "title": "Giao diện",
+        "language": {
+            "title": "Ngôn ngữ",
+            "description": "Chọn ngôn ngữ dùng trong giao diện NexoChess và email tài khoản."
+        },
+        "boardTheme": {
+            "title": "Chủ đề bàn cờ",
+            "description": "Chọn bảng màu cho bàn cờ. Các chủ đề sự kiện và tài trợ được loại bỏ có chủ ý.",
+            "lightSquares": "Ô sáng",
+            "darkSquares": "Ô tối",
+            "colourPlaceholder": "Màu…",
+            "presets": {
+                "walnut": "Gỗ óc chó",
+                "green": "Xanh lá",
+                "blue": "Xanh dương",
+                "slate": "Đá phiến",
+                "ice": "Băng",
+                "sand": "Cát",
+                "rose": "Hồng",
+                "purple": "Tím",
+                "charcoal": "Than chì",
+                "ocean": "Đại dương",
+                "mint": "Bạc hà",
+                "orange": "Cam"
+            }
+        },
+        "pieces": {
+            "title": "Bộ quân cờ",
+            "description": "Chọn một bộ quân tiêu chuẩn. Các bộ sự kiện và tài trợ không được đưa vào.",
+            "note": "Bộ quân Neo của Chess.com không được tích hợp vì là tài sản độc quyền; đây là các lựa chọn mở tiêu chuẩn."
+        },
+        "coordinates": {
+            "title": "Tọa độ",
+            "description": "Chọn hiển thị tọa độ bên trong hay bên ngoài bàn cờ.",
+            "inside": "Bên trong",
+            "outside": "Bên ngoài"
+        },
+        "preview": {
+            "title": "Xem trước",
+            "description": "Bàn cờ và bộ quân đã chọn được xem trước cùng nhau bên dưới."
+        }
+    },
+    "coach": {
+        "title": "Huấn luyện viên",
+        "description": "Kiểm soát việc huấn luyện viên có xuất hiện và chuyển động trong quá trình phân tích hay không.",
+        "enabled": {
+            "title": "Bật huấn luyện viên",
+            "description": "Hiển thị huấn luyện viên đã chọn và nhận xét trong phần tóm tắt và xem lại."
+        },
+        "animations": {
+            "title": "Hoạt ảnh huấn luyện viên",
+            "description": "Cho phép chớp mắt và cử động miệng. Tắt để sử dụng ảnh chân dung tĩnh."
+        }
+    },
+    "privacySection": {
+        "title": "Quyền riêng tư",
+        "description": "Kiểm soát dữ liệu NexoChess lưu trong trình duyệt này và xem các chính sách áp dụng cho tài khoản.",
+        "preferences": {
+            "title": "Tùy chọn dữ liệu",
+            "description": "Xem các lựa chọn đồng ý không bắt buộc. Bộ nhớ thiết yếu cho cài đặt, xác thực và kho cục bộ không thể tắt tại đây.",
+            "manage": "Quản lý tùy chọn"
+        },
+        "archive": {
+            "title": "Kho ván đấu cục bộ",
+            "description": "Phân tích của khách chỉ được lưu trong trình duyệt này. Xóa dữ liệu trình duyệt hoặc dùng nút dưới đây sẽ xóa vĩnh viễn các ván cục bộ.",
+            "clear": "Xóa kho cục bộ",
+            "cleared": "Đã xóa kho cục bộ trên thiết bị này.",
+            "confirm": "Xóa mọi ván được lưu cục bộ trên thiết bị này? Không thể hoàn tác."
+        },
+        "policies": {
+            "title": "Chính sách",
+            "privacy": "Chính sách quyền riêng tư",
+            "terms": "Điều khoản dịch vụ"
+        }
+    }
 }

@@ -1,70 +1,332 @@
 .wrapper {
     display: flex;
     flex-direction: column;
+
     box-sizing: border-box;
 
-    border-radius: 10px;
-    background-color: var(--ui-shade-3);
+    min-height: 0;
 
-    overflow-x: hidden;
+    border-radius: 10px;
+
+    background-color:
+        transparent;
+
+    overflow:
+        hidden;
 }
 
+
+/*
+ * CONTENIDO PRINCIPAL
+ */
 .components {
     display: flex;
-    flex-grow: 1;
+    flex: 1;
     flex-direction: column;
+
     gap: 10px;
+
+    min-height: 0;
+
     padding: 10px;
 
-    overflow-y: auto;
-    overscroll-behavior: contain;
+    overflow: hidden;
 }
 
-.title {
-    text-align: center;
-    padding: 5px 10px;
+
+/*
+ * ============================================================
+ * REVIEW CARD
+ * ============================================================
+ */
+.reviewCard {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+
+    box-sizing: border-box;
+
+    width: 100%;
+    min-height: 0;
+
+    border-radius: 12px;
+
+    background-color: #292620;
+
+    overflow: hidden;
+}
+
+
+/*
+ * La zona superior ya no es el elemento que hace scroll.
+ * Conserva flecha + tarjeta de clasificación y cede
+ * el espacio restante a la tabla de movimientos.
+ */
+.reviewScrollArea {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+
+    gap: 14px;
+
+    box-sizing: border-box;
+
+    width: 100%;
+    min-height: 0;
+
+    padding:
+        18px
+        18px
+        16px;
+
+    overflow: hidden;
+}
+
+
+/*
+ * GRÁFICO FIJO DE LA REVISIÓN.
+ *
+ * Se queda entre el coach y la lista. No participa en el scroll:
+ * al recorrer la partida solo se desplazan los movimientos.
+ */
+.reviewGraphArea {
+    flex: 0 0 auto;
+
+    box-sizing: border-box;
+
+    width: 100%;
+    min-width: 0;
+
+    padding: 0 4px;
+}
+
+
+/*
+ * SCROLL EXCLUSIVO DE LA PARTIDA.
+ *
+ * El coach y el gráfico permanecen visibles mientras recorremos
+ * todos los movimientos de la partida.
+ */
+.reviewMovesArea {
+    flex: 1 1 0;
+
+    min-height: 120px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    overscroll-behavior: contain;
 
     border-radius: 10px;
-    background-color: var(--ui-blue);
-    color: white;
-    font-family: "Nunito";
-    font-weight: 600;
-    font-size: 2.5rem;
 
-    overflow-wrap: break-word;
+    scrollbar-width: thin;
+    scrollbar-color: #141312 transparent;
 }
 
-@media (max-width: 900px) {
-    .title {
-        display: none;
-    }
+
+.reviewMovesArea::-webkit-scrollbar {
+    width: 7px;
 }
 
+
+.reviewMovesArea::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+.reviewMovesArea::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+
+    background: #141312;
+}
+
+
+.reviewMovesArea::-webkit-scrollbar-thumb:hover {
+    background: #0f0e0d;
+}
+
+
+.reviewMovesArea::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+
+/*
+ * CABECERA DEL MODO REVIEW.
+ */
+.reviewHeader {
+    display: flex;
+
+    justify-content: flex-start;
+    align-items: center;
+
+    width: 100%;
+
+    min-height: 30px;
+
+    flex: 0 0 auto;
+}
+
+
+/*
+ * Flecha pequeña y discreta.
+ */
+.reviewBackButton {
+    display: inline-flex;
+
+    justify-content: center;
+    align-items: center;
+
+    width: 30px;
+    height: 30px;
+
+    padding: 0;
+
+    border: 0;
+    border-radius: 7px;
+
+    background-color:
+        rgba(
+            255,
+            255,
+            255,
+            0.06
+        );
+
+    color:
+        rgba(
+            255,
+            255,
+            255,
+            0.88
+        );
+
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background-color 150ms ease,
+        color 150ms ease,
+        transform 150ms ease;
+}
+
+
+.reviewBackButton:hover {
+    background-color:
+        rgba(
+            255,
+            255,
+            255,
+            0.12
+        );
+
+    color: #FFFFFF;
+
+    transform:
+        translateX(
+            -1px
+        );
+}
+
+
+.reviewBackButton:focus-visible {
+    outline:
+        2px
+        solid
+        rgba(
+            255,
+            255,
+            255,
+            0.45
+        );
+
+    outline-offset:
+        2px;
+}
+
+
+/*
+ * CONTENEDOR DE LOS CINCO BOTONES.
+ * Los botones individuales viven en StateTreeTraverser.
+ */
 .traverserContainer {
     display: flex;
+
     justify-content: center;
+
+    box-sizing: border-box;
+
     width: 100%;
+
+    padding:
+        0
+        10px
+        10px;
 }
 
-@media (max-width: 900px) {
-    .traverserContainer {
-        box-sizing: border-box;
-        padding: 0 10px;
-        position: fixed;
-        bottom: 10px;
-        left: 0;
-    }
-}
 
 .traverser {
-    width: min(100%, 420px);
-    background-color: #1b1c1e;
+    width:
+        min(
+            100%,
+            450px
+        );
+
+    background-color:
+        transparent;
 }
 
-@media (max-width: 900px) {
+
+/*
+ * PANTALLAS PEQUEÑAS
+ */
+@media (
+    max-width: 900px
+) {
+
+    .components {
+        padding-bottom: 78px;
+    }
+
+
+    .traverserContainer {
+        position: fixed;
+
+        bottom: 10px;
+        left: 0;
+
+        z-index: 20;
+
+        padding:
+            0
+            10px;
+    }
+
+
     .traverser {
         border-radius: 10px;
-        background-color: #27292f;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+
+        background-color:
+            transparent;
+
+        box-shadow:
+            none;
     }
+
+}
+
+/*
+ * With the coach disabled, the movement list immediately receives the space
+ * that used to belong to the portrait and speech bubble.
+ */
+.reviewScrollAreaWithoutCoach {
+    gap: 10px;
+}
+
+.reviewScrollAreaWithoutCoach .reviewMovesArea {
+    flex-grow: 1;
+    min-height: 220px;
 }

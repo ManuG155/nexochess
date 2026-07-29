@@ -1,0 +1,163 @@
+.wrapper {
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr);
+    align-items: end;
+    gap: 14px;
+
+    box-sizing: border-box;
+
+    width: 100%;
+
+    margin: 0 0 20px;
+}
+
+.coachAvatarArea {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+
+    min-width: 0;
+}
+
+.coachAvatar {
+    display: block;
+
+    width: 92px;
+    height: 92px;
+
+    object-fit: contain;
+    object-position: center bottom;
+
+    user-select: none;
+    pointer-events: none;
+}
+
+.speechBubble {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+
+    box-sizing: border-box;
+
+    min-width: 0;
+    width: fit-content;
+    max-width: 100%;
+
+    padding: 16px 18px 17px;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 13px;
+
+    background-color: #34312e;
+    color: #ffffff;
+
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.12);
+}
+
+/*
+ * Cola del bocadillo apuntando hacia Fog.
+ * Se construye con dos triángulos superpuestos para conservar
+ * el borde sutil del propio bocadillo.
+ */
+.speechBubble::before,
+.speechBubble::after {
+    content: "";
+
+    position: absolute;
+    top: 32px;
+
+    width: 0;
+    height: 0;
+
+    border-style: solid;
+}
+
+.speechBubble::before {
+    left: -12px;
+
+    border-width: 9px 12px 9px 0;
+    border-color: transparent rgba(255, 255, 255, 0.08) transparent transparent;
+}
+
+.speechBubble::after {
+    left: -10px;
+
+    border-width: 8px 11px 8px 0;
+    border-color: transparent #34312e transparent transparent;
+}
+
+.message {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+/*
+ * El borde exterior envuelve el 100% de la barra y queda 1px
+ * por fuera gracias al padding interno.
+ */
+.progressOutline {
+    box-sizing: border-box;
+
+    width: 100%;
+
+    padding: 1px;
+
+    border: 1px solid #11100f;
+    border-radius: 999px;
+
+    background-color: transparent;
+}
+
+.progressTrack {
+    position: relative;
+
+    width: 100%;
+    height: 9px;
+
+    border-radius: 999px;
+
+    background-color: #5a5651;
+
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+
+    border-radius: inherit;
+
+    background-color: #11100f;
+
+    transition: width 180ms ease;
+}
+
+.errorArea {
+    width: 100%;
+}
+
+@media (max-width: 520px) {
+    .wrapper {
+        grid-template-columns: 72px minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .coachAvatar {
+        width: 72px;
+        height: 72px;
+    }
+
+    .speechBubble {
+        padding: 13px 14px 14px;
+    }
+
+    .message {
+        font-size: 0.92rem;
+    }
+}

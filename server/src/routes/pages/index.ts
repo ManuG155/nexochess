@@ -15,10 +15,15 @@ router.use("/",
 
 router.get("/settings*", appRouter("settings.html"));
 
-router.get("/", async (req, res) => {
+router.get("/", async (_req, res) => {
     res.redirect("/analysis");
 });
 
-router.get("/*", appRouter("unfound.html"));
+const unfoundRouter = appRouter("unfound.html");
+
+router.get("/*", async (req, res, next) => {
+    res.status(404);
+    return unfoundRouter(req, res, next);
+});
 
 export default router;

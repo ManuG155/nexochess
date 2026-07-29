@@ -1,8 +1,21 @@
-import React, { useEffect, useRef } from "react";
-import { useTranslation } from "react-i18next";
-import { Options as HotkeyOptions, useHotkeys } from "react-hotkeys-hook";
+import React, {
+    useEffect,
+    useRef
+} from "react";
 
-import { getNodeChain } from "shared/types/game/position/StateTreeNode";
+import {
+    useTranslation
+} from "react-i18next";
+
+import {
+    Options as HotkeyOptions,
+    useHotkeys
+} from "react-hotkeys-hook";
+
+import {
+    getNodeChain
+} from "shared/types/game/position/StateTreeNode";
+
 import useAnalysisGameStore from "@analysis/stores/AnalysisGameStore";
 import useAnalysisBoardStore from "@analysis/stores/AnalysisBoardStore";
 import playBoardSound from "@/lib/boardSounds";
@@ -10,21 +23,131 @@ import playBoardSound from "@/lib/boardSounds";
 import StateTreeTraverserProps from "./StateTreeTraverserProps";
 import * as styles from "./StateTreeTraverser.module.css";
 
-import iconInterfaceStart from "@assets/img/interface/start.svg";
-import iconInterfaceBack from "@assets/img/interface/back.svg";
-import iconInterfacePause from "@assets/img/interface/pause.svg";
-import iconInterfacePlay from "@assets/img/interface/play.svg";
-import iconInterfaceNext from "@assets/img/interface/next.svg";
-import iconInterfaceEnd from "@assets/img/interface/end.svg";
 
-type Interval = ReturnType<typeof setInterval>;
+type Interval =
+    ReturnType<typeof setInterval>;
 
-const hotkeyConfig: HotkeyOptions = { preventDefault: true };
 
-function StateTreeTraverser({ className, style }: StateTreeTraverserProps) {
-    const { t } = useTranslation("analysis");
+const hotkeyConfig: HotkeyOptions = {
+    preventDefault:
+        true
+};
 
-    const { analysisGame } = useAnalysisGameStore();
+
+function BeginningIcon() {
+
+    return (
+        <svg
+            viewBox="0 0 32 32"
+            aria-hidden="true"
+        >
+            <path
+                d="M8 7v18M23 8l-9 8 9 8"
+            />
+        </svg>
+    );
+}
+
+
+function BackIcon() {
+
+    return (
+        <svg
+            viewBox="0 0 32 32"
+            aria-hidden="true"
+        >
+            <path
+                d="M21 7l-10 9 10 9"
+            />
+        </svg>
+    );
+}
+
+
+function PlayIcon() {
+
+    return (
+        <svg
+            viewBox="0 0 32 32"
+            aria-hidden="true"
+        >
+            <path
+                className={
+                    styles.playPath
+                }
+
+                d="M11 7l14 9-14 9z"
+            />
+        </svg>
+    );
+}
+
+
+function PauseIcon() {
+
+    return (
+        <svg
+            viewBox="0 0 32 32"
+            aria-hidden="true"
+        >
+            <path
+                className={
+                    styles.pausePath
+                }
+
+                d="M10 7h4v18h-4zM18 7h4v18h-4z"
+            />
+        </svg>
+    );
+}
+
+
+function NextIcon() {
+
+    return (
+        <svg
+            viewBox="0 0 32 32"
+            aria-hidden="true"
+        >
+            <path
+                d="M11 7l10 9-10 9"
+            />
+        </svg>
+    );
+}
+
+
+function EndIcon() {
+
+    return (
+        <svg
+            viewBox="0 0 32 32"
+            aria-hidden="true"
+        >
+            <path
+                d="M24 7v18M9 8l9 8-9 8"
+            />
+        </svg>
+    );
+}
+
+
+function StateTreeTraverser({
+    className,
+    style
+}: StateTreeTraverserProps) {
+
+    const {
+        t
+    } = useTranslation(
+        "analysis"
+    );
+
+
+    const {
+        analysisGame
+    } = useAnalysisGameStore();
+
 
     const {
         currentStateTreeNode,
@@ -33,104 +156,344 @@ function StateTreeTraverser({ className, style }: StateTreeTraverserProps) {
         setAutoplayEnabled
     } = useAnalysisBoardStore();
 
-    const autoplayIntervalRef = useRef<Interval>();
 
-    useEffect(() => {
-        if (autoplayEnabled) {
-            traverseForwards();
+    const autoplayIntervalRef =
 
-            autoplayIntervalRef.current = setInterval(traverseForwards, 1000);
-        } else {
-            clearInterval(autoplayIntervalRef.current);
-        }
-    }, [autoplayEnabled]);
+        useRef<Interval>();
+
+
+    useEffect(
+        () => {
+
+            if (
+                autoplayEnabled
+            ) {
+
+                traverseForwards();
+
+
+                autoplayIntervalRef.current =
+
+                    setInterval(
+
+                        traverseForwards,
+
+                        1000
+
+                    );
+
+            } else {
+
+                clearInterval(
+                    autoplayIntervalRef.current
+                );
+            }
+
+
+            return () => {
+
+                clearInterval(
+                    autoplayIntervalRef.current
+                );
+            };
+
+        },
+
+        [
+            autoplayEnabled
+        ]
+    );
+
 
     function traverseToBeginning() {
-        setCurrentStateTreeNode(analysisGame.stateTree);
-        setAutoplayEnabled(false);
+
+        setCurrentStateTreeNode(
+            analysisGame.stateTree
+        );
+
+
+        setAutoplayEnabled(
+            false
+        );
     }
+
 
     function traverseToEnd() {
-        const finalNode = getNodeChain(analysisGame.stateTree).at(-1)
-            || analysisGame.stateTree;
 
-        setCurrentStateTreeNode(finalNode);
-        playBoardSound(finalNode);
-        setAutoplayEnabled(false);
+        const finalNode =
+
+            getNodeChain(
+                analysisGame.stateTree
+            ).at(-1)
+
+            ||
+
+            analysisGame.stateTree;
+
+
+        setCurrentStateTreeNode(
+            finalNode
+        );
+
+
+        playBoardSound(
+            finalNode
+        );
+
+
+        setAutoplayEnabled(
+            false
+        );
     }
+
 
     function traverseBackwards() {
-        if (!currentStateTreeNode.parent) return;
 
-        setCurrentStateTreeNode(currentStateTreeNode.parent);
-        playBoardSound(currentStateTreeNode);
-        setAutoplayEnabled(false);
+        if (
+            !currentStateTreeNode.parent
+        ) {
+
+            return;
+        }
+
+
+        const previousNode =
+
+            currentStateTreeNode.parent;
+
+
+        setCurrentStateTreeNode(
+            previousNode
+        );
+
+
+        playBoardSound(
+            previousNode
+        );
+
+
+        setAutoplayEnabled(
+            false
+        );
     }
 
+
     function traverseForwards() {
-        setCurrentStateTreeNode(currentNode => {
-            const priorityChild = currentNode.children.at(0);
 
-            if (priorityChild) {
-                playBoardSound(priorityChild);
+        setCurrentStateTreeNode(
 
-                return priorityChild;
-            } else {
-                setAutoplayEnabled(false);
+            currentNode => {
+
+                const priorityChild =
+
+                    currentNode
+                        .children
+                        .at(0);
+
+
+                if (
+                    priorityChild
+                ) {
+
+                    playBoardSound(
+                        priorityChild
+                    );
+
+
+                    return priorityChild;
+                }
+
+
+                setAutoplayEnabled(
+                    false
+                );
+
 
                 return currentNode;
             }
-        });
+
+        );
     }
 
-    useHotkeys("up, shift+left", traverseToBeginning, hotkeyConfig);
-    useHotkeys("down, shift+right", traverseToEnd, hotkeyConfig);
-    useHotkeys("left", traverseBackwards, hotkeyConfig);
-    useHotkeys("right", traverseForwards, hotkeyConfig);
 
-    return <div className={`${styles.wrapper} ${className}`} style={style}>
-        <img
-            src={iconInterfaceStart}
-            width={50}
-            onClick={traverseToBeginning}
-            title={t("stateTreeTraverser.beginning")}
-        />
+    useHotkeys(
+        "up, shift+left",
+        traverseToBeginning,
+        hotkeyConfig
+    );
 
-        <img
-            src={iconInterfaceBack}
-            width={50}
-            onClick={traverseBackwards}
-            title={t("stateTreeTraverser.back")}
-        />
 
+    useHotkeys(
+        "down, shift+right",
+        traverseToEnd,
+        hotkeyConfig
+    );
+
+
+    useHotkeys(
+        "left",
+        traverseBackwards,
+        hotkeyConfig
+    );
+
+
+    useHotkeys(
+        "right",
+        traverseForwards,
+        hotkeyConfig
+    );
+
+
+    return (
         <div
-            className={styles.autoplayContainer}
-            onClick={() => setAutoplayEnabled(!autoplayEnabled)}
-            title={autoplayEnabled
-                ? t("stateTreeTraverser.pause")
-                : t("stateTreeTraverser.play")
+            className={
+                `${styles.wrapper} ${className}`
+            }
+
+            style={
+                style
             }
         >
-            <img width={50} src={autoplayEnabled
-                ? iconInterfacePause
-                : iconInterfacePlay
-            }/>
+
+            <button
+                type="button"
+                className={
+                    styles.navigationButton
+                }
+                onClick={
+                    traverseToBeginning
+                }
+                title={
+                    t(
+                        "stateTreeTraverser.beginning"
+                    )
+                }
+                aria-label={
+                    t(
+                        "stateTreeTraverser.beginning"
+                    )
+                }
+            >
+                <BeginningIcon />
+            </button>
+
+
+            <button
+                type="button"
+                className={
+                    styles.navigationButton
+                }
+                onClick={
+                    traverseBackwards
+                }
+                title={
+                    t(
+                        "stateTreeTraverser.back"
+                    )
+                }
+                aria-label={
+                    t(
+                        "stateTreeTraverser.back"
+                    )
+                }
+            >
+                <BackIcon />
+            </button>
+
+
+            <button
+                type="button"
+                className={
+                    styles.navigationButton
+                }
+                onClick={
+                    () =>
+                        setAutoplayEnabled(
+                            !autoplayEnabled
+                        )
+                }
+                title={
+                    autoplayEnabled
+
+                        ? t(
+                            "stateTreeTraverser.pause"
+                        )
+
+                        : t(
+                            "stateTreeTraverser.play"
+                        )
+                }
+                aria-label={
+                    autoplayEnabled
+
+                        ? t(
+                            "stateTreeTraverser.pause"
+                        )
+
+                        : t(
+                            "stateTreeTraverser.play"
+                        )
+                }
+            >
+
+                {autoplayEnabled
+
+                    ? <PauseIcon />
+
+                    : <PlayIcon />
+                }
+
+            </button>
+
+
+            <button
+                type="button"
+                className={
+                    styles.navigationButton
+                }
+                onClick={
+                    traverseForwards
+                }
+                title={
+                    t(
+                        "stateTreeTraverser.next"
+                    )
+                }
+                aria-label={
+                    t(
+                        "stateTreeTraverser.next"
+                    )
+                }
+            >
+                <NextIcon />
+            </button>
+
+
+            <button
+                type="button"
+                className={
+                    styles.navigationButton
+                }
+                onClick={
+                    traverseToEnd
+                }
+                title={
+                    t(
+                        "stateTreeTraverser.end"
+                    )
+                }
+                aria-label={
+                    t(
+                        "stateTreeTraverser.end"
+                    )
+                }
+            >
+                <EndIcon />
+            </button>
+
         </div>
-
-        <img
-            src={iconInterfaceNext}
-            width={50}
-            onClick={traverseForwards}
-            title={t("stateTreeTraverser.next")}
-        />
-
-        <img
-            src={iconInterfaceEnd}
-            width={50}
-            onClick={traverseToEnd}
-            title={t("stateTreeTraverser.end")}
-        />
-    </div>;
+    );
 }
+
 
 export default StateTreeTraverser;

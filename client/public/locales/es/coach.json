@@ -1,0 +1,134 @@
+{
+  "picker": {
+    "title": "Elige tu entrenador",
+    "close": "Cerrar selector de entrenador",
+    "select": "Seleccionar entrenador",
+    "choose": "Elegir entrenador"
+  },
+  "progress": {
+    "reviewing": "Dame un momento mientras reviso tu partida:",
+    "aria": "Progreso de la revisión: {{progress}}%"
+  },
+  "summary": {
+    "fog": {
+      "picker": [
+        "Soy Pixie. Vigilaré con calma cada pieza suelta... miau."
+      ],
+      "idle": [
+        "Carga una partida y la revisaré con calma y atención. Prrr."
+      ],
+      "analysing": [
+        "Dame un momento mientras inspecciono cada jugada. Prrr..."
+      ],
+      "ready": [
+        "Revisión terminada. Veamos los momentos que de verdad importaron. Miau."
+      ]
+    },
+    "foxy": {
+      "picker": [
+        "Soy Foxy. Si la posición esconde una trampa, la encontraré."
+      ],
+      "idle": [
+        "Carga una partida y buscaré todos los giros tácticos."
+      ],
+      "analysing": [
+        "Un momento mientras olfateo las jugadas más astutas..."
+      ],
+      "ready": [
+        "Listo. Ya tengo localizados los momentos más afilados."
+      ]
+    },
+    "cybe": {
+      "picker": [
+        "BIP. Cybe en línea. Primero precisión; después, drama."
+      ],
+      "idle": [
+        "SISTEMA EN ESPERA. Introduce una partida."
+      ],
+      "analysing": [
+        "ANÁLISIS EN CURSO. BIP. Espera un momento..."
+      ],
+      "ready": [
+        "PROCESO COMPLETADO. Desviaciones críticas identificadas."
+      ]
+    },
+    "max_rooks": {
+      "picker": [
+        "Soy Max Rooks. Mantendremos el análisis práctico y con principios."
+      ],
+      "idle": [
+        "Muéstrame la partida y te explicaré qué fue lo más importante."
+      ],
+      "analysing": [
+        "Permíteme un momento para examinar la partida con atención."
+      ],
+      "ready": [
+        "La revisión está lista. Repasemos las decisiones clave."
+      ]
+    }
+  },
+  "dynamic": {
+    "start": "Empecemos desde el principio. Selecciona una jugada o utiliza los controles.",
+    "reviewing": "Revisando {{move}}...",
+    "classifications": {
+      "brilliant": "{{move}} es brillante. Encuentra una idea muy potente.",
+      "critical": "{{move}} es una gran jugada en un momento crítico.",
+      "best": "{{move}} es la mejor jugada de la posición.",
+      "excellent": "{{move}} es una jugada excelente y precisa.",
+      "okay": "{{move}} es una jugada sólida que mantiene la posición bajo control.",
+      "inaccuracy": "{{move}} es una imprecisión y cede parte de la ventaja.",
+      "mistake": "{{move}} es un error y hace que la posición sea más difícil.",
+      "miss": "{{move}} deja escapar una oportunidad importante.",
+      "blunder": "{{move}} es un error grave y cambia mucho la evaluación.",
+      "theory": "{{move}} sigue la teoría de la {{opening}}.",
+      "theoryUnknown": "{{move}} sigue una línea conocida de apertura.",
+      "forced": "{{move}} es forzada. Las alternativas son claramente peores.",
+      "risky": "{{move}} es arriesgada y concede opciones prácticas al rival."
+    },
+    "betterMove": "{{best}} era más fuerte.",
+    "mateAllowed": "Permite mate en {{mate}}.",
+    "evaluationLoss": "La evaluación cae unas {{loss}} unidades."
+  },
+  "catchphrases": {
+    "fog": {
+      "prefixes": [
+        "Mrrp...",
+        "Miau.",
+        "Prrr..."
+      ],
+      "suffixes": [
+        "Prrr."
+      ]
+    },
+    "foxy": {
+      "prefixes": [
+        "Je...",
+        "Yip.",
+        "Olf, olf..."
+      ],
+      "suffixes": [
+        "Bien cazado."
+      ]
+    },
+    "cybe": {
+      "prefixes": [
+        "BIP.",
+        "SECUENCIA COMPROBADA.",
+        "PATRÓN FIJADO."
+      ],
+      "suffixes": [
+        "Análisis almacenado."
+      ]
+    },
+    "max_rooks": {
+      "prefixes": [
+        "Hm.",
+        "En efecto.",
+        "Ciertamente."
+      ],
+      "suffixes": [
+        "Recuerda esta idea."
+      ]
+    }
+  }
+}

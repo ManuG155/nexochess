@@ -1,15 +1,109 @@
 {
-    "title": "帮助中心",
-    "contact": {
-        "title": "联系我们",
-        "message": "如果你需要联系我们，你可以发送电子邮件至："
-    },
+  "pageTitle": "NexoChess — 帮助中心",
+  "hero": {
+    "eyebrow": "NexoChess 支持",
+    "title": "我们能帮你什么？",
+    "subtitle": "快速找到清晰答案，了解最便捷的棋局导入方式，并在几次点击后继续分析。",
+    "languagesBadge": "11 种语言"
+  },
+  "actions": {
+    "openAnalysis": "打开分析器",
+    "contact": "联系支持"
+  },
+  "topics": {
+    "eyebrow": "快速入口",
+    "title": "热门主题",
+    "subtitle": "直接前往你需要的 NexoChess 功能。",
     "analysis": {
-        "title": "复盘分析棋局",
-        "part1": "你可以复盘你的国际象棋棋局在",
-        "part2": "WintrChess复盘分析页面上",
-        "part3": "。Stockfish评估、准确度百分比和着法分级——你可以用来找出你的好棋和臭棋——是免费提供的。你会在页面的中心找到分析棋盘，在上面你可以查看你选择的棋局的棋步。要选择棋局，你需要使用我们提供的棋局选择器，在右手边的边注栏上。看上去像这样：",
-        "part4": "你可以使用任何棋局的PGN来开始分析它。如果你愿意的话，你也可以从你的Chess.com或Lichess账户选择一盘棋局。你需要点击“搜索棋局”按钮来浏览你的账户上的棋局，然后点击它们即可选择其中任何一盘。最后，你可以输入某一个FEN局面。无论如何，你可以在导入棋局后手动添加棋步，它们都会立即被评估和分级。",
-        "part5": "在你选择棋局之后，只需点击“复盘分析”按钮就可以开始复盘。如果你想要从起始局面开始，你也可以仅移动棋盘上的棋子。"
+      "title": "分析棋局",
+      "description": "导入棋局并开始完整的 Stockfish 复盘。",
+      "action": "立即开始"
+    },
+    "import": {
+      "title": "导入方式",
+      "description": "了解何时使用 PGN、FEN、Chess.com 或 Lichess。",
+      "action": "查看选项"
+    },
+    "archive": {
+      "title": "你的 存档",
+      "description": "查找本地保存和已同步的分析。",
+      "action": "打开 存档"
+    },
+    "settings": {
+      "title": "设置与语言",
+      "description": "更改外观、教练、引擎和语言。",
+      "action": "打开设置"
     }
+  },
+  "steps": {
+    "eyebrow": "开始使用",
+    "title": "三步完成棋局复盘",
+    "subtitle": "基础流程无需复杂设置，也无需注册账户。",
+    "choose": {
+      "title": "选择来源",
+      "description": "在导入面板中选择 PGN、FEN、Chess.com 或 Lichess。"
+    },
+    "import": {
+      "title": "添加棋局",
+      "description": "粘贴棋谱、上传文件，或输入公开用户名。"
+    },
+    "review": {
+      "title": "分析与复盘",
+      "description": "启动分析、查看总结，并在教练帮助下检查每一步棋。"
+    }
+  },
+  "imports": {
+    "eyebrow": "导入指南",
+    "title": "四种开始方式",
+    "subtitle": "根据棋局的存储位置选择最合适的方式。",
+    "pgn": {
+      "title": "粘贴或上传棋局",
+      "description": "使用从任意平台复制的完整 PGN，或上传 .pgn 文件。"
+    },
+    "chessCom": {
+      "title": "浏览 Chess.com 棋局",
+      "description": "输入公开用户名，选择近期棋局或加载最新棋局。"
+    },
+    "lichess": {
+      "title": "浏览 Lichess 棋局",
+      "description": "输入公开用户名，查看近期公开棋局。"
+    },
+    "fen": {
+      "title": "分析一个局面",
+      "description": "只想研究某个特定局面时，请输入 FEN。"
+    }
+  },
+  "faq": {
+    "eyebrow": "常见问题",
+    "title": "值得了解的内容",
+    "subtitle": "关于账户、存储、引擎和隐私的基本信息。",
+    "account": {
+      "question": "分析棋局必须注册账户吗？",
+      "answer": "不需要。无需账户即可分析棋局并使用本地 存档。账户仅用于可选的跨设备同步。"
+    },
+    "archive": {
+      "question": "我的分析保存在哪里？",
+      "answer": "访客分析保存在当前浏览器中。登录后，兼容数据也可以与账户关联，便于跨设备访问。"
+    },
+    "engine": {
+      "question": "NexoChess 使用哪个引擎？",
+      "answer": "NexoChess 使用 Stockfish 17 评估局面并生成复盘所需的引擎变化。"
+    },
+    "languages": {
+      "question": "语言是如何选择的？",
+      "answer": "首次访问时，如果浏览器语言受支持，NexoChess 会自动使用它。之后可以在外观设置中随时更改。"
+    },
+    "privacy": {
+      "question": "保留本地棋局需要账户吗？",
+      "answer": "不需要。本地 存档 无需账户即可使用。登录是可选的，主要用于同步和账户功能。"
+    }
+  },
+  "contact": {
+    "eyebrow": "仍然遇到问题？",
+    "title": "联系 NexoChess",
+    "message": "请告诉我们问题、使用的浏览器，以及问题发生时你正在进行的操作。",
+    "copy": "复制邮箱",
+    "copied": "邮箱已复制"
+  },
+  "navigationTitle": "帮助中心"
 }

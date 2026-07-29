@@ -1,36 +1,404 @@
 .wrapper {
-    display: flex;
-    justify-content: center;
-    padding: 20px 0;
     width: 100%;
-}
-
-.wrapper a {
+    padding: clamp(18px, 4vw, 42px) 16px 54px;
+    box-sizing: border-box;
     color: white;
+    font-family: "Noto Sans", "Nunito", Arial, sans-serif;
 }
 
-.content {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    gap: 15px;
-    padding: 20px;
-    width: min(100%, 800px);
-
-    background-color: rgba(0, 0, 0, 0.15);
-    color: white;
+.shell {
+    width: min(1120px, 100%);
+    margin: 0 auto;
 }
 
-.title {
-    display: flex;
-    justify-content: center;
+.hero {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(26px, 5vw, 52px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 22px;
+    background:
+        radial-gradient(circle at 88% -8%, rgba(70, 125, 232, 0.22), transparent 34%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015));
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.25);
+}
+
+.heroTopline {
+    display: inline-flex;
     align-items: center;
     gap: 10px;
-    margin: 0;
-    width: 100%;
+    color: #91afe9;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
 }
 
-.link {
-    text-decoration: underline;
+.heroTopline img {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+}
+
+.hero h1 {
+    max-width: 16ch;
+    margin: 16px 0 10px;
+    font-family: "Nunito", "Noto Sans", sans-serif;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    line-height: 1.02;
+}
+
+.hero p {
+    max-width: 70ch;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.64);
+    font-size: clamp(0.92rem, 2vw, 1.05rem);
+    line-height: 1.65;
+}
+
+.metaRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px 18px;
+    margin-top: 20px;
+    color: rgba(255, 255, 255, 0.42);
+    font-size: 0.76rem;
+}
+
+.metaRow a {
+    color: #a9c2f2;
+    text-decoration: none;
+}
+
+.documentLayout {
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr);
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.contentsCard {
+    position: sticky;
+    top: 18px;
+    align-self: start;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 15px;
+    background: rgba(23, 25, 30, 0.82);
+    backdrop-filter: blur(14px);
+}
+
+.contentsTitle {
+    display: block;
+    margin-bottom: 10px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.contentsCard nav {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.contentsCard a {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr);
+    gap: 8px;
+    padding: 8px 9px;
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.64);
+    font-size: 0.76rem;
+    line-height: 1.35;
+    text-decoration: none;
+    transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.contentsCard a span {
+    color: rgba(126, 163, 232, 0.72);
+    font-size: 0.64rem;
+    font-weight: 800;
+}
+
+.contentsCard a:hover {
+    background: rgba(255, 255, 255, 0.055);
+    color: white;
+}
+
+.document {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+}
+
+.summaryCard,
+.legalSection,
+.resourcesCard,
+.contactCard,
+.sourceNotice {
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.024);
+}
+
+.summaryCard {
+    padding: 18px 20px;
+    border-color: rgba(70, 125, 232, 0.19);
+    background: rgba(70, 125, 232, 0.075);
+}
+
+.summaryCard strong,
+.resourcesCard strong,
+.contactCard strong,
+.sourceNotice strong {
+    font-family: "Nunito", "Noto Sans", sans-serif;
+    font-size: 1rem;
+}
+
+.summaryCard p,
+.resourcesCard p,
+.contactCard p,
+.sourceNotice p {
+    margin: 6px 0 0;
+    color: rgba(255, 255, 255, 0.59);
+    font-size: 0.82rem;
+    line-height: 1.6;
+}
+
+.legalSection {
+    display: grid;
+    grid-template-columns: 46px minmax(0, 1fr);
+    gap: 14px;
+    padding: 22px;
+    scroll-margin-top: 20px;
+}
+
+.sectionNumber {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    background: rgba(70, 125, 232, 0.12);
+    color: #9ab6ec;
+    font-size: 0.7rem;
+    font-weight: 900;
+}
+
+.sectionContent h2 {
+    margin: 4px 0 12px;
+    font-family: "Nunito", "Noto Sans", sans-serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.38rem);
+}
+
+.sectionContent p,
+.sectionContent li {
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 0.86rem;
+    line-height: 1.72;
+}
+
+.sectionContent p {
+    margin: 0 0 12px;
+}
+
+.sectionContent p:last-child {
+    margin-bottom: 0;
+}
+
+.sectionContent ul {
+    display: grid;
+    gap: 8px;
+    margin: 8px 0 0;
+    padding-left: 20px;
+}
+
+.resourcesCard,
+.contactCard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 20px;
+}
+
+.sourceAction,
+.sourceRequestActions button {
+    font-family: inherit;
     cursor: pointer;
+}
+
+.sourceRequestBox {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 2px;
+    padding: 13px;
+    border: 1px solid rgba(106, 150, 232, 0.2);
+    border-radius: 11px;
+    background: rgba(70, 125, 232, 0.07);
+}
+
+.sourceRequestBox p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 0.76rem;
+    line-height: 1.55;
+}
+
+.sourceRequestActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 11px;
+}
+
+.sourceRequestActions button,
+.sourceRequestActions a {
+    min-height: 34px;
+}
+
+.resourceLinks {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.resourceLinks a,
+.contactCard > a,
+.sourceCard a,
+.sourceAction,
+.sourceRequestActions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: 0 12px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.84);
+    font-size: 0.73rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition: border-color 0.18s ease, background-color 0.18s ease, transform 0.18s ease;
+}
+
+.resourceLinks a:hover,
+.contactCard > a:hover,
+.sourceCard a:hover,
+.sourceAction:hover,
+.sourceRequestActions button:hover {
+    transform: translateY(-1px);
+    border-color: rgba(106, 150, 232, 0.52);
+    background: rgba(70, 125, 232, 0.1);
+}
+
+.contactCard {
+    border-color: rgba(77, 146, 98, 0.18);
+    background: rgba(77, 146, 98, 0.065);
+}
+
+.sourceGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 24px;
+}
+
+.sourceCard {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 9px;
+    padding: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.sourceCard h2 {
+    margin: 2px 0 0;
+    font-family: "Nunito", "Noto Sans", sans-serif;
+    font-size: 1.2rem;
+}
+
+.sourceCard p {
+    flex: 1;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 0.84rem;
+    line-height: 1.62;
+}
+
+.sourceBadge {
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(70, 125, 232, 0.12);
+    color: #9eb9ee;
+    font-size: 0.64rem;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.sourceNotice {
+    margin-top: 14px;
+    padding: 18px 20px;
+}
+
+@media (max-width: 860px) {
+    .documentLayout {
+        grid-template-columns: 1fr;
+    }
+
+    .contentsCard {
+        position: static;
+    }
+
+    .contentsCard nav {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 620px) {
+    .wrapper {
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    .hero {
+        padding: 24px 20px;
+        border-radius: 16px;
+    }
+
+    .contentsCard nav,
+    .sourceGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .legalSection {
+        grid-template-columns: 1fr;
+        padding: 18px;
+    }
+
+    .sectionNumber {
+        width: 32px;
+        height: 32px;
+    }
+
+    .resourcesCard,
+    .contactCard {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .resourceLinks {
+        justify-content: flex-start;
+    }
 }

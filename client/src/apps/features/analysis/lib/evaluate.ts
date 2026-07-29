@@ -2,7 +2,10 @@ import { sum, round } from "lodash-es";
 
 import AnalysedGame from "shared/types/game/AnalysedGame";
 import EngineVersion from "shared/constants/EngineVersion";
-import { StateTreeNode, getNodeChain } from "shared/types/game/position/StateTreeNode";
+import {
+    StateTreeNode,
+    getNodeChain
+} from "shared/types/game/position/StateTreeNode";
 import { getTopEngineLine } from "shared/types/game/position/EngineLine";
 import Engine from "@analysis/lib/engine";
 import getCloudEvaluation from "./cloudEvaluate";
@@ -15,6 +18,21 @@ interface EvaluateMovesOptions {
     cloudEngineLines: number;
     engineConfig?: (engine: Engine) => void;
     onProgress?: (progress: number) => void;
+
+    /*
+     * Se dispara únicamente cuando la evaluación completada avanza
+     * de forma continua por la línea principal.
+     *
+     * Aunque haya varios motores trabajando en paralelo, la UI recibe
+     * las posiciones en orden 0, 1, 2, 3... para que el tablero y el
+     * gráfico progresen de manera estable y nunca salten hacia atrás.
+     */
+    onSequentialPositionComplete?: (
+        node: StateTreeNode,
+        index: number,
+        visibleNodeCount: number
+    ) => void;
+
     verbose?: boolean;
 }
 
@@ -34,18 +52,58 @@ function createGameEvaluator(
     // Each state tree node keeps a progress from 0 to 1
     const progresses: number[] = [];
 
+    /*
+     * Los motores locales pueden terminar posiciones fuera de orden.
+     * Guardamos cuáles están completas y solo exponemos a la interfaz
+     * el frente continuo ya evaluado.
+     */
+    const completedPositions = new Array<boolean>(
+        stateTreeNodes.length
+    ).fill(false);
+
+    let sequentialCompletedIndex = -1;
+
     function getProgress() {
         return round(sum(progresses) / stateTreeNodes.length, 3);
     }
 
+    function markPositionComplete(index: number) {
+        if (index < 0 || index >= completedPositions.length) return;
+        if (completedPositions[index]) return;
+
+        completedPositions[index] = true;
+
+        while (
+            sequentialCompletedIndex + 1 < completedPositions.length
+            && completedPositions[sequentialCompletedIndex + 1]
+        ) {
+            sequentialCompletedIndex++;
+
+            const node = stateTreeNodes[sequentialCompletedIndex];
+
+            options.onSequentialPositionComplete?.(
+                node,
+                sequentialCompletedIndex,
+                sequentialCompletedIndex + 1
+            );
+        }
+    }
+
     async function evaluator(): Promise<StateTreeNode[]> {
         // Apply cloud evaluations where possible
-        for (const stateTreeNode of stateTreeNodes) {
+        for (
+            let index = 0;
+            index < stateTreeNodes.length;
+            index++
+        ) {
             if (controller.signal.aborted) break;
+
+            const stateTreeNode = stateTreeNodes[index];
 
             try {
                 var cloudEngineLines = await getCloudEvaluation(
-                    stateTreeNode.state.fen, options.cloudEngineLines
+                    stateTreeNode.state.fen,
+                    options.cloudEngineLines
                 );
             } catch {
                 break;
@@ -62,7 +120,8 @@ function createGameEvaluator(
                 ...cloudEngineLines
             ];
 
-            progresses.push(1);
+            progresses[index] = 1;
+            markPositionComplete(index);
             options.onProgress?.(getProgress());
         }
 
@@ -93,16 +152,19 @@ function createGameEvaluator(
                 if (stateTreeNodeIndex >= stateTreeNodes.length) {
                     engine.terminate();
 
-                    if (++enginesResting == engineCount)
+                    if (++enginesResting == engineCount) {
                         res(stateTreeNodes);
+                    }
 
                     return;
                 }
 
-                engine.setPosition(game.initialPosition, stateTreeNodes
-                    .slice(0, stateTreeNodeIndex + 1)
-                    .filter(node => node.state.move)
-                    .map(node => node.state.move!.uci)
+                engine.setPosition(
+                    game.initialPosition,
+                    stateTreeNodes
+                        .slice(0, stateTreeNodeIndex + 1)
+                        .filter(node => node.state.move)
+                        .map(node => node.state.move!.uci)
                 );
 
                 engine.evaluate({
@@ -113,8 +175,9 @@ function createGameEvaluator(
                     onEngineLine: line => {
                         // Depth 0 is given for states with no legal moves
                         const localProgress = line.depth == 0
-                            ? 1 : line.depth / options.engineDepth;
-                        
+                            ? 1
+                            : line.depth / options.engineDepth;
+
                         // Progress value will already exist for cutoff node
                         progresses[currentStateTreeNodeIndex] = Math.max(
                             progresses[currentStateTreeNodeIndex] || 0,
@@ -130,6 +193,9 @@ function createGameEvaluator(
                         ...currentStateTreeNode.state.engineLines,
                         ...lines
                     ];
+
+                    markPositionComplete(currentStateTreeNodeIndex);
+                    options.onProgress?.(getProgress());
 
                     evaluateNextPosition(engine);
                 });

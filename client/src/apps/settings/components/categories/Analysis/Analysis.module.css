@@ -1,0 +1,77 @@
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+
+    width: 100%;
+}
+
+.sectionTitle {
+    margin: 0;
+
+    color: white;
+
+    font-size: 1.55rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.sectionContent {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    width: 100%;
+}
+
+.sectionSeparator {
+    width: 100%;
+
+    margin: 30px 0;
+
+    border: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.palette {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.swatch {
+    width: 28px;
+    height: 28px;
+
+    padding: 0;
+
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    border-radius: 50%;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        outline 0.15s ease;
+}
+
+.swatch:hover {
+    transform: scale(1.1);
+}
+
+.swatchSelected {
+    outline: 2px solid var(--ui-blue);
+    outline-offset: 2px;
+}
+
+.valueSetting {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+
+    width: min(620px, 100%);
+
+    min-height: 36px;
+}

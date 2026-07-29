@@ -1,11 +1,65 @@
 {
+    "archive": {
+        "title": "Archiwum partii",
+        "selected": "Wybrano: {{amount}}",
+        "selectAll": "Wybierz wszystko",
+        "deleteSelected": "Usuń wybrane",
+        "deleteConfirm": "Czy na pewno chcesz usunąć {{amount}} partię/partie? Tej operacji nie można cofnąć.",
+        "error": "Podczas wczytywania archiwum partii wystąpił nieznany błąd.",
+        "description": "Każda zakończona analiza jest zapisywana automatycznie. Partie gościa pozostają na tym urządzeniu; partie zalogowanego użytkownika są też dostępne na koncie.",
+        "emptyTitle": "Brak przeanalizowanych partii",
+        "emptyDescription": "Przeanalizuj partię, a pojawi się tutaj automatycznie.",
+        "analyseGame": "Analizuj partię",
+        "card": {
+            "white": "Białe",
+            "black": "Czarne",
+            "select": "Wybierz zarchiwizowaną partię",
+            "analysedGame": "Przeanalizowana partia",
+            "savedLocally": "Zapisano na tym urządzeniu",
+            "players": "Gracze",
+            "elo": "Elo",
+            "accuracy": "Dokładność",
+            "unknownOpening": "Nie rozpoznano debiutu",
+            "moves_one": "{{count}} ruch",
+            "moves_other": "{{count}} ruchów",
+            "finalPosition": "Pozycja końcowa",
+            "movesLabel": "ruchów"
+        }
+    },
     "news": {
         "title": "Gazeta",
-        "titleDescription": "Uzyskaj najnowsze aktualizacje platformy WintrChess",
+        "titleDescription": "Uzyskaj najnowsze aktualizacje platformy NexoChess",
         "error": "Wystąpił błąd podczas ładowania gazety.",
         "article": {
             "unfound": "Nie mogliśmy znaleźć tego artykułu.",
             "error": "Wystąpił błąd podczas ładowania tego artykułu."
         }
+    },
+    "signIn": {
+        "loginTitle": "Zaloguj się na swoje konto",
+        "loginButtonGoogle": "Zaloguj się przez Google",
+        "loginButtonEmail": "Zaloguj się",
+        "loginError": "Wystąpił problem podczas logowania.",
+        "registerTitle": "Utwórz konto",
+        "registerButtonGoogle": "Zarejestruj się przez Google",
+        "registerButtonEmail": "Zarejestruj się",
+        "registerError": "Wystąpił problem podczas tworzenia konta.",
+        "alternative": "lub",
+        "loginPageButton": "Mam już konto.",
+        "registerPageButton": "Nowy użytkownik? Utwórz konto!",
+        "legalMessage": "Kontynuując, akceptujesz nasze <terms>Warunki korzystania</terms> i <privacy>Politykę prywatności</privacy>.",
+        "loginDescription": "Kontynuuj analizowanie partii i uzyskaj dostęp do archiwum w chmurze.",
+        "registerDescription": "Utwórz konto, aby Twoje archiwum było dostępne na różnych urządzeniach.",
+        "loginPending": "Logowanie…",
+        "registerPending": "Tworzenie konta…",
+        "newUser": "Nowy w NexoChess?",
+        "createAccount": "Utwórz konto",
+        "existingUser": "Masz już konto?"
+    },
+    "resetPassword": {
+        "message": "Wprowadź i potwierdź nowe hasło do konta."
+    },
+    "profile": {
+        "memberSince": "Członek od {{date}}"
     }
 }

@@ -1,41 +1,135 @@
 {
-    "loading": "Carregando...",
-    "back": "Voltar",
-    "settings": "Configurações",
-    "error": "Erro",
-    "reset": "Restaurar",
-    "enabled": "Ativado",
-    "disabled": "Desativado",
-    "navigationBar": {
-        "support": "Suporte",
-        "tooltips": {
-            "support": "Nos apoie ❤️",
-            "help": "Central de Ajuda"
-        }
+  "loading": "Carregando...",
+  "back": "Voltar",
+  "settings": "Configurações",
+  "error": "Erro",
+  "unknownError": "Ocorreu um erro desconhecido.",
+  "reset": "Restaurar",
+  "enabled": "Ativado",
+  "disabled": "Desativado",
+  "edit": "Editar",
+  "confirm": "Confirmar",
+  "cancel": "Cancelar",
+  "navigationBar": {
+    "support": "Suporte",
+    "signIn": "Iniciar sessão",
+    "tooltips": {
+      "support": "Nos apoie ❤️",
+      "help": "Central de Ajuda"
     },
-    "sidebar": {
-        "analysis": "Análise",
-        "archive": "Arquivo",
-        "news": "Notícias"
+    "profileMenu": {
+      "profile": "Perfil",
+      "signOut": "Terminar sessão"
     },
-    "gameListing": {
-        "gameResults": {
-            "unopinionated": {
-                "win": "Brancas Vencem",
-                "draw": "Empate",
-                "lose": "Pretas Vencem",
-                "unknown": "Unknown"
-            },
-            "opinionated": {
-                "win": "Ganhou",
-                "draw": "Empate",
-                "lose": "Perdido",
-                "unknown": "Desconhecido"
-            }
-        }
+    "openAnalysis": "Abrir a análise do NexoChess"
+  },
+  "sidebar": {
+    "analysis": "Análise",
+    "archive": "Arquivo",
+    "news": "Notícias"
+  },
+  "footer": {
+    "privacySettings": "Definições de privacidade",
+    "language": "Idioma",
+    "languagesDialog": {
+      "eyebrow": "Idioma",
+      "select": "Escolha o seu idioma",
+      "description": "A NexoChess irá memorizar esta escolha neste navegador.",
+      "search": "Pesquisar idiomas",
+      "current": "Atual",
+      "noResults": "Nenhum idioma corresponde à pesquisa.",
+      "helpTitle": "Ajude a melhorar uma tradução",
+      "helpDescription": "Encontrou uma frase pouco clara ou incorreta? Envie o idioma, a página e a sua sugestão.",
+      "help": "Sugerir uma tradução",
+      "helpSubject": "Sugestão de tradução para NexoChess",
+      "helpBody": "Olá NexoChess,\n\nGostaria de sugerir uma melhoria para a tradução {{language}}.\n\nPágina ou secção:\nTexto atual:\nTexto sugerido:\nContexto:\n\nObrigado."
     },
-    "bugReportWidget": {
-        "tooltip": "Copiar Logs do Console",
-        "toast": "Registros dos Consoles Copiados!"
+    "termsOfService": "Termos de Serviço",
+    "privacyPolicy": "Política de Privacidade",
+    "openSource": "Código-fonte e licenças",
+    "copyright": "Direitos autorais © {{year}} NexoChess",
+    "tagline": "Ligue as jogadas. Compreenda a partida.",
+    "license": "Código licenciado sob GPL-3.0",
+    "navigationLabel": "Navegação do rodapé",
+    "contact": "Contacto"
+  },
+  "confirmDialog": {
+    "yes": "Sim",
+    "no": "Não"
+  },
+  "shareGame": {
+    "copyFEN": "Copiar FEN",
+    "copyFENToast": "FEN copiada!",
+    "copyPGN": "Copiar PGN",
+    "copyPGNToast": "PGN copiado!"
+  },
+  "gameListing": {
+    "gameResults": {
+      "unopinionated": {
+        "win": "Brancas Vencem",
+        "draw": "Empate",
+        "lose": "Pretas Vencem",
+        "unknown": "Desconhecido"
+      },
+      "opinionated": {
+        "win": "Ganhou",
+        "draw": "Empate",
+        "lose": "Perdido",
+        "unknown": "Desconhecido"
+      }
     }
+  },
+  "account": {
+    "fields": {
+      "email": "Endereço de email",
+      "displayName": "Nome de apresentação",
+      "username": "Nome de utilizador"
+    },
+    "errors": {
+      "accountNotFound": "Não existe uma conta com este email.",
+      "emailTaken": "Já existe uma conta com este email.",
+      "usernameTaken": "Este nome de utilizador já está ocupado.",
+      "invalidEmail": "Endereço de email inválido.",
+      "unverifiedEmail": "Verifique o seu endereço de email.",
+      "displayNameInvalid": "O nome de apresentação contém caracteres inválidos.",
+      "displayNameTooShort": "O nome de apresentação deve ter pelo menos 3 caracteres.",
+      "displayNameTooLong": "O nome de apresentação não pode ter mais de 24 caracteres.",
+      "usernameAlphanumeric": "O nome de utilizador só pode conter letras, números e sublinhados.",
+      "usernameTooShort": "O nome de utilizador deve ter pelo menos 3 caracteres.",
+      "usernameTooLong": "O nome de utilizador não pode ter mais de 20 caracteres.",
+      "passwordTooShort": "A palavra-passe deve ter pelo menos 8 caracteres.",
+      "passwordTooLong": "A palavra-passe não pode ter mais de 128 caracteres.",
+      "passwordNoMatch": "As palavras-passe não coincidem.",
+      "incorrectEmailPassword": "Email ou palavra-passe incorretos.",
+      "verificationCooldown": "Aguarde 60 segundos antes de enviar outro link de verificação."
+    },
+    "placeholders": {
+      "email": "Endereço de email…",
+      "displayName": "Nome de apresentação…",
+      "username": "Nome de utilizador…",
+      "password": "Palavra-passe…",
+      "confirmPassword": "Confirmar palavra-passe…"
+    },
+    "verificationMessage": "Enviámos um link de verificação para o seu email. Consulte a caixa de entrada para continuar."
+  },
+  "bugReportWidget": {
+    "tooltip": "Copiar Logs do Console",
+    "toast": "Registros dos Consoles Copiados!"
+  },
+  "close": "Fechar",
+  "save": "Guardar",
+  "saving": "A guardar…",
+  "remove": "Remover",
+  "add": "Adicionar",
+  "change": "Alterar",
+  "delete": "Eliminar",
+  "password": "Palavra-passe",
+  "confirmPassword": "Confirmar palavra-passe",
+  "notFound": {
+    "message": "Parece que se perdeu.",
+    "returnHome": "Voltar ao início"
+  },
+  "chess": {
+    "capturedPieces": "Peças capturadas"
+  }
 }

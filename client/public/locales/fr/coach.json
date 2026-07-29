@@ -1,0 +1,134 @@
+{
+  "picker": {
+    "title": "Choisissez votre entraîneur",
+    "close": "Fermer le sélecteur d’entraîneur",
+    "select": "Choisir cet entraîneur",
+    "choose": "Choisir un entraîneur"
+  },
+  "progress": {
+    "reviewing": "Laissez-moi un instant pour analyser votre partie :",
+    "aria": "Progression de l’analyse : {{progress}} %"
+  },
+  "summary": {
+    "fog": {
+      "picker": [
+        "Pixie à votre service. Je surveillerai calmement chaque pièce non protégée... miaou."
+      ],
+      "idle": [
+        "Chargez une partie et je l’examinerai avec calme et attention. Prrr."
+      ],
+      "analysing": [
+        "Un instant pendant que j’inspecte chaque coup. Prrr..."
+      ],
+      "ready": [
+        "Analyse terminée. Regardons les moments vraiment importants. Miaou."
+      ]
+    },
+    "foxy": {
+      "picker": [
+        "Foxy à votre service. Si la position cache un piège, je le flairerai."
+      ],
+      "idle": [
+        "Chargez une partie et je traquerai les tournants tactiques."
+      ],
+      "analysing": [
+        "Un instant pendant que je flaire les coups les plus rusés..."
+      ],
+      "ready": [
+        "Terminé. J’ai repéré les moments les plus tranchants."
+      ]
+    },
+    "cybe": {
+      "picker": [
+        "BIP. Cybe en ligne. La précision avant le spectacle."
+      ],
+      "idle": [
+        "SYSTÈME EN ATTENTE. Partie requise."
+      ],
+      "analysing": [
+        "ANALYSE EN COURS. BIP. Veuillez patienter..."
+      ],
+      "ready": [
+        "PROCESSUS TERMINÉ. Écarts critiques identifiés."
+      ]
+    },
+    "max_rooks": {
+      "picker": [
+        "Max Rooks à votre service. Restons méthodiques et pratiques."
+      ],
+      "idle": [
+        "Montrez-moi la partie et je vous expliquerai ce qui comptait vraiment."
+      ],
+      "analysing": [
+        "Accordez-moi un instant pour examiner la partie attentivement."
+      ],
+      "ready": [
+        "L’analyse est prête. Passons en revue les décisions clés."
+      ]
+    }
+  },
+  "dynamic": {
+    "start": "Commençons au début. Sélectionnez un coup ou utilisez les commandes.",
+    "reviewing": "Analyse de {{move}}...",
+    "classifications": {
+      "brilliant": "{{move}} est brillant et trouve une idée très forte.",
+      "critical": "{{move}} est un excellent coup dans un moment critique.",
+      "best": "{{move}} est le meilleur coup de la position.",
+      "excellent": "{{move}} est un coup excellent et précis.",
+      "okay": "{{move}} est un coup solide qui garde la position sous contrôle.",
+      "inaccuracy": "{{move}} est une imprécision qui cède une partie de l’avantage.",
+      "mistake": "{{move}} est une erreur qui rend la position plus difficile.",
+      "miss": "{{move}} laisse échapper une occasion importante.",
+      "blunder": "{{move}} est une gaffe qui modifie fortement l’évaluation.",
+      "theory": "{{move}} suit la théorie de la {{opening}}.",
+      "theoryUnknown": "{{move}} suit une ligne d’ouverture connue.",
+      "forced": "{{move}} est forcé. Les autres choix sont nettement moins bons.",
+      "risky": "{{move}} est risqué et offre des chances pratiques à l’adversaire."
+    },
+    "betterMove": "{{best}} était plus fort.",
+    "mateAllowed": "Ce coup permet un mat en {{mate}}.",
+    "evaluationLoss": "L’évaluation baisse d’environ {{loss}} pions."
+  },
+  "catchphrases": {
+    "fog": {
+      "prefixes": [
+        "Mrrp...",
+        "Miaou.",
+        "Prrr..."
+      ],
+      "suffixes": [
+        "Prrr."
+      ]
+    },
+    "foxy": {
+      "prefixes": [
+        "Hé...",
+        "Yip.",
+        "Snif, snif..."
+      ],
+      "suffixes": [
+        "Bien chassé."
+      ]
+    },
+    "cybe": {
+      "prefixes": [
+        "BIP.",
+        "SÉQUENCE VÉRIFIÉE.",
+        "MOTIF VERROUILLÉ."
+      ],
+      "suffixes": [
+        "Analyse enregistrée."
+      ]
+    },
+    "max_rooks": {
+      "prefixes": [
+        "Hm.",
+        "En effet.",
+        "Tout à fait."
+      ],
+      "suffixes": [
+        "Retenez cette idée."
+      ]
+    }
+  }
+}

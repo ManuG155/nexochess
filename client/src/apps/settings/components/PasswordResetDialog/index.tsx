@@ -19,7 +19,7 @@ import PasswordResetDialogProps from "./PasswordResetDialogProps";
 import * as styles from "./PasswordResetDialog.module.css";
 
 function PasswordResetDialog({ onClose }: PasswordResetDialogProps) {
-    const { t } = useTranslation(["settings", "common"]);
+    const { t, i18n } = useTranslation(["settings", "common"]);
 
     const { profile } = useAuthedProfile();
     const getErrorMessage = useAuthErrors();
@@ -31,7 +31,7 @@ function PasswordResetDialog({ onClose }: PasswordResetDialogProps) {
         unsent: t(`${verifyButtonStrings}.unsent`),
         sending: t(`${verifyButtonStrings}.sending`),
         sent: t(`${verifyButtonStrings}.sent`)
-    }), []);
+    }), [i18n.language]);
 
     async function resetPassword() {
         if (!profile) return;
@@ -41,6 +41,11 @@ function PasswordResetDialog({ onClose }: PasswordResetDialogProps) {
         const result = await authClient.requestPasswordReset({
             email: profile.email,
             redirectTo: "/auth/reset-password"
+        }, {
+            headers: {
+                "x-nexochess-language": i18n.resolvedLanguage
+                    || i18n.language
+            }
         });
 
         if (result.error) {

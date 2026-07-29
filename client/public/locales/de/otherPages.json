@@ -1,11 +1,65 @@
 {
+    "archive": {
+        "title": "Partienarchiv",
+        "selected": "{{amount}} ausgewählt",
+        "selectAll": "Alle auswählen",
+        "deleteSelected": "Ausgewählte löschen",
+        "deleteConfirm": "Möchtest du wirklich {{amount}} Partie(n) löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+        "error": "Beim Laden deines Partienarchivs ist ein unbekannter Fehler aufgetreten.",
+        "description": "Jede abgeschlossene Analyse wird automatisch gespeichert. Partien von Gästen bleiben auf diesem Gerät; angemeldete Partien sind zusätzlich im Konto verfügbar.",
+        "emptyTitle": "Noch keine analysierten Partien",
+        "emptyDescription": "Analysiere eine Partie, dann erscheint sie automatisch hier.",
+        "analyseGame": "Partie analysieren",
+        "card": {
+            "white": "Weiß",
+            "black": "Schwarz",
+            "select": "Archivierte Partie auswählen",
+            "analysedGame": "Analysierte Partie",
+            "savedLocally": "Auf diesem Gerät gespeichert",
+            "players": "Spieler",
+            "elo": "Elo",
+            "accuracy": "Genauigkeit",
+            "unknownOpening": "Eröffnung nicht erkannt",
+            "moves_one": "{{count}} Zug",
+            "moves_other": "{{count}} Züge",
+            "finalPosition": "Endstellung",
+            "movesLabel": "Züge"
+        }
+    },
     "news": {
         "title": "Zeitung",
-        "titleDescription": "Erhalte die neuesten Updates auf der WintrChess Plattform",
+        "titleDescription": "Erhalte die neuesten Updates auf der NexoChess Plattform",
         "error": "Beim Laden der Zeitung ist ein Fehler aufgetreten.",
         "article": {
             "unfound": "Dieser Artikel konnte nicht gefunden werden.",
             "error": "Beim Laden dieses Artikels ist ein Fehler aufgetreten."
         }
+    },
+    "signIn": {
+        "loginTitle": "Bei deinem Konto anmelden",
+        "loginButtonGoogle": "Mit Google anmelden",
+        "loginButtonEmail": "Anmelden",
+        "loginError": "Bei der Anmeldung ist ein Problem aufgetreten.",
+        "registerTitle": "Konto erstellen",
+        "registerButtonGoogle": "Mit Google registrieren",
+        "registerButtonEmail": "Registrieren",
+        "registerError": "Beim Erstellen des Kontos ist ein Problem aufgetreten.",
+        "alternative": "oder",
+        "loginPageButton": "Ich habe bereits ein Konto.",
+        "registerPageButton": "Neu hier? Konto erstellen!",
+        "legalMessage": "Wenn du fortfährst, stimmst du unseren <terms>Nutzungsbedingungen</terms> und unserer <privacy>Datenschutzerklärung</privacy> zu.",
+        "loginDescription": "Analysiere weiter deine Partien und greife auf dein Cloud-Archiv zu.",
+        "registerDescription": "Erstelle ein Konto, damit dein Archiv auf allen Geräten verfügbar bleibt.",
+        "loginPending": "Anmeldung läuft…",
+        "registerPending": "Konto wird erstellt…",
+        "newUser": "Neu bei NexoChess?",
+        "createAccount": "Konto erstellen",
+        "existingUser": "Du hast bereits ein Konto?"
+    },
+    "resetPassword": {
+        "message": "Gib ein neues Passwort für dein Konto ein und bestätige es."
+    },
+    "profile": {
+        "memberSince": "Mitglied seit {{date}}"
     }
 }

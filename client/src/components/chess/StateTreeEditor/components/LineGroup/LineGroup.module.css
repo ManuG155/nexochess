@@ -1,7 +1,64 @@
 .wrapper {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 7px;
     position: relative;
+
+    display: grid;
+
+    grid-template-columns:
+        46px
+        minmax(
+            0,
+            1fr
+        )
+        minmax(
+            0,
+            1fr
+        );
+
+    align-items: center;
+
+    width: 100%;
+    min-height: 44px;
+
+    box-sizing: border-box;
+
+    padding-top: 2px;
+    padding-right: 10px;
+    padding-bottom: 2px;
+
+    column-gap: 18px;
+}
+
+
+/*
+ * Contraste alternado solicitado.
+ */
+.wrapper:nth-child(odd) {
+    background-color: #262422;
+}
+
+
+.wrapper:nth-child(even) {
+    background-color: #2A2926;
+}
+
+
+.moveNumber {
+    color: #a8a8a8;
+
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+
+    text-align: right;
+}
+
+
+.moveCell {
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-start;
+
+    min-width: 0;
+    min-height: 38px;
 }

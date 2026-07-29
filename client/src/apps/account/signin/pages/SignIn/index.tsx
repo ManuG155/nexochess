@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 import useAuthErrors from "@/hooks/auth/useAuthErrors";
@@ -7,112 +7,159 @@ import useAuthErrorReporter from "../../hooks/useAuthErrorReporter";
 import Separator from "@/components/common/Separator";
 import TextField from "@/components/common/TextField";
 import Button from "@/components/common/Button";
-import ButtonColour from "@/components/common/Button/Colour";
 import LogMessage from "@/components/common/LogMessage";
 import StatusMessage from "@/components/common/LogMessage/StatusMessage";
 import authClient from "@/lib/auth";
 
 import * as styles from "../../index.module.css";
-
 import iconGoogle from "@assets/img/connections/google.png";
-import iconSignIn from "@assets/img/interface/sign_in.svg";
 
 function SignIn() {
     const { t } = useTranslation(["otherPages", "common"]);
-
     const navigate = useNavigate();
-
     const getErrorMessage = useAuthErrors();
 
-    const [ email, setEmail ] = useState("");
-    const [ password, setPassword ] = useState("");
-
-    const [ status, setStatus ] = useState<StatusMessage>();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [status, setStatus] = useState<StatusMessage>();
+    const [pending, setPending] = useState(false);
 
     useAuthErrorReporter(setStatus);
 
     async function googleLogin() {
-        authClient.signIn.social({
-            provider: "google",
-            callbackURL: "/analysis",
-            errorCallbackURL: "/signin"
-        });
+        try {
+            const response = await authClient.signIn.social({
+                provider: "google",
+                callbackURL: "/analysis",
+                errorCallbackURL: "/signin",
+                disableRedirect: true
+            });
+
+            if (response.error) {
+                setStatus({
+                    theme: "error",
+                    message: getErrorMessage(response.error.code)
+                });
+                return;
+            }
+
+            if (!response.data?.url) {
+                setStatus({
+                    theme: "error",
+                    message: t("unknownError", { ns: "common" })
+                });
+                return;
+            }
+
+            window.location.assign(response.data.url);
+        } catch (error) {
+            console.error("Failed to start Google authentication:", error);
+            setStatus({
+                theme: "error",
+                message: t("unknownError", { ns: "common" })
+            });
+        }
     }
 
     async function login() {
+        if (pending) return;
+        setPending(true);
+
         const loginResponse = await authClient.signIn.email({
-            email, password,
+            email,
+            password,
             callbackURL: "/analysis"
         });
 
-        if (loginResponse.error) setStatus({
-            theme: "error",
-            message: getErrorMessage(loginResponse.error.code)
-        });
+        if (loginResponse.error) {
+            setStatus({
+                theme: "error",
+                message: getErrorMessage(loginResponse.error.code)
+            });
+            setPending(false);
+        }
     }
 
-    return <div className={styles.wrapper}>
-        <div className={styles.dialog}>
-            <span className={styles.title}>
-                {t("signIn.loginTitle")}
-            </span>
+    return (
+        <div className={styles.wrapper}>
+            <div className={styles.dialog}>
+                <a className={styles.brand} href="/analysis" aria-label={t("navigationBar.openAnalysis", { ns: "common" })}>
+                    <img src="/img/nexochess-white.png" alt="NexoChess"/>
+                </a>
 
-            <Button
-                icon={iconGoogle}
-                iconSize="28px"
-                className={styles.submitButton}
-                style={{ gap: "10px" }}
-                onClick={googleLogin}
-            >
-                {t("signIn.loginButtonGoogle")}
-            </Button>
+                <div className={styles.heading}>
+                    <h1>{t("signIn.loginTitle")}</h1>
+                    <p>{t("signIn.loginDescription")}</p>
+                </div>
 
-            <Separator style={{ margin: 0 }}>
-                <b>{t("signIn.alternative")}</b>
-            </Separator>
+                <Button
+                    icon={iconGoogle}
+                    iconSize="24px"
+                    className={`${styles.actionButton} ${styles.googleButton}`}
+                    onClick={googleLogin}
+                >
+                    {t("signIn.loginButtonGoogle")}
+                </Button>
 
-            <TextField
-                wrapperStyle={{ width: "100%" }}
-                className={styles.field}
-                placeholder={t("account.placeholders.email", { ns: "common" })}
-                onChange={setEmail}
-            />
+                <Separator className={styles.divider}>
+                    <span>{t("signIn.alternative")}</span>
+                </Separator>
 
-            <TextField
-                wrapperStyle={{ width: "100%" }}
-                className={styles.field}
-                placeholder={t("account.placeholders.password", { ns: "common" })}
-                password
-                onChange={setPassword}
-            />
+                <div className={styles.fields}>
+                    <label className={styles.fieldGroup}>
+                        <span>{t("account.fields.email", { ns: "common" })}</span>
+                        <TextField
+                            wrapperStyle={{ width: "100%" }}
+                            className={styles.field}
+                            placeholder={t("account.placeholders.email", { ns: "common" })}
+                            onChange={setEmail}
+                        />
+                    </label>
 
-            <Button
-                icon={iconSignIn}
-                iconSize="28px"
-                className={styles.submitButton}
-                style={{ backgroundColor: ButtonColour.BLUE }}
-                onClick={login}
-            >
-                {t("signIn.loginButtonEmail")}
-            </Button>
+                    <label className={styles.fieldGroup}>
+                        <span>{t("password", { ns: "common" })}</span>
+                        <TextField
+                            wrapperStyle={{ width: "100%" }}
+                            className={styles.field}
+                            placeholder={t("account.placeholders.password", { ns: "common" })}
+                            password
+                            onChange={setPassword}
+                        />
+                    </label>
+                </div>
 
-            {status && <LogMessage theme={status.theme}>
-                {status.message}
-            </LogMessage>}
+                <Button
+                    className={`${styles.actionButton} ${styles.primaryButton}`}
+                    disabled={pending || !email || !password}
+                    onClick={() => void login()}
+                >
+                    {pending ? t("signIn.loginPending") : t("signIn.loginButtonEmail")}
+                </Button>
 
-            <Separator style={{ margin: 0 }} />
+                {status && (
+                    <LogMessage theme={status.theme}>{status.message}</LogMessage>
+                )}
 
-            <Button className={styles.switchFlowButton} onClick={
-                () => navigate("/signup")
-            }>
-                {t("signIn.registerPageButton")}
-            </Button>
+                <div className={styles.switchFlow}>
+                    <span>{t("signIn.newUser")}</span>
+                    <button type="button" onClick={() => navigate("/signup")}>
+                        {t("signIn.createAccount")}
+                    </button>
+                </div>
 
-            <span className={styles.legalMessage}>
-                {t("signIn.legalMessage")}
-            </span>
+                <p className={styles.legalMessage}>
+                    <Trans
+                        ns="otherPages"
+                        i18nKey="signIn.legalMessage"
+                        components={{
+                            terms: <a href="/terms" />,
+                            privacy: <a href="/privacy" />
+                        }}
+                    />
+                </p>
+            </div>
         </div>
-    </div>;
+    );
 }
 
 export default SignIn;

@@ -1,15 +1,23 @@
 .wrapper {
     display: flex;
     align-items: center;
-    gap: 10px;
+    min-width: 0;
 }
 
-.title {
-    display: flex;
-    align-items: end;
+.iconMark {
+    display: none;
+    flex: 0 0 auto;
+    width: 46px;
+    height: 46px;
+    object-fit: contain;
+    user-select: none;
+}
 
-    color: white;
-    font-family: "JetBrains Mono";
-    font-size: 2rem;
-    letter-spacing: -2px;
+.wordmark {
+    display: block;
+    width: auto;
+    height: 48px;
+    max-width: 245px;
+    object-fit: contain;
+    user-select: none;
 }

@@ -18,9 +18,43 @@ export async function analyseStateTree(
     options?: AnalysisOptions
 ): APIResponse<{ gameAnalysis: GameAnalysis }> {
     const reportURL = "/api/analysis/analyse"
-        + `?brilliant=${String(options?.includeBrilliant)}`
-        + `&critical=${String(options?.includeCritical)}`
-        + `&theory=${String(options?.includeTheory)}`;
+
+    + `?brilliant=${
+        String(
+            options
+                ?.includeBrilliant
+        )
+    }`
+
+    + `&critical=${
+        String(
+            options
+                ?.includeCritical
+        )
+    }`
+
+    + `&theory=${
+        String(
+            options
+                ?.includeTheory
+        )
+    }`
+
+    + `&whiteRating=${
+        String(
+            options
+                ?.whiteRating
+            ?? ""
+        )
+    }`
+
+    + `&blackRating=${
+        String(
+            options
+                ?.blackRating
+            ?? ""
+        )
+    }`;
 
     const reportResponse = await fetch(reportURL, {
         method: "POST",

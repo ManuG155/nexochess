@@ -11,14 +11,24 @@
                 "alreadyExists": "An account with this username already exists."
             },
             "email": {
-                "verification": "Enter a new email address. We'll send you an email to verify it.",
+                "verification": "Enter your new email address. We will send an approval link to your current address before applying the change.",
                 "verificationButton": {
                     "unsent": "Send verification email",
                     "sending": "Sending email...",
                     "sent": "Verification email sent",
                     "cooldown": "Please try again later."
                 },
-                "same": "You are already using this email address."
+                "same": "You are already using this email address.",
+                "changeButton": {
+                    "unsent": "Request email change",
+                    "sending": "Sending confirmation…",
+                    "sent": "Check your current email"
+                },
+                "taken": "An account already uses this email address.",
+                "currentNotVerified": "Verify your current email address before changing it.",
+                "sessionExpired": "Your session has expired. Sign in again and retry.",
+                "cooldown": "Too many requests. Wait a moment and try again.",
+                "sendFailed": "We could not start the email change. Please try again."
             }
         },
         "manageAccount": {
@@ -28,6 +38,24 @@
             "deleteAccount": "Delete Account",
             "deleteAccountDialog": "Please confirm the deletion of your account by typing the following into the field:",
             "irreversibleAction": "Please remember that this action is irreversible."
+        }
+    },
+    "analysis": {
+        "title": "Analysis",
+        "arrowAppearance": "Arrow appearance",
+        "arrowWidth": "Arrow width (px)",
+        "headLength": "Arrowhead length (px)",
+        "headWidth": "Arrowhead width (px)",
+        "bestMoveColour": "Best move arrow",
+        "manualColour": "Manual arrows",
+        "other": "Other",
+        "showTimer": "Show timer",
+        "colours": {
+            "green": "Green",
+            "orange": "Orange",
+            "blue": "Blue",
+            "red": "Red",
+            "purple": "Purple"
         }
     },
     "boardAndPieces": {
@@ -43,6 +71,12 @@
             "ice": "Ice",
             "marshmallow": "Marshmallow",
             "pillow": "Pillow"
+        },
+        "coordinates": {
+            "title": "Coordinates",
+            "position": "Position",
+            "inside": "Inside",
+            "outside": "Outside"
         }
     },
     "bugReporting": {
@@ -50,5 +84,115 @@
         "bugReportingMode": "Bug Reporting Mode",
         "bugReportingModeDescription": "Help us find and fix bugs. Bug Reporting Mode activates a small widget in the bottom corner of your screen which you can click to copy console logs."
     },
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "user": {
+        "title": "User",
+        "description": "Manage your NexoChess identity and account security.",
+        "email": "Email",
+        "password": "Password",
+        "username": "Username",
+        "dateOfBirth": "Date of birth",
+        "optional": "Optional",
+        "change": "Change",
+        "add": "Add",
+        "checking": "Checking your NexoChess account…",
+        "notSet": "Not set",
+        "save": "Save",
+        "saving": "Saving…",
+        "remove": "Remove",
+        "usernameTaken": "This username is already taken.",
+        "usernameUpdateFailed": "The username could not be updated.",
+        "usernamePlaceholder": "New username…",
+        "usernameDialog": "Choose the username shown on your NexoChess account.",
+        "guest": {
+            "title": "You are using NexoChess as a guest",
+            "description": "Your analysed games remain available in the local Archive on this device. Sign in from the top-right menu to manage an email address, password, username and optional date of birth."
+        },
+        "dateOfBirthDialog": {
+            "description": "Optional. This information stays private and can be removed at any time.",
+            "invalid": "Enter a valid date between 1900 and today."
+        },
+        "delete": {
+            "title": "Delete account",
+            "description": "Permanently remove your account and its cloud archive. Games stored only on this device are not affected.",
+            "confirm": "Type {{username}} to confirm permanent account deletion.",
+            "usernameMismatch": "The username does not match."
+        }
+    },
+    "appearance": {
+        "title": "Appearance",
+        "language": {
+            "title": "Language",
+            "description": "Choose the language used across the NexoChess interface and account emails."
+        },
+        "boardTheme": {
+            "title": "Board theme",
+            "description": "Choose a board palette. Event and sponsored themes are intentionally excluded.",
+            "lightSquares": "Light squares",
+            "darkSquares": "Dark squares",
+            "colourPlaceholder": "Colour…",
+            "presets": {
+                "walnut": "Walnut",
+                "green": "Green",
+                "blue": "Blue",
+                "slate": "Slate",
+                "ice": "Ice",
+                "sand": "Sand",
+                "rose": "Rose",
+                "purple": "Purple",
+                "charcoal": "Charcoal",
+                "ocean": "Ocean",
+                "mint": "Mint",
+                "orange": "Orange"
+            }
+        },
+        "pieces": {
+            "title": "Piece set",
+            "description": "Select a standard piece family. Event and sponsor sets are excluded.",
+            "note": "Chess.com's Neo artwork is not bundled because it is proprietary; these are standard open alternatives."
+        },
+        "coordinates": {
+            "title": "Coordinates",
+            "description": "Choose whether board coordinates are drawn inside or outside the board.",
+            "inside": "Inside",
+            "outside": "Outside"
+        },
+        "preview": {
+            "title": "Preview",
+            "description": "Your selected board and pieces are previewed together below."
+        }
+    },
+    "coach": {
+        "title": "Coach",
+        "description": "Control whether your coach appears and animates during game analysis.",
+        "enabled": {
+            "title": "Enable coach",
+            "description": "Show the selected coach and its comments in Game Summary and Review."
+        },
+        "animations": {
+            "title": "Coach animations",
+            "description": "Allow blinking and mouth movement. Turn this off to use a static portrait."
+        }
+    },
+    "privacySection": {
+        "title": "Privacy",
+        "description": "Control data stored by NexoChess on this browser and review the policies that apply to your account.",
+        "preferences": {
+            "title": "Data preferences",
+            "description": "Review optional consent choices used by the site. Essential storage required for settings, authentication and your local archive is not disabled here.",
+            "manage": "Manage preferences"
+        },
+        "archive": {
+            "title": "Local game archive",
+            "description": "Guest analyses are saved only in this browser. Clearing browser data or using the button below permanently removes those local games.",
+            "clear": "Clear local archive",
+            "cleared": "The local archive on this device has been cleared.",
+            "confirm": "Delete every game saved locally on this device? This cannot be undone."
+        },
+        "policies": {
+            "title": "Policies",
+            "privacy": "Privacy Policy",
+            "terms": "Terms of Service"
+        }
+    }
 }

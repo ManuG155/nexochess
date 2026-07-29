@@ -1,0 +1,134 @@
+{
+  "picker": {
+    "title": "Wybierz trenera",
+    "close": "Zamknij wybór trenera",
+    "select": "Wybierz trenera",
+    "choose": "Wybierz trenera"
+  },
+  "progress": {
+    "reviewing": "Daj mi chwilę, żebym przeanalizował twoją partię:",
+    "aria": "Postęp analizy partii: {{progress}}%"
+  },
+  "summary": {
+    "fog": {
+      "picker": [
+        "Tu Pixie. Spokojnie przypilnuję każdej niebronionej figury... miau."
+      ],
+      "idle": [
+        "Wczytaj partię, a obejrzę ją spokojnie i uważnie. Prrr."
+      ],
+      "analysing": [
+        "Chwileczkę, sprawdzam każdy ruch. Prrr..."
+      ],
+      "ready": [
+        "Analiza zakończona. Spójrzmy na momenty, które naprawdę miały znaczenie. Miau."
+      ]
+    },
+    "foxy": {
+      "picker": [
+        "Tu Foxy. Jeżeli pozycja skrywa pułapkę, wywęszę ją."
+      ],
+      "idle": [
+        "Wczytaj partię, a wytropię wszystkie taktyczne zwroty."
+      ],
+      "analysing": [
+        "Chwileczkę, wywęszę najbardziej podstępne pomysły..."
+      ],
+      "ready": [
+        "Gotowe. Najostrzejsze momenty są już oznaczone."
+      ]
+    },
+    "cybe": {
+      "picker": [
+        "BIP. Cybe online. Najpierw precyzja, potem dramat."
+      ],
+      "idle": [
+        "SYSTEM OCZEKUJE. Wprowadź partię."
+      ],
+      "analysing": [
+        "ANALIZA W TOKU. BIP. Proszę czekać..."
+      ],
+      "ready": [
+        "PROCES ZAKOŃCZONY. Wykryto krytyczne odchylenia."
+      ]
+    },
+    "max_rooks": {
+      "picker": [
+        "Tu Max Rooks. Zachowamy zasady i praktyczne podejście."
+      ],
+      "idle": [
+        "Pokaż mi partię, a wyjaśnię, co było najważniejsze."
+      ],
+      "analysing": [
+        "Daj mi chwilę na dokładne zbadanie partii."
+      ],
+      "ready": [
+        "Analiza jest gotowa. Przejdźmy przez kluczowe decyzje."
+      ]
+    }
+  },
+  "dynamic": {
+    "start": "Zacznijmy od początku. Wybierz ruch poniżej lub użyj sterowania.",
+    "reviewing": "Analizuję {{move}}...",
+    "classifications": {
+      "brilliant": "{{move}} to błyskotliwy ruch, który znajduje bardzo silny pomysł.",
+      "critical": "{{move}} to świetny ruch w krytycznym momencie.",
+      "best": "{{move}} to najlepszy ruch w tej pozycji.",
+      "excellent": "{{move}} to znakomity i precyzyjny ruch.",
+      "okay": "{{move}} to solidny ruch, który utrzymuje pozycję pod kontrolą.",
+      "inaccuracy": "{{move}} to niedokładność, która oddaje część przewagi.",
+      "mistake": "{{move}} to błąd, po którym pozycja staje się trudniejsza.",
+      "miss": "{{move}} przepuszcza ważną okazję.",
+      "blunder": "{{move}} to poważny błąd, który mocno zmienia ocenę.",
+      "theory": "{{move}} jest zgodne z teorią debiutu {{opening}}.",
+      "theoryUnknown": "{{move}} jest zgodne ze znaną teorią debiutową.",
+      "forced": "{{move}} jest wymuszone. Pozostałe możliwości są wyraźnie gorsze.",
+      "risky": "{{move}} jest ryzykowne i daje przeciwnikowi praktyczne szanse."
+    },
+    "betterMove": "{{best}} było silniejsze.",
+    "mateAllowed": "Ten ruch pozwala na mata w {{mate}} ruchach.",
+    "evaluationLoss": "Ocena spada o około {{loss}} pionów."
+  },
+  "catchphrases": {
+    "fog": {
+      "prefixes": [
+        "Mrrp...",
+        "Miau.",
+        "Prrr..."
+      ],
+      "suffixes": [
+        "Prrr."
+      ]
+    },
+    "foxy": {
+      "prefixes": [
+        "Heh...",
+        "Yip.",
+        "Węszy, węszy..."
+      ],
+      "suffixes": [
+        "Dobry łów."
+      ]
+    },
+    "cybe": {
+      "prefixes": [
+        "BIP.",
+        "SEKWENCJA SPRAWDZONA.",
+        "WZORZEC ZABLOKOWANY."
+      ],
+      "suffixes": [
+        "Analiza zapisana."
+      ]
+    },
+    "max_rooks": {
+      "prefixes": [
+        "Hm.",
+        "Istotnie.",
+        "Bardzo dobrze."
+      ],
+      "suffixes": [
+        "Zapamiętaj ten pomysł."
+      ]
+    }
+  }
+}

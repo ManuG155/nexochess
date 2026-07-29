@@ -1,0 +1,231 @@
+{
+  "common": {
+    "legalLabel": "Mentions légales et transparence",
+    "contents": "Sur cette page",
+    "updated": "Dernière mise à jour : 28 juillet 2026",
+    "contactTitle": "Une question ou une demande concernant vos données ?",
+    "contactDescription": "Écrivez-nous à l’adresse officielle de NexoChess et nous traiterons votre demande.",
+    "contactButton": "Contacter NexoChess"
+  },
+  "terms": {
+    "pageTitle": "Conditions d’utilisation — NexoChess",
+    "title": "Conditions d’utilisation",
+    "summary": "Les règles applicables lorsque vous utilisez NexoChess, créez un compte facultatif ou importez une partie à analyser.",
+    "plainTitle": "L’essentiel",
+    "plainSummary": "Utilisez NexoChess légalement, ne soumettez que des parties que vous êtes autorisé à traiter et considérez l’analyse informatique comme une aide, non comme une garantie.",
+    "sections": {
+      "scope": {
+        "title": "Champ d’application et acceptation",
+        "paragraphs": [
+          "Les présentes conditions régissent l’accès à NexoChess sur nexochess.com et aux services associés. Vous pouvez nous contacter à contact@nexochess.com.",
+          "En utilisant NexoChess, vous acceptez ces conditions. Si vous n’êtes pas d’accord, n’utilisez pas le service."
+        ]
+      },
+      "service": {
+        "title": "Ce que propose NexoChess",
+        "paragraphs": [
+          "NexoChess permet d’importer et d’analyser des parties avec Stockfish, d’afficher des classifications de coups, des résumés et des outils associés. L’analyse principale peut s’exécuter dans votre navigateur, tandis que les comptes et la synchronisation peuvent utiliser nos serveurs.",
+          "Les évaluations du moteur sont des estimations susceptibles de varier selon la profondeur, le matériel, les réglages et la version."
+        ]
+      },
+      "accounts": {
+        "title": "Comptes facultatifs",
+        "paragraphs": [
+          "Aucun compte n’est nécessaire pour l’analyse principale. Un compte peut synchroniser des parties, des préférences et des fonctions liées au compte entre appareils.",
+          "Vous devez fournir des informations exactes, protéger vos identifiants et nous prévenir en cas d’accès suspect. Vous pouvez demander la suppression du compte dans les paramètres ou par e-mail."
+        ]
+      },
+      "acceptableUse": {
+        "title": "Utilisation autorisée",
+        "paragraphs": [
+          "Vous pouvez utiliser NexoChess à des fins personnelles, éducatives et licites."
+        ],
+        "bullets": [
+          "N’attaquez pas, ne surchargez pas et ne perturbez pas le service.",
+          "Ne téléversez pas de contenu malveillant et n’automatisez pas l’accès d’une manière nuisible.",
+          "N’utilisez pas NexoChess pour violer le droit d’auteur, la vie privée, un contrat ou la loi.",
+          "N’usurpez pas l’identité de NexoChess et ne prétendez pas à tort être lié officiellement à une autre plateforme."
+        ]
+      },
+      "gameContent": {
+        "title": "Parties et contenus soumis",
+        "paragraphs": [
+          "Vous conservez vos droits sur les PGN, FEN et autres éléments soumis. Vous accordez uniquement l’autorisation nécessaire pour les traiter, les analyser, les afficher et, si vous activez le stockage cloud, les enregistrer.",
+          "Ne soumettez que des contenus que vous êtes autorisé à utiliser. Les identifiants publics Chess.com ou Lichess servent uniquement à récupérer la partie publique choisie."
+        ]
+      },
+      "thirdParties": {
+        "title": "Services tiers",
+        "paragraphs": [
+          "NexoChess peut utiliser Google pour la connexion, Brevo pour les e-mails transactionnels et les services publics de Chess.com ou Lichess pour l’importation. Chaque fournisseur applique ses propres règles.",
+          "NexoChess est indépendant et n’est approuvé par aucun de ces fournisseurs."
+        ]
+      },
+      "openSource": {
+        "title": "Logiciels libres et licences",
+        "paragraphs": [
+          "NexoChess repose sur des logiciels sous GPL-3.0 et intègre d’autres composants libres, dont Stockfish. La page Code source et licences explique comment obtenir le code correspondant de NexoChess et présente les projets d’origine.",
+          "Les composants libres restent soumis à leurs licences respectives. Les marques et logos appartiennent à leurs titulaires."
+        ]
+      },
+      "availability": {
+        "title": "Disponibilité et évolution du service",
+        "paragraphs": [
+          "Nous pouvons maintenir, modifier, suspendre ou retirer certaines fonctions. Nous cherchons à assurer un service fiable, sans garantir une disponibilité continue, un stockage permanent ou une compatibilité universelle.",
+          "Conservez ou exportez les informations importantes pour vous."
+        ]
+      },
+      "liability": {
+        "title": "Avertissements et responsabilité",
+        "paragraphs": [
+          "NexoChess est fourni selon disponibilité. L’analyse est informative et ne garantit ni progression, ni résultat en tournoi, ni absence d’erreur.",
+          "Dans les limites autorisées par la loi, NexoChess n’est pas responsable des pertes indirectes, des pertes de données ou des conséquences d’une confiance accordée aux évaluations du moteur. Les droits impératifs restent applicables."
+        ]
+      },
+      "changes": {
+        "title": "Modification des conditions",
+        "paragraphs": [
+          "Nous pouvons actualiser ces conditions lorsque le service, la loi ou nos fournisseurs évoluent. La date en haut indique la dernière révision.",
+          "Lorsque cela est raisonnablement possible, les changements importants seront signalés dans le service. La poursuite de l’utilisation après leur entrée en vigueur implique leur application."
+        ]
+      }
+    }
+  },
+  "privacy": {
+    "pageTitle": "Politique de confidentialité — NexoChess",
+    "title": "Politique de confidentialité",
+    "summary": "Une explication claire des données conservées dans votre navigateur, de ce qu’ajoute un compte facultatif et des fournisseurs nécessaires au service.",
+    "plainTitle": "La confidentialité en bref",
+    "plainSummary": "L’analyse en tant qu’invité peut rester dans votre navigateur. Un compte ajoute l’authentification et le stockage serveur. NexoChess n’utilise actuellement ni publicité comportementale ni cookies analytiques facultatifs.",
+    "sections": {
+      "controller": {
+        "title": "Responsable du traitement",
+        "paragraphs": [
+          "NexoChess est responsable des données personnelles décrites ici. Les questions et demandes d’exercice de droits peuvent être envoyées à contact@nexochess.com.",
+          "Cette politique s’applique à nexochess.com et à l’application web NexoChess."
+        ]
+      },
+      "dataCollected": {
+        "title": "Données susceptibles d’être traitées",
+        "paragraphs": [
+          "Les données dépendent de votre utilisation de NexoChess."
+        ],
+        "bullets": [
+          "Navigateur : langue, apparence, réglages d’analyse et parties enregistrées localement.",
+          "Compte : adresse e-mail, nom d’utilisateur, données d’authentification, sessions et préférences.",
+          "Connexion Google : informations de base transmises par Google lorsque vous choisissez cette méthode.",
+          "Parties : PGN, FEN, noms des joueurs, identifiants publics, résultats d’analyse et métadonnées de l’Archive.",
+          "Fonctionnement : adresse IP, métadonnées de requête, événements de sécurité et journaux limités.",
+          "Messages envoyés à contact@nexochess.com."
+        ]
+      },
+      "purposes": {
+        "title": "Finalités",
+        "paragraphs": [
+          "Nous utilisons les données pour fournir l’analyse, mémoriser les réglages, gérer l’Archive locale ou synchronisée, authentifier les comptes, envoyer les e-mails de compte, prévenir les abus, résoudre les incidents et répondre aux demandes.",
+          "Nous n’utilisons actuellement ni publicité comportementale ni cookies analytiques facultatifs. Si cela change, aucun suivi non essentiel ne sera activé avant l’information et le consentement requis."
+        ]
+      },
+      "browserStorage": {
+        "title": "Stockage du navigateur et Archive locale",
+        "paragraphs": [
+          "NexoChess utilise localStorage et IndexedDB à des fins fonctionnelles : langue, réglages, dernière importation et parties invitées dans l’Archive locale.",
+          "Ces données restent dans ce navigateur jusqu’à leur suppression via NexoChess ou le navigateur. La navigation privée, l’effacement des données ou un changement d’appareil peut les rendre indisponibles."
+        ]
+      },
+      "accounts": {
+        "title": "Comptes et authentification",
+        "paragraphs": [
+          "Lorsque vous créez un compte, les données du compte et l’Archive synchronisée sont conservées dans notre base de données. Les mots de passe sont gérés par le système d’authentification et ne sont pas stockés en clair.",
+          "Avec Google, Google vous authentifie et transmet les informations nécessaires à la création ou à l’association du compte. Les e-mails de vérification, réinitialisation et changement d’adresse sont envoyés depuis contact@nexochess.com."
+        ]
+      },
+      "providers": {
+        "title": "Fournisseurs et plateformes externes",
+        "paragraphs": [
+          "Nous faisons appel à des fournisseurs uniquement lorsque cela est nécessaire."
+        ],
+        "bullets": [
+          "Google : connexion OAuth facultative.",
+          "Brevo : e-mails transactionnels du compte.",
+          "Hébergement, base de données et sécurité : diffusion, stockage, sauvegardes et protection.",
+          "Chess.com et Lichess : récupération des parties publiques que vous demandez d’importer."
+        ]
+      },
+      "retention": {
+        "title": "Durée de conservation",
+        "paragraphs": [
+          "Les données locales restent jusqu’à leur suppression par vous ou le navigateur. Les données de compte sont conservées tant que le compte est actif, puis pendant la période limitée nécessaire aux obligations de sécurité, sauvegarde ou légales.",
+          "Les journaux opérationnels ne sont conservés que pendant une durée proportionnée. Les données devenues inutiles sont supprimées ou anonymisées."
+        ]
+      },
+      "rights": {
+        "title": "Vos droits",
+        "paragraphs": [
+          "Selon votre lieu de résidence, vous pouvez demander l’accès, la rectification, l’effacement, la limitation, l’opposition ou la portabilité, et retirer votre consentement lorsqu’il constitue la base du traitement.",
+          "Écrivez à contact@nexochess.com. Vous pouvez aussi saisir l’autorité espagnole de protection des données ou l’autorité compétente de votre pays."
+        ]
+      },
+      "children": {
+        "title": "Mineurs",
+        "paragraphs": [
+          "NexoChess ne s’adresse pas aux enfants de moins de 14 ans. Si la loi locale exige un âge supérieur pour consentir seul, cet âge s’applique.",
+          "Si vous pensez qu’un mineur a fourni des données sans autorisation requise, contactez-nous afin que nous puissions les examiner et les supprimer."
+        ]
+      },
+      "changes": {
+        "title": "Modification de la politique",
+        "paragraphs": [
+          "Nous pouvons mettre à jour cette politique lorsque NexoChess, ses fournisseurs ou la loi évoluent. La date de révision figure en haut.",
+          "Les changements importants seront mis en évidence dans le service lorsque cela est raisonnablement possible."
+        ]
+      }
+    },
+    "resources": {
+      "title": "Confidentialité des fournisseurs connectés",
+      "description": "Ces liens expliquent le traitement effectué par les fournisseurs indépendants lorsque vous choisissez leurs services.",
+      "google": "Confidentialité Google",
+      "brevo": "Confidentialité Brevo",
+      "chessCom": "Confidentialité Chess.com",
+      "lichess": "Confidentialité Lichess"
+    }
+  },
+  "source": {
+    "pageTitle": "Code source et licences — NexoChess",
+    "title": "Code source et licences",
+    "summary": "Où obtenir le code source de NexoChess et comment s’articulent les projets d’origine et leurs licences.",
+    "nexochess": {
+      "title": "Code source de NexoChess",
+      "description": "Le code correspondant à la version de NexoChess distribuée aux utilisateurs est disponible sous GPL-3.0. L’action principale ouvre notre dépôt lorsqu’il est configuré ; sinon elle prépare une demande par e-mail.",
+      "openRepository": "Ouvrir le dépôt NexoChess",
+      "requestSource": "Demander le code source",
+      "requestSubject": "Demande du code source de NexoChess",
+      "requestBody": "Bonjour,\\n\\nJe souhaite recevoir ou consulter le code source correspondant à la version actuelle de NexoChess.\\n\\nMerci.",
+      "requestInstructions": "Le dépôt public sera affiché ici dès qu’il sera disponible. En attendant, envoyez-nous une demande en précisant que vous souhaitez le code de la version actuellement publiée.",
+      "copyEmail": "Copier l’adresse",
+      "copied": "Adresse copiée",
+      "openEmail": "Ouvrir la messagerie"
+    },
+    "upstream": {
+      "badge": "Projet d’origine",
+      "title": "Basé sur WintrChess",
+      "description": "NexoChess est une version modifiée et dotée d’une marque indépendante, basée sur WintrChess de WintrCat. Ce lien attribue le projet d’origine, mais ne remplace pas le dépôt de NexoChess.",
+      "open": "Ouvrir le projet WintrChess"
+    },
+    "stockfish": {
+      "title": "Stockfish",
+      "description": "L’analyse utilise Stockfish 17, logiciel libre distribué sous GPL-3.0.",
+      "open": "Ouvrir le code de Stockfish"
+    },
+    "licenses": {
+      "badge": "Logiciels tiers",
+      "title": "Licences et attributions",
+      "description": "NexoChess contient aussi des bibliothèques, polices, icônes et données soumis à leurs propres licences. Le dépôt contient les avis applicables.",
+      "contact": "Voir les licences et attributions"
+    },
+    "notice": {
+      "title": "L’usage commercial ne supprime pas les obligations du logiciel libre",
+      "description": "NexoChess peut être exploité commercialement tout en restant gratuit pour l’utilisateur. Les licences indiquées continuent de s’appliquer au logiciel distribué."
+    }
+  }
+}

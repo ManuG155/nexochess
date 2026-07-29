@@ -1,79 +1,224 @@
 {
-    "title": "Informe de la Partida",
-    "settings": {
-        "title": "Configuración de Análisis"
-    },
-    "gameSelector": {
-        "sourceLabel": "Cargar partida desde",
-        "sourcePlaceholders": {
-            "pgn": "Pegar PGN...",
-            "fen": "Notación FEN...",
-            "chessCom": "Nombre de usuario de Chess.com",
-            "lichess": "Nombre de usuario de Lichess. com..."
-        },
-        "searchGamesButton": "Buscar Partida",
-        "uploadPGNButton": "Subir Archivo PGN",
-        "errors": {
-            "noGameSelected": "Por favor, selecciona una partida de Ajedrez.",
-            "invalidGame": "Error al analizar juego inválido."
+  "title": "Informe de la Partida",
+  "optionsToolbar": {
+    "flipBoard": "Girar tablero",
+    "share": "Compartir partida",
+    "save": "Guardar en el archivo",
+    "noArchiveStorage": "Solo puedes guardar hasta 50 partidas en el archivo.",
+    "gameArchived": "¡Partida guardada correctamente!"
+  },
+  "settings": {
+    "title": "Configuración de Análisis",
+    "engine": {
+      "descriptions": {
+        "version": "Motor de ajedrez que analizará tus jugadas.",
+        "depth": "Número de jugadas que el motor calcula por adelantado.",
+        "lines": "Número de variantes que considerará el motor. Algunas clasificaciones necesitan al menos 2.",
+        "timeLimit": "Tiempo máximo permitido para analizar una sola jugada.",
+        "suggestionArrows": {
+          "disabled": "Desactivadas: no mostrar flechas del motor",
+          "continuation": "Mejor continuación: muestra una flecha para la mejor jugada de esta posición",
+          "alternative": "Mejor alternativa: muestra una flecha para la mejor jugada de la posición anterior"
         }
+      },
+      "title": "Motor",
+      "version": "Versión",
+      "depth": "Profundidad",
+      "lines": "Número de líneas",
+      "linesWarning": "Se necesitan al menos 2 líneas para las jugadas Críticas y algunas Brillantes.",
+      "timeLimit": "Límite de tiempo (segundos)",
+      "suggestionArrows": {
+        "title": "Flechas de sugerencia",
+        "continuation": "Mejor continuación",
+        "alternative": "Mejor alternativa"
+      },
+      "options": {
+        "full": "Stockfish 17 (68 MB)",
+        "lite": "Stockfish 17 Lite",
+        "liteRecommended": "Stockfish 17 Lite (Recomendado)",
+        "compatibility": "Stockfish 17 (Compatibilidad)"
+      }
     },
-    "gameSearchMenu": {
-        "title": "Selecciona una partida",
-        "loading": "Buscando partidas...",
-        "loadingLong": "Esto está tomando un tiempo, por favor espere...",
-        "userNotFound": "No pudimos encontrar una cuenta con este usuario.",
-        "noGamesFound": "No pudimos encontrar ninguna partida para este mes.",
-        "selectedToast": "¡Partida seleccionada!"
+    "classifications": {
+      "title": "Clasificaciones",
+      "hide": "Ocultar clasificaciones",
+      "brilliant": "Brillante",
+      "theory": "Teoría"
     },
-    "analyseButton": "Analizar",
-    "stateTreeEditor": {
-        "moveContextMenu": {
-            "delete": "Eliminar movimiento",
-            "promote": "Promover movimiento"
-        },
-        "addNodePrompt": "Reproducir algunos movimientos..."
-    },
-    "stateTreeTraverser": {
-        "beginning": "Ir al inicio",
-        "back": "Última jugada",
-        "play": "Jugar",
-        "pause": "Pausa",
-        "next": "Siguiente jugada",
-        "end": "Ir al final"
-    },
-    "progressReporter": {
-        "evaluating": "Evaluando...",
-        "awaitingCaptcha": "Resolviendo el CAPTCHA...",
-        "classifying": "Clasificando...",
-        "evaluatingTooltip": "Si esto lleva un tiempo, puede intentar bajar la profundidad del motor en la configuración.",
-        "captchaTooltip": "Esto podría tomar algunos segundos.",
-        "captchaVerifyFailed": "No se pudo verificar el CAPTCHA; intente actualizar la página.",
-        "captchaLoadFailed": "No se pudo cargar el CAPTCHA. Su navegador probablemente esté desactualizado.",
-        "captchaUnknownError": "Error de CAPTCHA desconocido; intente actualizar la página.",
-        "completeNotification": "Análisis Completo"
-    },
-    "analysisTabBar": {
-        "report": "Informe",
-        "analysis": "Análisis"
-    },
-    "accuraciesCard": {
-        "title": "Precisiones"
-    },
-    "classifiedMoveCard": {
-        "unknownError": "No se ha podido cargar la clasificación.",
-        "insufficientLines": "Asegúrese de que la jugada anterior sea evaluada completamente para una clasificación.",
-        "classifications": {
-            "brilliant": " es brillante",
-            "best": "es la mejor jugada",
-            "excellent": "Es excelente",
-            "okay": "es una jugada correcta",
-            "inaccuracy": " es una imprecisión",
-            "mistake": " es un error",
-            "blunder": " es un error grave",
-            "forced": " es forzado",
-            "theory": "es teórica",
-            "risky": "es una idea arriesgada"
-        }
+    "other": {
+      "title": "Otros",
+      "simpleNotation": "Notación sencilla",
+      "descriptions": {
+        "simpleNotation": "Muestra descripciones sencillas en lugar de la notación estándar. Ejemplo: Rxf4 → El rey de e3 captura en f4"
+      }
     }
+  },
+  "gameSelector": {
+    "sourceLabel": "Cargar partida desde",
+    "sourcePlaceholders": {
+      "pgn": "Pegar PGN...",
+      "fen": "Notación FEN...",
+      "chessCom": "Nombre de usuario de Chess.com",
+      "lichess": "Nombre de usuario de Lichess. com..."
+    },
+    "searchGamesButton": "Buscar Partida",
+    "uploadPGNButton": "Subir Archivo PGN",
+    "statusMessages": {
+      "fetchingLatest": "Cargando la última partida…"
+    },
+    "errors": {
+      "noGameSelected": "Por favor, selecciona una partida de Ajedrez.",
+      "invalidGame": "Error al analizar juego inválido."
+    },
+    "sourceTabsLabel": "Elige el origen de la partida",
+    "inputLabels": {
+      "pgn": "Notación PGN",
+      "fen": "Posición FEN",
+      "chessCom": "Usuario de Chess.com",
+      "lichess": "Usuario de Lichess"
+    },
+    "helperText": {
+      "pgn": "Pega la notación completa de la partida o arrastra aquí un archivo .pgn.",
+      "fen": "Introduce una FEN válida para comenzar desde una posición concreta.",
+      "chessCom": "Introduce un usuario público para buscar o cargar partidas recientes.",
+      "lichess": "Introduce un usuario público para buscar o cargar partidas recientes."
+    },
+    "pasteButton": "Pegar",
+    "clearButton": "Limpiar",
+    "ready": "Lista para analizar",
+    "empty": "Añade una partida para continuar",
+    "characters": "{{count}} caracteres",
+    "dropOverlay": "Suelta aquí tu archivo PGN",
+    "dropHint": "También puedes arrastrar y soltar un archivo .pgn",
+    "clipboardSuccess": "PGN pegado desde el portapapeles",
+    "clipboardEmpty": "El portapapeles está vacío",
+    "clipboardError": "El navegador ha bloqueado el acceso al portapapeles",
+    "fileError": "Selecciona un archivo .pgn válido",
+    "fileSuccess": "Archivo PGN cargado",
+    "preview": {
+      "title": "Partida detectada",
+      "white": "Blancas",
+      "black": "Negras",
+      "result": "Resultado",
+      "unknown": "Desconocido"
+    }
+  },
+  "gameSearchMenu": {
+    "title": "Selecciona una partida",
+    "loading": "Buscando partidas...",
+    "loadingLong": "Esto está tomando un tiempo, por favor espere...",
+    "userNotFound": "No pudimos encontrar una cuenta con este usuario.",
+    "noGamesFound": "No pudimos encontrar ninguna partida para este mes.",
+    "unknownError": "Ha ocurrido un error al buscar partidas.",
+    "selectedToast": "¡Partida seleccionada!"
+  },
+  "analyseButton": "Analizar",
+  "analysisError": "El análisis ha fallado; puede que tu dispositivo o navegador esté desactualizado.",
+  "realtimeEngine": {
+    "depth": "Profundidad:",
+    "checkmate": "Jaque mate",
+    "error": "No se ha podido evaluar la posición."
+  },
+  "stateTreeEditor": {
+    "moveContextMenu": {
+      "delete": "Eliminar movimiento",
+      "promote": "Promover movimiento"
+    },
+    "addNodePrompt": "Reproducir algunos movimientos..."
+  },
+  "stateTreeTraverser": {
+    "beginning": "Ir al inicio",
+    "back": "Última jugada",
+    "play": "Jugar",
+    "pause": "Pausa",
+    "next": "Siguiente jugada",
+    "end": "Ir al final"
+  },
+  "progressReporter": {
+    "evaluating": "Evaluando...",
+    "awaitingCaptcha": "Resolviendo el CAPTCHA...",
+    "classifying": "Clasificando...",
+    "evaluatingTooltip": "Si esto lleva un tiempo, puede intentar bajar la profundidad del motor en la configuración.",
+    "captchaTooltip": "Esto podría tomar algunos segundos.",
+    "captchaVerifyFailed": "No se pudo verificar el CAPTCHA; intente actualizar la página.",
+    "captchaLoadFailed": "No se pudo cargar el CAPTCHA. Su navegador probablemente esté desactualizado.",
+    "captchaUnknownError": "Error de CAPTCHA desconocido; intente actualizar la página.",
+    "reportFailed": "Ha ocurrido un error al generar el informe. Prueba a recargar la página.",
+    "completeNotification": "Análisis Completo"
+  },
+  "analysisTabBar": {
+    "report": "Informe",
+    "analysis": "Análisis"
+  },
+  "accuraciesCard": {
+    "title": "Precisiones"
+  },
+  "classifiedMoveCard": {
+    "unknownError": "No se ha podido cargar la clasificación.",
+    "insufficientLines": "Asegúrese de que la jugada anterior sea evaluada completamente para una clasificación.",
+    "classifications": {
+      "brilliant": "es brillante",
+      "critical": "es una jugada genial",
+      "best": "es la mejor jugada",
+      "excellent": "es excelente",
+      "okay": "es una buena jugada",
+      "inaccuracy": "es una imprecisión",
+      "mistake": "es un error",
+      "miss": "es una omisión",
+      "blunder": "es un error grave",
+      "forced": "es forzada",
+      "theory": "es teórica",
+      "risky": "es una idea arriesgada"
+    },
+    "alternative": "La mejor jugada era"
+  },
+  "classifications": {
+    "brilliant": "Brillante",
+    "critical": "Genial",
+    "best": "Mejor",
+    "excellent": "Excelente",
+    "okay": "Bueno",
+    "inaccuracy": "Imprecisión",
+    "mistake": "Error",
+    "miss": "Omisión",
+    "blunder": "Error grave",
+    "forced": "Forzada",
+    "theory": "Libro",
+    "risky": "Arriesgada"
+  },
+  "gameSummary": {
+    "title": "Resumen de la partida",
+    "white": "Blancas",
+    "black": "Negras",
+    "gameRating": "Valoración de la partida",
+    "startReview": "Iniciar revisión",
+    "classifications": {
+      "brilliant": "Brillante",
+      "great": "Gran jugada",
+      "book": "Teoría",
+      "best": "Mejor",
+      "excellent": "Excelente",
+      "good": "Buena",
+      "inaccuracy": "Imprecisión",
+      "mistake": "Error",
+      "miss": "Oportunidad perdida",
+      "blunder": "Error grave"
+    },
+    "phases": {
+      "opening": "Apertura",
+      "middlegame": "Medio juego",
+      "endgame": "Final"
+    }
+  },
+  "gameSelection": {
+    "eyebrow": "Revisión de partida",
+    "title": "Entiende cada jugada",
+    "subtitle": "Pega un PGN, sube un archivo o importa una partida pública de Chess.com o Lichess.",
+    "benefits": {
+      "free": "Análisis gratuito",
+      "engine": "Stockfish 17",
+      "account": "Sin cuenta obligatoria"
+    },
+    "localNote": "La última entrada se conserva en este navegador para que puedas continuar después."
+  }
 }

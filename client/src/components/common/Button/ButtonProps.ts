@@ -8,6 +8,7 @@ interface ButtonProps {
     iconSize?: string;
     highlighted?: boolean;
     tooltipId?: string;
+    ariaLabel?: string;
     disabled?: boolean;
     onClick?: MouseEventHandler<HTMLButtonElement>;
 }

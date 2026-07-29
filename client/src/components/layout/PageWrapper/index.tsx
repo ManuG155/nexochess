@@ -5,7 +5,6 @@ import { ToastContainer } from "react-toastify";
 
 import useSettingsStore from "@/stores/SettingsStore";
 import useAnnouncement from "@/hooks/api/useAnnouncement";
-import useAnalyticsTag from "@/hooks/useAnalyticsTag";
 import Announcement from "@/components/layout/Announcement";
 import NavigationBar from "@/components/layout/NavigationBar";
 import Footer from "@/components/layout/Footer";
@@ -25,8 +24,6 @@ function PageWrapper({
     footerClassName,
     footerStyle
 }: PageWrapperProps) {
-    useAnalyticsTag();
-
     const bugReportingMode = useSettingsStore(
         state => state.settings.bugReportingMode
     );

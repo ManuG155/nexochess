@@ -1,45 +1,135 @@
 {
-    "loading": "Загрузка...",
-    "back": "Назад",
-    "settings": "Настройки",
-    "error": "Ошибка",
-    "reset": "Сброс",
-    "enabled": "Включено",
-    "disabled": "Отключено",
-    "navigationBar": {
-        "support": "Поддержка",
-        "tooltips": {
-            "support": "Поддержите нас ❤️",
-            "help": "Центр помощи"
-        }
+  "loading": "Загрузка...",
+  "back": "Назад",
+  "settings": "Настройки",
+  "error": "Ошибка",
+  "unknownError": "Произошла неизвестная ошибка.",
+  "reset": "Сброс",
+  "enabled": "Включено",
+  "disabled": "Отключено",
+  "edit": "Изменить",
+  "confirm": "Подтвердить",
+  "cancel": "Отмена",
+  "navigationBar": {
+    "support": "Поддержка",
+    "signIn": "Войти",
+    "tooltips": {
+      "support": "Поддержите нас ❤️",
+      "help": "Центр помощи"
     },
-    "sidebar": {
-        "analysis": "Анализ",
-        "archive": "Архивировать",
-        "news": "Новости"
+    "profileMenu": {
+      "profile": "Профиль",
+      "signOut": "Выйти"
     },
-    "confirmDialog": {
-        "yes": "Да",
-        "no": "Нет"
+    "openAnalysis": "Открыть анализ NexoChess"
+  },
+  "sidebar": {
+    "analysis": "Анализ",
+    "archive": "Архивировать",
+    "news": "Новости"
+  },
+  "footer": {
+    "privacySettings": "Настройки конфиденциальности",
+    "language": "Язык",
+    "languagesDialog": {
+      "eyebrow": "Язык",
+      "select": "Выберите язык",
+      "description": "NexoChess запомнит выбор в этом браузере.",
+      "search": "Поиск языков",
+      "current": "Текущий",
+      "noResults": "По вашему запросу языки не найдены.",
+      "helpTitle": "Помогите улучшить перевод",
+      "helpDescription": "Нашли неточную или непонятную фразу? Укажите язык, страницу и предложенный вариант.",
+      "help": "Предложить перевод",
+      "helpSubject": "Предложение по переводу NexoChess",
+      "helpBody": "Здравствуйте, NexoChess!\n\nЯ хочу предложить улучшение перевода {{language}}.\n\nСтраница или раздел:\nТекущий текст:\nПредложенный текст:\nКонтекст:\n\nСпасибо."
     },
-    "gameListing": {
-        "gameResults": {
-            "unopinionated": {
-                "win": "Белые победили",
-                "draw": "Ничья",
-                "lose": "Черные победили",
-                "unknown": "Неизвестно"
-            },
-            "opinionated": {
-                "win": "Победа",
-                "draw": "Ничья",
-                "lose": "Поражение",
-                "unknown": "Неизвестно"
-            }
-        }
-    },
-    "bugReportWidget": {
-        "tooltip": "Копировать консольные логи",
-        "toast": "Журнал консоли скопирован!"
+    "termsOfService": "Условия использования",
+    "privacyPolicy": "Политика конфиденциальности",
+    "openSource": "Исходный код и лицензии",
+    "copyright": "Авторские права © {{year}} NexoChess",
+    "tagline": "Связывайте ходы. Понимайте партию.",
+    "license": "Код распространяется по лицензии GPL-3.0",
+    "navigationLabel": "Навигация в подвале",
+    "contact": "Контакты"
+  },
+  "confirmDialog": {
+    "yes": "Да",
+    "no": "Нет"
+  },
+  "shareGame": {
+    "copyFEN": "Копировать FEN",
+    "copyFENToast": "FEN скопирована!",
+    "copyPGN": "Копировать PGN",
+    "copyPGNToast": "PGN скопирован!"
+  },
+  "gameListing": {
+    "gameResults": {
+      "unopinionated": {
+        "win": "Белые победили",
+        "draw": "Ничья",
+        "lose": "Черные победили",
+        "unknown": "Неизвестно"
+      },
+      "opinionated": {
+        "win": "Победа",
+        "draw": "Ничья",
+        "lose": "Поражение",
+        "unknown": "Неизвестно"
+      }
     }
+  },
+  "account": {
+    "fields": {
+      "email": "Адрес электронной почты",
+      "displayName": "Отображаемое имя",
+      "username": "Имя пользователя"
+    },
+    "errors": {
+      "accountNotFound": "Аккаунта с такой электронной почтой не существует.",
+      "emailTaken": "Аккаунт с такой электронной почтой уже существует.",
+      "usernameTaken": "Это имя пользователя уже занято.",
+      "invalidEmail": "Неверный адрес электронной почты.",
+      "unverifiedEmail": "Подтвердите адрес электронной почты.",
+      "displayNameInvalid": "Отображаемое имя содержит недопустимые символы.",
+      "displayNameTooShort": "Отображаемое имя должно содержать не менее 3 символов.",
+      "displayNameTooLong": "Отображаемое имя не может быть длиннее 24 символов.",
+      "usernameAlphanumeric": "Имя пользователя может содержать только буквы, цифры и подчёркивания.",
+      "usernameTooShort": "Имя пользователя должно содержать не менее 3 символов.",
+      "usernameTooLong": "Имя пользователя не может быть длиннее 20 символов.",
+      "passwordTooShort": "Пароль должен содержать не менее 8 символов.",
+      "passwordTooLong": "Пароль не может быть длиннее 128 символов.",
+      "passwordNoMatch": "Пароли не совпадают.",
+      "incorrectEmailPassword": "Неверная электронная почта или пароль.",
+      "verificationCooldown": "Подождите 60 секунд перед отправкой новой ссылки подтверждения."
+    },
+    "placeholders": {
+      "email": "Адрес электронной почты…",
+      "displayName": "Отображаемое имя…",
+      "username": "Имя пользователя…",
+      "password": "Пароль…",
+      "confirmPassword": "Подтвердите пароль…"
+    },
+    "verificationMessage": "Мы отправили ссылку подтверждения на вашу электронную почту. Проверьте входящие, чтобы продолжить."
+  },
+  "bugReportWidget": {
+    "tooltip": "Копировать консольные логи",
+    "toast": "Журнал консоли скопирован!"
+  },
+  "close": "Закрыть",
+  "save": "Сохранить",
+  "saving": "Сохранение…",
+  "remove": "Удалить",
+  "add": "Добавить",
+  "change": "Изменить",
+  "delete": "Удалить",
+  "password": "Пароль",
+  "confirmPassword": "Подтвердите пароль",
+  "notFound": {
+    "message": "Похоже, вы заблудились.",
+    "returnHome": "Вернуться на главную"
+  },
+  "chess": {
+    "capturedPieces": "Взятые фигуры"
+  }
 }

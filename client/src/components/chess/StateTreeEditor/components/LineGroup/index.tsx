@@ -1,16 +1,22 @@
 import React from "react";
-import { range } from "lodash-es";
 
-import { getNodeMoveNumber } from "shared/types/game/position/StateTreeNode";
-import { PieceColour } from "shared/constants/PieceColour";
-import Indent from "../Indent";
-import Text from "../Text";
+import {
+    getNodeMoveNumber
+} from "shared/types/game/position/StateTreeNode";
+
+import {
+    PieceColour
+} from "shared/constants/PieceColour";
+
 import Move from "../Move";
 
 import LineGroupProps from "./LineGroupProps";
 import * as styles from "./LineGroup.module.css";
 
-const INDENT_GAP = 15;
+
+const VARIATION_INDENT =
+    12;
+
 
 function LineGroup({
     indentCount,
@@ -18,36 +24,152 @@ function LineGroup({
     initialPosition,
     forceWhiteMoveNumber
 }: LineGroupProps) {
-    const firstNode = nodes.at(0);
 
-    return <div className={styles.wrapper}>
-        {range(indentCount).map(index => <Indent
-            style={{
-                position: "absolute",
-                top: "-3px",
-                left: `${index * INDENT_GAP}px`
-            }}
-        />)}
+    const firstNode =
 
-        <Text style={{ marginLeft: `${indentCount * INDENT_GAP}px` }}>
-            {firstNode
-                ? Math.trunc(
-                    getNodeMoveNumber(firstNode, initialPosition)
+        nodes.at(
+            0
+        );
+
+
+    const whiteNode =
+
+        nodes.find(
+
+            node =>
+
+                node?.state.moveColour
+                == PieceColour.WHITE
+
+        );
+
+
+    const blackNode =
+
+        nodes.find(
+
+            node =>
+
+                node?.state.moveColour
+                == PieceColour.BLACK
+
+        );
+
+
+    const moveNumber =
+
+        firstNode
+
+            ? Math.trunc(
+
+                getNodeMoveNumber(
+
+                    firstNode,
+
+                    initialPosition
+
                 )
-                : 0
-            }
-            
-            {(
-                forceWhiteMoveNumber
-                || firstNode?.state.moveColour == PieceColour.WHITE
-            ) ? "." : "..."}
-        </Text>
 
-        {nodes.map(node => node
-            ? <Move node={node} />
-            : <Text>...</Text>
-        )}
-    </div>;
+            )
+
+            : 0;
+
+
+    const numberSuffix =
+
+        (
+            forceWhiteMoveNumber
+
+            ||
+
+            firstNode?.state.moveColour
+            == PieceColour.WHITE
+        )
+
+            ? "."
+
+            : "...";
+
+
+    return (
+        <div
+            className={
+                styles.wrapper
+            }
+
+            style={{
+                paddingLeft:
+
+                    `${
+                        10
+                        +
+                        indentCount
+                        *
+                        VARIATION_INDENT
+                    }px`
+            }}
+        >
+
+            <span
+                className={
+                    styles.moveNumber
+                }
+            >
+                {
+                    moveNumber
+                }
+                {
+                    numberSuffix
+                }
+            </span>
+
+
+            <div
+                className={
+                    styles.moveCell
+                }
+            >
+
+                {whiteNode
+
+                    ? (
+                        <Move
+                            node={
+                                whiteNode
+                            }
+                        />
+                    )
+
+                    : null
+                }
+
+            </div>
+
+
+            <div
+                className={
+                    styles.moveCell
+                }
+            >
+
+                {blackNode
+
+                    ? (
+                        <Move
+                            node={
+                                blackNode
+                            }
+                        />
+                    )
+
+                    : null
+                }
+
+            </div>
+
+        </div>
+    );
 }
+
 
 export default LineGroup;

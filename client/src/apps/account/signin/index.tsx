@@ -1,9 +1,10 @@
 import React, { lazy, Suspense, useEffect } from "react";
 import ReactDOM from "react-dom/client";
+
+import I18nGate from "@/components/layout/I18nGate";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import PageWrapper from "@/components/layout/PageWrapper";
-import LoadingPlaceholder from "@/components/layout/LoadingPlaceholder";
 import { removeDefaultConsentLink } from "@/lib/consent";
 
 const SignUp = lazy(() => import("./pages/SignUp"));
@@ -23,7 +24,7 @@ function App() {
 
     return <BrowserRouter>
         <PageWrapper>
-            <Suspense fallback={<LoadingPlaceholder/>}>
+            <Suspense fallback={null}>
                 <Routes>
                     <Route path="/signup" element={<SignUp/>} />
                     <Route path="/signin" element={<SignIn/>} />
@@ -33,4 +34,8 @@ function App() {
     </BrowserRouter>;
 }
 
-root.render(<App/>);
+root.render(
+    <I18nGate>
+        <App/>
+    </I18nGate>
+);

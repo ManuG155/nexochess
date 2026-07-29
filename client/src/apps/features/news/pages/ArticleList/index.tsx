@@ -12,14 +12,11 @@ import ButtonColour from "@/components/common/Button/Colour";
 import LogMessage from "@/components/common/LogMessage";
 import Advertisement from "@/components/Advertisement";
 import BlurredNoiseBackground from "@/components/common/BlurredNoiseBackground";
-import SocialLink from "@/apps/features/news/components/SocialLink";
 import ArticleListing from "@/apps/features/news/components/ArticleListing";
 
 import * as styles from "./ArticleList.module.css";
 
 import iconNews from "@assets/img/icons/news.png";
-import iconYouTube from "@assets/img/connections/youtube.png";
-import iconChessCom from "@assets/img/connections/chesscom.png";
 import iconBack from "@assets/img/interface/back.svg";
 import iconNext from "@assets/img/interface/next.svg";
 
@@ -83,33 +80,6 @@ function News() {
 
             <div className={styles.titleDescription}>
                 {t("news.titleDescription")}
-            </div>
-        </div>
-
-        <div className={styles.socialsSection}>
-            <h2 style={{ margin: 0 }}>
-                Socials
-            </h2>
-
-            <div className={styles.socialsContainer}>
-                <SocialLink
-                    icon={iconYouTube}
-                    title="WINTR"
-                    url="https://www.youtube.com/@wintrchess"
-                />
-
-                <SocialLink
-                    icon={iconYouTube}
-                    title="wintrcat"
-                    url="https://www.youtube.com/@wintrcat"
-                />
-
-                <SocialLink
-                    icon={iconChessCom}
-                    iconSize="23px"
-                    title="WintrChess Club"
-                    url="https://www.chess.com/club/wintrchess/join"
-                />
             </div>
         </div>
 

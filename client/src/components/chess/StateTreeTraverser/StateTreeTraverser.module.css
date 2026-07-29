@@ -1,32 +1,162 @@
 .wrapper {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            5,
+            minmax(
+                0,
+                1fr
+            )
+        );
+
     align-items: center;
+
+    width: 100%;
+
     box-sizing: border-box;
-    padding: 5px;
-    z-index: 2;
 
-    background-color: #0f1114;
+    gap: 10px;
+
+    padding: 0;
+
+    background-color:
+        transparent;
 }
 
-.wrapper img {
-    border-radius: 10px;
-    
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
 
-.wrapper img:hover {
-    background-color: rgba(0, 0, 0, 0.2);
-}
+.navigationButton {
+    display: inline-flex;
 
-@media (max-width: 350px) {
-    .wrapper img {
-        width: 30px !important;
-    }
-}
-
-.autoplayContainer {
-    display: flex;
     align-items: center;
+    justify-content: center;
+
+    min-width: 0;
+    height: 58px;
+
+    padding: 0;
+
+    border:
+        1px
+        solid
+        rgba(
+            255,
+            255,
+            255,
+            0.055
+        );
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #353432 0%,
+            #302f2d 100%
+        );
+
+    color: #d7d7d7;
+
+    box-shadow:
+        0
+        2px
+        4px
+        rgba(
+            0,
+            0,
+            0,
+            0.24
+        );
+
+    cursor: pointer;
+
+    transition:
+        transform 120ms ease,
+        background-color 120ms ease,
+        border-color 120ms ease,
+        color 120ms ease;
+}
+
+
+.navigationButton:hover {
+    color: #ffffff;
+
+    border-color:
+        rgba(
+            255,
+            255,
+            255,
+            0.11
+        );
+
+    transform:
+        translateY(
+            -1px
+        );
+}
+
+
+.navigationButton:active {
+    transform:
+        translateY(
+            0
+        );
+}
+
+
+.navigationButton:focus-visible {
+    outline:
+        2px
+        solid
+        rgba(
+            255,
+            255,
+            255,
+            0.38
+        );
+
+    outline-offset:
+        2px;
+}
+
+
+.navigationButton svg {
+    width: 34px;
+    height: 34px;
+
+    fill: none;
+
+    stroke: currentColor;
+    stroke-width: 3.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+.navigationButton .playPath,
+.navigationButton .pausePath {
+    fill: currentColor;
+    stroke: none;
+}
+
+
+@media (
+    max-width: 520px
+) {
+
+    .wrapper {
+        gap: 7px;
+    }
+
+
+    .navigationButton {
+        height: 52px;
+    }
+
+
+    .navigationButton svg {
+        width: 30px;
+        height: 30px;
+    }
+
 }

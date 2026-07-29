@@ -1,13 +1,7 @@
-import React, { lazy, Suspense, useEffect } from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import PageWrapper from "@/components/layout/PageWrapper";
-import LoadingPlaceholder from "@/components/layout/LoadingPlaceholder";
-import { removeDefaultConsentLink } from "@/lib/consent";
-
-const ArticleList = lazy(() => import("./pages/ArticleList"));
-const Article = lazy(() => import("./pages/Article"));
+import I18nGate from "@/components/layout/I18nGate";
 
 import "@/i18n";
 import "@/index.css";
@@ -16,21 +10,22 @@ const root = ReactDOM.createRoot(
     document.querySelector(".root")!
 );
 
+/*
+ * The public News section has been retired from NexoChess.
+ * Old /news bookmarks are redirected to Analysis instead of exposing a
+ * dead navigation destination. Internal/admin news tooling is left alone so
+ * removing the public feature cannot break unrelated server functionality.
+ */
 function App() {
     useEffect(() => {
-        removeDefaultConsentLink();
+        location.replace("/analysis");
     }, []);
 
-    return <BrowserRouter>
-        <PageWrapper>
-            <Suspense fallback={<LoadingPlaceholder/>}>
-                <Routes>
-                    <Route path="/news" element={<ArticleList/>} />
-                    <Route path="/news/:articleId" element={<Article/>} />
-                </Routes>
-            </Suspense>
-        </PageWrapper>
-    </BrowserRouter>;
+    return null;
 }
 
-root.render(<App/>);
+root.render(
+    <I18nGate>
+        <App/>
+    </I18nGate>
+);

@@ -1,50 +1,135 @@
 {
-    "loading": "Đang tải...",
-    "back": "Trở lại",
-    "settings": "Cài đặt",
-    "error": "Lỗi",
-    "reset": "Thiết lập lại",
-    "enabled": "Bật",
-    "disabled": "Tắt",
-    "navigationBar": {
-        "support": "Hỗ trợ",
-        "signIn": "Đăng nhập",
-        "tooltips": {
-            "support": "Hỗ trợ chúng tôi ❤",
-            "help": "Trung tâm Trợ giúp"
-        }
+  "loading": "Đang tải...",
+  "back": "Trở lại",
+  "settings": "Cài đặt",
+  "error": "Lỗi",
+  "unknownError": "Đã xảy ra lỗi không xác định.",
+  "reset": "Thiết lập lại",
+  "enabled": "Bật",
+  "disabled": "Tắt",
+  "edit": "Chỉnh sửa",
+  "confirm": "Xác nhận",
+  "cancel": "Hủy",
+  "navigationBar": {
+    "support": "Hỗ trợ",
+    "signIn": "Đăng nhập",
+    "tooltips": {
+      "support": "Hỗ trợ chúng tôi ❤",
+      "help": "Trung tâm Trợ giúp"
     },
-    "sidebar": {
-        "analysis": "Phân tích",
-        "archive": "Lưu trữ",
-        "news": "Tin tức"
+    "profileMenu": {
+      "profile": "Hồ sơ",
+      "signOut": "Đăng xuất"
     },
-    "footer": {
-        "manageConsent": "Quản lý sự đồng ý",
-        "privacyPolicy": "Chính sách về Quyền riêng tư"
+    "openAnalysis": "Mở phân tích NexoChess"
+  },
+  "sidebar": {
+    "analysis": "Phân tích",
+    "archive": "Lưu trữ",
+    "news": "Tin tức"
+  },
+  "footer": {
+    "privacySettings": "Cài đặt quyền riêng tư",
+    "language": "Ngôn ngữ",
+    "languagesDialog": {
+      "eyebrow": "Ngôn ngữ",
+      "select": "Chọn ngôn ngữ",
+      "description": "NexoChess sẽ ghi nhớ lựa chọn này trong trình duyệt.",
+      "search": "Tìm ngôn ngữ",
+      "current": "Hiện tại",
+      "noResults": "Không có ngôn ngữ phù hợp.",
+      "helpTitle": "Giúp cải thiện bản dịch",
+      "helpDescription": "Bạn thấy câu nào chưa rõ hoặc sai? Hãy gửi ngôn ngữ, trang và đề xuất.",
+      "help": "Đề xuất bản dịch",
+      "helpSubject": "Đề xuất bản dịch NexoChess",
+      "helpBody": "Xin chào NexoChess,\n\nTôi muốn đề xuất cải thiện bản dịch {{language}}.\n\nTrang hoặc mục:\nVăn bản hiện tại:\nVăn bản đề xuất:\nLý do hoặc ngữ cảnh:\n\nCảm ơn."
     },
-    "confirmDialog": {
-        "yes": "Có",
-        "no": "Không"
-    },
-    "gameListing": {
-        "gameResults": {
-            "unopinionated": {
-                "win": "Trắng thắng",
-                "draw": "Hòa",
-                "lose": "Đen thắng",
-                "unknown": "Không rõ"
-            },
-            "opinionated": {
-                "win": "Thắng",
-                "draw": "Hòa",
-                "lose": "Thua",
-                "unknown": "Không rõ"
-            }
-        }
-    },
-    "bugReportWidget": {
-        "tooltip": "Sao chép nhật ký console",
-        "toast": "Đã sao chép nhật ký console!"
+    "termsOfService": "Điều khoản dịch vụ",
+    "privacyPolicy": "Chính sách về Quyền riêng tư",
+    "openSource": "Mã nguồn và giấy phép",
+    "copyright": "Bản quyền © {{year}} NexoChess",
+    "tagline": "Kết nối các nước đi. Hiểu ván cờ.",
+    "license": "Mã nguồn theo giấy phép GPL-3.0",
+    "navigationLabel": "Điều hướng chân trang",
+    "contact": "Liên hệ"
+  },
+  "confirmDialog": {
+    "yes": "Có",
+    "no": "Không"
+  },
+  "shareGame": {
+    "copyFEN": "Sao chép FEN",
+    "copyFENToast": "Đã sao chép FEN!",
+    "copyPGN": "Sao chép PGN",
+    "copyPGNToast": "Đã sao chép PGN!"
+  },
+  "gameListing": {
+    "gameResults": {
+      "unopinionated": {
+        "win": "Trắng thắng",
+        "draw": "Hòa",
+        "lose": "Đen thắng",
+        "unknown": "Không rõ"
+      },
+      "opinionated": {
+        "win": "Thắng",
+        "draw": "Hòa",
+        "lose": "Thua",
+        "unknown": "Không rõ"
+      }
     }
+  },
+  "account": {
+    "fields": {
+      "email": "Địa chỉ email",
+      "displayName": "Tên hiển thị",
+      "username": "Tên người dùng"
+    },
+    "errors": {
+      "accountNotFound": "Không tồn tại tài khoản với email này.",
+      "emailTaken": "Đã có tài khoản sử dụng email này.",
+      "usernameTaken": "Tên người dùng này đã được sử dụng.",
+      "invalidEmail": "Địa chỉ email không hợp lệ.",
+      "unverifiedEmail": "Vui lòng xác minh địa chỉ email.",
+      "displayNameInvalid": "Tên hiển thị chứa ký tự không hợp lệ.",
+      "displayNameTooShort": "Tên hiển thị phải có ít nhất 3 ký tự.",
+      "displayNameTooLong": "Tên hiển thị không được dài quá 24 ký tự.",
+      "usernameAlphanumeric": "Tên người dùng chỉ được chứa chữ, số và dấu gạch dưới.",
+      "usernameTooShort": "Tên người dùng phải có ít nhất 3 ký tự.",
+      "usernameTooLong": "Tên người dùng không được dài quá 20 ký tự.",
+      "passwordTooShort": "Mật khẩu phải có ít nhất 8 ký tự.",
+      "passwordTooLong": "Mật khẩu không được dài quá 128 ký tự.",
+      "passwordNoMatch": "Mật khẩu không khớp.",
+      "incorrectEmailPassword": "Email hoặc mật khẩu không đúng.",
+      "verificationCooldown": "Vui lòng chờ 60 giây trước khi gửi liên kết xác minh khác."
+    },
+    "placeholders": {
+      "email": "Địa chỉ email…",
+      "displayName": "Tên hiển thị…",
+      "username": "Tên người dùng…",
+      "password": "Mật khẩu…",
+      "confirmPassword": "Xác nhận mật khẩu…"
+    },
+    "verificationMessage": "Chúng tôi đã gửi liên kết xác minh tới email của bạn. Hãy kiểm tra hộp thư để tiếp tục."
+  },
+  "bugReportWidget": {
+    "tooltip": "Sao chép nhật ký console",
+    "toast": "Đã sao chép nhật ký console!"
+  },
+  "close": "Đóng",
+  "save": "Lưu",
+  "saving": "Đang lưu…",
+  "remove": "Xóa",
+  "add": "Thêm",
+  "change": "Thay đổi",
+  "delete": "Xóa",
+  "password": "Mật khẩu",
+  "confirmPassword": "Xác nhận mật khẩu",
+  "notFound": {
+    "message": "Có vẻ bạn đã đi lạc.",
+    "returnHome": "Về trang chủ"
+  },
+  "chess": {
+    "capturedPieces": "Quân đã bị bắt"
+  }
 }

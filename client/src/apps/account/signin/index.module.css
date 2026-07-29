@@ -1,61 +1,202 @@
 .wrapper {
     display: flex;
     justify-content: center;
+    align-items: flex-start;
     box-sizing: border-box;
-    padding: 20px;
-    padding-top: 50px;
+    min-height: calc(100vh - 72px);
     width: 100%;
+    padding: 54px 20px 70px;
+    background:
+        radial-gradient(circle at 50% 5%, rgba(91, 126, 165, 0.12), transparent 36%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.012), transparent 28%);
 }
 
 .dialog {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 10px;
+    align-items: stretch;
+    gap: 18px;
     box-sizing: border-box;
-    padding: 10px;
-    padding-bottom: 15px;
-    width: min(400px, 100%);
-
-    border-radius: 10px;
-    background-color: var(--ui-shade-3);
+    width: min(470px, 100%);
+    padding: 30px 32px 26px;
+    border: 1px solid rgba(255, 255, 255, 0.095);
+    border-radius: 16px;
+    background: rgba(25, 27, 31, 0.96);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.32);
+    color: white;
 }
 
-.title {
-    color: white;
-    font-size: 1.2rem;
+.brand {
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    width: min(275px, 82%);
+    padding: 2px 0 5px;
+    text-decoration: none;
+}
+
+.brand img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.heading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+}
+
+.heading h1 {
+    margin: 0;
+    font-family: "Nunito";
+    font-size: 1.55rem;
+    line-height: 1.2;
+}
+
+.heading p {
+    max-width: 370px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.58);
+    font-size: 0.92rem;
+    line-height: 1.45;
+}
+
+.actionButton {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 48px;
+    border-radius: 9px !important;
+    font-family: "Nunito";
+    font-size: 1rem !important;
+    font-weight: 700;
+    transition: transform 0.16s ease, filter 0.16s ease, border-color 0.16s ease !important;
+}
+
+.actionButton:hover:not(:disabled) {
+    transform: translateY(-1px);
+    filter: brightness(1.08) !important;
+}
+
+.googleButton {
+    border: 1px solid rgba(255, 255, 255, 0.13) !important;
+    background: rgba(255, 255, 255, 0.075) !important;
+    color: rgba(255, 255, 255, 0.92) !important;
+}
+
+.primaryButton {
+    border: 1px solid rgba(131, 170, 214, 0.5) !important;
+    background: linear-gradient(180deg, #547fae, #456d99) !important;
+    box-shadow: 0 7px 20px rgba(41, 82, 123, 0.22);
+}
+
+.divider {
+    margin: 0 !important;
+    color: rgba(255, 255, 255, 0.32);
+}
+
+.divider span {
+    padding: 0 8px;
+    color: rgba(255, 255, 255, 0.38);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.fields {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+}
+
+.passwordGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.fieldGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.82rem;
+    font-weight: 700;
 }
 
 .field {
-    padding: 10px;
-
-    border-radius: 5px;
-}
-
-.submitButton {
-    gap: 5px;
-    padding: 7px;
-    padding-right: 10px;
-    width: 100%;
-
-    border-radius: 5px;
+    min-height: 48px;
+    padding: 12px 13px !important;
+    border: 1px solid rgba(255, 255, 255, 0.09) !important;
+    border-radius: 9px !important;
+    background: rgba(10, 12, 15, 0.62) !important;
     font-family: "Nunito";
+    font-size: 0.98rem !important;
 }
 
-.switchFlowButton {
-    border: 1px solid var(--ui-shade-6);
-    background-color: transparent;
-
-    transition: background-color 0.3s ease;
+.field:focus {
+    border-color: rgba(122, 164, 210, 0.7) !important;
+    outline: 2px solid rgba(91, 139, 190, 0.22) !important;
 }
 
-.switchFlowButton:hover {
-    background-color: rgba(255, 255, 255, 0.03);
+.switchFlow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    padding-top: 3px;
+    color: rgba(255, 255, 255, 0.58);
+    font-size: 0.9rem;
+}
+
+.switchFlow button {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #9ec1e5;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.switchFlow button:hover {
+    color: #c0d8ef;
+    text-decoration: underline;
 }
 
 .legalMessage {
+    margin: 0;
     text-align: center;
+    color: rgba(255, 255, 255, 0.36);
+    font-size: 0.72rem;
+    line-height: 1.45;
+}
 
-    color: gray;
-    font-size: 0.7rem;
+.legalMessage a {
+    color: rgba(255, 255, 255, 0.58);
+    text-decoration: none;
+}
+
+.legalMessage a:hover {
+    color: rgba(255, 255, 255, 0.82);
+    text-decoration: underline;
+}
+
+@media (max-width: 560px) {
+    .wrapper {
+        padding: 28px 12px 45px;
+    }
+
+    .dialog {
+        padding: 24px 18px 22px;
+        border-radius: 13px;
+    }
+
+    .passwordGrid {
+        grid-template-columns: 1fr;
+    }
 }

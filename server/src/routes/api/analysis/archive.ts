@@ -51,9 +51,16 @@ router.post("/analysis/archive/add", async (req, res) => {
 
     const gameId = req.query.id?.toString();
 
+    const fingerprint = analysedGame.archiveSummary?.fingerprint;
+
     const existingGame = gameId
         ? await ArchivedGame.findById(gameId)
-        : null;
+        : fingerprint
+            ? await ArchivedGame.findOne({
+                userId: new Types.ObjectId(req.user.id),
+                "archiveSummary.fingerprint": fingerprint
+            })
+            : null;
 
     // Compress the provided analysed game
     const archivedGame = await Archive.archiveAnalysedGame(

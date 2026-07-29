@@ -6,6 +6,7 @@ interface DialogProps {
     className?: string;
     closeButtonStyle?: CSSProperties;
     onClose?: () => void;
+    closeOnBackdrop?: boolean;
 }
 
 export default DialogProps;

@@ -1,0 +1,231 @@
+{
+  "common": {
+    "legalLabel": "Pháp lý và minh bạch",
+    "contents": "Nội dung trang",
+    "updated": "Cập nhật lần cuối: 28 tháng 7 năm 2026",
+    "contactTitle": "Bạn có câu hỏi hoặc yêu cầu về dữ liệu?",
+    "contactDescription": "Hãy gửi thư đến địa chỉ liên hệ chính thức của NexoChess để chúng tôi xử lý yêu cầu.",
+    "contactButton": "Liên hệ NexoChess"
+  },
+  "terms": {
+    "pageTitle": "Điều khoản dịch vụ — NexoChess",
+    "title": "Điều khoản dịch vụ",
+    "summary": "Các quy tắc áp dụng khi bạn dùng NexoChess, tạo tài khoản tùy chọn hoặc nhập ván cờ để phân tích.",
+    "plainTitle": "Điều quan trọng nhất",
+    "plainSummary": "Hãy sử dụng NexoChess hợp pháp, chỉ gửi các ván cờ bạn có quyền xử lý và xem phân tích máy tính là hướng dẫn chứ không phải bảo đảm.",
+    "sections": {
+      "scope": {
+        "title": "Phạm vi và chấp thuận",
+        "paragraphs": [
+          "Các điều khoản này điều chỉnh việc truy cập NexoChess tại nexochess.com và các dịch vụ liên quan. Liên hệ: contact@nexochess.com.",
+          "Khi sử dụng NexoChess, bạn chấp thuận các điều khoản này. Nếu không đồng ý, vui lòng không dùng dịch vụ."
+        ]
+      },
+      "service": {
+        "title": "NexoChess cung cấp gì",
+        "paragraphs": [
+          "NexoChess hỗ trợ nhập ván cờ, phân tích bằng Stockfish, phân loại nước đi, tóm tắt và các công cụ liên quan. Phân tích chính có thể chạy trong trình duyệt; tài khoản và đồng bộ có thể sử dụng máy chủ của chúng tôi.",
+          "Đánh giá của động cơ chỉ là ước tính và có thể thay đổi theo độ sâu, phần cứng, cài đặt và phiên bản."
+        ]
+      },
+      "accounts": {
+        "title": "Tài khoản tùy chọn",
+        "paragraphs": [
+          "Không cần tài khoản để dùng luồng phân tích chính. Tài khoản có thể đồng bộ ván cờ, tùy chọn và chức năng liên quan giữa các thiết bị.",
+          "Bạn phải cung cấp thông tin chính xác, bảo vệ thông tin đăng nhập và báo cho chúng tôi nếu nghi ngờ truy cập trái phép. Có thể yêu cầu xóa tài khoản trong cài đặt hoặc qua email."
+        ]
+      },
+      "acceptableUse": {
+        "title": "Sử dụng được phép",
+        "paragraphs": [
+          "Bạn có thể dùng NexoChess cho mục đích cá nhân, giáo dục và hợp pháp."
+        ],
+        "bullets": [
+          "Không tấn công, làm quá tải, dò quét hoặc gây gián đoạn dịch vụ.",
+          "Không tải nội dung độc hại hoặc tự động truy cập theo cách gây hại.",
+          "Không dùng NexoChess để xâm phạm bản quyền, quyền riêng tư, hợp đồng hoặc pháp luật.",
+          "Không mạo danh NexoChess hoặc tuyên bố sai về quan hệ chính thức với nền tảng cờ vua khác."
+        ]
+      },
+      "gameContent": {
+        "title": "Ván cờ và nội dung bạn gửi",
+        "paragraphs": [
+          "Bạn giữ các quyền của mình đối với PGN, FEN và nội dung khác. Bạn chỉ cấp cho NexoChess quyền hạn chế cần thiết để xử lý, phân tích, hiển thị và, nếu chọn lưu trữ đám mây, lưu nội dung đó.",
+          "Chỉ gửi nội dung bạn được phép sử dụng. Mã định danh công khai của Chess.com hoặc Lichess chỉ được dùng để lấy ván cờ công khai đã chọn."
+        ]
+      },
+      "thirdParties": {
+        "title": "Dịch vụ bên thứ ba",
+        "paragraphs": [
+          "NexoChess có thể dùng Google để đăng nhập, Brevo để gửi email giao dịch và dịch vụ công khai của Chess.com hoặc Lichess để nhập ván cờ. Mỗi nhà cung cấp có điều khoản riêng.",
+          "NexoChess hoạt động độc lập và không được các nhà cung cấp này bảo trợ."
+        ]
+      },
+      "openSource": {
+        "title": "Mã nguồn mở và giấy phép",
+        "paragraphs": [
+          "NexoChess dựa trên phần mềm GPL-3.0 và bao gồm các thành phần nguồn mở khác, trong đó có Stockfish. Trang Mã nguồn và giấy phép giải thích cách lấy mã nguồn tương ứng của NexoChess và ghi nhận các dự án gốc.",
+          "Mỗi thành phần nguồn mở vẫn tuân theo giấy phép riêng. Thương hiệu và biểu trưng thuộc về chủ sở hữu tương ứng."
+        ]
+      },
+      "availability": {
+        "title": "Tính khả dụng và thay đổi",
+        "paragraphs": [
+          "Chúng tôi có thể bảo trì, thay đổi, tạm ngừng hoặc dừng một phần NexoChess. Chúng tôi cố gắng duy trì độ tin cậy nhưng không bảo đảm hoạt động liên tục, lưu trữ vĩnh viễn hoặc tương thích với mọi thiết bị.",
+          "Hãy xuất hoặc tự lưu các thông tin quan trọng."
+        ]
+      },
+      "liability": {
+        "title": "Tuyên bố miễn trừ và trách nhiệm",
+        "paragraphs": [
+          "NexoChess được cung cấp theo tình trạng sẵn có. Phân tích chỉ mang tính thông tin và không bảo đảm cải thiện trình độ, kết quả thi đấu hoặc hoàn toàn không có lỗi.",
+          "Trong phạm vi pháp luật cho phép, NexoChess không chịu trách nhiệm cho thiệt hại gián tiếp, mất dữ liệu hoặc tổn thất do dựa vào kết quả động cơ. Các quyền bắt buộc theo luật vẫn được giữ nguyên."
+        ]
+      },
+      "changes": {
+        "title": "Thay đổi điều khoản",
+        "paragraphs": [
+          "Chúng tôi có thể cập nhật điều khoản khi dịch vụ, pháp luật hoặc nhà cung cấp thay đổi. Ngày ở đầu trang cho biết phiên bản mới nhất.",
+          "Các thay đổi quan trọng sẽ được thông báo trong dịch vụ khi hợp lý. Việc tiếp tục sử dụng sau ngày có hiệu lực nghĩa là điều khoản mới được áp dụng."
+        ]
+      }
+    }
+  },
+  "privacy": {
+    "pageTitle": "Chính sách quyền riêng tư — NexoChess",
+    "title": "Chính sách quyền riêng tư",
+    "summary": "Giải thích rõ dữ liệu được lưu trong trình duyệt, phần bổ sung của tài khoản tùy chọn và các nhà cung cấp hỗ trợ vận hành.",
+    "plainTitle": "Quyền riêng tư trong vài dòng",
+    "plainSummary": "Phân tích với tư cách khách có thể chỉ nằm trong trình duyệt. Tài khoản bổ sung lưu trữ máy chủ và xác thực. Hiện NexoChess không dùng quảng cáo hành vi hoặc cookie phân tích tùy chọn.",
+    "sections": {
+      "controller": {
+        "title": "Đơn vị chịu trách nhiệm",
+        "paragraphs": [
+          "NexoChess chịu trách nhiệm cho dữ liệu cá nhân được mô tả tại đây. Câu hỏi và yêu cầu thực hiện quyền có thể gửi đến contact@nexochess.com.",
+          "Chính sách này áp dụng cho nexochess.com và ứng dụng web NexoChess."
+        ]
+      },
+      "dataCollected": {
+        "title": "Dữ liệu có thể được xử lý",
+        "paragraphs": [
+          "Dữ liệu phụ thuộc vào cách bạn sử dụng NexoChess."
+        ],
+        "bullets": [
+          "Trình duyệt: ngôn ngữ, giao diện, cài đặt phân tích và ván cờ lưu cục bộ.",
+          "Tài khoản: email, tên người dùng, bản ghi xác thực, phiên đăng nhập và tùy chọn.",
+          "Đăng nhập Google: thông tin cơ bản Google cung cấp khi bạn chọn phương thức này.",
+          "Ván cờ: PGN, FEN, tên kỳ thủ, tên người dùng công khai, kết quả phân tích và siêu dữ liệu Kho lưu trữ.",
+          "Vận hành: địa chỉ IP, siêu dữ liệu yêu cầu, sự kiện bảo mật và nhật ký máy chủ giới hạn.",
+          "Tin nhắn gửi đến contact@nexochess.com."
+        ]
+      },
+      "purposes": {
+        "title": "Mục đích sử dụng",
+        "paragraphs": [
+          "Chúng tôi xử lý dữ liệu để cung cấp phân tích, ghi nhớ cài đặt, duy trì Kho lưu trữ cục bộ hoặc đồng bộ, xác thực tài khoản, gửi email tài khoản, chống lạm dụng, xử lý lỗi và trả lời yêu cầu.",
+          "Hiện chúng tôi không dùng quảng cáo hành vi hoặc cookie phân tích tùy chọn. Nếu thay đổi, theo dõi không thiết yếu sẽ không được bật trước khi cung cấp thông tin và xin chấp thuận cần thiết."
+        ]
+      },
+      "browserStorage": {
+        "title": "Bộ nhớ trình duyệt và Kho lưu trữ cục bộ",
+        "paragraphs": [
+          "NexoChess dùng localStorage và IndexedDB cho các chức năng như ngôn ngữ, cài đặt, lần nhập gần nhất và lưu ván cờ khách trong Kho lưu trữ cục bộ.",
+          "Dữ liệu ở lại trình duyệt đó cho đến khi bạn hoặc trình duyệt xóa. Xóa dữ liệu, duyệt riêng tư hoặc đổi thiết bị có thể khiến dữ liệu không còn khả dụng."
+        ]
+      },
+      "accounts": {
+        "title": "Tài khoản và xác thực",
+        "paragraphs": [
+          "Khi tạo tài khoản, dữ liệu tài khoản và Kho lưu trữ đồng bộ được lưu trong cơ sở dữ liệu của chúng tôi. Mật khẩu do hệ thống xác thực xử lý và không được lưu dưới dạng văn bản có thể đọc.",
+          "Nếu dùng Google, Google xác thực và gửi dữ liệu cần để tạo hoặc liên kết tài khoản. Email xác minh, đặt lại mật khẩu và đổi email được gửi từ contact@nexochess.com."
+        ]
+      },
+      "providers": {
+        "title": "Nhà cung cấp và nền tảng bên ngoài",
+        "paragraphs": [
+          "Chúng tôi chỉ sử dụng nhà cung cấp khi cần để vận hành dịch vụ."
+        ],
+        "bullets": [
+          "Google: đăng nhập OAuth tùy chọn.",
+          "Brevo: email giao dịch của tài khoản.",
+          "Nhà cung cấp lưu trữ, cơ sở dữ liệu và bảo mật: phân phối ứng dụng, lưu trữ, sao lưu và bảo vệ.",
+          "Chess.com và Lichess: lấy ván cờ công khai theo yêu cầu nhập của bạn."
+        ]
+      },
+      "retention": {
+        "title": "Thời gian lưu giữ",
+        "paragraphs": [
+          "Dữ liệu cục bộ tồn tại cho đến khi bạn hoặc trình duyệt xóa. Dữ liệu tài khoản được giữ khi tài khoản hoạt động và sau khi xóa chỉ trong thời gian giới hạn cần cho bảo mật, sao lưu hoặc nghĩa vụ pháp lý.",
+          "Nhật ký vận hành chỉ được giữ trong thời gian phù hợp. Dữ liệu không còn cần thiết sẽ bị xóa hoặc ẩn danh."
+        ]
+      },
+      "rights": {
+        "title": "Quyền của bạn",
+        "paragraphs": [
+          "Tùy nơi cư trú, bạn có thể yêu cầu truy cập, sửa, xóa, hạn chế, phản đối hoặc chuyển dữ liệu và rút lại sự đồng ý nếu việc xử lý dựa trên sự đồng ý.",
+          "Gửi yêu cầu đến contact@nexochess.com. Bạn cũng có thể khiếu nại với Cơ quan Bảo vệ Dữ liệu Tây Ban Nha hoặc cơ quan có thẩm quyền tại quốc gia của mình."
+        ]
+      },
+      "children": {
+        "title": "Trẻ em",
+        "paragraphs": [
+          "NexoChess không hướng đến trẻ dưới 14 tuổi. Nếu luật địa phương yêu cầu độ tuổi cao hơn để tự đồng ý, độ tuổi đó được áp dụng.",
+          "Nếu bạn cho rằng trẻ đã cung cấp dữ liệu khi chưa có sự cho phép cần thiết, hãy liên hệ để chúng tôi xem xét và xóa."
+        ]
+      },
+      "changes": {
+        "title": "Thay đổi chính sách",
+        "paragraphs": [
+          "Chúng tôi có thể cập nhật chính sách khi NexoChess, nhà cung cấp hoặc luật thay đổi. Ngày sửa đổi hiển thị ở đầu trang.",
+          "Các thay đổi quan trọng sẽ được nêu bật trong dịch vụ khi hợp lý."
+        ]
+      }
+    },
+    "resources": {
+      "title": "Thông tin quyền riêng tư của nhà cung cấp",
+      "description": "Các liên kết này giải thích cách nhà cung cấp độc lập xử lý dữ liệu khi bạn chọn dịch vụ của họ.",
+      "google": "Quyền riêng tư Google",
+      "brevo": "Quyền riêng tư Brevo",
+      "chessCom": "Quyền riêng tư Chess.com",
+      "lichess": "Quyền riêng tư Lichess"
+    }
+  },
+  "source": {
+    "pageTitle": "Mã nguồn và giấy phép — NexoChess",
+    "title": "Mã nguồn và giấy phép",
+    "summary": "Nơi lấy mã nguồn NexoChess và mối liên hệ giữa các dự án gốc với giấy phép.",
+    "nexochess": {
+      "title": "Mã nguồn NexoChess",
+      "description": "Mã nguồn tương ứng với phiên bản NexoChess được cung cấp cho người dùng có sẵn theo GPL-3.0. Nút chính mở kho mã của chúng tôi khi được cấu hình; nếu chưa, nó tạo email yêu cầu mã nguồn.",
+      "openRepository": "Mở kho mã NexoChess",
+      "requestSource": "Yêu cầu mã nguồn",
+      "requestSubject": "Yêu cầu mã nguồn NexoChess",
+      "requestBody": "Xin chào,\\n\\nTôi muốn nhận hoặc truy cập mã nguồn tương ứng với phiên bản NexoChess hiện tại.\\n\\nXin cảm ơn.",
+      "requestInstructions": "Kho mã nguồn công khai sẽ được liên kết tại đây ngay khi sẵn sàng. Trong thời gian chờ, hãy gửi yêu cầu và ghi rõ bạn cần mã nguồn của phiên bản đang được phát hành.",
+      "copyEmail": "Sao chép email",
+      "copied": "Đã sao chép email",
+      "openEmail": "Mở ứng dụng email"
+    },
+    "upstream": {
+      "badge": "Dự án gốc",
+      "title": "Dựa trên WintrChess",
+      "description": "NexoChess là phiên bản đã sửa đổi và mang thương hiệu độc lập, dựa trên WintrChess của WintrCat. Liên kết này ghi nhận dự án gốc và không thay thế kho mã NexoChess.",
+      "open": "Mở dự án WintrChess gốc"
+    },
+    "stockfish": {
+      "title": "Stockfish",
+      "description": "Phân tích cờ vua sử dụng Stockfish 17, phần mềm tự do theo GPL-3.0.",
+      "open": "Mở mã nguồn Stockfish"
+    },
+    "licenses": {
+      "badge": "Phần mềm bên thứ ba",
+      "title": "Giấy phép và ghi nhận",
+      "description": "NexoChess còn có thư viện, phông chữ, biểu tượng và dữ liệu với giấy phép riêng. Kho mã chứa các thông báo áp dụng.",
+      "contact": "Xem giấy phép và ghi công"
+    },
+    "notice": {
+      "title": "Sử dụng thương mại không xóa nghĩa vụ nguồn mở",
+      "description": "NexoChess có thể được vận hành thương mại mà vẫn miễn phí cho người dùng. Các giấy phép nêu trên tiếp tục áp dụng cho phần mềm được phân phối."
+    }
+  }
+}

@@ -1,11 +1,65 @@
 {
+    "archive": {
+        "title": "对局存档",
+        "selected": "已选择 {{amount}} 项",
+        "selectAll": "全选",
+        "deleteSelected": "删除所选",
+        "deleteConfirm": "确定要删除 {{amount}} 盘对局吗？此操作无法撤销。",
+        "error": "加载对局存档时发生未知错误。",
+        "description": "每次完成的分析都会自动保存。访客对局保存在本设备；登录后的对局也会同步到您的账户。",
+        "emptyTitle": "还没有已分析的对局",
+        "emptyDescription": "分析一盘棋后，它会自动显示在这里。",
+        "analyseGame": "分析对局",
+        "card": {
+            "white": "白方",
+            "black": "黑方",
+            "select": "选择已存档对局",
+            "analysedGame": "已分析对局",
+            "savedLocally": "已保存在本设备",
+            "players": "棋手",
+            "elo": "Elo",
+            "accuracy": "准确率",
+            "unknownOpening": "未识别开局",
+            "moves_one": "{{count}} 步",
+            "moves_other": "{{count}} 步",
+            "finalPosition": "最终局面",
+            "movesLabel": "步"
+        }
+    },
     "news": {
         "title": "报纸",
-        "titleDescription": "在WintrChess平台上获取最新更新",
+        "titleDescription": "在NexoChess平台上获取最新更新",
         "error": "加载报纸时出错。",
         "article": {
             "unfound": "我们未能找到这篇文章。",
             "error": "加载这篇文章时出错。"
         }
+    },
+    "signIn": {
+        "loginTitle": "登录您的账户",
+        "loginButtonGoogle": "使用 Google 登录",
+        "loginButtonEmail": "登录",
+        "loginError": "登录账户时出现问题。",
+        "registerTitle": "创建账户",
+        "registerButtonGoogle": "使用 Google 注册",
+        "registerButtonEmail": "注册",
+        "registerError": "创建账户时出现问题。",
+        "alternative": "或",
+        "loginPageButton": "我已有账户。",
+        "registerPageButton": "新用户？创建账户！",
+        "legalMessage": "继续即表示您同意我们的 <terms>服务条款</terms> 和 <privacy>隐私政策</privacy>。",
+        "loginDescription": "继续分析对局并访问您的云端存档。",
+        "registerDescription": "创建账户，以便在不同设备上访问您的存档。",
+        "loginPending": "正在登录…",
+        "registerPending": "正在创建账户…",
+        "newUser": "第一次使用 NexoChess？",
+        "createAccount": "创建账户",
+        "existingUser": "已经有账户？"
+    },
+    "resetPassword": {
+        "message": "请输入并确认账户的新密码。"
+    },
+    "profile": {
+        "memberSince": "加入时间：{{date}}"
     }
 }

@@ -1,0 +1,21 @@
+{
+    "id": "/analysis",
+    "name": "NexoChess — Free Chess Game Analysis",
+    "short_name": "NexoChess",
+    "description": "Analyse chess games for free with Stockfish 17 and understand the key moments of every game.",
+    "start_url": "/analysis",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#181a1d",
+    "theme_color": "#47acff",
+    "lang": "en",
+    "dir": "ltr",
+    "categories": ["games", "education", "utilities"],
+    "icons": [
+        {
+            "src": "/favicon.ico",
+            "sizes": "16x16 24x24 32x32 48x48 64x64 128x128 256x256",
+            "type": "image/x-icon"
+        }
+    ]
+}

@@ -1,7 +1,10 @@
 import { useTranslation } from "react-i18next";
 import { StatusCodes } from "http-status-codes";
+import { useSearchParams } from "react-router-dom";
 
-import { findNodeRecursively } from "shared/types/game/position/StateTreeNode";
+import {
+    getNodeChain
+} from "shared/types/game/position/StateTreeNode";
 import AnalysisStatus from "@analysis/constants/AnalysisStatus";
 import { useAltcha } from "@/apps/features/analysis/hooks/useAltcha";
 import useSettingsStore from "@/stores/SettingsStore";
@@ -9,11 +12,14 @@ import useAnalysisGameStore from "@analysis/stores/AnalysisGameStore";
 import useAnalysisBoardStore from "@analysis/stores/AnalysisBoardStore";
 import useAnalysisProgressStore from "@analysis/stores/AnalysisProgressStore";
 import { analyseStateTree } from "@analysis/lib/reporter";
+import { archiveGame } from "@/lib/gameArchive";
 
 function useAnalyseGame(
     onAnalysisError?: (message: string) => void
 ) {
     const { t } = useTranslation("analysis");
+
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const settings = useSettingsStore(state => state.settings.analysis);
 
@@ -22,22 +28,53 @@ function useAnalyseGame(
         setAnalysisGame
     } = useAnalysisGameStore();
 
-    const setCurrentStateTreeNode = useAnalysisBoardStore(
-        state => state.setCurrentStateTreeNode
-    );
+    const {
+        setCurrentStateTreeNode,
+        dispatchCurrentNodeUpdate
+    } = useAnalysisBoardStore();
 
-    const setAnalysisStatus = useAnalysisProgressStore(
-        state => state.setAnalysisStatus
-    );
+    const {
+        setAnalysisStatus,
+        setEvaluationVisibleNodeCount
+    } = useAnalysisProgressStore();
 
     const executeCaptcha = useAltcha();
 
     return async () => {
-        const analyseResult = await analyseStateTree(analysisGame.stateTree, {
-            includeBrilliant: settings.classifications.included.brilliant,
-            includeCritical: settings.classifications.included.critical,
-            includeTheory: settings.classifications.included.theory
-        });
+        const analyseResult = await analyseStateTree(
+            analysisGame.stateTree,
+            {
+                includeBrilliant:
+                    settings
+                        .classifications
+                        .included
+                        .brilliant,
+
+                includeCritical:
+                    settings
+                        .classifications
+                        .included
+                        .critical,
+
+                includeTheory:
+                    settings
+                        .classifications
+                        .included
+                        .theory,
+
+                whiteRating:
+                    analysisGame
+                        .players
+                        .white
+                        .rating,
+
+                blackRating:
+                    analysisGame
+                        .players
+                        .black
+                        .rating
+            }
+        );
 
         // For any errors, display message or reset CAPTCHA
         if (analyseResult.status == StatusCodes.UNAUTHORIZED) {
@@ -52,25 +89,51 @@ function useAnalyseGame(
             return setAnalysisStatus(AnalysisStatus.INACTIVE);
         }
 
-        // Update analysed game with new analysis object
-        setAnalysisGame({
+        const completedGame = {
             ...analysisGame,
             ...analyseResult.gameAnalysis
-        });
+        };
 
-        // Set current state tree node to equivalent in new tree
-        setCurrentStateTreeNode(prev => {
-            if (!analyseResult.gameAnalysis) {
-                return prev;
-            }
+        setAnalysisGame(completedGame);
 
-            return findNodeRecursively(
-                analyseResult.gameAnalysis.stateTree,
-                node => node.id == prev.id
-            ) || prev;
-        });
+        /*
+         * Al terminar, volvemos a la posición inicial. El usuario llega al
+         * resumen con el gráfico completo y puede iniciar la revisión desde
+         * la primera jugada, en lugar de quedarse en la última posición que
+         * estaba mostrando el análisis progresivo.
+         */
+        setCurrentStateTreeNode(
+            completedGame.stateTree
+        );
 
+        setEvaluationVisibleNodeCount(
+            getNodeChain(
+                completedGame.stateTree
+            ).length
+        );
+
+        dispatchCurrentNodeUpdate();
         setAnalysisStatus(AnalysisStatus.INACTIVE);
+
+        /*
+         * Every completed review is archived automatically. The archive
+         * helper stores it in the signed-in account when available and
+         * transparently falls back to IndexedDB for guests or offline use.
+         * Fingerprinting prevents the same game from being duplicated.
+         */
+        void archiveGame(
+            completedGame,
+            searchParams.get("game") || undefined
+        ).then(archival => {
+            if (!archival.id) return;
+
+            setSearchParams({
+                ...Object.fromEntries(searchParams.entries()),
+                game: archival.id
+            }, { replace: true });
+        }).catch(error => {
+            console.warn("NexoChess could not auto-save this game.", error);
+        });
     };
 }
 

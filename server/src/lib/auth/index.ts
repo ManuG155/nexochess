@@ -6,6 +6,12 @@ import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import schemas, { additionalUserFields } from "shared/constants/account/schemas";
 import Collection from "@/constants/Collection";
 import { sendAccountEmail } from "@/lib/email";
+import { clearArchivedGames } from "@/lib/gameArchive";
+import {
+    AccountEmailType,
+    getAccountEmailCopy,
+    getAccountEmailLocale
+} from "@/lib/emailContent";
 
 import { requestProcessor, userInitialiser } from "./registration";
 
@@ -13,6 +19,31 @@ export type AuthType = ReturnType<typeof createAuth>;
 export type AuthInfer = AuthType["$Infer"]["Session"];
 
 let instance: AuthType | null = null;
+
+function sendAuthEmail({
+    type,
+    recipient,
+    url,
+    request,
+    variables
+}: {
+    type: AccountEmailType;
+    recipient: string;
+    url: string;
+    request?: Request;
+    variables?: Record<string, string>;
+}) {
+    const locale = getAccountEmailLocale(request);
+    const content = getAccountEmailCopy(type, locale, variables);
+
+    return sendAccountEmail({
+        recipient,
+        locale,
+        ...content,
+        buttonUrl: url,
+        plaintextFallback: `${content.message} ${url}\n\n${content.securityNote}`
+    });
+}
 
 function createAuth(database: mongo.Db) {
     if (!process.env.ORIGIN) {
@@ -32,34 +63,28 @@ function createAuth(database: mongo.Db) {
             minPasswordLength: schemas.password.minLength || 8,
             maxPasswordLength: schemas.password.maxLength || 128,
             requireEmailVerification: true,
-            sendResetPassword: async ({ user, url }) => sendAccountEmail({
+            sendResetPassword: async ({ user, url }, request) => sendAuthEmail({
+                type: "resetPassword",
                 recipient: user.email,
-                subject: "Reset your WintrChess password",
-                message: "Please reset your WintrChess account's "
-                    + "password by clicking the button below:",
-                buttonLabel: "Reset Password",
-                buttonUrl: url,
-                plaintextFallback: "Please use the link to reset your"
-                    + ` WintrChess account's password: ${url}`
+                url,
+                request
             }),
             revokeSessionsOnPasswordReset: true
         },
         emailVerification: {
             autoSignInAfterVerification: true,
-            sendVerificationEmail: async ({ user, url }) => sendAccountEmail({
+            sendVerificationEmail: async ({ user, url }, request) => sendAuthEmail({
+                type: "verifyAccount",
                 recipient: user.email,
-                subject: "Verify your WintrChess account",
-                message: "Thank you for creating an account on WintrChess! "
-                    + "Please verify your account by clicking the button below:",
-                buttonLabel: "Verify Account",
-                buttonUrl: url,
-                plaintextFallback: `Please verify your WintrChess account: ${url}`
+                url,
+                request
             })
         },
         socialProviders: {
             google: {
                 clientId: process.env.GOOGLE_OAUTH_CLIENT_ID!,
-                clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET!
+                clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET!,
+                prompt: "select_account"
             }
         },
         user: {
@@ -67,18 +92,24 @@ function createAuth(database: mongo.Db) {
             additionalFields: additionalUserFields,
             changeEmail: {
                 enabled: true,
-                sendChangeEmailVerification: async (ctx) => sendAccountEmail({
-                    recipient: ctx.newEmail,
-                    subject: "Verify your new email address",
-                    message: "Please verify your WintrChess account's new"
-                        + " email address by clicking the button below:",
-                    buttonLabel: "Verify Email Address",
-                    buttonUrl: ctx.url,
-                    plaintextFallback: "Please verify your WintrChess account's"
-                        + ` new email address: ${ctx.url}`
+                sendChangeEmailVerification: async ({
+                    user,
+                    newEmail,
+                    url
+                }, request) => sendAuthEmail({
+                    type: "approveEmailChange",
+                    recipient: user.email,
+                    url,
+                    request,
+                    variables: { newEmail }
                 })
             },
-            deleteUser: { enabled: true }
+            deleteUser: {
+                enabled: true,
+                beforeDelete: async user => {
+                    await clearArchivedGames(user.id);
+                }
+            }
         },
         account: { modelName: Collection.ACCOUNTS },
         session: { modelName: Collection.SESSIONS },

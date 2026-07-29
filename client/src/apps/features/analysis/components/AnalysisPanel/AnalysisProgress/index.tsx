@@ -4,21 +4,19 @@ import { useTranslation } from "react-i18next";
 import AnalysisStatus from "@analysis/constants/AnalysisStatus";
 import useAnalysisProgressStore from "@analysis/stores/AnalysisProgressStore";
 import useAnalysisSessionStore from "@analysis/stores/AnalysisSessionStore";
-import ProgressReporter from "@/components/common/ProgressReporter";
+import LogMessage from "@/components/common/LogMessage";
 
 import useAnalyseGame from "@analysis/hooks/useAnalyseGame";
 
-function getStatusTitle(status: AnalysisStatus) {
-    const statusTitles: Record<string, string | undefined> = {
-        [AnalysisStatus.EVALUATING]: "progressReporter.evaluating",
-        [AnalysisStatus.AWAITING_CAPTCHA]: "progressReporter.awaitingCaptcha"
-    };
+import * as styles from "./AnalysisProgress.module.css";
 
-    return statusTitles[status];
-}
+const DEFAULT_COACH = {
+    name: "Pixie",
+    image: "/images/bots/fog.png"
+} as const;
 
 function AnalysisProgress() {
-    const { t } = useTranslation("analysis");
+    const { t } = useTranslation(["analysis", "coach"], { useSuspense: false });
 
     const {
         evaluationProgress,
@@ -34,7 +32,11 @@ function AnalysisProgress() {
 
     const analyseGame = useAnalyseGame();
 
-    // Tab notification for complete analysis
+    /*
+     * Cuando la evaluación del motor termina, NexoChess pasa
+     * internamente por AWAITING_CAPTCHA antes de generar el informe.
+     * Ese detalle técnico sigue completamente oculto al usuario.
+     */
     useEffect(() => {
         if (analysisStatus != AnalysisStatus.AWAITING_CAPTCHA) return;
 
@@ -43,14 +45,13 @@ function AnalysisProgress() {
         }
 
         function focusListener() {
-            document.title = "WintrChess";
+            document.title = "NexoChess";
             removeEventListener("focus", focusListener);
         }
 
         addEventListener("focus", focusListener);
-    }, [analysisStatus]);
+    }, [analysisStatus, t]);
 
-    // Attempt to classify generated evaluations
     useEffect(() => {
         if (analysisStatus != AnalysisStatus.AWAITING_CAPTCHA) return;
 
@@ -65,19 +66,63 @@ function AnalysisProgress() {
         analysisCaptchaError
     ]);
 
-    const statusTitle = getStatusTitle(analysisStatus);
+    if (analysisStatus == AnalysisStatus.INACTIVE) {
+        return null;
+    }
 
-    if (analysisStatus == AnalysisStatus.INACTIVE) return null;
+    const displayProgress = analysisStatus == AnalysisStatus.AWAITING_CAPTCHA
+        ? 1
+        : Math.max(0, Math.min(1, evaluationProgress));
 
-    return <ProgressReporter
-        progress={evaluationProgress}
-        title={statusTitle ? t(statusTitle) : undefined}
-        tooltip={analysisStatus == AnalysisStatus.EVALUATING
-            ? t("progressReporter.evaluatingTooltip")
-            : t("progressReporter.captchaTooltip")
-        }
-        error={analysisError}
-    />;
+    return (
+        <section
+            className={styles.wrapper}
+            aria-live="polite"
+        >
+            <div className={styles.coachAvatarArea}>
+                <img
+                    className={styles.coachAvatar}
+                    src={DEFAULT_COACH.image}
+                    alt={DEFAULT_COACH.name}
+                />
+            </div>
+
+            <div className={styles.speechBubble}>
+                <p className={styles.message}>
+                    {t("progress.reviewing", { ns: "coach" })}
+                </p>
+
+                <div
+                    className={styles.progressOutline}
+                    role="progressbar"
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={Math.round(displayProgress * 100)}
+                    aria-label={t("progress.aria", {
+                        ns: "coach",
+                        progress: Math.round(displayProgress * 100)
+                    })}
+                >
+                    <div className={styles.progressTrack}>
+                        <div
+                            className={styles.progressFill}
+                            style={{
+                                width: `${displayProgress * 100}%`
+                            }}
+                        />
+                    </div>
+                </div>
+
+                {analysisError && (
+                    <div className={styles.errorArea}>
+                        <LogMessage>
+                            {analysisError}
+                        </LogMessage>
+                    </div>
+                )}
+            </div>
+        </section>
+    );
 }
 
 export default AnalysisProgress;

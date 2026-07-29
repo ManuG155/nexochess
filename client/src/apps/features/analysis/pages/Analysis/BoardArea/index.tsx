@@ -3,10 +3,12 @@ import { Move } from "chess.js";
 
 import { addChildMove } from "shared/types/game/position/StateTreeNode";
 import AnalysisTab from "@analysis/constants/AnalysisTab";
+import AnalysisStatus from "@analysis/constants/AnalysisStatus";
 import useSettingsStore from "@/stores/SettingsStore";
 import useAnalysisGameStore from "@analysis/stores/AnalysisGameStore";
 import useAnalysisTabStore from "@analysis/stores/AnalysisTabStore";
 import useAnalysisBoardStore from "@analysis/stores/AnalysisBoardStore";
+import useAnalysisProgressStore from "@analysis/stores/AnalysisProgressStore";
 import Board from "@analysis/components/Board";
 import playBoardSound from "@/lib/boardSounds";
 
@@ -25,6 +27,10 @@ function BoardArea() {
     } = useAnalysisGameStore();
 
     const setActiveTab = useAnalysisTabStore(state => state.setActiveTab);
+
+    const analysisStatus = useAnalysisProgressStore(
+        state => state.analysisStatus
+    );
 
     const {
         currentStateTreeNode,
@@ -71,7 +77,10 @@ function BoardArea() {
         flipped={boardFlipped}
         evaluation={evaluation}
         arrows={suggestionArrows}
-        piecesDraggable={!autoplayEnabled}
+        piecesDraggable={
+            analysisStatus == AnalysisStatus.INACTIVE
+            && !autoplayEnabled
+        }
         enableClassifications={!settings.classifications.hide}
         onAddMove={addMove}
     />;

@@ -1,15 +1,109 @@
 {
-    "title": "Trung tâm Trợ giúp",
-    "contact": {
-        "title": "Liên hệ với chúng tôi",
-        "message": "Nếu bạn cần liên hệ với chúng tôi, bạn có thể gửi email đến địa chỉ:"
-    },
+  "pageTitle": "NexoChess — Trung tâm trợ giúp",
+  "hero": {
+    "eyebrow": "Hỗ trợ NexoChess",
+    "title": "Chúng tôi có thể giúp gì?",
+    "subtitle": "Tìm câu trả lời rõ ràng, biết cách nhập ván nhanh nhất và quay lại phân tích chỉ sau vài cú nhấp.",
+    "languagesBadge": "11 ngôn ngữ"
+  },
+  "actions": {
+    "openAnalysis": "Mở trình phân tích",
+    "contact": "Liên hệ hỗ trợ"
+  },
+  "topics": {
+    "eyebrow": "Truy cập nhanh",
+    "title": "Chủ đề phổ biến",
+    "subtitle": "Đi thẳng tới phần NexoChess bạn cần.",
     "analysis": {
-        "title": "Đang phân tích ván đấu",
-        "part1": "Bạn có thể phân tích ván đấu của bạn ở",
-        "part2": "Trang phân tích của WintrChess",
-        "part3": ". Với đánh giá của Stockfish, độ chính xác và phân loại nước đi - nên là bạn có thể tìm ra những nước đi thiên tài và ngớ ngẩn của bạn - được cung cấp miễn phí. Bạn sẽ thấy một cái bàn cờ phân tích ở giữa trang, đây là nơi bạn có thể xem những nước đi từ ván đấu bạn đã lựa chọn. Để chọn một ván đấu, bạn cần sử dụng bộ chọn ván đấu mà chúng tôi đã cung cấp ở thanh bên phải. Nó nhìn như này:",
-        "part4": "Bạn có thể nhập vào bất kỳ ván đấu nào bằng cách sử dụng PGN của nó. Nếu cần, bạn cũng có thể chọn một ván đấu từ tài khoản chess.com hoặc Lichess của bạn. Bạn sẽ cần nhấn vào nút \"Tìm kiếm ván đấu\" để duyệt qua những ván đấu từ tài khoản của bạn, và có thể chọn bất kỳ cái nào trong số đó bằng việc nhấn vào nó. Cuối cùng, bạn có thể nhập một chuỗi FEN duy nhất. Trong bất kỳ cách nào, bạn cũng sẽ có thể tự đi quân sau khi bạn nhập ván đấu vào, sau đó sẽ được tính toán và phân loại.",
-        "part5": "Sau khi chọn xong một ván đấu, đơn giản nhấn vào nút \"Phân tích\" để bắt đầu phân tích. Bạn cũng có thể đi quân trên bàn cờ nếu muốn khởi đầu từ vị trí bắt đầu."
+      "title": "Phân tích một ván",
+      "description": "Nhập ván đấu và bắt đầu đánh giá đầy đủ bằng Stockfish.",
+      "action": "Bắt đầu"
+    },
+    "import": {
+      "title": "Cách nhập ván",
+      "description": "Biết khi nào nên dùng PGN, FEN, Chess.com hoặc Lichess.",
+      "action": "Xem tùy chọn"
+    },
+    "archive": {
+      "title": "Lưu trữ của bạn",
+      "description": "Tìm các phân tích đã lưu cục bộ và đồng bộ.",
+      "action": "Mở Lưu trữ"
+    },
+    "settings": {
+      "title": "Cài đặt và ngôn ngữ",
+      "description": "Đổi giao diện, huấn luyện viên, động cơ và ngôn ngữ.",
+      "action": "Mở cài đặt"
     }
+  },
+  "steps": {
+    "eyebrow": "Bắt đầu",
+    "title": "Từ ván đấu đến phần đánh giá trong ba bước",
+    "subtitle": "Không cần thiết lập phức tạp và không bắt buộc tài khoản cho luồng cơ bản.",
+    "choose": {
+      "title": "Chọn nguồn",
+      "description": "Chọn PGN, FEN, Chess.com hoặc Lichess trong bảng nhập."
+    },
+    "import": {
+      "title": "Thêm ván đấu",
+      "description": "Dán biên bản, tải tệp lên hoặc nhập tên người dùng công khai."
+    },
+    "review": {
+      "title": "Phân tích và xem lại",
+      "description": "Bắt đầu phân tích, đọc tóm tắt và xem từng nước với huấn luyện viên."
+    }
+  },
+  "imports": {
+    "eyebrow": "Hướng dẫn nhập",
+    "title": "Bốn cách để bắt đầu",
+    "subtitle": "Dùng lựa chọn phù hợp với nơi ván đấu của bạn được lưu.",
+    "pgn": {
+      "title": "Dán hoặc tải ván đấu",
+      "description": "Dùng PGN đầy đủ từ bất kỳ nền tảng nào hoặc tải tệp .pgn."
+    },
+    "chessCom": {
+      "title": "Duyệt ván Chess.com",
+      "description": "Nhập tên công khai để chọn ván gần đây hoặc tải ván mới nhất."
+    },
+    "lichess": {
+      "title": "Duyệt ván Lichess",
+      "description": "Nhập tên công khai để xem các ván công khai gần đây."
+    },
+    "fen": {
+      "title": "Phân tích một thế cờ",
+      "description": "Nhập FEN khi bạn chỉ cần nghiên cứu một thế cờ cụ thể."
+    }
+  },
+  "faq": {
+    "eyebrow": "Câu hỏi thường gặp",
+    "title": "Những điều nên biết",
+    "subtitle": "Thông tin cơ bản về tài khoản, lưu trữ, động cơ và quyền riêng tư.",
+    "account": {
+      "question": "Tôi có cần tài khoản để phân tích không?",
+      "answer": "Không. Bạn có thể phân tích và dùng Lưu trữ cục bộ mà không cần tài khoản. Tài khoản chỉ cần cho đồng bộ tùy chọn giữa các thiết bị."
+    },
+    "archive": {
+      "question": "Phân tích của tôi được lưu ở đâu?",
+      "answer": "Phân tích của khách được lưu trong trình duyệt hiện tại. Khi đăng nhập, dữ liệu tương thích cũng có thể liên kết với tài khoản."
+    },
+    "engine": {
+      "question": "NexoChess dùng động cơ nào?",
+      "answer": "NexoChess dùng Stockfish 17 để đánh giá thế cờ và tạo các biến phân tích."
+    },
+    "languages": {
+      "question": "Ngôn ngữ được chọn thế nào?",
+      "answer": "Trong lần truy cập đầu, NexoChess dùng ngôn ngữ trình duyệt nếu được hỗ trợ. Bạn có thể đổi trong cài đặt Giao diện."
+    },
+    "privacy": {
+      "question": "Có cần tài khoản để giữ ván cục bộ không?",
+      "answer": "Không. Lưu trữ cục bộ hoạt động không cần tài khoản. Đăng nhập là tùy chọn cho đồng bộ và tính năng tài khoản."
+    }
+  },
+  "contact": {
+    "eyebrow": "Vẫn gặp khó khăn?",
+    "title": "Liên hệ NexoChess",
+    "message": "Hãy gửi vấn đề, trình duyệt bạn dùng và thao tác đang thực hiện khi lỗi xảy ra.",
+    "copy": "Sao chép email",
+    "copied": "Đã sao chép email"
+  },
+  "navigationTitle": "Trung tâm trợ giúp"
 }

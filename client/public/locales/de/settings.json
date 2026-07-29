@@ -1,4 +1,63 @@
 {
+    "account": {
+        "title": "Konto",
+        "editProfile": {
+            "title": "Profil bearbeiten",
+            "displayName": {
+                "message": "Gib einen neuen Anzeigenamen ein."
+            },
+            "username": {
+                "message": "Gib einen neuen Benutzernamen ein.",
+                "alreadyExists": "Ein Konto mit diesem Benutzernamen existiert bereits."
+            },
+            "email": {
+                "verification": "Gib deine neue E-Mail-Adresse ein. Bevor die Änderung übernommen wird, senden wir einen Bestätigungslink an deine aktuelle Adresse.",
+                "verificationButton": {
+                    "unsent": "Bestätigungs-E-Mail senden",
+                    "sending": "E-Mail wird gesendet…",
+                    "sent": "Bestätigungs-E-Mail gesendet",
+                    "cooldown": "Bitte versuche es später erneut."
+                },
+                "same": "Du verwendest diese E-Mail-Adresse bereits.",
+                "changeButton": {
+                    "unsent": "E-Mail-Änderung anfordern",
+                    "sending": "Bestätigung wird gesendet…",
+                    "sent": "Aktuelle E-Mail prüfen"
+                },
+                "taken": "Diese E-Mail-Adresse wird bereits von einem Konto verwendet.",
+                "currentNotVerified": "Bestätige deine aktuelle E-Mail-Adresse, bevor du sie änderst.",
+                "sessionExpired": "Deine Sitzung ist abgelaufen. Melde dich erneut an und versuche es noch einmal.",
+                "cooldown": "Zu viele Anfragen. Warte einen Moment und versuche es erneut.",
+                "sendFailed": "Die E-Mail-Änderung konnte nicht gestartet werden. Versuche es erneut."
+            }
+        },
+        "manageAccount": {
+            "title": "Konto verwalten",
+            "resetPassword": "Passwort zurücksetzen",
+            "resetPasswordDialog": "Wir senden dir eine E-Mail mit einem Link, über den du ein neues Passwort erstellen kannst.",
+            "deleteAccount": "Konto löschen",
+            "deleteAccountDialog": "Bestätige das Löschen deines Kontos, indem du Folgendes in das Feld eingibst:",
+            "irreversibleAction": "Denke daran, dass diese Aktion nicht rückgängig gemacht werden kann."
+        }
+    },
+    "analysis": {
+        "title": "Analyse",
+        "arrowAppearance": "Pfeildarstellung",
+        "arrowWidth": "Pfeilbreite (px)",
+        "headLength": "Länge der Pfeilspitze (px)",
+        "headWidth": "Breite der Pfeilspitze (px)",
+        "bestMoveColour": "Pfeil für den besten Zug",
+        "manualColour": "Manuelle Pfeile",
+        "other": "Sonstiges",
+        "showTimer": "Zeitmesser anzeigen",
+        "colours": {
+            "green": "Grün",
+            "orange": "Orange",
+            "blue": "Blau",
+            "red": "Rot",
+            "purple": "Violett"
+        }
+    },
     "boardAndPieces": {
         "title": "Brett und Figuren",
         "boardColour": "Brettfarbe",
@@ -10,12 +69,130 @@
             "tournament": "Turnier",
             "blue": "Blau",
             "ice": "Eis",
-            "marshmallow": "Marshmallow"
+            "marshmallow": "Marshmallow",
+            "pillow": "Kissen"
+        },
+        "coordinates": {
+            "title": "Koordinaten",
+            "position": "Positionierung",
+            "inside": "Innen",
+            "outside": "Außen"
         }
     },
     "bugReporting": {
         "title": "Fehler melden",
         "bugReportingMode": "Fehlermeldungsmodus",
         "bugReportingModeDescription": "Hilf uns Fehler zu finden und zu beheben. Fehlermeldungsmodus aktiviert ein kleines Symbol in der unteren Ecke des Bildschirms, das du anklicken kannst, um die Protokolle der Konsole zu kopieren."
+    },
+    "privacy": "Datenschutz",
+    "user": {
+        "title": "Benutzer",
+        "description": "Verwalte deine NexoChess-Identität und die Sicherheit deines Kontos.",
+        "email": "E-Mail",
+        "password": "Passwort",
+        "username": "Benutzername",
+        "dateOfBirth": "Geburtsdatum",
+        "optional": "Optional",
+        "change": "Ändern",
+        "add": "Hinzufügen",
+        "checking": "Dein NexoChess-Konto wird geprüft…",
+        "notSet": "Nicht festgelegt",
+        "save": "Speichern",
+        "saving": "Wird gespeichert…",
+        "remove": "Entfernen",
+        "usernameTaken": "Dieser Benutzername ist bereits vergeben.",
+        "usernameUpdateFailed": "Der Benutzername konnte nicht aktualisiert werden.",
+        "usernamePlaceholder": "Neuer Benutzername…",
+        "usernameDialog": "Wähle den Benutzernamen, der in deinem NexoChess-Konto angezeigt wird.",
+        "guest": {
+            "title": "Du verwendest NexoChess als Gast",
+            "description": "Deine analysierten Partien bleiben im lokalen Archiv dieses Geräts verfügbar. Melde dich über das Menü oben rechts an, um E-Mail-Adresse, Passwort, Benutzernamen und ein optionales Geburtsdatum zu verwalten."
+        },
+        "dateOfBirthDialog": {
+            "description": "Optional. Diese Information bleibt privat und kann jederzeit entfernt werden.",
+            "invalid": "Gib ein gültiges Datum zwischen 1900 und heute ein."
+        },
+        "delete": {
+            "title": "Konto löschen",
+            "description": "Lösche dein Konto und dessen Cloud-Archiv dauerhaft. Partien, die nur auf diesem Gerät gespeichert sind, bleiben erhalten.",
+            "confirm": "Gib {{username}} ein, um das Konto endgültig zu löschen.",
+            "usernameMismatch": "Der Benutzername stimmt nicht überein."
+        }
+    },
+    "appearance": {
+        "title": "Darstellung",
+        "language": {
+            "title": "Sprache",
+            "description": "Wähle die Sprache für die NexoChess-Oberfläche und Konto-E-Mails."
+        },
+        "boardTheme": {
+            "title": "Brettdesign",
+            "description": "Wähle eine Farbpalette für das Brett. Event- und Sponsorendesigns sind bewusst ausgeschlossen.",
+            "lightSquares": "Helle Felder",
+            "darkSquares": "Dunkle Felder",
+            "colourPlaceholder": "Farbe…",
+            "presets": {
+                "walnut": "Walnuss",
+                "green": "Grün",
+                "blue": "Blau",
+                "slate": "Schiefer",
+                "ice": "Eis",
+                "sand": "Sandfarben",
+                "rose": "Rosa",
+                "purple": "Violett",
+                "charcoal": "Anthrazit",
+                "ocean": "Ozean",
+                "mint": "Minze",
+                "orange": "Orangefarben"
+            }
+        },
+        "pieces": {
+            "title": "Figurensatz",
+            "description": "Wähle eine standardisierte Figurenfamilie. Event- und Sponsorensätze sind ausgeschlossen.",
+            "note": "Die Neo-Figuren von Chess.com sind nicht enthalten, da sie proprietär sind; dies sind offene Standardalternativen."
+        },
+        "coordinates": {
+            "title": "Koordinaten",
+            "description": "Wähle, ob die Brettkoordinaten innerhalb oder außerhalb des Bretts angezeigt werden.",
+            "inside": "Innen",
+            "outside": "Außen"
+        },
+        "preview": {
+            "title": "Vorschau",
+            "description": "Das ausgewählte Brett und die Figuren werden unten gemeinsam angezeigt."
+        }
+    },
+    "coach": {
+        "title": "Trainer",
+        "description": "Lege fest, ob dein Trainer während der Partieanalyse angezeigt und animiert wird.",
+        "enabled": {
+            "title": "Trainer aktivieren",
+            "description": "Zeige den ausgewählten Trainer und seine Kommentare in der Zusammenfassung und Analyse."
+        },
+        "animations": {
+            "title": "Traineranimationen",
+            "description": "Erlaubt Blinzeln und Mundbewegungen. Deaktiviere dies für ein statisches Porträt."
+        }
+    },
+    "privacySection": {
+        "title": "Datenschutz",
+        "description": "Steuere die von NexoChess in diesem Browser gespeicherten Daten und lies die für dein Konto geltenden Richtlinien.",
+        "preferences": {
+            "title": "Dateneinstellungen",
+            "description": "Prüfe optionale Einwilligungen der Website. Notwendiger Speicher für Einstellungen, Anmeldung und dein lokales Archiv kann hier nicht deaktiviert werden.",
+            "manage": "Einstellungen verwalten"
+        },
+        "archive": {
+            "title": "Lokales Partienarchiv",
+            "description": "Analysen von Gästen werden nur in diesem Browser gespeichert. Wenn du Browserdaten löschst oder den Button unten verwendest, werden diese lokalen Partien dauerhaft entfernt.",
+            "clear": "Lokales Archiv leeren",
+            "cleared": "Das lokale Archiv auf diesem Gerät wurde geleert.",
+            "confirm": "Alle lokal auf diesem Gerät gespeicherten Partien löschen? Dies kann nicht rückgängig gemacht werden."
+        },
+        "policies": {
+            "title": "Richtlinien",
+            "privacy": "Datenschutzerklärung",
+            "terms": "Nutzungsbedingungen"
+        }
     }
 }

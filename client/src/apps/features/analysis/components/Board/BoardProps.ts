@@ -1,6 +1,6 @@
 import { CSSProperties } from "react";
-import { Arrow } from "react-chessboard/dist/chessboard/types";
 import { Move } from "chess.js";
+import SuggestionArrow from "./SuggestionArrow";
 
 import { StateTreeNode } from "shared/types/game/position/StateTreeNode";
 import PlayerProfile from "shared/types/game/PlayerProfile";
@@ -16,7 +16,7 @@ interface BoardProps {
     node?: StateTreeNode;
     flipped?: boolean;
     evaluation?: Evaluation;
-    arrows?: Arrow[];
+    arrows?: SuggestionArrow[];
     theme?: {
         lightSquareColour?: string;
         darkSquareColour?: string;

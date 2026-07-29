@@ -1,0 +1,59 @@
+.headingBlock {
+    width: 100%;
+    margin-bottom: 4px;
+}
+
+.intro {
+    max-width: 720px;
+    margin: 7px 0 0;
+
+    color: rgba(255, 255, 255, 0.58);
+
+    font-size: 0.94rem;
+    line-height: 1.5;
+}
+
+.section {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px 0 12px;
+}
+
+.settingRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 28px;
+
+    width: 100%;
+}
+
+.settingCopy {
+    min-width: 0;
+}
+
+.sectionTitle {
+    margin: 0;
+
+    font-family: "Nunito", sans-serif;
+    font-size: 1.32rem;
+    line-height: 1.2;
+}
+
+.sectionDescription {
+    max-width: 720px;
+    margin: 6px 0 0;
+
+    color: rgba(255, 255, 255, 0.58);
+
+    font-size: 0.92rem;
+    line-height: 1.45;
+}
+
+@media (max-width: 680px) {
+    .settingRow {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+    }
+}

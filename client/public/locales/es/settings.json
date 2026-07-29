@@ -1,21 +1,198 @@
 {
+    "account": {
+        "title": "Cuenta",
+        "editProfile": {
+            "title": "Editar perfil",
+            "displayName": {
+                "message": "Introduce un nuevo nombre visible."
+            },
+            "username": {
+                "message": "Introduce un nuevo nombre de usuario.",
+                "alreadyExists": "Ya existe una cuenta con este nombre de usuario."
+            },
+            "email": {
+                "verification": "Introduce tu nuevo correo. Enviaremos un enlace de aprobación a tu dirección actual antes de aplicar el cambio.",
+                "verificationButton": {
+                    "unsent": "Enviar correo de verificación",
+                    "sending": "Enviando correo…",
+                    "sent": "Correo de verificación enviado",
+                    "cooldown": "Vuelve a intentarlo más tarde."
+                },
+                "same": "Ya estás utilizando esta dirección de correo.",
+                "changeButton": {
+                    "unsent": "Solicitar cambio de correo",
+                    "sending": "Enviando confirmación…",
+                    "sent": "Revisa tu correo actual"
+                },
+                "taken": "Ya existe una cuenta que utiliza este correo.",
+                "currentNotVerified": "Verifica tu correo actual antes de cambiarlo.",
+                "sessionExpired": "Tu sesión ha caducado. Inicia sesión de nuevo y vuelve a intentarlo.",
+                "cooldown": "Se han realizado demasiadas solicitudes. Espera un momento y vuelve a intentarlo.",
+                "sendFailed": "No hemos podido iniciar el cambio de correo. Vuelve a intentarlo."
+            }
+        },
+        "manageAccount": {
+            "title": "Gestionar cuenta",
+            "resetPassword": "Restablecer contraseña",
+            "resetPasswordDialog": "Te enviaremos un correo con un enlace para crear una nueva contraseña.",
+            "deleteAccount": "Eliminar cuenta",
+            "deleteAccountDialog": "Confirma la eliminación de tu cuenta escribiendo lo siguiente:",
+            "irreversibleAction": "Recuerda que esta acción es irreversible."
+        }
+    },
+    "analysis": {
+        "title": "Análisis",
+        "arrowAppearance": "Aspecto de las flechas",
+        "arrowWidth": "Anchura de la flecha (px)",
+        "headLength": "Longitud de la punta (px)",
+        "headWidth": "Anchura de la punta (px)",
+        "bestMoveColour": "Flecha de mejor jugada",
+        "manualColour": "Flechas manuales",
+        "other": "Otros",
+        "showTimer": "Mostrar temporizador",
+        "colours": {
+            "green": "Verde",
+            "orange": "Naranja",
+            "blue": "Azul",
+            "red": "Rojo",
+            "purple": "Morado"
+        }
+    },
     "boardAndPieces": {
-        "title": "Tablero y Piezas",
-        "boardColour": "Color del Tablero",
-        "lightSquareColour": "Escaque Claro",
-        "darkSquareColour": "Escaque Oscuro",
-        "presetsTitle": "Predeterminados",
+        "title": "Tablero y piezas",
+        "boardColour": "Color del tablero",
+        "lightSquareColour": "Casilla clara",
+        "darkSquareColour": "Casilla oscura",
+        "presetsTitle": "Preajustes",
         "presets": {
             "wooden": "Madera",
             "tournament": "Torneo",
             "blue": "Azul",
             "ice": "Hielo",
-            "marshmallow": "Malvavisco"
+            "marshmallow": "Malvavisco",
+            "pillow": "Almohada"
+        },
+        "coordinates": {
+            "title": "Coordenadas",
+            "position": "Posición",
+            "inside": "Dentro",
+            "outside": "Fuera"
         }
     },
     "bugReporting": {
-        "title": "Reporte de Errores",
-        "bugReportingMode": "Modo de Reporte de Errores",
-        "bugReportingModeDescription": "Ayúdanos a encontrar y reparar errores. El modo de reporte de errores activa un pequeño widget en la esquina inferior de la pantalla donde puedes hacer clic para copiar los registros de la consola."
+        "title": "Informe de errores",
+        "bugReportingMode": "Modo de informe de errores",
+        "bugReportingModeDescription": "Ayúdanos a encontrar y corregir fallos. Este modo activa un pequeño widget en una esquina para copiar los registros de la consola."
+    },
+    "privacy": "Privacidad",
+    "user": {
+        "title": "Usuario",
+        "description": "Gestiona tu identidad de NexoChess y la seguridad de tu cuenta.",
+        "email": "Correo electrónico",
+        "password": "Contraseña",
+        "username": "Nombre de usuario",
+        "dateOfBirth": "Fecha de nacimiento",
+        "optional": "Opcional",
+        "change": "Cambiar",
+        "add": "Añadir",
+        "checking": "Comprobando tu cuenta de NexoChess…",
+        "notSet": "Sin configurar",
+        "save": "Guardar",
+        "saving": "Guardando…",
+        "remove": "Eliminar",
+        "usernameTaken": "Este nombre de usuario ya está en uso.",
+        "usernameUpdateFailed": "No se ha podido actualizar el nombre de usuario.",
+        "usernamePlaceholder": "Nuevo nombre de usuario…",
+        "usernameDialog": "Elige el nombre de usuario que aparecerá en tu cuenta de NexoChess.",
+        "guest": {
+            "title": "Estás usando NexoChess como invitado",
+            "description": "Tus partidas analizadas permanecen en el archivo local de este dispositivo. Inicia sesión desde el menú superior derecho para gestionar correo, contraseña, nombre de usuario y fecha de nacimiento opcional."
+        },
+        "dateOfBirthDialog": {
+            "description": "Es opcional, se mantiene privada y puedes eliminarla en cualquier momento.",
+            "invalid": "Introduce una fecha válida entre 1900 y hoy."
+        },
+        "delete": {
+            "title": "Eliminar cuenta",
+            "description": "Elimina permanentemente tu cuenta y su archivo en la nube. Las partidas guardadas solo en este dispositivo no se verán afectadas.",
+            "confirm": "Escribe {{username}} para confirmar la eliminación permanente de la cuenta.",
+            "usernameMismatch": "El nombre de usuario no coincide."
+        }
+    },
+    "appearance": {
+        "title": "Apariencia",
+        "language": {
+            "title": "Idioma",
+            "description": "Elige el idioma de la interfaz de NexoChess y de los correos de cuenta."
+        },
+        "boardTheme": {
+            "title": "Tema del tablero",
+            "description": "Elige una paleta para el tablero. Los temas de eventos y patrocinadores están excluidos.",
+            "lightSquares": "Casillas claras",
+            "darkSquares": "Casillas oscuras",
+            "colourPlaceholder": "Color…",
+            "presets": {
+                "walnut": "Nogal",
+                "green": "Verde",
+                "blue": "Azul",
+                "slate": "Pizarra",
+                "ice": "Hielo",
+                "sand": "Arena",
+                "rose": "Rosa",
+                "purple": "Morado",
+                "charcoal": "Carbón",
+                "ocean": "Océano",
+                "mint": "Menta",
+                "orange": "Naranja"
+            }
+        },
+        "pieces": {
+            "title": "Juego de piezas",
+            "description": "Selecciona una familia de piezas estándar. Los juegos de eventos y patrocinadores están excluidos.",
+            "note": "El diseño Neo de Chess.com no se incluye porque es propietario; estas son alternativas estándar y abiertas."
+        },
+        "coordinates": {
+            "title": "Coordenadas",
+            "description": "Elige si las coordenadas se muestran dentro o fuera del tablero.",
+            "inside": "Dentro",
+            "outside": "Fuera"
+        },
+        "preview": {
+            "title": "Vista previa",
+            "description": "El tablero y las piezas seleccionados se muestran juntos a continuación."
+        }
+    },
+    "coach": {
+        "title": "Entrenador",
+        "description": "Controla si el entrenador aparece y se anima durante el análisis de la partida.",
+        "enabled": {
+            "title": "Activar entrenador",
+            "description": "Muestra el entrenador seleccionado y sus comentarios en el resumen y la revisión."
+        },
+        "animations": {
+            "title": "Animaciones del entrenador",
+            "description": "Permite el parpadeo y el movimiento de la boca. Desactívalo para usar un retrato estático."
+        }
+    },
+    "privacySection": {
+        "title": "Privacidad",
+        "description": "Controla los datos guardados por NexoChess en este navegador y consulta las políticas aplicables a tu cuenta.",
+        "preferences": {
+            "title": "Preferencias de datos",
+            "description": "Revisa las opciones de consentimiento opcionales. El almacenamiento esencial para ajustes, autenticación y archivo local no se desactiva aquí.",
+            "manage": "Gestionar preferencias"
+        },
+        "archive": {
+            "title": "Archivo local de partidas",
+            "description": "Los análisis como invitado se guardan únicamente en este navegador. Borrar los datos del navegador o usar el botón inferior elimina permanentemente esas partidas locales.",
+            "clear": "Vaciar archivo local",
+            "cleared": "Se ha vaciado el archivo local de este dispositivo.",
+            "confirm": "¿Eliminar todas las partidas guardadas localmente en este dispositivo? Esta acción no se puede deshacer."
+        },
+        "policies": {
+            "title": "Políticas",
+            "privacy": "Política de privacidad",
+            "terms": "Términos del servicio"
+        }
     }
 }

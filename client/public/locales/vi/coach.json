@@ -1,0 +1,134 @@
+{
+  "picker": {
+    "title": "Chọn huấn luyện viên",
+    "close": "Đóng bộ chọn huấn luyện viên",
+    "select": "Chọn huấn luyện viên",
+    "choose": "Chọn huấn luyện viên"
+  },
+  "progress": {
+    "reviewing": "Hãy cho tôi một chút thời gian để xem lại ván đấu của bạn:",
+    "aria": "Tiến độ xem lại ván đấu: {{progress}}%"
+  },
+  "summary": {
+    "fog": {
+      "picker": [
+        "Pixie đây. Tôi sẽ bình tĩnh để mắt đến từng quân cờ lỏng lẻo... meo."
+      ],
+      "idle": [
+        "Hãy tải một ván đấu, tôi sẽ xem thật bình tĩnh và cẩn thận. Rừ rừ."
+      ],
+      "analysing": [
+        "Chờ một chút trong khi tôi kiểm tra từng nước đi. Rừ rừ..."
+      ],
+      "ready": [
+        "Đã xem xong. Hãy cùng nhìn lại những thời điểm thật sự quan trọng. Meo."
+      ]
+    },
+    "foxy": {
+      "picker": [
+        "Foxy đây. Nếu thế cờ giấu một cái bẫy, tôi sẽ đánh hơi ra."
+      ],
+      "idle": [
+        "Hãy tải một ván đấu, tôi sẽ săn tìm mọi bước ngoặt chiến thuật."
+      ],
+      "analysing": [
+        "Chờ một chút trong khi tôi đánh hơi các ý tưởng tinh quái..."
+      ],
+      "ready": [
+        "Xong rồi. Tôi đã tìm được những thời điểm sắc bén nhất."
+      ]
+    },
+    "cybe": {
+      "picker": [
+        "BÍP. Cybe trực tuyến. Ưu tiên độ chính xác trước kịch tính."
+      ],
+      "idle": [
+        "HỆ THỐNG CHỜ. Vui lòng nhập ván đấu."
+      ],
+      "analysing": [
+        "ĐANG PHÂN TÍCH. BÍP. Vui lòng chờ..."
+      ],
+      "ready": [
+        "XỬ LÝ HOÀN TẤT. Đã xác định các sai lệch quan trọng."
+      ]
+    },
+    "max_rooks": {
+      "picker": [
+        "Max Rooks đây. Chúng ta sẽ phân tích có nguyên tắc và thực tế."
+      ],
+      "idle": [
+        "Hãy cho tôi xem ván đấu, tôi sẽ giải thích điều gì quan trọng nhất."
+      ],
+      "analysing": [
+        "Hãy cho tôi một chút thời gian để xem xét kỹ ván đấu."
+      ],
+      "ready": [
+        "Bản xem lại đã sẵn sàng. Hãy đi qua các quyết định then chốt."
+      ]
+    }
+  },
+  "dynamic": {
+    "start": "Hãy bắt đầu từ đầu. Chọn một nước đi bên dưới hoặc dùng các nút điều khiển.",
+    "reviewing": "Đang xem {{move}}...",
+    "classifications": {
+      "brilliant": "{{move}} là một nước đi xuất sắc, tìm ra một ý tưởng rất mạnh.",
+      "critical": "{{move}} là một nước đi tuyệt vời ở thời điểm then chốt.",
+      "best": "{{move}} là nước đi tốt nhất trong thế cờ.",
+      "excellent": "{{move}} là một nước đi xuất sắc và chính xác.",
+      "okay": "{{move}} là một nước đi chắc chắn, giữ thế cờ trong tầm kiểm soát.",
+      "inaccuracy": "{{move}} là một nước thiếu chính xác và làm mất một phần lợi thế.",
+      "mistake": "{{move}} là một sai lầm khiến thế cờ khó chơi hơn.",
+      "miss": "{{move}} bỏ lỡ một cơ hội quan trọng.",
+      "blunder": "{{move}} là một sai lầm nghiêm trọng, làm đánh giá thay đổi mạnh.",
+      "theory": "{{move}} đi theo lý thuyết của {{opening}}.",
+      "theoryUnknown": "{{move}} đi theo một biến khai cuộc đã biết.",
+      "forced": "{{move}} là nước bắt buộc. Các lựa chọn khác tệ hơn rõ rệt.",
+      "risky": "{{move}} khá mạo hiểm và cho đối thủ cơ hội thực chiến."
+    },
+    "betterMove": "{{best}} mạnh hơn.",
+    "mateAllowed": "Nước này cho phép chiếu hết sau {{mate}} nước.",
+    "evaluationLoss": "Đánh giá giảm khoảng {{loss}} tốt."
+  },
+  "catchphrases": {
+    "fog": {
+      "prefixes": [
+        "Mrrp...",
+        "Meo.",
+        "Rừ rừ..."
+      ],
+      "suffixes": [
+        "Rừ rừ."
+      ]
+    },
+    "foxy": {
+      "prefixes": [
+        "Hừm...",
+        "Gâu.",
+        "Khịt khịt..."
+      ],
+      "suffixes": [
+        "Săn rất tốt."
+      ]
+    },
+    "cybe": {
+      "prefixes": [
+        "BÍP.",
+        "ĐÃ KIỂM TRA CHUỖI.",
+        "ĐÃ KHÓA MẪU."
+      ],
+      "suffixes": [
+        "Đã lưu phân tích."
+      ]
+    },
+    "max_rooks": {
+      "prefixes": [
+        "Hừm.",
+        "Đúng vậy.",
+        "Rất tốt."
+      ],
+      "suffixes": [
+        "Hãy nhớ ý tưởng này."
+      ]
+    }
+  }
+}

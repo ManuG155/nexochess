@@ -13,7 +13,8 @@ function Dialog({
     onClose,
     className,
     style,
-    closeButtonStyle
+    closeButtonStyle,
+    closeOnBackdrop = false
 }: DialogProps) {
     useEffect(() => {
         document.body.style.overflow = "hidden";
@@ -23,8 +24,15 @@ function Dialog({
         };
     }, []);
 
-    return <BlurBackground className={styles.wrapper}>
-        <div className={`${styles.menu} ${className}`} style={style}>
+    return <BlurBackground
+    className={styles.wrapper}
+    onClick={closeOnBackdrop ? onClose : undefined}
+>
+    <div
+        className={`${styles.menu} ${className}`}
+        style={style}
+        onClick={event => event.stopPropagation()}
+    >
             <Button
                 className={styles.closeButton}
                 icon={iconInterfaceClose}

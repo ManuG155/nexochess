@@ -1,39 +1,135 @@
 {
-    "loading": "लोड हो रहा है...",
-    "back": "वापस जाएं",
-    "settings": "सेटिंग्स",
-    "error": "एरर ",
-    "reset": "रीसेट करें",
-    "navigationBar": {
-        "support": "सहायता/मदद",
-        "tooltips": {
-            "support": "हमारा समर्थन करें!",
-            "help": "सहायता केंद्र"
-        }
+  "loading": "लोड हो रहा है...",
+  "back": "वापस जाएं",
+  "settings": "सेटिंग्स",
+  "error": "एरर ",
+  "unknownError": "एक अज्ञात त्रुटि हुई।",
+  "reset": "रीसेट करें",
+  "enabled": "चालू",
+  "disabled": "बंद",
+  "edit": "संपादित करें",
+  "confirm": "पुष्टि करें",
+  "cancel": "रद्द करें",
+  "navigationBar": {
+    "support": "सहायता/मदद",
+    "signIn": "साइन इन",
+    "tooltips": {
+      "support": "हमारा समर्थन करें!",
+      "help": "सहायता केंद्र"
     },
-    "sidebar": {
-        "analysis": "विश्लेषण",
-        "archive": "संग्रह/अर्काइव",
-        "news": "समाचार"
+    "profileMenu": {
+      "profile": "प्रोफ़ाइल",
+      "signOut": "साइन आउट"
     },
-    "gameListing": {
-        "gameResults": {
-            "unopinionated": {
-                "win": "सफेद जीता",
-                "draw": "बाँध",
-                "lose": "काला जीत गया",
-                "unknown": "अनजान"
-            },
-            "opinionated": {
-                "win": "जीत गया",
-                "draw": "बाँध",
-                "lose": "हार गया",
-                "unknown": "अनजान"
-            }
-        }
+    "openAnalysis": "NexoChess विश्लेषण खोलें"
+  },
+  "sidebar": {
+    "analysis": "विश्लेषण",
+    "archive": "संग्रह/अर्काइव",
+    "news": "समाचार"
+  },
+  "footer": {
+    "privacySettings": "गोपनीयता सेटिंग्स",
+    "language": "भाषा",
+    "languagesDialog": {
+      "eyebrow": "भाषा",
+      "select": "अपनी भाषा चुनें",
+      "description": "NexoChess इस ब्राउज़र में आपका चयन याद रखेगा।",
+      "search": "भाषा खोजें",
+      "current": "वर्तमान",
+      "noResults": "खोज से कोई भाषा नहीं मिली।",
+      "helpTitle": "अनुवाद सुधारने में मदद करें",
+      "helpDescription": "कोई वाक्य अस्पष्ट या गलत लगा? भाषा, पृष्ठ और अपना सुझाव भेजें।",
+      "help": "अनुवाद सुझाएँ",
+      "helpSubject": "NexoChess अनुवाद सुझाव",
+      "helpBody": "नमस्ते NexoChess,\n\nमैं {{language}} अनुवाद में सुधार सुझाना चाहता/चाहती हूँ।\n\nपृष्ठ या अनुभाग:\nवर्तमान पाठ:\nसुझाया गया पाठ:\nकारण या संदर्भ:\n\nधन्यवाद।"
     },
-    "bugReportWidget": {
-        "tooltip": "कंसोल लॉग्स कॉपी करें",
-        "toast": "कॉपी की गई कंसोल लॉग्स!"
+    "termsOfService": "सेवा की शर्तें",
+    "privacyPolicy": "गोपनीयता नीति",
+    "openSource": "स्रोत कोड और लाइसेंस",
+    "copyright": "कॉपीराइट © {{year}} NexoChess",
+    "tagline": "चालों को जोड़ें। बाज़ी को समझें।",
+    "license": "कोड GPL-3.0 लाइसेंस के अंतर्गत",
+    "navigationLabel": "फ़ुटर नेविगेशन",
+    "contact": "संपर्क"
+  },
+  "confirmDialog": {
+    "yes": "हाँ",
+    "no": "नहीं"
+  },
+  "shareGame": {
+    "copyFEN": "FEN कॉपी करें",
+    "copyFENToast": "FEN कॉपी हुई!",
+    "copyPGN": "PGN कॉपी करें",
+    "copyPGNToast": "PGN कॉपी हुआ!"
+  },
+  "gameListing": {
+    "gameResults": {
+      "unopinionated": {
+        "win": "सफेद जीता",
+        "draw": "बाँध",
+        "lose": "काला जीत गया",
+        "unknown": "अनजान"
+      },
+      "opinionated": {
+        "win": "जीत गया",
+        "draw": "बाँध",
+        "lose": "हार गया",
+        "unknown": "अनजान"
+      }
     }
+  },
+  "account": {
+    "fields": {
+      "email": "ईमेल पता",
+      "displayName": "दिखने वाला नाम",
+      "username": "यूज़रनेम"
+    },
+    "errors": {
+      "accountNotFound": "इस ईमेल से कोई खाता मौजूद नहीं है।",
+      "emailTaken": "इस ईमेल से पहले से एक खाता मौजूद है।",
+      "usernameTaken": "यह यूज़रनेम पहले से लिया गया है।",
+      "invalidEmail": "अमान्य ईमेल पता।",
+      "unverifiedEmail": "कृपया अपना ईमेल सत्यापित करें।",
+      "displayNameInvalid": "दिखने वाले नाम में अमान्य अक्षर हैं।",
+      "displayNameTooShort": "दिखने वाला नाम कम से कम 3 अक्षरों का होना चाहिए।",
+      "displayNameTooLong": "दिखने वाला नाम 24 अक्षरों से लंबा नहीं हो सकता।",
+      "usernameAlphanumeric": "यूज़रनेम में केवल अक्षर, अंक और अंडरस्कोर हो सकते हैं।",
+      "usernameTooShort": "यूज़रनेम कम से कम 3 अक्षरों का होना चाहिए।",
+      "usernameTooLong": "यूज़रनेम 20 अक्षरों से लंबा नहीं हो सकता।",
+      "passwordTooShort": "पासवर्ड कम से कम 8 अक्षरों का होना चाहिए।",
+      "passwordTooLong": "पासवर्ड 128 अक्षरों से लंबा नहीं हो सकता।",
+      "passwordNoMatch": "पासवर्ड मेल नहीं खाते।",
+      "incorrectEmailPassword": "ईमेल या पासवर्ड गलत है।",
+      "verificationCooldown": "दूसरा सत्यापन लिंक भेजने से पहले 60 सेकंड प्रतीक्षा करें।"
+    },
+    "placeholders": {
+      "email": "ईमेल पता…",
+      "displayName": "दिखने वाला नाम…",
+      "username": "यूज़रनेम…",
+      "password": "पासवर्ड…",
+      "confirmPassword": "पासवर्ड की पुष्टि करें…"
+    },
+    "verificationMessage": "हमने आपके ईमेल पर सत्यापन लिंक भेजा है। आगे बढ़ने के लिए इनबॉक्स देखें।"
+  },
+  "bugReportWidget": {
+    "tooltip": "कंसोल लॉग्स कॉपी करें",
+    "toast": "कॉपी की गई कंसोल लॉग्स!"
+  },
+  "close": "बंद करें",
+  "save": "सहेजें",
+  "saving": "सहेजा जा रहा है…",
+  "remove": "हटाएँ",
+  "add": "जोड़ें",
+  "change": "बदलें",
+  "delete": "हटाएँ",
+  "password": "पासवर्ड",
+  "confirmPassword": "पासवर्ड की पुष्टि करें",
+  "notFound": {
+    "message": "लगता है आप रास्ता भटक गए हैं।",
+    "returnHome": "होम पर लौटें"
+  },
+  "chess": {
+    "capturedPieces": "मारी गई मोहरें"
+  }
 }
