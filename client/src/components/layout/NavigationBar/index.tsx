@@ -153,6 +153,31 @@ function NavigationItem({
 }
 
 
+interface NavigationActionProps {
+    children: ReactNode;
+    icon: IconName;
+    onClick: () => void;
+}
+
+
+function NavigationAction({
+    children,
+    icon,
+    onClick
+}: NavigationActionProps) {
+    return (
+        <button
+            type="button"
+            className={styles.actionButton}
+            onClick={onClick}
+        >
+            <NavIcon name={icon} />
+            <span className={styles.actionLabel}>{children}</span>
+        </button>
+    );
+}
+
+
 interface FutureItemProps {
     children: ReactNode;
     icon: IconName;
@@ -297,6 +322,22 @@ function NavigationBar() {
                     {t("sidebar.archive", { ns: "common" })}
                 </NavigationItem>
 
+                {onAnalysisPage && (
+                    <NavigationAction
+                        icon="flip"
+                        onClick={() => (
+                            setBoardFlipped(
+                                !boardFlipped
+                            )
+                        )}
+                    >
+                        {t(
+                            "optionsToolbar.flipBoard",
+                            { ns: "analysis" }
+                        )}
+                    </NavigationAction>
+                )}
+
                 <FutureItem
                     icon="academy"
                     comingSoon={comingSoon}
@@ -310,42 +351,46 @@ function NavigationBar() {
                 >
                     {t("navigationBar.puzzles", { ns: "common" })}
                 </FutureItem>
+
+                {onAnalysisPage && (
+                    <NavigationAction
+                        icon="share"
+                        onClick={() => setShareOpen(true)}
+                    >
+                        {t(
+                            "navigationBar.share",
+                            { ns: "common" }
+                        )}
+                    </NavigationAction>
+                )}
             </nav>
 
             <div className={styles.rightArea}>
                 {onAnalysisPage && (
                     <div className={styles.analysisActions}>
-                        <button
-                            type="button"
-                            className={styles.actionButton}
+                        <NavigationAction
+                            icon="flip"
                             onClick={() => (
                                 setBoardFlipped(
                                     !boardFlipped
                                 )
                             )}
                         >
-                            <NavIcon name="flip" />
-                            <span className={styles.actionLabel}>
-                                {t(
-                                    "optionsToolbar.flipBoard",
-                                    { ns: "analysis" }
-                                )}
-                            </span>
-                        </button>
+                            {t(
+                                "optionsToolbar.flipBoard",
+                                { ns: "analysis" }
+                            )}
+                        </NavigationAction>
 
-                        <button
-                            type="button"
-                            className={styles.actionButton}
+                        <NavigationAction
+                            icon="share"
                             onClick={() => setShareOpen(true)}
                         >
-                            <NavIcon name="share" />
-                            <span className={styles.actionLabel}>
-                                {t(
-                                    "optionsToolbar.share",
-                                    { ns: "analysis" }
-                                )}
-                            </span>
-                        </button>
+                            {t(
+                                "navigationBar.share",
+                                { ns: "common" }
+                            )}
+                        </NavigationAction>
                     </div>
                 )}
 
