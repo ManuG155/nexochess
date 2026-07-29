@@ -215,7 +215,13 @@ function AnalysisPanel({
     return (
         <div
             className={
-                `${styles.wrapper} ${className}`
+                [
+                    styles.wrapper,
+                    !gameAnalysisOpen
+                        ? styles.gameSelectionMode
+                        : "",
+                    className
+                ].filter(Boolean).join(" ")
             }
 
             style={
