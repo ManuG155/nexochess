@@ -1,4 +1,4 @@
-import { FieldAttribute } from "better-auth/db";
+import { DBFieldAttribute } from "better-auth/db";
 import z from "zod";
 
 import AccountError from "./errors";
@@ -6,7 +6,7 @@ import AccountError from "./errors";
 export const additionalUserFields = ({
     username: { type: "string", input: false },
     roles: { type: "string[]", input: false }
-} as const) satisfies Record<string, FieldAttribute>;
+} as const) satisfies Record<string, DBFieldAttribute>;
 
 export const email = z.email(AccountError.INVALID_EMAIL.code);
 

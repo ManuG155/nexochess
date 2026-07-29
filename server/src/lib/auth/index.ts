@@ -92,7 +92,7 @@ function createAuth(database: mongo.Db) {
             additionalFields: additionalUserFields,
             changeEmail: {
                 enabled: true,
-                sendChangeEmailVerification: async ({
+                sendChangeEmailConfirmation: async ({
                     user,
                     newEmail,
                     url
