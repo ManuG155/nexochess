@@ -28,7 +28,7 @@ export const requestProcessor = createAuthMiddleware(async ctx => {
 
 export const userInitialiser = async (
     user: AuthBaseUser,
-    ctx?: GenericEndpointContext
+    ctx: GenericEndpointContext | null
 ): Promise<{ data: any }> => {
     if (!schemas.displayName.safeParse(user.name).success)
         throw new APIError(StatusCodes.BAD_REQUEST);
