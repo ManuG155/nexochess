@@ -13,6 +13,11 @@
   "navigationBar": {
     "support": "सहायता/मदद",
     "signIn": "साइन इन",
+    "academy": "अकादमी",
+    "puzzles": "पहेलियाँ",
+    "comingSoon": "जल्द आ रहा है",
+    "openMenu": "नेविगेशन मेनू खोलें",
+    "primaryNavigation": "मुख्य नेविगेशन",
     "tooltips": {
       "support": "हमारा समर्थन करें!",
       "help": "सहायता केंद्र"

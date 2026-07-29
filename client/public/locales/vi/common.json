@@ -13,6 +13,11 @@
   "navigationBar": {
     "support": "Hỗ trợ",
     "signIn": "Đăng nhập",
+    "academy": "Học viện",
+    "puzzles": "Câu đố",
+    "comingSoon": "Sắp ra mắt",
+    "openMenu": "Mở menu điều hướng",
+    "primaryNavigation": "Điều hướng chính",
     "tooltips": {
       "support": "Hỗ trợ chúng tôi ❤",
       "help": "Trung tâm Trợ giúp"

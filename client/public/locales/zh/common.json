@@ -13,6 +13,11 @@
   "navigationBar": {
     "support": "支持",
     "signIn": "登入",
+    "academy": "学院",
+    "puzzles": "棋题",
+    "comingSoon": "即将推出",
+    "openMenu": "打开导航菜单",
+    "primaryNavigation": "主导航",
     "tooltips": {
       "support": "支持我们❤",
       "help": "帮助中心"

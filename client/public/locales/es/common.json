@@ -22,6 +22,11 @@
   "navigationBar": {
     "support": "Apoyar",
     "signIn": "Iniciar sesión",
+    "academy": "Academia",
+    "puzzles": "Puzzles",
+    "comingSoon": "Próximamente",
+    "openMenu": "Abrir menú de navegación",
+    "primaryNavigation": "Navegación principal",
     "openAnalysis": "Abrir el análisis de NexoChess",
     "tooltips": {
       "support": "Apoya NexoChess",

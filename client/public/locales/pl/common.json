@@ -13,6 +13,11 @@
   "navigationBar": {
     "support": "Wsparcie",
     "signIn": "Zaloguj się",
+    "academy": "Akademia",
+    "puzzles": "Zadania",
+    "comingSoon": "Wkrótce",
+    "openMenu": "Otwórz menu nawigacji",
+    "primaryNavigation": "Główna nawigacja",
     "tooltips": {
       "support": "Wspomóż nas ❤️",
       "help": "Centrum pomocy"
