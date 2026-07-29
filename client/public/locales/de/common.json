@@ -50,6 +50,7 @@
     "copyright": "Urheberrecht © {{year}} NexoChess",
     "tagline": "Verbinde die Züge. Verstehe die Partie.",
     "license": "Code unter GPL-3.0-Lizenz",
+    "freeGameReview": "Kostenlose Analyse von Schachpartien",
     "navigationLabel": "Fußzeilennavigation",
     "contact": "Kontakt"
   },

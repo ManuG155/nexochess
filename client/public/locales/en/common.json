@@ -50,6 +50,7 @@
     "copyright": "Copyright © {{year}} NexoChess",
     "tagline": "Connect the moves. Understand the game.",
     "license": "Code licensed under GPL-3.0",
+    "freeGameReview": "Free chess game review",
     "navigationLabel": "Footer navigation",
     "contact": "Contact"
   },

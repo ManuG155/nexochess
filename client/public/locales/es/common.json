@@ -59,6 +59,7 @@
     "copyright": "Derechos de autor © {{year}} NexoChess",
     "tagline": "Conecta las jugadas. Entiende la partida.",
     "license": "Código bajo licencia GPL-3.0",
+    "freeGameReview": "Revisión de partidas de ajedrez gratuita",
     "navigationLabel": "Navegación del pie de página",
     "contact": "Contacto"
   },

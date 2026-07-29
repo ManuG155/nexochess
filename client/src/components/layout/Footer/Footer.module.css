@@ -40,7 +40,7 @@
 }
 
 .copyrightNotice,
-.licenseNotice {
+.footerMeta {
     color: rgba(255, 255, 255, 0.42);
     font-size: 0.75rem;
 }
@@ -82,10 +82,19 @@
     transform: translateX(3px);
 }
 
-.licenseNotice {
+.footerMeta {
     grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
     padding-top: 14px;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.freeGameReview {
+    margin-left: auto;
+    text-align: right;
 }
 
 @media (max-width: 720px) {
@@ -96,6 +105,10 @@
 
     .links {
         width: 100%;
+    }
+
+    .footerMeta {
+        flex-wrap: wrap;
     }
 }
 

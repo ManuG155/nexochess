@@ -50,6 +50,7 @@
     "copyright": "Prawa autorskie © {{year}} NexoChess",
     "tagline": "Połącz ruchy. Zrozum partię.",
     "license": "Kod na licencji GPL-3.0",
+    "freeGameReview": "Bezpłatna analiza partii szachowych",
     "navigationLabel": "Nawigacja stopki",
     "contact": "Kontakt"
   },

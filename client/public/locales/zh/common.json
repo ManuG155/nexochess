@@ -50,6 +50,7 @@
     "copyright": "版权所有 © {{year}} NexoChess",
     "tagline": "串联每一步，读懂整盘棋。",
     "license": "代码采用 GPL-3.0 许可证",
+    "freeGameReview": "免费国际象棋对局分析",
     "navigationLabel": "页脚导航",
     "contact": "联系我们"
   },

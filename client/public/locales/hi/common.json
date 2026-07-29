@@ -50,6 +50,7 @@
     "copyright": "कॉपीराइट © {{year}} NexoChess",
     "tagline": "चालों को जोड़ें। बाज़ी को समझें।",
     "license": "कोड GPL-3.0 लाइसेंस के अंतर्गत",
+    "freeGameReview": "शतरंज की बाज़ियों का मुफ़्त विश्लेषण",
     "navigationLabel": "फ़ुटर नेविगेशन",
     "contact": "संपर्क"
   },

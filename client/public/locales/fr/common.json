@@ -50,6 +50,7 @@
     "copyright": "Droits d’auteur © {{year}} NexoChess",
     "tagline": "Reliez les coups. Comprenez la partie.",
     "license": "Code sous licence GPL-3.0",
+    "freeGameReview": "Analyse gratuite de parties d’échecs",
     "navigationLabel": "Navigation du pied de page",
     "contact": "Contact"
   },
