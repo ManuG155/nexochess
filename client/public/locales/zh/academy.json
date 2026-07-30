@@ -9,6 +9,7 @@
   "modules": {
     "notation": "记谱法",
     "movement": "棋子走法",
+    "practice": "引导练习",
     "classifications": "着法质量",
     "challenge": "快速挑战"
   },
@@ -55,8 +56,44 @@
       "P": "向前走一格，却沿斜线吃一格。从初始位置可以向前走两格。"
     }
   },
+  "practice": {
+    "kicker": "模块 3 · 引导练习",
+    "title": "在棋盘上走出这步棋",
+    "intro": "先选择起始格，再选择目标格。走错时，学院会说明原因，并让你重新尝试。",
+    "progress": "第 {{current}} 个局面，共 {{total}} 个",
+    "selectPiece": "选择指定的棋子",
+    "selectTarget": "选择它的目标格",
+    "correct": "正确",
+    "incorrect": "这不是要求的着法",
+    "retry": "重做此局面",
+    "next": "下一个局面",
+    "boardLabel": "互动练习棋盘",
+    "positions": {
+      "knight": {
+        "tab": "马的跳跃",
+        "title": "找到马的走法",
+        "prompt": "把马从 f3 走到 e5。",
+        "correct": "Ne5 合法：马沿一个方向走两格，再向侧面走一格。",
+        "wrong": "请从 f3 的马开始，落在 e5。马不会直线移动，而是走“日”字。"
+      },
+      "rook": {
+        "tab": "车的吃子",
+        "title": "利用开放线",
+        "prompt": "用 a1 的车吃掉 a8 的车。",
+        "correct": "Rxa8+ 沿畅通的 a 线吃掉对方的车，并将军 g8 的王。",
+        "wrong": "车必须从 a1 沿畅通的 a 线直走到 a8。车不能沿斜线移动。"
+      },
+      "bishop": {
+        "tab": "象将军",
+        "title": "沿斜线将军",
+        "prompt": "把象从 c4 走到 b5，并将军。",
+        "correct": "Bb5+ 让象保持在斜线上，并直接攻击 e8 的王。",
+        "wrong": "象必须从 c4 走到 b5。象只能沿斜线移动，而 b5 会打开通往 e8 的将军线路。"
+      }
+    }
+  },
   "classifications": {
-    "kicker": "模块 3 · 着法质量",
+    "kicker": "模块 4 · 着法质量",
     "title": "每种标签为什么会出现",
     "intro": "NexoChess 会把你的着法与局面和引擎候选着比较。点击标签即可查看通俗解释。",
     "selected": "当前分类",
@@ -77,7 +114,7 @@
     }
   },
   "challenge": {
-    "kicker": "模块 4 · 快速挑战",
+    "kicker": "模块 5 · 快速挑战",
     "title": "三步棋，不来漫长考试。",
     "intro": "选择每条记谱的含义，马上就能看到解释。",
     "score": "答对 {{score}} / {{total}}",

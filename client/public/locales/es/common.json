@@ -74,6 +74,17 @@
     "no": "No"
   },
   "shareGame": {
+    "eyebrow": "Compartir en NexoChess",
+    "title": "Compartir partida",
+    "subtitle": "Copia la posición actual, exporta la partida completa o envíala desde tu dispositivo.",
+    "fenTitle": "Posición actual",
+    "fenDescription": "Usa este código para abrir exactamente la posición que aparece en el tablero.",
+    "pgnTitle": "Partida completa",
+    "pgnDescription": "Incluye cabeceras, jugadas y el árbol de análisis actual.",
+    "characters": "{{count}} caracteres",
+    "closeHint": "Pulsa fuera o presiona Esc para cerrar",
+    "downloadPGN": "Descargar PGN",
+    "shareWith": "Compartir con…",
     "copyFEN": "Copiar FEN",
     "copyFENToast": "¡FEN copiado!",
     "copyPGN": "Copiar PGN",

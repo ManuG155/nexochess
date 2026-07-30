@@ -9,6 +9,7 @@
   "modules": {
     "notation": "Notação",
     "movement": "Movimento das peças",
+    "practice": "Prática guiada",
     "classifications": "Qualidade do lance",
     "challenge": "Desafio rápido"
   },
@@ -55,8 +56,44 @@
       "P": "Avança uma casa, mas captura uma casa na diagonal. Da casa inicial pode avançar duas."
     }
   },
+  "practice": {
+    "kicker": "Módulo 3 · Prática guiada",
+    "title": "Faz o lance no tabuleiro",
+    "intro": "Seleciona a casa de origem e depois o destino. Se errares, a Academia explica porquê e deixa-te tentar novamente.",
+    "progress": "Posição {{current}} de {{total}}",
+    "selectPiece": "Seleciona a peça indicada",
+    "selectTarget": "Escolhe a casa de destino",
+    "correct": "Correto",
+    "incorrect": "Esse não é o lance pedido",
+    "retry": "Repetir posição",
+    "next": "Posição seguinte",
+    "boardLabel": "Tabuleiro interativo de prática",
+    "positions": {
+      "knight": {
+        "tab": "Salto do cavalo",
+        "title": "Encontra o salto do cavalo",
+        "prompt": "Move o cavalo de f3 para e5.",
+        "correct": "Ne5 é legal: o cavalo anda duas casas numa direção e uma para o lado.",
+        "wrong": "Começa com o cavalo em f3 e termina em e5. O cavalo nunca anda em linha reta: salta em forma de L."
+      },
+      "rook": {
+        "tab": "Captura da torre",
+        "title": "Usa a coluna aberta",
+        "prompt": "Captura a torre em a8 com a tua torre de a1.",
+        "correct": "Rxa8+ percorre a coluna a livre, captura a torre e dá xeque ao rei em g8.",
+        "wrong": "A torre deve sair de a1 e subir em linha reta pela coluna a até a8. As torres não andam na diagonal."
+      },
+      "bishop": {
+        "tab": "Xeque do bispo",
+        "title": "Dá xeque na diagonal",
+        "prompt": "Move o bispo de c4 para b5 e dá xeque.",
+        "correct": "Bb5+ mantém o bispo na diagonal e aponta diretamente ao rei em e8.",
+        "wrong": "O bispo deve ir de c4 para b5. Os bispos só andam na diagonal, e b5 abre a linha de xeque até e8."
+      }
+    }
+  },
   "classifications": {
-    "kicker": "Módulo 3 · Qualidade do lance",
+    "kicker": "Módulo 4 · Qualidade do lance",
     "title": "Por que um lance recebe cada rótulo",
     "intro": "O NexoChess compara seu lance com a posição e as alternativas do motor. Toque num rótulo para uma explicação simples.",
     "selected": "Classificação selecionada",
@@ -77,7 +114,7 @@
     }
   },
   "challenge": {
-    "kicker": "Módulo 4 · Desafio rápido",
+    "kicker": "Módulo 5 · Desafio rápido",
     "title": "Três lances. Sem prova interminável.",
     "intro": "Escolha o significado de cada notação. A explicação aparece na hora.",
     "score": "{{score}} de {{total}} corretas",

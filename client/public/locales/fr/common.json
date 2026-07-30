@@ -65,6 +65,17 @@
     "no": "Non"
   },
   "shareGame": {
+    "eyebrow": "Partager avec NexoChess",
+    "title": "Partager la partie",
+    "subtitle": "Copie la position actuelle, exporte la partie complète ou envoie-la depuis ton appareil.",
+    "fenTitle": "Position actuelle",
+    "fenDescription": "Utilise ce code pour ouvrir exactement la position affichée sur l'échiquier.",
+    "pgnTitle": "Partie complète",
+    "pgnDescription": "Comprend les en-têtes, les coups et l'arbre d'analyse actuel.",
+    "characters": "{{count}} caractères",
+    "closeHint": "Clique à l'extérieur ou appuie sur Échap pour fermer",
+    "downloadPGN": "Télécharger le PGN",
+    "shareWith": "Partager via…",
     "copyFEN": "Copier la FEN",
     "copyFENToast": "FEN copiée !",
     "copyPGN": "Copier le PGN",

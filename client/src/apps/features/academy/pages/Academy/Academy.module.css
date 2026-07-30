@@ -114,19 +114,17 @@
     border-radius: 28px;
     background:
         linear-gradient(
-            45deg,
-            rgba(255, 255, 255, 0.035) 25%,
-            transparent 25% 75%,
-            rgba(255, 255, 255, 0.035) 75%
+            rgba(18, 22, 29, 0.12),
+            rgba(18, 22, 29, 0.12)
         ),
-        linear-gradient(
-            45deg,
-            rgba(255, 255, 255, 0.035) 25%,
-            rgba(21, 25, 33, 0.6) 25% 75%,
-            rgba(255, 255, 255, 0.035) 75%
+        conic-gradient(
+            from 90deg,
+            var(--academy-board-dark) 25%,
+            var(--academy-board-light) 0 50%,
+            var(--academy-board-dark) 0 75%,
+            var(--academy-board-light) 0
         );
-    background-position: 0 0, 34px 34px;
-    background-size: 68px 68px;
+    background-size: 100% 100%, 68px 68px;
     box-shadow:
         0 24px 46px rgba(0, 0, 0, 0.3),
         inset 0 0 50px rgba(70, 125, 232, 0.09);
@@ -135,9 +133,8 @@
 }
 
 .heroKnight {
-    color: #f5f7fb;
-    font-family: Georgia, serif;
-    font-size: 7.5rem;
+    width: 126px;
+    height: 126px;
     filter: drop-shadow(0 12px 16px rgba(0, 0, 0, 0.35));
 }
 
@@ -162,8 +159,9 @@
     padding: 0 10px;
 
     border-radius: 10px;
-    font-family: "JetBrains Mono", monospace;
+    font-family: "Noto Sans", "Nunito", Arial, sans-serif;
     font-weight: 750;
+    letter-spacing: 0.01em;
 }
 
 .heroBadge {
@@ -351,7 +349,7 @@
 
 .pieceCard {
     display: grid;
-    grid-template-columns: 30px 26px;
+    grid-template-columns: 34px minmax(0, 1fr);
     align-items: center;
     gap: 3px 8px;
 
@@ -365,23 +363,23 @@
 
 .pieceGlyph {
     grid-row: 1 / 3;
-    color: #eef3ff;
-    font-family: Georgia, serif;
-    font-size: 1.75rem;
+    width: 34px;
+    height: 34px;
 }
 
 .pieceCode {
     color: #8fb2ff;
-    font-family: "JetBrains Mono", monospace;
+    font-family: "Noto Sans", "Nunito", Arial, sans-serif;
     font-size: 0.82rem;
     font-weight: 750;
 }
 
 .pieceCard strong {
-    overflow: hidden;
+    min-width: 0;
     color: rgba(245, 247, 251, 0.66);
-    font-size: 0.71rem;
-    text-overflow: ellipsis;
+    font-size: 0.72rem;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
 }
 
 .tip,
@@ -434,8 +432,10 @@
     border-radius: 9px;
     background: rgba(255, 255, 255, 0.025);
 
-    font-family: "JetBrains Mono", monospace;
+    font-family: "Noto Sans", "Nunito", Arial, sans-serif;
+    font-size: 0.88rem;
     font-weight: 700;
+    letter-spacing: 0.01em;
     cursor: pointer;
 }
 
@@ -467,9 +467,10 @@
     border-radius: 8px;
     background: rgba(110, 156, 255, 0.08);
 
-    font-family: "JetBrains Mono", monospace;
+    font-family: "Noto Sans", "Nunito", Arial, sans-serif;
     font-size: 1.05rem;
     font-weight: 750;
+    letter-spacing: 0.01em;
 }
 
 .exampleExplanation p {
@@ -485,8 +486,8 @@
 }
 
 .pieceSelector {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 7px;
     margin: 15px 0 20px;
 }
@@ -494,16 +495,14 @@
 .pieceSelector button {
     display: grid;
     place-items: center;
-    width: 44px;
-    height: 44px;
+    min-width: 0;
+    height: 56px;
 
     color: rgba(245, 247, 251, 0.68);
     border: 1px solid rgba(255, 255, 255, 0.07);
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.025);
 
-    font-family: Georgia, serif;
-    font-size: 1.65rem;
     cursor: pointer;
 }
 
@@ -552,8 +551,10 @@
 
 .miniBoard {
     display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    aspect-ratio: 1;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    grid-template-rows: repeat(8, minmax(0, 1fr));
+    aspect-ratio: 1 / 1;
+    box-sizing: border-box;
     width: min(520px, 100%);
     justify-self: center;
 
@@ -570,18 +571,22 @@
     display: grid;
     place-items: center;
     position: relative;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
 }
 
 .lightSquare {
-    background: #c4d2d9;
+    background: var(--academy-board-light);
 }
 
 .darkSquare {
-    background: #758ea0;
+    background: var(--academy-board-dark);
 }
 
 .moveSquare::after {
     content: "";
+    position: absolute;
     width: 28%;
     height: 28%;
 
@@ -600,13 +605,11 @@
 }
 
 .boardSquare b {
-    color: #f6f7f8;
-    font-family: Georgia, serif;
-    font-size: clamp(1.5rem, 5vw, 3.5rem);
-    line-height: 1;
-    text-shadow:
-        0 2px 0 #28333d,
-        0 5px 9px rgba(0, 0, 0, 0.35);
+    display: grid;
+    place-items: center;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
 }
 
 .boardSquare small {
@@ -618,6 +621,14 @@
     font-weight: 800;
 }
 
+.darkSquare small {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.lightSquare small {
+    color: rgba(18, 27, 34, 0.68);
+}
+
 .rank {
     top: 3px;
     left: 4px;
@@ -626,6 +637,243 @@
 .file {
     right: 4px;
     bottom: 2px;
+}
+
+.practiceTabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.practiceTabs button {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    min-width: 0;
+    padding: 10px 12px;
+
+    color: rgba(245, 247, 251, 0.58);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.12);
+
+    font-size: 0.78rem;
+    font-weight: 650;
+    text-align: left;
+    cursor: pointer;
+}
+
+.practiceTabs button > span {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+
+    color: #9fc0ff;
+    border: 1px solid rgba(110, 156, 255, 0.22);
+    border-radius: 7px;
+    background: rgba(70, 125, 232, 0.07);
+
+    font-size: 0.68rem;
+}
+
+.practiceTabs .practiceTabActive {
+    color: white;
+    border-color: rgba(110, 156, 255, 0.3);
+    background: rgba(70, 125, 232, 0.11);
+    box-shadow: inset 0 -2px 0 #6e9cff;
+}
+
+.practiceLayout {
+    display: grid;
+    grid-template-columns: minmax(230px, 0.75fr) minmax(320px, 1.25fr);
+    align-items: center;
+    gap: 16px;
+}
+
+.practiceCard {
+    padding: 22px;
+
+    border: 1px solid rgba(255, 255, 255, 0.065);
+    border-radius: 15px;
+    background: rgba(14, 17, 22, 0.28);
+}
+
+.practiceProgress {
+    display: block;
+    margin-bottom: 12px;
+
+    color: #80a9ff;
+    font-size: 0.69rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.practiceCard > code {
+    display: inline-flex;
+    padding: 8px 11px;
+
+    color: #c3d5ff;
+    border: 1px solid rgba(110, 156, 255, 0.2);
+    border-radius: 9px;
+    background: rgba(70, 125, 232, 0.08);
+
+    font-family: "Noto Sans", "Nunito", Arial, sans-serif;
+    font-size: 1.05rem;
+    font-weight: 750;
+    letter-spacing: 0.01em;
+}
+
+.practiceCard h3 {
+    margin: 16px 0 7px;
+    font-size: 1.05rem;
+}
+
+.practiceCard > p {
+    margin: 0;
+    color: rgba(245, 247, 251, 0.58);
+    font-size: 0.85rem;
+    line-height: 1.55;
+}
+
+.practiceSteps {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+
+    margin: 18px 0 0;
+    padding: 0;
+
+    color: rgba(245, 247, 251, 0.48);
+    font-size: 0.78rem;
+    list-style: none;
+}
+
+.practiceSteps li {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.practiceSteps li > span {
+    display: grid;
+    place-items: center;
+    width: 23px;
+    height: 23px;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.025);
+
+    font-size: 0.67rem;
+    font-weight: 750;
+}
+
+.practiceSteps .practiceStepDone {
+    color: rgba(245, 247, 251, 0.76);
+}
+
+.practiceSteps .practiceStepDone > span {
+    color: #a7c3ff;
+    border-color: rgba(110, 156, 255, 0.26);
+    background: rgba(70, 125, 232, 0.09);
+}
+
+.practiceFeedback {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    margin-top: 16px;
+    padding: 12px 13px;
+
+    border: 1px solid;
+    border-radius: 10px;
+
+    font-size: 0.76rem;
+    line-height: 1.45;
+}
+
+.practiceCorrect {
+    color: rgba(218, 244, 216, 0.72);
+    border-color: rgba(91, 190, 87, 0.24);
+    background: rgba(91, 190, 87, 0.07);
+}
+
+.practiceCorrect strong {
+    color: #89dd82;
+}
+
+.practiceWrong {
+    color: rgba(247, 219, 221, 0.72);
+    border-color: rgba(211, 74, 82, 0.25);
+    background: rgba(211, 74, 82, 0.07);
+}
+
+.practiceWrong strong {
+    color: #e6888c;
+}
+
+.practiceActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.practiceActions button {
+    padding: 9px 12px;
+
+    color: rgba(245, 247, 251, 0.66);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.025);
+
+    font-size: 0.76rem;
+    cursor: pointer;
+}
+
+.practiceActions .practiceNext {
+    color: white;
+    border-color: rgba(110, 156, 255, 0.25);
+    background: rgba(70, 125, 232, 0.13);
+}
+
+.practiceBoard .boardSquare {
+    padding: 0;
+
+    border: 0;
+    border-radius: 0;
+    cursor: pointer;
+}
+
+.practiceBoard .boardSquare::after {
+    content: "";
+    position: absolute;
+    z-index: 3;
+    inset: 8%;
+
+    border: 3px solid transparent;
+    border-radius: 7px;
+    pointer-events: none;
+}
+
+.practiceBoard .practiceSource::after {
+    border-color: rgba(110, 156, 255, 0.9);
+    box-shadow:
+        inset 0 0 0 3px rgba(36, 80, 170, 0.28),
+        0 0 12px rgba(70, 125, 232, 0.45);
+}
+
+.practiceBoard .practiceTarget::after {
+    border-color: rgba(105, 208, 98, 0.9);
+    box-shadow:
+        inset 0 0 0 3px rgba(50, 130, 45, 0.24),
+        0 0 12px rgba(91, 190, 87, 0.42);
 }
 
 .classificationLayout {
@@ -807,9 +1055,10 @@
 
 .questionTop code {
     color: #f5f7fb;
-    font-family: "JetBrains Mono", monospace;
+    font-family: "Noto Sans", "Nunito", Arial, sans-serif;
     font-size: 1.15rem;
     font-weight: 750;
+    letter-spacing: 0.01em;
 }
 
 .questionCard > p {
@@ -986,7 +1235,7 @@
 
     .moduleNavigation {
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(5, minmax(0, 1fr));
         position: static;
     }
 
@@ -1004,6 +1253,10 @@
 
     .questions {
         grid-template-columns: 1fr;
+    }
+
+    .practiceLayout {
+        grid-template-columns: minmax(220px, 0.8fr) minmax(300px, 1.2fr);
     }
 
     .questionCard > p {
@@ -1035,7 +1288,8 @@
     }
 
     .twoColumns,
-    .boardLesson {
+    .boardLesson,
+    .practiceLayout {
         grid-template-columns: 1fr;
     }
 
@@ -1045,6 +1299,10 @@
 
     .classificationGrid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .practiceTabs {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -1062,7 +1320,11 @@
     }
 
     .pieceGrid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .pieceSelector {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .classificationGrid {

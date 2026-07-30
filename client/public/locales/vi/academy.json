@@ -9,6 +9,7 @@
   "modules": {
     "notation": "Ký hiệu",
     "movement": "Cách quân di chuyển",
+    "practice": "Luyện tập có hướng dẫn",
     "classifications": "Chất lượng nước đi",
     "challenge": "Thử thách nhanh"
   },
@@ -55,8 +56,44 @@
       "P": "Đi thẳng một ô nhưng bắt chéo một ô. Từ ô xuất phát, tốt có thể đi hai ô."
     }
   },
+  "practice": {
+    "kicker": "Mô-đun 3 · Luyện tập có hướng dẫn",
+    "title": "Thực hiện nước đi trên bàn cờ",
+    "intro": "Chọn ô xuất phát rồi chọn ô đích. Nếu sai, Học viện sẽ giải thích lý do và cho bạn thử lại.",
+    "progress": "Thế cờ {{current}} / {{total}}",
+    "selectPiece": "Chọn quân được chỉ định",
+    "selectTarget": "Chọn ô đích của quân",
+    "correct": "Chính xác",
+    "incorrect": "Đây không phải nước đi cần tìm",
+    "retry": "Lặp lại thế cờ",
+    "next": "Thế cờ tiếp theo",
+    "boardLabel": "Bàn cờ luyện tập tương tác",
+    "positions": {
+      "knight": {
+        "tab": "Mã nhảy",
+        "title": "Tìm nước nhảy của mã",
+        "prompt": "Di chuyển mã từ f3 đến e5.",
+        "correct": "Ne5 hợp lệ: mã đi hai ô theo một hướng rồi một ô sang bên.",
+        "wrong": "Hãy bắt đầu bằng mã ở f3 và đến e5. Mã không đi thẳng; nó nhảy theo hình chữ L."
+      },
+      "rook": {
+        "tab": "Xe bắt quân",
+        "title": "Tận dụng cột mở",
+        "prompt": "Dùng xe ở a1 bắt xe đối phương ở a8.",
+        "correct": "Rxa8+ đi dọc cột a trống, bắt xe và chiếu vua ở g8.",
+        "wrong": "Xe phải đi thẳng từ a1 lên a8 theo cột a trống. Xe không đi theo đường chéo."
+      },
+      "bishop": {
+        "tab": "Tượng chiếu",
+        "title": "Chiếu theo đường chéo",
+        "prompt": "Di chuyển tượng từ c4 đến b5 và chiếu vua.",
+        "correct": "Bb5+ giữ tượng trên đường chéo và tấn công trực tiếp vua ở e8.",
+        "wrong": "Tượng phải đi từ c4 đến b5. Tượng chỉ đi chéo, và b5 mở đường chiếu đến e8."
+      }
+    }
+  },
   "classifications": {
-    "kicker": "Mô-đun 3 · Chất lượng nước đi",
+    "kicker": "Mô-đun 4 · Chất lượng nước đi",
     "title": "Vì sao một nước nhận từng nhãn",
     "intro": "NexoChess so sánh nước của bạn với thế cờ và các phương án của máy. Chạm vào nhãn để xem giải thích dễ hiểu.",
     "selected": "Phân loại đã chọn",
@@ -77,7 +114,7 @@
     }
   },
   "challenge": {
-    "kicker": "Mô-đun 4 · Thử thách nhanh",
+    "kicker": "Mô-đun 5 · Thử thách nhanh",
     "title": "Ba nước. Không có bài thi dài lê thê.",
     "intro": "Chọn ý nghĩa của từng ký hiệu. Bạn sẽ nhận giải thích ngay.",
     "score": "Đúng {{score}} / {{total}}",

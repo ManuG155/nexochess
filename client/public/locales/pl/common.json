@@ -65,6 +65,17 @@
     "no": "Nie"
   },
   "shareGame": {
+    "eyebrow": "Udostępnianie NexoChess",
+    "title": "Udostępnij partię",
+    "subtitle": "Skopiuj bieżącą pozycję, wyeksportuj całą partię lub wyślij ją przez swoje urządzenie.",
+    "fenTitle": "Bieżąca pozycja",
+    "fenDescription": "Ten kod otworzy dokładnie pozycję widoczną na szachownicy.",
+    "pgnTitle": "Pełna partia",
+    "pgnDescription": "Zawiera nagłówki, ruchy i bieżące drzewo analizy.",
+    "characters": "{{count}} znaków",
+    "closeHint": "Kliknij poza oknem lub naciśnij Esc, aby zamknąć",
+    "downloadPGN": "Pobierz PGN",
+    "shareWith": "Udostępnij przez…",
     "copyFEN": "Kopiuj FEN",
     "copyFENToast": "Skopiowano FEN!",
     "copyPGN": "Kopiuj PGN",

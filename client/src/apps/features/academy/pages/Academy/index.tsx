@@ -8,11 +8,19 @@ import {
     classificationImages
 } from "@analysis/constants/classifications";
 
+import useSettingsStore from "@/stores/SettingsStore";
+
+import {
+    PieceAsset,
+    PieceCode
+} from "@/lib/chessAppearance";
+
 import * as styles from "./Academy.module.css";
 
 type ModuleId =
     | "notation"
     | "movement"
+    | "practice"
     | "classifications"
     | "challenge";
 
@@ -27,19 +35,20 @@ interface Square {
 const moduleOrder: ModuleId[] = [
     "notation",
     "movement",
+    "practice",
     "classifications",
     "challenge"
 ];
 
 const pieces: PieceId[] = ["K", "Q", "R", "B", "N", "P"];
 
-const pieceGlyphs: Record<PieceId, string> = {
-    K: "♔",
-    Q: "♕",
-    R: "♖",
-    B: "♗",
-    N: "♘",
-    P: "♙"
+const whitePieceCodes: Record<PieceId, PieceCode> = {
+    K: "wK",
+    Q: "wQ",
+    R: "wR",
+    B: "wB",
+    N: "wN",
+    P: "wP"
 };
 
 const notationExamples = [
@@ -95,6 +104,56 @@ const challengeQuestions = [
     }
 ] as const;
 
+interface PracticePiece {
+    piece: PieceCode;
+    square: string;
+}
+
+interface PracticeExercise {
+    id: "knight" | "rook" | "bishop";
+    from: string;
+    to: string;
+    notation: string;
+    pieces: PracticePiece[];
+}
+
+const practiceExercises: PracticeExercise[] = [
+    {
+        id: "knight",
+        from: "f3",
+        to: "e5",
+        notation: "Ne5",
+        pieces: [
+            { piece: "wK", square: "g1" },
+            { piece: "wN", square: "f3" },
+            { piece: "bK", square: "g8" }
+        ]
+    },
+    {
+        id: "rook",
+        from: "a1",
+        to: "a8",
+        notation: "Rxa8+",
+        pieces: [
+            { piece: "wK", square: "g1" },
+            { piece: "wR", square: "a1" },
+            { piece: "bR", square: "a8" },
+            { piece: "bK", square: "g8" }
+        ]
+    },
+    {
+        id: "bishop",
+        from: "c4",
+        to: "b5",
+        notation: "Bb5+",
+        pieces: [
+            { piece: "wK", square: "g1" },
+            { piece: "wB", square: "c4" },
+            { piece: "bK", square: "e8" }
+        ]
+    }
+];
+
 function getMovementSquares(piece: PieceId) {
     const origin = { file: 3, rank: 3 };
 
@@ -145,6 +204,11 @@ function ModuleIcon({ module }: { module: ModuleId }) {
             <path d="M7 17.5c1.5-2.8 1.8-5.7 1-9L12 4l5 4.5-2.2 3.2 2.7 5.8z" />
             <path d="M6 20h12" />
         </>,
+        practice: <>
+            <rect x="4" y="4" width="16" height="16" rx="2" />
+            <path d="M12 4v16M4 12h16" />
+            <path d="m7 16 2-2 2 2M17 8l-2 2-2-2" />
+        </>,
         classifications: <>
             <path d="M5 5h14v14H5z" />
             <path d="M8 15.5 11 12l2.2 2.2L17 9" />
@@ -189,10 +253,29 @@ function Academy() {
     const [ answers, setAnswers ] =
         useState<Record<number, string>>({});
 
+    const [ practiceIndex, setPracticeIndex ] =
+        useState(0);
+
+    const [ practiceSelection, setPracticeSelection ] =
+        useState<string | null>(null);
+
+    const [ practiceFeedback, setPracticeFeedback ] =
+        useState<"idle" | "wrong" | "correct">("idle");
+
+    const boardTheme = useSettingsStore(
+        state => state.settings.themes.board
+    );
+
+    const pieceTheme = useSettingsStore(
+        state => state.settings.themes.piece
+    );
+
     const movementSquares = useMemo(
         () => getMovementSquares(selectedPiece),
         [selectedPiece]
     );
+
+    const practiceExercise = practiceExercises[practiceIndex];
 
     const score = challengeQuestions.filter(
         (question, index) => answers[index] == question.answer
@@ -215,7 +298,76 @@ function Academy() {
         openModule(moduleOrder[nextIndex]);
     }
 
+    function resetPractice() {
+        setPracticeSelection(null);
+        setPracticeFeedback("idle");
+    }
+
+    function selectPractice(index: number) {
+        setPracticeIndex(index);
+        setPracticeSelection(null);
+        setPracticeFeedback("idle");
+    }
+
+    function playPracticeSquare(square: string) {
+        if (practiceFeedback == "correct") return;
+
+        if (practiceFeedback == "wrong") {
+            setPracticeFeedback("idle");
+            setPracticeSelection(
+                square == practiceExercise.from ? square : null
+            );
+            return;
+        }
+
+        if (practiceSelection == null) {
+            if (square == practiceExercise.from) {
+                setPracticeSelection(square);
+            } else {
+                setPracticeFeedback("wrong");
+            }
+
+            return;
+        }
+
+        if (square == practiceExercise.to) {
+            setPracticeFeedback("correct");
+            setPracticeSelection(null);
+        } else if (square == practiceExercise.from) {
+            setPracticeSelection(null);
+        } else {
+            setPracticeFeedback("wrong");
+        }
+    }
+
+    function getPracticePiece(square: string) {
+        if (
+            practiceFeedback == "correct"
+            && square == practiceExercise.from
+        ) {
+            return undefined;
+        }
+
+        if (
+            practiceFeedback == "correct"
+            && square == practiceExercise.to
+        ) {
+            return practiceExercise.pieces.find(
+                piece => piece.square == practiceExercise.from
+            )?.piece;
+        }
+
+        return practiceExercise.pieces.find(
+            piece => piece.square == square
+        )?.piece;
+    }
+
     const currentModuleIndex = moduleOrder.indexOf(activeModule);
+
+    const boardStyle = {
+        "--academy-board-light": boardTheme.lightSquareColour,
+        "--academy-board-dark": boardTheme.darkSquareColour
+    } as React.CSSProperties;
 
     return <main className={styles.page}>
         <section className={styles.hero}>
@@ -234,8 +386,18 @@ function Academy() {
                 </button>
             </div>
 
-            <div className={styles.heroBoard} aria-hidden="true">
-                <span className={styles.heroKnight}>♘</span>
+            <div
+                className={styles.heroBoard}
+                style={boardStyle}
+                aria-hidden="true"
+            >
+                <span className={styles.heroKnight}>
+                    <PieceAsset
+                        theme={pieceTheme}
+                        piece="wN"
+                        size="100%"
+                    />
+                </span>
                 <span className={styles.heroMove}>Nf3</span>
                 <span className={styles.heroLine}/>
                 <span className={styles.heroBadge}>!</span>
@@ -292,7 +454,11 @@ function Academy() {
                                     {pieces.map(piece => (
                                         <div className={styles.pieceCard} key={piece}>
                                             <span className={styles.pieceGlyph}>
-                                                {pieceGlyphs[piece]}
+                                                <PieceAsset
+                                                    theme={pieceTheme}
+                                                    piece={whitePieceCodes[piece]}
+                                                    size="100%"
+                                                />
                                             </span>
                                             <span className={styles.pieceCode}>
                                                 {piece == "P" ? "—" : piece}
@@ -371,7 +537,11 @@ function Academy() {
                                                 `notation.pieces.${piece}.name`
                                             )}
                                         >
-                                            {pieceGlyphs[piece]}
+                                            <PieceAsset
+                                                theme={pieceTheme}
+                                                piece={whitePieceCodes[piece]}
+                                                size="42px"
+                                            />
                                         </button>
                                     ))}
                                 </div>
@@ -391,6 +561,7 @@ function Academy() {
 
                             <div
                                 className={styles.miniBoard}
+                                style={boardStyle}
                                 role="img"
                                 aria-label={t("movement.boardLabel", {
                                     piece: t(
@@ -419,7 +590,17 @@ function Academy() {
                                         ].join(" ")}
                                     >
                                         {isOrigin && (
-                                            <b>{pieceGlyphs[selectedPiece]}</b>
+                                            <b>
+                                                <PieceAsset
+                                                    theme={pieceTheme}
+                                                    piece={
+                                                        whitePieceCodes[
+                                                            selectedPiece
+                                                        ]
+                                                    }
+                                                    size="84%"
+                                                />
+                                            </b>
                                         )}
                                         {square.file == 0 && (
                                             <small className={styles.rank}>
@@ -432,6 +613,184 @@ function Academy() {
                                             </small>
                                         )}
                                     </span>;
+                                })}
+                            </div>
+                        </div>
+                    </section>
+                )}
+
+                {activeModule == "practice" && (
+                    <section>
+                        <LessonHeading
+                            kicker={t("practice.kicker")}
+                            title={t("practice.title")}
+                            intro={t("practice.intro")}
+                        />
+
+                        <div className={styles.practiceTabs}>
+                            {practiceExercises.map((exercise, index) => (
+                                <button
+                                    type="button"
+                                    key={exercise.id}
+                                    className={
+                                        practiceIndex == index
+                                            ? styles.practiceTabActive
+                                            : ""
+                                    }
+                                    onClick={() => selectPractice(index)}
+                                >
+                                    <span>{index + 1}</span>
+                                    {t(`practice.positions.${exercise.id}.tab`)}
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className={styles.practiceLayout}>
+                            <article className={styles.practiceCard}>
+                                <span className={styles.practiceProgress}>
+                                    {t("practice.progress", {
+                                        current: practiceIndex + 1,
+                                        total: practiceExercises.length
+                                    })}
+                                </span>
+
+                                <code>{practiceExercise.notation}</code>
+
+                                <h3>
+                                    {t(
+                                        `practice.positions.${practiceExercise.id}.title`
+                                    )}
+                                </h3>
+                                <p>
+                                    {t(
+                                        `practice.positions.${practiceExercise.id}.prompt`
+                                    )}
+                                </p>
+
+                                <ol className={styles.practiceSteps}>
+                                    <li className={
+                                        practiceSelection
+                                        || practiceFeedback == "correct"
+                                            ? styles.practiceStepDone
+                                            : ""
+                                    }>
+                                        <span>1</span>
+                                        {t("practice.selectPiece")}
+                                    </li>
+                                    <li className={
+                                        practiceFeedback == "correct"
+                                            ? styles.practiceStepDone
+                                            : ""
+                                    }>
+                                        <span>2</span>
+                                        {t("practice.selectTarget")}
+                                    </li>
+                                </ol>
+
+                                {practiceFeedback != "idle" && (
+                                    <div
+                                        className={[
+                                            styles.practiceFeedback,
+                                            practiceFeedback == "correct"
+                                                ? styles.practiceCorrect
+                                                : styles.practiceWrong
+                                        ].join(" ")}
+                                        aria-live="polite"
+                                    >
+                                        <strong>
+                                            {t(
+                                                practiceFeedback == "correct"
+                                                    ? "practice.correct"
+                                                    : "practice.incorrect"
+                                            )}
+                                        </strong>
+                                        <span>
+                                            {t(
+                                                `practice.positions.${practiceExercise.id}.${practiceFeedback}`
+                                            )}
+                                        </span>
+                                    </div>
+                                )}
+
+                                <div className={styles.practiceActions}>
+                                    <button
+                                        type="button"
+                                        onClick={resetPractice}
+                                    >
+                                        ↻ {t("practice.retry")}
+                                    </button>
+
+                                    {practiceFeedback == "correct"
+                                    && practiceIndex < practiceExercises.length - 1
+                                    && (
+                                        <button
+                                            type="button"
+                                            className={styles.practiceNext}
+                                            onClick={() => (
+                                                selectPractice(practiceIndex + 1)
+                                            )}
+                                        >
+                                            {t("practice.next")} →
+                                        </button>
+                                    )}
+                                </div>
+                            </article>
+
+                            <div
+                                className={`${styles.miniBoard} ${styles.practiceBoard}`}
+                                style={boardStyle}
+                                aria-label={t("practice.boardLabel")}
+                            >
+                                {boardSquares.map(square => {
+                                    const piece = getPracticePiece(square.name);
+                                    const sourceSelected =
+                                        practiceSelection == square.name;
+                                    const solvedTarget =
+                                        practiceFeedback == "correct"
+                                        && square.name == practiceExercise.to;
+
+                                    return <button
+                                        type="button"
+                                        key={square.name}
+                                        className={[
+                                            styles.boardSquare,
+                                            (square.file + square.rank) % 2
+                                                ? styles.darkSquare
+                                                : styles.lightSquare,
+                                            sourceSelected
+                                                ? styles.practiceSource
+                                                : "",
+                                            solvedTarget
+                                                ? styles.practiceTarget
+                                                : ""
+                                        ].join(" ")}
+                                        onClick={() => (
+                                            playPracticeSquare(square.name)
+                                        )}
+                                        aria-label={square.name}
+                                    >
+                                        {piece && (
+                                            <b>
+                                                <PieceAsset
+                                                    theme={pieceTheme}
+                                                    piece={piece}
+                                                    size="84%"
+                                                />
+                                            </b>
+                                        )}
+                                        {square.file == 0 && (
+                                            <small className={styles.rank}>
+                                                {square.rank + 1}
+                                            </small>
+                                        )}
+                                        {square.rank == 0 && (
+                                            <small className={styles.file}>
+                                                {String.fromCharCode(
+                                                    97 + square.file
+                                                )}
+                                            </small>
+                                        )}
+                                    </button>;
                                 })}
                             </div>
                         </div>

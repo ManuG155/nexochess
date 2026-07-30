@@ -9,6 +9,7 @@
   "modules": {
     "notation": "Notation",
     "movement": "Zugweise der Figuren",
+    "practice": "Geführte Übungen",
     "classifications": "Zugqualität",
     "challenge": "Kurze Aufgabe"
   },
@@ -55,8 +56,44 @@
       "P": "Ein Feld vorwärts, geschlagen wird ein Feld diagonal. Vom Startfeld darf er zwei Felder ziehen."
     }
   },
+  "practice": {
+    "kicker": "Modul 3 · Geführte Übungen",
+    "title": "Führe den Zug auf dem Brett aus",
+    "intro": "Wähle zuerst das Startfeld und dann das Zielfeld. Bei einem Fehler erklärt dir die Akademie warum und lässt dich erneut versuchen.",
+    "progress": "Stellung {{current}} von {{total}}",
+    "selectPiece": "Wähle die angegebene Figur",
+    "selectTarget": "Wähle ihr Zielfeld",
+    "correct": "Richtig",
+    "incorrect": "Das ist nicht der gesuchte Zug",
+    "retry": "Stellung wiederholen",
+    "next": "Nächste Stellung",
+    "boardLabel": "Interaktives Übungsbrett",
+    "positions": {
+      "knight": {
+        "tab": "Springerzug",
+        "title": "Finde den Springersprung",
+        "prompt": "Ziehe den Springer von f3 nach e5.",
+        "correct": "Ne5 ist legal: Der Springer zieht zwei Felder in eine Richtung und eines zur Seite.",
+        "wrong": "Beginne mit dem Springer auf f3 und lande auf e5. Ein Springer zieht nie gerade, sondern springt in L-Form."
+      },
+      "rook": {
+        "tab": "Turm schlägt",
+        "title": "Nutze die offene Linie",
+        "prompt": "Schlage den Turm auf a8 mit deinem Turm von a1.",
+        "correct": "Rxa8+ nutzt die freie a-Linie, schlägt den Turm und gibt dem König auf g8 Schach.",
+        "wrong": "Der Turm muss von a1 gerade über die freie a-Linie nach a8 ziehen. Türme ziehen nicht diagonal."
+      },
+      "bishop": {
+        "tab": "Läuferschach",
+        "title": "Gib Schach auf der Diagonale",
+        "prompt": "Ziehe den Läufer von c4 nach b5 und gib Schach.",
+        "correct": "Bb5+ bleibt auf der Diagonale und zielt direkt auf den König auf e8.",
+        "wrong": "Der Läufer muss von c4 nach b5. Läufer ziehen nur diagonal; b5 öffnet die Schachlinie nach e8."
+      }
+    }
+  },
   "classifications": {
-    "kicker": "Modul 3 · Zugqualität",
+    "kicker": "Modul 4 · Zugqualität",
     "title": "Warum ein Zug welche Bewertung erhält",
     "intro": "NexoChess vergleicht deinen Zug mit der Stellung und den Engine-Alternativen. Tippe auf eine Bewertung für eine einfache Erklärung.",
     "selected": "Ausgewählte Bewertung",
@@ -77,7 +114,7 @@
     }
   },
   "challenge": {
-    "kicker": "Modul 4 · Kurze Aufgabe",
+    "kicker": "Modul 5 · Kurze Aufgabe",
     "title": "Drei Züge. Keine endlose Prüfung.",
     "intro": "Wähle die Bedeutung jeder Notation. Die Erklärung erhältst du sofort.",
     "score": "{{score}} von {{total}} richtig",

@@ -9,6 +9,7 @@
   "modules": {
     "notation": "Notation",
     "movement": "How pieces move",
+    "practice": "Guided practice",
     "classifications": "Move quality",
     "challenge": "Quick challenge"
   },
@@ -55,8 +56,44 @@
       "P": "One square forward, but it captures one square diagonally. From its starting square it may advance two."
     }
   },
+  "practice": {
+    "kicker": "Module 3 · Guided practice",
+    "title": "Make the move on the board",
+    "intro": "Select the starting square and then the destination. If you miss, the Academy tells you why and lets you try again.",
+    "progress": "Position {{current}} of {{total}}",
+    "selectPiece": "Select the piece shown",
+    "selectTarget": "Choose its destination",
+    "correct": "Correct",
+    "incorrect": "That move is not the one",
+    "retry": "Repeat position",
+    "next": "Next position",
+    "boardLabel": "Interactive practice board",
+    "positions": {
+      "knight": {
+        "tab": "Knight jump",
+        "title": "Find the knight jump",
+        "prompt": "Move the knight from f3 to e5.",
+        "correct": "Ne5 is legal: the knight moves two squares in one direction and one to the side.",
+        "wrong": "Start with the knight on f3 and land on e5. A knight never moves in a straight line; it jumps in an L."
+      },
+      "rook": {
+        "tab": "Rook capture",
+        "title": "Use the open file",
+        "prompt": "Capture the rook on a8 with your rook from a1.",
+        "correct": "Rxa8+ uses the clear a-file, captures the rook and checks the king on g8.",
+        "wrong": "The rook must start on a1 and travel straight up the clear a-file to a8. Rooks do not move diagonally."
+      },
+      "bishop": {
+        "tab": "Bishop check",
+        "title": "Give check on the diagonal",
+        "prompt": "Move the bishop from c4 to b5 and check the king.",
+        "correct": "Bb5+ keeps the bishop on its diagonal and points directly at the king on e8.",
+        "wrong": "The bishop must go from c4 to b5. Bishops only move diagonally, and that square opens the checking line to e8."
+      }
+    }
+  },
   "classifications": {
-    "kicker": "Module 3 · Move quality",
+    "kicker": "Module 4 · Move quality",
     "title": "Why a move gets each label",
     "intro": "NexoChess compares your move with the position and the engine alternatives. Tap any label for its plain-language meaning.",
     "selected": "Selected classification",
@@ -77,7 +114,7 @@
     }
   },
   "challenge": {
-    "kicker": "Module 4 · Quick challenge",
+    "kicker": "Module 5 · Quick challenge",
     "title": "Three moves. No endless exam.",
     "intro": "Choose what each notation means. You get the explanation immediately.",
     "score": "{{score}} of {{total}} correct",
