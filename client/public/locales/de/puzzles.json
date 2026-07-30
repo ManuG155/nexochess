@@ -76,7 +76,7 @@
         "hint": "Ein Hinweis: Untersuche {{move}} und finde heraus, warum er stärker ist.",
         "solvedClean": "Ausgezeichnet. Du hast die ganze Idee ohne Hilfe gefunden.",
         "solvedAfterHelp": "Gelöst. Wiederhole das Muster noch einmal im Kopf.",
-        "solutionShown": "Hier ist die vollständige Variante. Mit den Pfeilen unter dem Brett kannst du jede Stellung prüfen.",
+        "solutionShown": "Hier ist die vollständige Variante. Mit den Steuerelementen im Zielbereich kannst du jede Stellung prüfen.",
         "noArchive": "Ich brauche mindestens eine analysierte Partie im Archiv, um eine Aufgabe zu erstellen.",
         "noFiltered": "Mit diesen Filtern gibt es keine ungesehenen Aufgaben. Ändere Thema oder Schwierigkeit.",
         "loadError": "Die Stellungen konnten nicht geladen werden. Aktualisiere die Seite.",

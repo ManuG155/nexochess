@@ -100,7 +100,7 @@
         "hint": "Una pista útil: estudia {{move}}. Intenta entender por qué es más fuerte antes de jugarla.",
         "solvedClean": "Excelente. Has encontrado toda la idea sin ayuda.",
         "solvedAfterHelp": "Resuelto. Repite el patrón mentalmente una vez más para fijarlo.",
-        "solutionShown": "Aquí tienes la línea completa. Usa las flechas bajo el tablero para revisar cada posición.",
+        "solutionShown": "Aquí tienes la línea completa. Usa los controles del objetivo para revisar cada posición.",
         "noArchive": "No puedo formar un puzle hasta que haya al menos una partida analizada en tu Archivo.",
         "noFiltered": "No quedan puzles sin ver con estos filtros. Prueba otro tema o dificultad.",
         "loadError": "No he podido cargar las posiciones. Actualiza la página y lo intentamos de nuevo.",

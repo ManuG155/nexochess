@@ -100,7 +100,7 @@
         "hint": "A useful clue: examine {{move}}. Work out why it is stronger before playing it.",
         "solvedClean": "Excellent. You found the whole idea without help.",
         "solvedAfterHelp": "Solved. Repeat the pattern mentally once more so the idea sticks.",
-        "solutionShown": "Here is the complete line. Use the arrows below the board to review every position.",
+        "solutionShown": "Here is the complete line. Use the controls in the objective card to review every position.",
         "noArchive": "I cannot build a puzzle until at least one analysed game is in your Archive.",
         "noFiltered": "There are no unseen puzzles with these filters. Try another theme or difficulty.",
         "loadError": "I could not load the training positions. Refresh the page and we will try again.",

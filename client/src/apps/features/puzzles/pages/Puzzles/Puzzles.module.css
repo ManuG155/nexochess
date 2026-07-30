@@ -7,6 +7,31 @@
     color: #f4f7fc;
 }
 
+.trainingPage {
+    width: min(1240px, 100%);
+    padding-top: 24px;
+}
+
+.trainingPage .hero {
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.trainingPage .hero h1 {
+    margin-block: 3px 5px;
+    font-size: clamp(1.8rem, 3vw, 2.45rem);
+}
+
+.trainingPage .hero p {
+    max-width: 710px;
+    font-size: 0.82rem;
+    line-height: 1.48;
+}
+
+.trainingPage .profileStats > div {
+    padding-block: 10px;
+}
+
 .hero {
     display: flex;
     align-items: flex-end;
@@ -543,14 +568,38 @@
 }
 
 .coachPortrait {
+    position: relative;
     align-self: end;
+    display: block;
     width: 150px;
-    height: 176px;
+    height: 150px;
     margin-left: -17px;
+    padding: 0;
+
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+
+    transition:
+        filter 0.18s ease,
+        transform 0.18s ease;
+}
+
+.coachPortrait:hover {
+    filter: drop-shadow(0 7px 12px rgba(83, 135, 235, 0.16));
+    transform: translateY(-2px);
+}
+
+.coachPortrait:focus-visible {
+    border-radius: 12px;
+    outline: 2px solid rgba(110, 156, 255, 0.72);
+    outline-offset: -2px;
 }
 
 .trainingGrid {
-    grid-template-columns: minmax(0, 760px) minmax(330px, 1fr);
+    grid-template-columns: minmax(0, 590px) minmax(330px, 480px);
+    justify-content: center;
+    gap: 20px;
 }
 
 .boardColumn {
@@ -604,7 +653,8 @@
 .boardStage {
     display: flex;
     align-items: stretch;
-    width: 100%;
+    width: min(100%, max(420px, calc(100dvh - 295px)));
+    margin-inline: auto;
 }
 
 .evaluationBar {
@@ -657,21 +707,24 @@
 
 .historyControls {
     display: grid;
-    grid-template-columns: 38px minmax(0, 1fr) 38px;
+    grid-template-columns: 32px minmax(0, 1fr) 32px;
     align-items: center;
-    gap: 8px;
-    margin: 13px 25px 0;
+    gap: 7px;
+    margin-top: 13px;
+    padding-top: 11px;
+    border-top: 1px solid rgba(255, 255, 255, 0.055);
 }
 
 .historyControls button {
     display: grid;
     place-items: center;
-    height: 34px;
+    height: 30px;
 
     color: rgba(244, 247, 252, 0.68);
     border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: 9px;
+    border-radius: 8px;
     background: rgba(255, 255, 255, 0.03);
+    font-size: 0.74rem;
     cursor: pointer;
 }
 
@@ -916,6 +969,18 @@
         grid-template-columns: minmax(0, 1fr);
     }
 
+    .trainingGrid {
+        justify-items: center;
+    }
+
+    .trainingGrid > * {
+        width: min(680px, 100%);
+    }
+
+    .boardStage {
+        width: 100%;
+    }
+
     .setupGrid > .coachCard {
         order: -1;
     }
@@ -966,7 +1031,7 @@
 
     .coachPortrait {
         width: 125px;
-        height: 154px;
+        height: 125px;
     }
 
     .puzzleMeta {
@@ -986,10 +1051,6 @@
 
     .boardShell {
         width: calc(100% - 19px);
-    }
-
-    .historyControls {
-        margin-inline: 19px 0;
     }
 
     .attribution {

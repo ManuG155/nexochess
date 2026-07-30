@@ -53,7 +53,8 @@ const settingsSchema = z.object({
         board: z.object({
             darkSquareColour: z.string().regex(/^#.{6}$/),
             lightSquareColour: z.string().regex(/^#.{6}$/),
-            coordinates: z.enum(["inside", "outside"])
+            coordinates: z.enum(["inside", "outside"]),
+            legalMoveHints: z.boolean()
         }),
         piece: z.string()
     }),
@@ -104,7 +105,8 @@ export const defaultSettings: Settings = {
         board: {
             darkSquareColour: "#b58863",
             lightSquareColour: "#f0d9b5",
-            coordinates: "outside"
+            coordinates: "outside",
+            legalMoveHints: true
         },
         piece: "cburnett"
     },

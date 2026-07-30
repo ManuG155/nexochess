@@ -157,6 +157,10 @@
             "inside": "Wewnątrz",
             "outside": "Na zewnątrz"
         },
+        "legalMoves": {
+            "title": "Legalne pola ruchu",
+            "description": "Pokazuj kropki na wszystkich legalnych polach docelowych po wybraniu figury w Puzzlach."
+        },
         "preview": {
             "title": "Podgląd",
             "description": "Wybrana szachownica i figury są pokazane razem poniżej."

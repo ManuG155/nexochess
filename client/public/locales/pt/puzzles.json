@@ -76,7 +76,7 @@
         "hint": "Uma dica: estude {{move}} e descubra por que é mais forte.",
         "solvedClean": "Excelente. Encontrou toda a ideia sem ajuda.",
         "solvedAfterHelp": "Resolvido. Repita o padrão mentalmente mais uma vez.",
-        "solutionShown": "Aqui está a variante completa. Use as setas sob o tabuleiro para rever cada posição.",
+        "solutionShown": "Aqui está a variante completa. Use os controlos no cartão do objetivo para rever cada posição.",
         "noArchive": "Preciso de pelo menos uma partida analisada no Arquivo para criar um puzzle.",
         "noFiltered": "Não há puzzles novos com estes filtros. Experimente outro tema ou dificuldade.",
         "loadError": "Não consegui carregar as posições. Atualize a página para tentar novamente.",

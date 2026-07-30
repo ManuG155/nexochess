@@ -6,6 +6,7 @@ import useSettingsStore from "@/stores/SettingsStore";
 import languages from "@/i18n/languages";
 import ColourSwatch from "@/components/settings/ColourSwatch";
 import DropdownSetting from "@/components/settings/DropdownSetting";
+import SwitchSetting from "@/components/settings/SwitchSetting";
 import Separator from "@/components/common/Separator";
 import {
     boardThemePresets,
@@ -270,6 +271,33 @@ function Appearance() {
                         }}
                         dropdownStyle={{ width: "180px" }}
                         menuStyle={{ width: "180px" }}
+                    />
+                </div>
+            </section>
+
+            <Separator className={categoryStyles.separator}/>
+
+            <section className={styles.section}>
+                <div className={styles.coordinatesRow}>
+                    <div>
+                        <h2 className={styles.sectionTitle}>
+                            {t("appearance.legalMoves.title")}
+                        </h2>
+                        <p className={styles.sectionDescription}>
+                            {t("appearance.legalMoves.description")}
+                        </p>
+                    </div>
+
+                    <SwitchSetting
+                        defaultChecked={
+                            settings.themes.board.legalMoveHints
+                        }
+                        onChange={checked => {
+                            setSettings(draft => {
+                                draft.themes.board.legalMoveHints = checked;
+                                return draft;
+                            });
+                        }}
                     />
                 </div>
             </section>

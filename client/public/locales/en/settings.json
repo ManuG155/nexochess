@@ -157,6 +157,10 @@
             "inside": "Inside",
             "outside": "Outside"
         },
+        "legalMoves": {
+            "title": "Legal move hints",
+            "description": "Show dots on every legal destination when you select a piece in Puzzles."
+        },
         "preview": {
             "title": "Preview",
             "description": "Your selected board and pieces are previewed together below."

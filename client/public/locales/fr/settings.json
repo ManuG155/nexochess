@@ -157,6 +157,10 @@
             "inside": "À l’intérieur",
             "outside": "À l’extérieur"
         },
+        "legalMoves": {
+            "title": "Cases légales",
+            "description": "Affiche des points sur toutes les cases légales lorsque vous sélectionnez une pièce dans les Puzzles."
+        },
         "preview": {
             "title": "Aperçu",
             "description": "L’échiquier et les pièces sélectionnés sont affichés ensemble ci-dessous."

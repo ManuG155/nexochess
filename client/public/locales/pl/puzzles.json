@@ -76,7 +76,7 @@
         "hint": "Podpowiedź: zbadaj {{move}} i zrozum, dlaczego ten ruch jest silniejszy.",
         "solvedClean": "Świetnie. Cały pomysł został znaleziony bez pomocy.",
         "solvedAfterHelp": "Rozwiązane. Powtórz jeszcze raz ten motyw w myślach.",
-        "solutionShown": "Oto cały wariant. Strzałkami pod szachownicą możesz przejrzeć każdą pozycję.",
+        "solutionShown": "Oto cały wariant. Użyj sterowania w karcie celu, aby przejrzeć każdą pozycję.",
         "noArchive": "Do utworzenia zadania potrzebna jest co najmniej jedna przeanalizowana partia w Archiwum.",
         "noFiltered": "Brak nowych zadań z tymi filtrami. Zmień temat lub trudność.",
         "loadError": "Nie udało się wczytać pozycji. Odśwież stronę i spróbuj ponownie.",

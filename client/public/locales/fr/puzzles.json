@@ -76,7 +76,7 @@
         "hint": "Un indice : étudiez {{move}} et comprenez pourquoi ce coup est plus fort.",
         "solvedClean": "Excellent. Vous avez trouvé toute l'idée sans aide.",
         "solvedAfterHelp": "Résolu. Répétez encore le motif mentalement pour le retenir.",
-        "solutionShown": "Voici la variante complète. Utilisez les flèches sous l'échiquier pour revoir chaque position.",
+        "solutionShown": "Voici la variante complète. Utilisez les commandes de l’objectif pour revoir chaque position.",
         "noArchive": "Il me faut au moins une partie analysée dans vos Archives pour créer un puzzle.",
         "noFiltered": "Aucun puzzle inédit avec ces filtres. Essayez un autre thème ou niveau.",
         "loadError": "Impossible de charger les positions. Actualisez la page pour réessayer.",

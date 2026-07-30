@@ -76,7 +76,7 @@
         "hint": "Một gợi ý: nghiên cứu {{move}} và hiểu vì sao nó mạnh hơn.",
         "solvedClean": "Xuất sắc. Bạn tìm ra toàn bộ ý tưởng mà không cần giúp.",
         "solvedAfterHelp": "Đã giải. Hãy nhẩm lại mô-típ một lần nữa.",
-        "solutionShown": "Đây là toàn bộ biến. Dùng mũi tên dưới bàn để xem từng thế.",
+        "solutionShown": "Đây là toàn bộ biến. Dùng các nút trong thẻ mục tiêu để xem từng thế cờ.",
         "noArchive": "Cần ít nhất một ván đã phân tích trong Kho lưu trữ để tạo câu đố.",
         "noFiltered": "Không còn câu chưa xem với bộ lọc này. Hãy đổi chủ đề hoặc độ khó.",
         "loadError": "Không thể tải các thế cờ. Hãy làm mới trang và thử lại.",

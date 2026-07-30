@@ -22,6 +22,8 @@ import EvaluationBar from
     "@analysis/components/EvaluationBar";
 import CoachPortrait from
     "@analysis/components/AnalysisPanel/CoachPortrait";
+import CoachPicker from
+    "@analysis/components/AnalysisPanel/CoachPicker";
 import {
     CoachExpression,
     getCoachById
@@ -169,8 +171,11 @@ function Puzzles() {
         useState<CoachMessage>({ key: "coach.loading" });
     const [ coachExpression, setCoachExpression ] =
         useState<CoachExpression>("thinking");
+    const [ coachPickerOpen, setCoachPickerOpen ] =
+        useState(false);
 
     const settings = useSettingsStore(state => state.settings);
+    const setSettings = useSettingsStore(state => state.setSettings);
     const selectedCoach = getCoachById(
         settings.appearance.selectedCoach
     );
@@ -354,6 +359,15 @@ function Puzzles() {
             || historyIndex != boardHistory.length - 1
         ) return false;
 
+        const legalMove = new Chess(liveFen.current)
+            .moves({
+                square: from as Square,
+                verbose: true
+            })
+            .some(move => move.to == to);
+
+        if (!legalMove) return false;
+
         const expected = puzzle.solution[solutionIndex];
         const attempted = `${from}${to}`;
 
@@ -453,12 +467,29 @@ function Puzzles() {
             return;
         }
 
+        const board = new Chess(liveFen.current);
+        const piece = board.get(square);
+        const expectedColour = puzzle.solver == "white" ? "w" : "b";
+
+        if (piece?.color == expectedColour) {
+            setSelectedSquare(square);
+            return;
+        }
+
+        const legalDestination = board
+            .moves({
+                square: selectedSquare,
+                verbose: true
+            })
+            .some(move => move.to == square);
+
+        if (!legalDestination) {
+            setSelectedSquare(undefined);
+            return;
+        }
+
         if (!playExpectedMove(selectedSquare, square)) {
-            const piece = new Chess(liveFen.current).get(square);
-            const expectedColour = puzzle.solver == "white" ? "w" : "b";
-            setSelectedSquare(
-                piece?.color == expectedColour ? square : undefined
-            );
+            setSelectedSquare(undefined);
         }
     }
 
@@ -531,6 +562,70 @@ function Puzzles() {
     const accuracy = profile.attempts > 0
         ? Math.round((profile.correct / profile.attempts) * 100)
         : 0;
+    const trainingActive = Boolean(
+        puzzle
+        && (
+            pageState == "playing"
+            || pageState == "solved"
+            || pageState == "revealed"
+        )
+    );
+    const boardSquareStyles = useMemo<
+        NonNullable<
+            React.ComponentProps<typeof Chessboard>["customSquareStyles"]
+        >
+    >(() => {
+        const squareStyles: NonNullable<
+            React.ComponentProps<typeof Chessboard>["customSquareStyles"]
+        > = {};
+
+        if (selectedSquare) {
+            squareStyles[selectedSquare] = {
+                boxShadow:
+                    "inset 0 0 0 4px rgba(96, 151, 255, 0.9)"
+            };
+        }
+
+        if (
+            !selectedSquare
+            || !currentFen
+            || !atLivePosition
+            || pageState != "playing"
+            || pendingReply
+            || !settings.themes.board.legalMoveHints
+        ) {
+            return squareStyles;
+        }
+
+        const board = new Chess(currentFen);
+        const legalMoves = board.moves({
+            square: selectedSquare,
+            verbose: true
+        });
+
+        legalMoves.forEach(move => {
+            squareStyles[move.to] = board.get(move.to)
+                ? {
+                    boxShadow:
+                        "inset 0 0 0 5px rgba(18, 24, 34, 0.34)"
+                }
+                : {
+                    backgroundImage:
+                        "radial-gradient(circle, "
+                        + "rgba(18, 24, 34, 0.42) 0 16%, "
+                        + "transparent 17%)"
+                };
+        });
+
+        return squareStyles;
+    }, [
+        atLivePosition,
+        currentFen,
+        pageState,
+        pendingReply,
+        selectedSquare,
+        settings.themes.board.legalMoveHints
+    ]);
 
     useEffect(() => {
         if (!puzzle || !currentFen) return;
@@ -589,7 +684,12 @@ function Puzzles() {
         settings.analysis.engine.version
     ]);
 
-    return <main className={styles.page}>
+    return <main
+        className={[
+            styles.page,
+            trainingActive ? styles.trainingPage : ""
+        ].filter(Boolean).join(" ")}
+    >
         <section className={styles.hero}>
             <div>
                 <span className={styles.eyebrow}>{t("hero.eyebrow")}</span>
@@ -828,6 +928,7 @@ function Puzzles() {
                     message={t(coachMessage.key, coachMessage.values)}
                     animationsEnabled={settings.coach.animations}
                     title={t("coach.title", { name: selectedCoach.name })}
+                    onCoachClick={() => setCoachPickerOpen(true)}
                 />
             </section>
         )}
@@ -911,16 +1012,7 @@ function Puzzles() {
                                 customPieces={customPieces}
                                 customArrows={hintArrow}
                                 customArrowColor="#78a7ff"
-                                customSquareStyles={selectedSquare
-                                    ? {
-                                        [selectedSquare]: {
-                                            boxShadow:
-                                                "inset 0 0 0 4px "
-                                                + "rgba(96, 151, 255, 0.9)"
-                                        }
-                                    }
-                                    : undefined
-                                }
+                                customSquareStyles={boardSquareStyles}
                                 customLightSquareStyle={{
                                     backgroundColor:
                                         settings.themes.board.lightSquareColour
@@ -944,42 +1036,6 @@ function Puzzles() {
                         </div>
                     </div>
 
-                    <div className={styles.historyControls}>
-                        <button
-                            type="button"
-                            onClick={() => setHistoryIndex(index => (
-                                Math.max(0, index - 1)
-                            ))}
-                            disabled={historyIndex == 0}
-                            aria-label={t("controls.previous")}
-                        >
-                            ←
-                        </button>
-                        <span>
-                            {historyIndex == 0 && puzzle.previousFen
-                                ? t("controls.beforeMistake")
-                                : atLivePosition
-                                    ? t("controls.current")
-                                    : t("controls.linePosition", {
-                                        current: historyIndex + 1,
-                                        total: boardHistory.length
-                                    })
-                            }
-                        </span>
-                        <button
-                            type="button"
-                            onClick={() => setHistoryIndex(index => (
-                                Math.min(
-                                    boardHistory.length - 1,
-                                    index + 1
-                                )
-                            ))}
-                            disabled={atLivePosition}
-                            aria-label={t("controls.next")}
-                        >
-                            →
-                        </button>
-                    </div>
                 </div>
 
                 <aside className={styles.trainingPanel}>
@@ -989,6 +1045,7 @@ function Puzzles() {
                         message={t(coachMessage.key, coachMessage.values)}
                         animationsEnabled={settings.coach.animations}
                         title={t("coach.title", { name: selectedCoach.name })}
+                        onCoachClick={() => setCoachPickerOpen(true)}
                     />
 
                     <div className={styles.objectiveCard}>
@@ -1026,6 +1083,45 @@ function Puzzles() {
                                 />
                             ))}
                         </div>
+
+                        {boardHistory.length > 1 && (
+                            <div className={styles.historyControls}>
+                                <button
+                                    type="button"
+                                    onClick={() => setHistoryIndex(index => (
+                                        Math.max(0, index - 1)
+                                    ))}
+                                    disabled={historyIndex == 0}
+                                    aria-label={t("controls.previous")}
+                                >
+                                    ←
+                                </button>
+                                <span>
+                                    {historyIndex == 0 && puzzle.previousFen
+                                        ? t("controls.beforeMistake")
+                                        : atLivePosition
+                                            ? t("controls.current")
+                                            : t("controls.linePosition", {
+                                                current: historyIndex + 1,
+                                                total: boardHistory.length
+                                            })
+                                    }
+                                </span>
+                                <button
+                                    type="button"
+                                    onClick={() => setHistoryIndex(index => (
+                                        Math.min(
+                                            boardHistory.length - 1,
+                                            index + 1
+                                        )
+                                    ))}
+                                    disabled={atLivePosition}
+                                    aria-label={t("controls.next")}
+                                >
+                                    →
+                                </button>
+                            </div>
+                        )}
                     </div>
 
                     {pageState == "playing" ? (
@@ -1118,6 +1214,20 @@ function Puzzles() {
                 {t("attribution.link")} ↗
             </a>
         </footer>
+
+        {coachPickerOpen && (
+            <CoachPicker
+                selectedCoach={selectedCoach}
+                onClose={() => setCoachPickerOpen(false)}
+                onConfirm={coachId => {
+                    setSettings(draft => {
+                        draft.appearance.selectedCoach = coachId;
+                        return draft;
+                    });
+                    setCoachPickerOpen(false);
+                }}
+            />
+        )}
     </main>;
 }
 
@@ -1151,27 +1261,35 @@ function CoachCard({
     expression,
     message,
     animationsEnabled,
-    title
+    title,
+    onCoachClick
 }: {
     coach: ReturnType<typeof getCoachById>;
     expression: CoachExpression;
     message: string;
     animationsEnabled: boolean;
     title: string;
+    onCoachClick: () => void;
 }) {
     return <div className={styles.coachCard}>
         <div className={styles.coachCopy}>
             <span>{title}</span>
             <p>{message}</p>
         </div>
-        <div className={styles.coachPortrait}>
+        <button
+            type="button"
+            className={styles.coachPortrait}
+            onClick={onCoachClick}
+            aria-label={title}
+            title={title}
+        >
             <CoachPortrait
                 coach={coach}
                 baseExpression={expression}
                 speechText={message}
                 animationsEnabled={animationsEnabled}
             />
-        </div>
+        </button>
     </div>;
 }
 
