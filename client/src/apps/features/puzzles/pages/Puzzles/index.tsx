@@ -190,36 +190,66 @@ function Puzzles() {
         let cancelled = false;
 
         async function loadSources() {
-            try {
-                const [
-                    archive,
-                    lichess,
-                    completed
-                ] = await Promise.all([
-                    loadArchivePuzzles(),
-                    loadLichessPuzzleRecords(),
-                    getCompletedPuzzleIds()
-                ]);
-
-                if (cancelled) return;
-
-                setArchivePuzzles(archive);
-                setLichessPuzzles(lichess);
-                completedIdsRef.current = completed;
-                setPageState("setup");
-                setCoachMessage({
-                    key: archive.length > 0
-                        ? "coach.setupArchive"
-                        : "coach.setupLichess"
+            const completedPromise = getCompletedPuzzleIds()
+                .catch(() => new Set<string>());
+            const lichessPromise = loadLichessPuzzleRecords()
+                .catch(error => {
+                    console.error(
+                        "Unable to load the Lichess puzzle pack.",
+                        error
+                    );
+                    return [] as LichessPuzzleRecord[];
                 });
-                setCoachExpression("idle");
-            } catch {
-                if (cancelled) return;
+            const archivePromise = loadArchivePuzzles()
+                .catch(error => {
+                    console.warn(
+                        "Unable to build puzzles from the Archive.",
+                        error
+                    );
+                    return [] as TrainingPuzzle[];
+                });
 
-                setPageState("error");
-                setCoachMessage({ key: "coach.loadError" });
-                setCoachExpression("worried");
+            const [lichess, completed] = await Promise.all([
+                lichessPromise,
+                completedPromise
+            ]);
+
+            if (cancelled) return;
+
+            setLichessPuzzles(lichess);
+            completedIdsRef.current = completed;
+
+            /*
+             * The packaged training set is ready independently from Archive.
+             * A slow or damaged archived game must never block all 50,000
+             * public puzzles.
+             */
+            if (lichess.length > 0) {
+                setSource("lichess");
+                setPageState("setup");
+                setCoachMessage({ key: "coach.setupLichess" });
+                setCoachExpression("idle");
             }
+
+            const archive = await archivePromise;
+
+            if (cancelled) return;
+
+            setArchivePuzzles(archive);
+
+            if (lichess.length > 0) return;
+
+            if (archive.length > 0) {
+                setSource("archive");
+                setPageState("setup");
+                setCoachMessage({ key: "coach.setupArchive" });
+                setCoachExpression("idle");
+                return;
+            }
+
+            setPageState("error");
+            setCoachMessage({ key: "coach.loadError" });
+            setCoachExpression("worried");
         }
 
         void loadSources();
