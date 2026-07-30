@@ -67,6 +67,12 @@ interface CoachMessage {
     values?: Record<string, string | number>;
 }
 
+interface WrongMovePreview {
+    fen: string;
+    from: Square;
+    to: Square;
+}
+
 const themes: PuzzleTheme[] = [
     "all",
     "mate",
@@ -161,6 +167,8 @@ function Puzzles() {
         useState(0);
     const [ selectedSquare, setSelectedSquare ] =
         useState<Square>();
+    const [ wrongMovePreview, setWrongMovePreview ] =
+        useState<WrongMovePreview>();
     const [ hintArrow, setHintArrow ] =
         useState<NonNullable<
             React.ComponentProps<typeof Chessboard>["customArrows"]
@@ -185,11 +193,14 @@ function Puzzles() {
     );
 
     const replyTimer = useRef<number | undefined>(undefined);
+    const wrongMoveTimer = useRef<number | undefined>(undefined);
     const liveFen = useRef("");
     const failedAttempt = useRef(false);
     const completedCurrentPuzzle = useRef(false);
     const completedIdsRef = useRef(new Set<string>());
     const profileRef = useRef(profile);
+    const evaluationCacheRef = useRef(new Map<string, Evaluation>());
+    const evaluationRequestRef = useRef(0);
 
     useEffect(() => {
         profileRef.current = profile;
@@ -236,11 +247,13 @@ function Puzzles() {
         return () => {
             cancelled = true;
             window.clearTimeout(replyTimer.current);
+            window.clearTimeout(wrongMoveTimer.current);
         };
     }, []);
 
     function initialisePuzzle(nextPuzzle: TrainingPuzzle) {
         window.clearTimeout(replyTimer.current);
+        window.clearTimeout(wrongMoveTimer.current);
 
         const history = nextPuzzle.previousFen
             ? [nextPuzzle.previousFen, nextPuzzle.startFen]
@@ -252,6 +265,7 @@ function Puzzles() {
         setHistoryIndex(history.length - 1);
         setSolutionIndex(0);
         setSelectedSquare(undefined);
+        setWrongMovePreview(undefined);
         setHintArrow([]);
         setPendingReply(false);
         setPageState("playing");
@@ -356,15 +370,16 @@ function Puzzles() {
             !puzzle
             || pageState != "playing"
             || pendingReply
+            || wrongMovePreview
             || historyIndex != boardHistory.length - 1
         ) return false;
 
-        const legalMove = new Chess(liveFen.current)
-            .moves({
-                square: from as Square,
-                verbose: true
-            })
-            .some(move => move.to == to);
+        const attemptBoard = new Chess(liveFen.current);
+        const legalMove = attemptBoard.moves({
+            square: from as Square,
+            verbose: true
+        })
+            .find(move => move.to == to);
 
         if (!legalMove) return false;
 
@@ -377,9 +392,34 @@ function Puzzles() {
             setHintArrow([]);
             setCoachExpression("worried");
             setCoachMessage({ key: "coach.wrong" });
-            return false;
+
+            try {
+                attemptBoard.move({
+                    from: from as Square,
+                    to: to as Square,
+                    ...(legalMove.promotion
+                        ? { promotion: legalMove.promotion }
+                        : {})
+                });
+
+                setWrongMovePreview({
+                    fen: attemptBoard.fen(),
+                    from: from as Square,
+                    to: to as Square
+                });
+                window.clearTimeout(wrongMoveTimer.current);
+                wrongMoveTimer.current = window.setTimeout(() => {
+                    setWrongMovePreview(undefined);
+                }, 680);
+            } catch {
+                return false;
+            }
+
+            return true;
         }
 
+        window.clearTimeout(wrongMoveTimer.current);
+        setWrongMovePreview(undefined);
         const board = new Chess(liveFen.current);
 
         try {
@@ -448,6 +488,7 @@ function Puzzles() {
             !puzzle
             || pageState != "playing"
             || pendingReply
+            || wrongMovePreview
             || historyIndex != boardHistory.length - 1
         ) return;
 
@@ -496,6 +537,8 @@ function Puzzles() {
     function showHint() {
         if (!puzzle || !hintsEnabled || pageState != "playing") return;
 
+        window.clearTimeout(wrongMoveTimer.current);
+        setWrongMovePreview(undefined);
         const expected = puzzle.solution[solutionIndex];
         if (!expected) return;
 
@@ -518,7 +561,9 @@ function Puzzles() {
         if (!puzzle || !solutionEnabled || pageState != "playing") return;
 
         window.clearTimeout(replyTimer.current);
+        window.clearTimeout(wrongMoveTimer.current);
         failedAttempt.current = true;
+        setWrongMovePreview(undefined);
 
         const board = new Chess(liveFen.current);
         const positions: string[] = [];
@@ -552,7 +597,8 @@ function Puzzles() {
         void finishPuzzle(true);
     }
 
-    const currentFen = boardHistory[historyIndex] || puzzle?.startFen;
+    const reviewedFen = boardHistory[historyIndex] || puzzle?.startFen;
+    const currentFen = wrongMovePreview?.fen || reviewedFen;
     const atLivePosition = historyIndex == boardHistory.length - 1;
     const visibleThemes = puzzle ? getVisibleThemes(puzzle) : [];
     const calibrationRemaining = Math.max(
@@ -570,6 +616,10 @@ function Puzzles() {
             || pageState == "revealed"
         )
     );
+    const showRatedProfile = (
+        puzzle?.source
+        || source
+    ) == "lichess";
     const boardSquareStyles = useMemo<
         NonNullable<
             React.ComponentProps<typeof Chessboard>["customSquareStyles"]
@@ -578,6 +628,21 @@ function Puzzles() {
         const squareStyles: NonNullable<
             React.ComponentProps<typeof Chessboard>["customSquareStyles"]
         > = {};
+
+        if (wrongMovePreview) {
+            const wrongStyle = {
+                backgroundImage:
+                    "linear-gradient("
+                    + "rgba(224, 82, 73, 0.34), "
+                    + "rgba(224, 82, 73, 0.34))",
+                boxShadow:
+                    "inset 0 0 0 4px rgba(244, 111, 98, 0.9)"
+            };
+
+            squareStyles[wrongMovePreview.from] = wrongStyle;
+            squareStyles[wrongMovePreview.to] = wrongStyle;
+            return squareStyles;
+        }
 
         if (selectedSquare) {
             squareStyles[selectedSquare] = {
@@ -624,11 +689,20 @@ function Puzzles() {
         pageState,
         pendingReply,
         selectedSquare,
-        settings.themes.board.legalMoveHints
+        settings.themes.board.legalMoveHints,
+        wrongMovePreview
     ]);
 
     useEffect(() => {
-        if (!puzzle || !currentFen) return;
+        if (!puzzle || !reviewedFen) return;
+
+        const requestId = ++evaluationRequestRef.current;
+        const updateEvaluation = (evaluation: Evaluation) => {
+            if (requestId != evaluationRequestRef.current) return;
+
+            evaluationCacheRef.current.set(reviewedFen, evaluation);
+            setBoardEvaluation({ ...evaluation });
+        };
 
         /*
          * Archived positions already carry the exact evaluation produced
@@ -638,10 +712,16 @@ function Puzzles() {
          */
         if (
             puzzle.source == "archive"
-            && currentFen == puzzle.startFen
+            && reviewedFen == puzzle.startFen
         ) {
-            setBoardEvaluation(puzzle.evaluation);
+            updateEvaluation(puzzle.evaluation);
             return;
+        }
+
+        const cachedEvaluation =
+            evaluationCacheRef.current.get(reviewedFen);
+        if (cachedEvaluation) {
+            setBoardEvaluation({ ...cachedEvaluation });
         }
 
         let cancelled = false;
@@ -654,7 +734,7 @@ function Puzzles() {
         engine
             .setThreadCount(1)
             .setLineCount(1)
-            .setPosition(currentFen);
+            .setPosition(reviewedFen);
 
         void engine.evaluate({
             depth: Math.min(
@@ -664,8 +744,16 @@ function Puzzles() {
             timeLimit: 450,
             onEngineLine: line => {
                 if (!cancelled && line.index == 1) {
-                    setBoardEvaluation(line.evaluation);
+                    updateEvaluation(line.evaluation);
                 }
+            }
+        }).then(lines => {
+            const finalLine = lines
+                .filter(line => line.index == 1)
+                .at(-1);
+
+            if (!cancelled && finalLine) {
+                updateEvaluation(finalLine.evaluation);
             }
         }).catch(() => {
             // Keep the last safe evaluation if this device cannot run a worker.
@@ -678,7 +766,7 @@ function Puzzles() {
             engine.terminate();
         };
     }, [
-        currentFen,
+        reviewedFen,
         puzzle?.id,
         settings.analysis.engine.depth,
         settings.analysis.engine.version
@@ -697,7 +785,7 @@ function Puzzles() {
                 <p>{t("hero.subtitle")}</p>
             </div>
 
-            <div className={styles.profileStats}>
+            {showRatedProfile && <div className={styles.profileStats}>
                 <div>
                     <span>{t("stats.rating")}</span>
                     <strong>{profile.rating}</strong>
@@ -728,7 +816,7 @@ function Puzzles() {
                         })}
                     </small>
                 </div>
-            </div>
+            </div>}
         </section>
 
         {(pageState == "loading" || pageState == "error") && (
@@ -868,13 +956,20 @@ function Puzzles() {
                         </>
                     )}
 
-                    <div className={styles.sessionOptions}>
-                        <OptionToggle
-                            checked={ratedSession}
-                            title={t("options.rated.title")}
-                            description={t("options.rated.body")}
-                            onChange={setRatedSession}
-                        />
+                    <div className={[
+                        styles.sessionOptions,
+                        source == "archive"
+                            ? styles.archiveSessionOptions
+                            : ""
+                    ].filter(Boolean).join(" ")}>
+                        {source == "lichess" && (
+                            <OptionToggle
+                                checked={ratedSession}
+                                title={t("options.rated.title")}
+                                description={t("options.rated.body")}
+                                onChange={setRatedSession}
+                            />
+                        )}
                         <OptionToggle
                             checked={hintsEnabled}
                             title={t("options.hints.title")}
@@ -979,7 +1074,12 @@ function Puzzles() {
                         </div>
                     </header>
 
-                    <div className={styles.boardStage}>
+                    <div className={[
+                        styles.boardStage,
+                        settings.themes.board.coordinates == "outside"
+                            ? styles.boardStageWithOutsideCoordinates
+                            : ""
+                    ].filter(Boolean).join(" ")}>
                         <EvaluationBar
                             className={styles.evaluationBar}
                             evaluation={boardEvaluation}
@@ -1003,6 +1103,7 @@ function Puzzles() {
                                 arePiecesDraggable={
                                     pageState == "playing"
                                     && !pendingReply
+                                    && !wrongMovePreview
                                     && atLivePosition
                                 }
                                 onPieceDrop={(from, to) => (

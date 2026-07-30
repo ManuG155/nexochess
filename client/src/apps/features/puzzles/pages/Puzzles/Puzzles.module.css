@@ -334,6 +334,10 @@
     border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+.archiveSessionOptions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .sessionOptions button {
     display: flex;
     align-items: center;
@@ -663,10 +667,18 @@
     margin-right: 8px;
 }
 
+.boardStageWithOutsideCoordinates .evaluationBar {
+    margin-right: 16px;
+}
+
 .boardShell {
     position: relative;
     width: calc(100% - 25px);
     aspect-ratio: 1;
+}
+
+.boardStageWithOutsideCoordinates .boardShell {
+    width: calc(100% - 33px);
 }
 
 .outsideRanks {
@@ -1051,6 +1063,10 @@
 
     .boardShell {
         width: calc(100% - 19px);
+    }
+
+    .boardStageWithOutsideCoordinates .boardShell {
+        width: calc(100% - 30px);
     }
 
     .attribution {
