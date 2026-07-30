@@ -31,6 +31,39 @@ const negativeClassifications = new Set<Classification>([
     Classification.BLUNDER
 ]);
 
+const ARCHIVE_CONCURRENCY = 6;
+const ARCHIVE_REQUEST_TIMEOUT_MS = 20_000;
+
+function withTimeout<T>(
+    promise: Promise<T>,
+    milliseconds: number,
+    message: string
+) {
+    return new Promise<T>((resolve, reject) => {
+        let settled = false;
+        const timeout = window.setTimeout(() => {
+            if (settled) return;
+
+            settled = true;
+            reject(new Error(message));
+        }, milliseconds);
+
+        promise.then(value => {
+            if (settled) return;
+
+            settled = true;
+            window.clearTimeout(timeout);
+            resolve(value);
+        }).catch(error => {
+            if (settled) return;
+
+            settled = true;
+            window.clearTimeout(timeout);
+            reject(error);
+        });
+    });
+}
+
 function validateSolution(fen: string, moves: string[]) {
     const board = new Chess(fen);
     const validMoves: string[] = [];
@@ -65,62 +98,97 @@ function createArchivePuzzleId(
 }
 
 export async function loadArchivePuzzles(): Promise<TrainingPuzzle[]> {
-    const archiveResponse = await getArchivedGames();
+    const archiveResponse = await withTimeout(
+        getArchivedGames(),
+        ARCHIVE_REQUEST_TIMEOUT_MS,
+        "The game archive took too long to respond."
+    );
     const archive = archiveResponse.games || {};
     const puzzles: TrainingPuzzle[] = [];
+    const entries = Object.entries(archive);
+    let nextEntryIndex = 0;
 
-    for (const [gameId, metadata] of Object.entries(archive)) {
-        const response = await getArchivedGame(gameId);
-        if (!response.game) continue;
+    async function loadNextGames() {
+        while (nextEntryIndex < entries.length) {
+            const entryIndex = nextEntryIndex++;
+            const [gameId, metadata] = entries[entryIndex];
+            let response:
+                Awaited<ReturnType<typeof getArchivedGame>>
+                | undefined;
 
-        const game = response.game;
-        const chain = getNodeChain(game.stateTree);
-        const fingerprint =
-            game.archiveSummary?.fingerprint
-            || metadata.archiveSummary?.fingerprint
-            || gameId;
+            try {
+                response = await withTimeout(
+                    getArchivedGame(gameId),
+                    ARCHIVE_REQUEST_TIMEOUT_MS,
+                    `Archived game ${gameId} took too long to respond.`
+                );
+            } catch {
+                continue;
+            }
 
-        for (let index = 1; index < chain.length; index++) {
-            const node = chain[index];
-            const classification = node.state.classification;
+            if (!response?.game) continue;
 
-            if (
-                !classification
-                || !negativeClassifications.has(classification)
-            ) continue;
+            const game = response.game;
+            const chain = getNodeChain(game.stateTree);
+            const fingerprint =
+                game.archiveSummary?.fingerprint
+                || metadata.archiveSummary?.fingerprint
+                || gameId;
 
-            const line = getTopEngineLine(node.state.engineLines);
-            if (!line?.moves.length) continue;
+            for (let index = 1; index < chain.length; index++) {
+                const node = chain[index];
+                const classification = node.state.classification;
 
-            const solution = validateSolution(
-                node.state.fen,
-                line.moves.map(move => move.uci)
-            );
+                if (
+                    !classification
+                    || !negativeClassifications.has(classification)
+                ) continue;
 
-            if (solution.length == 0) continue;
+                const line = getTopEngineLine(node.state.engineLines);
+                if (!line?.moves.length) continue;
 
-            const board = new Chess(node.state.fen);
-            const solver = board.turn() == "w" ? "white" : "black";
-            const whiteName = game.players.white.username || "White";
-            const blackName = game.players.black.username || "Black";
+                const solution = validateSolution(
+                    node.state.fen,
+                    line.moves.map(move => move.uci)
+                );
 
-            puzzles.push({
-                id: createArchivePuzzleId(fingerprint, node.id),
-                source: "archive",
-                startFen: node.state.fen,
-                previousFen: node.parent?.state.fen,
-                solution,
-                solver,
-                evaluation: line.evaluation,
-                themes: [classification],
-                openingTags: [],
-                classification,
-                badMove: node.state.move?.san,
-                gameLabel: `${whiteName} — ${blackName}`,
-                moveNumber: Math.ceil(index / 2)
-            });
+                if (solution.length == 0) continue;
+
+                const board = new Chess(node.state.fen);
+                const solver = board.turn() == "w" ? "white" : "black";
+                const whiteName = game.players.white.username || "White";
+                const blackName = game.players.black.username || "Black";
+
+                puzzles.push({
+                    id: createArchivePuzzleId(fingerprint, node.id),
+                    source: "archive",
+                    startFen: node.state.fen,
+                    previousFen: node.parent?.state.fen,
+                    solution,
+                    solver,
+                    evaluation: line.evaluation,
+                    themes: [classification],
+                    openingTags: [],
+                    classification,
+                    badMove: node.state.move?.san,
+                    gameLabel: `${whiteName} — ${blackName}`,
+                    moveNumber: Math.ceil(index / 2)
+                });
+            }
         }
     }
+
+    await Promise.all(
+        Array.from(
+            {
+                length: Math.min(
+                    ARCHIVE_CONCURRENCY,
+                    entries.length
+                )
+            },
+            loadNextGames
+        )
+    );
 
     return puzzles;
 }
@@ -168,7 +236,6 @@ export async function loadLichessPuzzleRecords() {
         "/data/lichess-puzzles.json",
         { cache: "force-cache" }
     );
-
     if (!response.ok) {
         throw new Error(
             `Unable to load the Lichess puzzle pack (${response.status}).`
@@ -177,8 +244,8 @@ export async function loadLichessPuzzleRecords() {
 
     const pack = await response.json() as LichessPuzzlePack;
 
-    if (!Array.isArray(pack?.puzzles)) {
-        throw new Error("The Lichess puzzle pack is malformed.");
+    if (!Array.isArray(pack.puzzles) || pack.puzzles.length == 0) {
+        throw new Error("The Lichess puzzle pack is empty or malformed.");
     }
 
     return pack.puzzles;

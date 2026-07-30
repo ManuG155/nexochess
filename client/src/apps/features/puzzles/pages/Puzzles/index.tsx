@@ -74,6 +74,8 @@ type PageState =
     | "empty"
     | "error";
 
+type SourceLoadState = "loading" | "ready" | "error";
+
 interface CoachMessage {
     key: string;
     values?: Record<string, string | number>;
@@ -128,8 +130,12 @@ function Puzzles() {
         useState(true);
     const [ archivePuzzles, setArchivePuzzles ] =
         useState<TrainingPuzzle[]>([]);
+    const [ archiveLoadState, setArchiveLoadState ] =
+        useState<SourceLoadState>("loading");
     const [ lichessPuzzles, setLichessPuzzles ] =
         useState<LichessPuzzleRecord[]>([]);
+    const [ lichessLoadState, setLichessLoadState ] =
+        useState<SourceLoadState>("loading");
     const [ profile, setProfile ] =
         useState<PuzzleProfile>(getPuzzleProfile);
     const [ puzzle, setPuzzle ] =
@@ -181,6 +187,7 @@ function Puzzles() {
     const profileRef = useRef(profile);
     const evaluationCacheRef = useRef(new Map<string, Evaluation>());
     const evaluationRequestRef = useRef(0);
+    const setupRevealedRef = useRef(false);
 
     useEffect(() => {
         profileRef.current = profile;
@@ -189,70 +196,64 @@ function Puzzles() {
     useEffect(() => {
         let cancelled = false;
 
-        async function loadSources() {
-            const completedPromise = getCompletedPuzzleIds()
-                .catch(() => new Set<string>());
-            const lichessPromise = loadLichessPuzzleRecords()
-                .catch(error => {
-                    console.error(
-                        "Unable to load the Lichess puzzle pack.",
-                        error
-                    );
-                    return [] as LichessPuzzleRecord[];
-                });
-            const archivePromise = loadArchivePuzzles()
-                .catch(error => {
-                    console.warn(
-                        "Unable to build puzzles from the Archive.",
-                        error
-                    );
-                    return [] as TrainingPuzzle[];
-                });
+        function revealSetup(
+            preferredSource: PuzzleSource,
+            coachMessageKey: string
+        ) {
+            if (cancelled || setupRevealedRef.current) return;
 
-            const [lichess, completed] = await Promise.all([
-                lichessPromise,
-                completedPromise
-            ]);
+            setupRevealedRef.current = true;
+            setSource(preferredSource);
+            setPageState("setup");
+            setCoachMessage({ key: coachMessageKey });
+            setCoachExpression("idle");
+        }
 
-            if (cancelled) return;
+        void getCompletedPuzzleIds()
+            .then(completed => {
+                if (!cancelled) completedIdsRef.current = completed;
+            })
+            .catch(() => {
+                // Progress has its own localStorage fallback.
+            });
 
-            setLichessPuzzles(lichess);
-            completedIdsRef.current = completed;
+        const archivePromise = loadArchivePuzzles()
+            .then(archive => {
+                if (cancelled) return;
 
-            /*
-             * The packaged training set is ready independently from Archive.
-             * A slow or damaged archived game must never block all 50,000
-             * public puzzles.
-             */
-            if (lichess.length > 0) {
-                setSource("lichess");
-                setPageState("setup");
-                setCoachMessage({ key: "coach.setupLichess" });
-                setCoachExpression("idle");
-            }
+                setArchivePuzzles(archive);
+                setArchiveLoadState("ready");
 
-            const archive = await archivePromise;
+                if (archive.length > 0) {
+                    revealSetup("archive", "coach.setupArchive");
+                }
+            })
+            .catch(() => {
+                if (!cancelled) setArchiveLoadState("error");
+            });
 
-            if (cancelled) return;
+        const lichessPromise = loadLichessPuzzleRecords()
+            .then(lichess => {
+                if (cancelled) return;
 
-            setArchivePuzzles(archive);
+                setLichessPuzzles(lichess);
+                setLichessLoadState("ready");
+                revealSetup("lichess", "coach.setupLichess");
+            })
+            .catch(() => {
+                if (!cancelled) setLichessLoadState("error");
+            });
 
-            if (lichess.length > 0) return;
-
-            if (archive.length > 0) {
-                setSource("archive");
-                setPageState("setup");
-                setCoachMessage({ key: "coach.setupArchive" });
-                setCoachExpression("idle");
-                return;
-            }
+        void Promise.allSettled([
+            archivePromise,
+            lichessPromise
+        ]).then(() => {
+            if (cancelled || setupRevealedRef.current) return;
 
             setPageState("error");
             setCoachMessage({ key: "coach.loadError" });
             setCoachExpression("worried");
-        }
-
-        void loadSources();
+        });
 
         return () => {
             cancelled = true;
@@ -948,7 +949,12 @@ function Puzzles() {
                                 <strong>{t("sources.archive.title")}</strong>
                                 <small>{t("sources.archive.body")}</small>
                             </span>
-                            <b>{archivePuzzles.length}</b>
+                            <b>
+                                {archiveLoadState == "loading"
+                                    ? "…"
+                                    : archivePuzzles.length
+                                }
+                            </b>
                         </button>
 
                         <button
@@ -968,22 +974,32 @@ function Puzzles() {
                                 <strong>{t("sources.lichess.title")}</strong>
                                 <small>{t("sources.lichess.body")}</small>
                             </span>
-                            <b>{lichessPuzzles.length}</b>
+                            <b>
+                                {lichessLoadState == "loading"
+                                    ? "…"
+                                    : lichessPuzzles.length
+                                }
+                            </b>
                         </button>
                     </div>
 
-                    {source == "archive" && archivePuzzles.length == 0 && (
-                        <div className={styles.archiveEmpty}>
-                            <span aria-hidden="true">↗</span>
-                            <div>
-                                <h3>{t("sources.archive.emptyTitle")}</h3>
-                                <p>{t("sources.archive.emptyBody")}</p>
+                    {
+                        source == "archive"
+                        && archiveLoadState == "ready"
+                        && archivePuzzles.length == 0
+                        && (
+                            <div className={styles.archiveEmpty}>
+                                <span aria-hidden="true">↗</span>
+                                <div>
+                                    <h3>{t("sources.archive.emptyTitle")}</h3>
+                                    <p>{t("sources.archive.emptyBody")}</p>
+                                </div>
+                                <a href="/analysis">
+                                    {t("sources.archive.action")}
+                                </a>
                             </div>
-                            <a href="/analysis">
-                                {t("sources.archive.action")}
-                            </a>
-                        </div>
-                    )}
+                        )
+                    }
 
                     {source == "lichess" && (
                         <>
@@ -1250,8 +1266,17 @@ function Puzzles() {
                         className={styles.startButton}
                         onClick={startTraining}
                         disabled={
-                            source == "archive"
-                            && archivePuzzles.length == 0
+                            (
+                                source == "archive"
+                                && (
+                                    archiveLoadState != "ready"
+                                    || archivePuzzles.length == 0
+                                )
+                            )
+                            || (
+                                source == "lichess"
+                                && lichessLoadState != "ready"
+                            )
                         }
                     >
                         <span aria-hidden="true">▶</span>
