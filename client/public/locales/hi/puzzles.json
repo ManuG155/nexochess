@@ -37,9 +37,14 @@
     },
     "filters": {
         "theme": "विषय",
-        "themeHelp": "एक पैटर्न चुनें या मिश्रित अभ्यास रखें।",
+        "themeHelp": "एक श्रेणी चुनें और चाहें तो कोई खास प्रकार चुनें।",
         "difficulty": "कठिनाई",
-        "difficultyHelp": "अनुकूल मोड आपकी पहेली रेटिंग के अनुसार चलता है।"
+        "difficultyHelp": "अनुकूल मोड आपकी पहेली रेटिंग के अनुसार चलता है।",
+        "subtheme": "{{theme}} चुनें",
+        "subthemeHelp": "कोई खास प्रकार चुनें या पूरी श्रेणी का अभ्यास करें।",
+        "clearSubtheme": "सभी",
+        "openingSearch": "ओपनिंग खोजें…",
+        "noSubthemeResults": "कोई मिलती-जुलती ओपनिंग नहीं मिली।"
     },
     "themes": {
         "all": "मिश्रित",
@@ -52,16 +57,40 @@
         "defense": "बचाव"
     },
     "difficulties": {
-        "adaptive": { "title": "अनुकूल", "range": "आपका स्तर" },
-        "beginner": { "title": "शुरुआती", "range": "< 1200" },
-        "intermediate": { "title": "मध्यम", "range": "1200–1799" },
-        "advanced": { "title": "उन्नत", "range": "1800–2199" },
-        "expert": { "title": "विशेषज्ञ", "range": "2200+" }
+        "adaptive": {
+            "title": "अनुकूल",
+            "range": "आपका स्तर"
+        },
+        "beginner": {
+            "title": "शुरुआती",
+            "range": "< 1200"
+        },
+        "intermediate": {
+            "title": "मध्यम",
+            "range": "1200–1799"
+        },
+        "advanced": {
+            "title": "उन्नत",
+            "range": "1800–2199"
+        },
+        "expert": {
+            "title": "विशेषज्ञ",
+            "range": "2200+"
+        }
     },
     "options": {
-        "rated": { "title": "रेटेड", "body": "मेरी पहेली रेटिंग बदलें" },
-        "hints": { "title": "संकेत", "body": "कोच को एक चाल दिखाने दें" },
-        "solution": { "title": "समाधान", "body": "पूरी लाइन दिखाने दें" }
+        "rated": {
+            "title": "रेटेड",
+            "body": "मेरी पहेली रेटिंग बदलें"
+        },
+        "hints": {
+            "title": "संकेत",
+            "body": "कोच को एक चाल दिखाने दें"
+        },
+        "solution": {
+            "title": "समाधान",
+            "body": "पूरी लाइन दिखाने दें"
+        }
     },
     "coach": {
         "title": "{{name}}, आपका कोच",
@@ -83,7 +112,10 @@
         "positionError": "इस लाइन की एक स्थिति सुरक्षित रूप से नहीं बन सकी, इसलिए इसे रोक दिया गया।",
         "changeFilters": "सत्र कभी भी बदलें; पूरी की गई स्थितियाँ सुरक्षित रहेंगी।"
     },
-    "colours": { "white": "सफेद", "black": "काले" },
+    "colours": {
+        "white": "सफेद",
+        "black": "काले"
+    },
     "states": {
         "loadingTitle": "अभ्यास तैयार हो रहा है",
         "loadingBody": "आपका आर्काइव पढ़ा जा रहा है और स्थानीय Lichess पैक लोड हो रहा है।",
@@ -126,7 +158,20 @@
         "sourceGame": "मूल बाज़ी"
     },
     "attribution": {
-        "text": "Lichess पहेली स्थितियाँ CC0 सार्वजनिक डोमेन डेटा हैं।",
+        "text": "स्थितियाँ Lichess की सार्वजनिक CC0 पहेली डेटाबेस से आती हैं। NexoChess, Lichess से संबद्ध नहीं है।",
         "link": "डेटाबेस खोलें"
+    },
+    "themeCategories": {
+        "all": "मिश्रित",
+        "checkmate": "शह-मात",
+        "tactics": "रणनीतिक चालें",
+        "attack": "आक्रमण",
+        "defense": "बचाव",
+        "advantage": "बढ़त",
+        "endgame": "एंडगेम",
+        "opening": "ओपनिंग",
+        "phase": "खेल का चरण",
+        "length": "लंबाई",
+        "master": "मास्टर खेल"
     }
 }

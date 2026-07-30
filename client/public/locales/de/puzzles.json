@@ -37,9 +37,14 @@
     },
     "filters": {
         "theme": "Thema",
-        "themeHelp": "Wähle ein Motiv oder ein gemischtes Training.",
+        "themeHelp": "Wähle eine Kategorie und bei Bedarf eine konkrete Unterart.",
         "difficulty": "Schwierigkeit",
-        "difficultyHelp": "Adaptiv folgt deiner Aufgabenwertung."
+        "difficultyHelp": "Adaptiv folgt deiner Aufgabenwertung.",
+        "subtheme": "{{theme}} auswählen",
+        "subthemeHelp": "Wähle eine Unterart oder trainiere die ganze Kategorie.",
+        "clearSubtheme": "Alle",
+        "openingSearch": "Eröffnung suchen…",
+        "noSubthemeResults": "Keine passende Eröffnung gefunden."
     },
     "themes": {
         "all": "Gemischt",
@@ -52,16 +57,40 @@
         "defense": "Verteidigung"
     },
     "difficulties": {
-        "adaptive": { "title": "Adaptiv", "range": "Dein Niveau" },
-        "beginner": { "title": "Anfänger", "range": "< 1200" },
-        "intermediate": { "title": "Mittel", "range": "1200–1799" },
-        "advanced": { "title": "Fortgeschritten", "range": "1800–2199" },
-        "expert": { "title": "Experte", "range": "2200+" }
+        "adaptive": {
+            "title": "Adaptiv",
+            "range": "Dein Niveau"
+        },
+        "beginner": {
+            "title": "Anfänger",
+            "range": "< 1200"
+        },
+        "intermediate": {
+            "title": "Mittel",
+            "range": "1200–1799"
+        },
+        "advanced": {
+            "title": "Fortgeschritten",
+            "range": "1800–2199"
+        },
+        "expert": {
+            "title": "Experte",
+            "range": "2200+"
+        }
     },
     "options": {
-        "rated": { "title": "Gewertet", "body": "Meine Aufgabenwertung anpassen" },
-        "hints": { "title": "Hinweise", "body": "Trainer darf einen Zug zeigen" },
-        "solution": { "title": "Lösung", "body": "Vollständige Variante darf gezeigt werden" }
+        "rated": {
+            "title": "Gewertet",
+            "body": "Meine Aufgabenwertung anpassen"
+        },
+        "hints": {
+            "title": "Hinweise",
+            "body": "Trainer darf einen Zug zeigen"
+        },
+        "solution": {
+            "title": "Lösung",
+            "body": "Vollständige Variante darf gezeigt werden"
+        }
     },
     "coach": {
         "title": "{{name}}, dein Trainer",
@@ -83,7 +112,10 @@
         "positionError": "Diese Variante enthält eine Stellung, die ich nicht sicher nachstellen kann; ich habe sie angehalten.",
         "changeFilters": "Du kannst das Training jederzeit ändern; gelöste Stellungen bleiben gespeichert."
     },
-    "colours": { "white": "Weiß", "black": "Schwarz" },
+    "colours": {
+        "white": "Weiß",
+        "black": "Schwarz"
+    },
     "states": {
         "loadingTitle": "Training wird vorbereitet",
         "loadingBody": "Archiv wird gelesen und das lokale Lichess-Paket geladen.",
@@ -126,7 +158,20 @@
         "sourceGame": "Quellpartie"
     },
     "attribution": {
-        "text": "Lichess-Aufgabenstellungen sind gemeinfreie CC0-Daten.",
+        "text": "Die Stellungen stammen aus der öffentlichen CC0-Datenbank von Lichess. NexoChess ist nicht mit Lichess verbunden.",
         "link": "Datenbank öffnen"
+    },
+    "themeCategories": {
+        "all": "Gemischt",
+        "checkmate": "Schachmatt",
+        "tactics": "Taktik",
+        "attack": "Angriff",
+        "defense": "Verteidigung",
+        "advantage": "Vorteil",
+        "endgame": "Endspiele",
+        "opening": "Eröffnungen",
+        "phase": "Spielphase",
+        "length": "Länge",
+        "master": "Meisterpartien"
     }
 }

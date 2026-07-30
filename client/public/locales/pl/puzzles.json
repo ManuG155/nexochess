@@ -37,9 +37,14 @@
     },
     "filters": {
         "theme": "Temat",
-        "themeHelp": "Wybierz motyw albo pozostaw trening mieszany.",
+        "themeHelp": "Wybierz kategorię, a następnie opcjonalnie konkretny typ.",
         "difficulty": "Trudność",
-        "difficultyHelp": "Tryb adaptacyjny podąża za Twoim rankingiem zadań."
+        "difficultyHelp": "Tryb adaptacyjny podąża za Twoim rankingiem zadań.",
+        "subtheme": "Wybierz: {{theme}}",
+        "subthemeHelp": "Wybierz typ albo ćwicz całą kategorię.",
+        "clearSubtheme": "Wszystkie",
+        "openingSearch": "Szukaj debiutu…",
+        "noSubthemeResults": "Nie znaleziono pasującego debiutu."
     },
     "themes": {
         "all": "Mieszane",
@@ -52,16 +57,40 @@
         "defense": "Obrona"
     },
     "difficulties": {
-        "adaptive": { "title": "Adaptacyjna", "range": "Twój poziom" },
-        "beginner": { "title": "Początkująca", "range": "< 1200" },
-        "intermediate": { "title": "Średnia", "range": "1200–1799" },
-        "advanced": { "title": "Zaawansowana", "range": "1800–2199" },
-        "expert": { "title": "Ekspercka", "range": "2200+" }
+        "adaptive": {
+            "title": "Adaptacyjna",
+            "range": "Twój poziom"
+        },
+        "beginner": {
+            "title": "Początkująca",
+            "range": "< 1200"
+        },
+        "intermediate": {
+            "title": "Średnia",
+            "range": "1200–1799"
+        },
+        "advanced": {
+            "title": "Zaawansowana",
+            "range": "1800–2199"
+        },
+        "expert": {
+            "title": "Ekspercka",
+            "range": "2200+"
+        }
     },
     "options": {
-        "rated": { "title": "Oceniana", "body": "Zmieniaj mój ranking zadań" },
-        "hints": { "title": "Podpowiedzi", "body": "Pozwól trenerowi pokazać ruch" },
-        "solution": { "title": "Rozwiązanie", "body": "Pozwól ujawnić cały wariant" }
+        "rated": {
+            "title": "Oceniana",
+            "body": "Zmieniaj mój ranking zadań"
+        },
+        "hints": {
+            "title": "Podpowiedzi",
+            "body": "Pozwól trenerowi pokazać ruch"
+        },
+        "solution": {
+            "title": "Rozwiązanie",
+            "body": "Pozwól ujawnić cały wariant"
+        }
     },
     "coach": {
         "title": "{{name}}, Twój trener",
@@ -83,7 +112,10 @@
         "positionError": "Tego wariantu nie można bezpiecznie odtworzyć, więc został zatrzymany.",
         "changeFilters": "Zmień sesję w dowolnej chwili; ukończone pozycje pozostaną zapisane."
     },
-    "colours": { "white": "białych", "black": "czarnych" },
+    "colours": {
+        "white": "białych",
+        "black": "czarnych"
+    },
     "states": {
         "loadingTitle": "Przygotowywanie treningu",
         "loadingBody": "Odczyt Archiwum i ładowanie lokalnego pakietu Lichess.",
@@ -126,7 +158,20 @@
         "sourceGame": "Partia źródłowa"
     },
     "attribution": {
-        "text": "Pozycje zadań Lichess są danymi domeny publicznej CC0.",
+        "text": "Pozycje pochodzą z publicznej bazy zadań Lichess CC0. NexoChess nie jest powiązany z Lichess.",
         "link": "Otwórz bazę"
+    },
+    "themeCategories": {
+        "all": "Mieszane",
+        "checkmate": "Mat",
+        "tactics": "Taktyka",
+        "attack": "Atak",
+        "defense": "Obrona",
+        "advantage": "Przewaga",
+        "endgame": "Końcówki",
+        "opening": "Debiuty",
+        "phase": "Faza gry",
+        "length": "Długość",
+        "master": "Partie mistrzowskie"
     }
 }

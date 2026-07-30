@@ -42,11 +42,23 @@ The dataset is an aggregated collection of chess opening names. Its upstream pro
 The tactics trainer uses positions from the
 [Lichess Puzzle Database](https://database.lichess.org/#puzzles), released
 under the Creative Commons CC0 1.0 Universal public-domain dedication.
+The official database page expressly permits commercial use, publication,
+modification and redistribution without requesting additional permission.
 
 NexoChess applies the first UCI move in each row as the opponent's setup move
 before presenting the puzzle, as required by the published database format.
-The remaining moves form the solution. NexoChess is not affiliated with or
-endorsed by Lichess.
+The remaining moves form the solution. Theme and opening filters are derived
+only from the `Themes` and `OpeningTags` columns in that export.
+
+The packaged data is generated from the downloadable database export. The
+application does not scrape lichess.org, proxy its puzzle trainer, or make a
+request to Lichess whenever a user starts a puzzle. The Lichess name is used
+only to identify the data source; no Lichess logo or visual identity is
+included. NexoChess is not affiliated with or endorsed by Lichess.
+
+The upstream puzzle-theme vocabulary is also published as CC0 in
+`lichess-org/lila/translation/source/puzzleTheme.xml`. NexoChess uses its own
+interface, grouping and wording around those public-domain theme identifiers.
 
 ## Package dependencies
 

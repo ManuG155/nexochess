@@ -26,7 +26,8 @@ import CoachPicker from
     "@analysis/components/AnalysisPanel/CoachPicker";
 import {
     CoachExpression,
-    getCoachById
+    getCoachById,
+    getCoachSpokenLine
 } from "@analysis/lib/coach";
 import Engine from "@analysis/lib/engine";
 
@@ -38,18 +39,29 @@ import {
     recordRatedAttempt
 } from "../../lib/progress";
 import {
+    filterLichessPuzzleRecords,
     filterPuzzles,
     loadArchivePuzzles,
-    loadLichessPuzzles,
+    loadLichessPuzzleRecords,
+    normaliseLichessPuzzle,
     pickRandomPuzzle
 } from "../../lib/sources";
 import {
+    LichessPuzzleRecord,
     PuzzleDifficulty,
     PuzzleProfile,
     PuzzleSource,
-    PuzzleTheme,
+    PuzzleThemeSelection,
     TrainingPuzzle
 } from "../../types";
+import {
+    formatOpeningTag,
+    formatPuzzleTheme,
+    getPuzzleFilterOptions,
+    getVisiblePuzzleThemes,
+    puzzleMatchesCategory,
+    puzzleThemeCategories
+} from "../../lib/themeCatalogue";
 
 import * as styles from "./Puzzles.module.css";
 
@@ -73,17 +85,6 @@ interface WrongMovePreview {
     to: Square;
 }
 
-const themes: PuzzleTheme[] = [
-    "all",
-    "mate",
-    "fork",
-    "pin",
-    "endgame",
-    "opening",
-    "sacrifice",
-    "defense"
-];
-
 const difficulties: PuzzleDifficulty[] = [
     "adaptive",
     "beginner",
@@ -101,43 +102,22 @@ function getMoveSAN(fen: string, uci: string) {
     }
 }
 
-function getVisibleThemes(puzzle: TrainingPuzzle) {
-    const supported = themes.filter(theme => (
-        theme != "all"
-        && (
-            puzzle.themes.includes(theme)
-            || (
-                theme == "mate"
-                && puzzle.themes.some(value => (
-                    value == "mate"
-                    || /^mateIn\d+$/.test(value)
-                ))
-            )
-            || (
-                theme == "defense"
-                && puzzle.themes.some(value => (
-                    value == "defensiveMove"
-                    || value == "equality"
-                ))
-            )
-        )
-    ));
-
-    return supported.slice(0, 3);
-}
-
 function Puzzles() {
-    const { t } = useTranslation([
+    const { t, i18n } = useTranslation([
         "puzzles",
         "analysis"
     ]);
+    const { t: tCoach } = useTranslation("coach", {
+        useSuspense: false
+    });
 
     const [ pageState, setPageState ] =
         useState<PageState>("loading");
     const [ source, setSource ] =
         useState<PuzzleSource>("archive");
-    const [ theme, setTheme ] =
-        useState<PuzzleTheme>("all");
+    const [ themeSelection, setThemeSelection ] =
+        useState<PuzzleThemeSelection>({ category: "all" });
+    const [ openingSearch, setOpeningSearch ] = useState("");
     const [ difficulty, setDifficulty ] =
         useState<PuzzleDifficulty>("adaptive");
     const [ ratedSession, setRatedSession ] =
@@ -149,7 +129,7 @@ function Puzzles() {
     const [ archivePuzzles, setArchivePuzzles ] =
         useState<TrainingPuzzle[]>([]);
     const [ lichessPuzzles, setLichessPuzzles ] =
-        useState<TrainingPuzzle[]>([]);
+        useState<LichessPuzzleRecord[]>([]);
     const [ profile, setProfile ] =
         useState<PuzzleProfile>(getPuzzleProfile);
     const [ puzzle, setPuzzle ] =
@@ -217,7 +197,7 @@ function Puzzles() {
                     completed
                 ] = await Promise.all([
                     loadArchivePuzzles(),
-                    loadLichessPuzzles(),
+                    loadLichessPuzzleRecords(),
                     getCompletedPuzzleIds()
                 ]);
 
@@ -284,22 +264,30 @@ function Puzzles() {
         completedCurrentPuzzle.current = false;
     }
 
-    function availablePuzzles() {
-        const collection = source == "archive"
-            ? archivePuzzles
-            : lichessPuzzles;
+    function getNextAvailablePuzzle() {
+        if (source == "archive") {
+            return pickRandomPuzzle(filterPuzzles(
+                archivePuzzles,
+                completedIdsRef.current,
+                { category: "all" },
+                "adaptive",
+                profileRef.current
+            ));
+        }
 
-        return filterPuzzles(
-            collection,
+        const record = pickRandomPuzzle(filterLichessPuzzleRecords(
+            lichessPuzzles,
             completedIdsRef.current,
-            source == "archive" ? "all" : theme,
-            source == "archive" ? "adaptive" : difficulty,
+            themeSelection,
+            difficulty,
             profileRef.current
-        );
+        ));
+
+        return record ? normaliseLichessPuzzle(record) || undefined : undefined;
     }
 
     function startTraining() {
-        const nextPuzzle = pickRandomPuzzle(availablePuzzles());
+        const nextPuzzle = getNextAvailablePuzzle();
 
         if (!nextPuzzle) {
             setPageState("empty");
@@ -600,7 +588,71 @@ function Puzzles() {
     const reviewedFen = boardHistory[historyIndex] || puzzle?.startFen;
     const currentFen = wrongMovePreview?.fen || reviewedFen;
     const atLivePosition = historyIndex == boardHistory.length - 1;
-    const visibleThemes = puzzle ? getVisibleThemes(puzzle) : [];
+    const visibleThemes = puzzle
+        ? getVisiblePuzzleThemes(puzzle)
+        : [];
+    const filterOptions = useMemo(
+        () => getPuzzleFilterOptions(
+            lichessPuzzles,
+            themeSelection.category
+        ),
+        [lichessPuzzles, themeSelection.category]
+    );
+    const visibleFilterOptions = useMemo(() => {
+        const query = openingSearch.trim().toLocaleLowerCase(
+            i18n.resolvedLanguage
+        );
+
+        if (
+            themeSelection.category != "opening"
+            || !query
+        ) return filterOptions;
+
+        return filterOptions.filter(option => (
+            formatOpeningTag(option.value)
+                .toLocaleLowerCase(i18n.resolvedLanguage)
+                .includes(query)
+        ));
+    }, [
+        filterOptions,
+        i18n.resolvedLanguage,
+        openingSearch,
+        themeSelection.category
+    ]);
+    const categoryCounts = useMemo(() => (
+        Object.fromEntries(
+            puzzleThemeCategories.map(category => [
+                category,
+                lichessPuzzles.filter(puzzleItem => (
+                    puzzleMatchesCategory(puzzleItem, category)
+                )).length
+            ])
+        )
+    ), [lichessPuzzles]);
+    const translatedCoachMessage = t(
+        coachMessage.key,
+        coachMessage.values
+    );
+    const spokenCoachMessage = useMemo(
+        () => getCoachSpokenLine(
+            selectedCoach,
+            translatedCoachMessage,
+            [
+                puzzle?.id || "setup",
+                coachMessage.key,
+                solutionIndex
+            ].join("|"),
+            tCoach
+        ),
+        [
+            coachMessage.key,
+            puzzle?.id,
+            selectedCoach,
+            solutionIndex,
+            tCoach,
+            translatedCoachMessage
+        ]
+    );
     const calibrationRemaining = Math.max(
         0,
         CALIBRATION_ATTEMPTS - profile.attempts
@@ -910,21 +962,181 @@ function Puzzles() {
                                     <strong>{t("filters.theme")}</strong>
                                     <span>{t("filters.themeHelp")}</span>
                                 </div>
-                                <div className={styles.chips}>
-                                    {themes.map(value => (
+                                <div className={styles.themeCategories}>
+                                    {puzzleThemeCategories.map(value => (
                                         <button
                                             type="button"
                                             key={value}
-                                            className={theme == value
-                                                ? styles.chipActive
-                                                : ""
+                                            className={
+                                                themeSelection.category
+                                                == value
+                                                    ? styles.themeCategoryActive
+                                                    : ""
                                             }
-                                            onClick={() => setTheme(value)}
+                                            onClick={() => {
+                                                setThemeSelection({
+                                                    category: value
+                                                });
+                                                setOpeningSearch("");
+                                            }}
+                                            aria-pressed={
+                                                themeSelection.category
+                                                == value
+                                            }
                                         >
-                                            {t(`themes.${value}`)}
+                                            <span>
+                                                {t(
+                                                    `themeCategories.${value}`
+                                                )}
+                                            </span>
+                                            <small>
+                                                {categoryCounts[value] || 0}
+                                            </small>
                                         </button>
                                     ))}
                                 </div>
+
+                                {filterOptions.length > 0 && (
+                                    <div className={styles.subthemePanel}>
+                                        <div
+                                            className={
+                                                styles.subthemeHeading
+                                            }
+                                        >
+                                            <div>
+                                                <strong>
+                                                    {t("filters.subtheme", {
+                                                        theme: t(
+                                                            "themeCategories."
+                                                            + themeSelection
+                                                                .category
+                                                        )
+                                                    })}
+                                                </strong>
+                                                <span>
+                                                    {t(
+                                                        "filters.subthemeHelp"
+                                                    )}
+                                                </span>
+                                            </div>
+
+                                            {themeSelection.value && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => (
+                                                        setThemeSelection({
+                                                            category:
+                                                                themeSelection
+                                                                    .category
+                                                        })
+                                                    )}
+                                                >
+                                                    {t(
+                                                        "filters.clearSubtheme"
+                                                    )}
+                                                </button>
+                                            )}
+                                        </div>
+
+                                        {themeSelection.category
+                                            == "opening"
+                                            && filterOptions.length > 8
+                                            && (
+                                                <input
+                                                    type="search"
+                                                    value={openingSearch}
+                                                    onChange={event => (
+                                                        setOpeningSearch(
+                                                            event.target.value
+                                                        )
+                                                    )}
+                                                    placeholder={t(
+                                                        "filters.openingSearch"
+                                                    )}
+                                                    aria-label={t(
+                                                        "filters.openingSearch"
+                                                    )}
+                                                />
+                                            )}
+
+                                        <div className={styles.subthemeGrid}>
+                                            {visibleFilterOptions.map(option => {
+                                                const active = (
+                                                    themeSelection.kind
+                                                        == option.kind
+                                                    && themeSelection.value
+                                                        == option.value
+                                                );
+
+                                                return (
+                                                    <button
+                                                        type="button"
+                                                        key={
+                                                            `${option.kind}:`
+                                                            + option.value
+                                                        }
+                                                        className={active
+                                                            ? styles
+                                                                .subthemeActive
+                                                            : ""
+                                                        }
+                                                        onClick={() => (
+                                                            setThemeSelection(
+                                                                active
+                                                                    ? {
+                                                                        category:
+                                                                            themeSelection
+                                                                                .category
+                                                                    }
+                                                                    : {
+                                                                        category:
+                                                                            themeSelection
+                                                                                .category,
+                                                                        kind:
+                                                                            option
+                                                                                .kind,
+                                                                        value:
+                                                                            option
+                                                                                .value
+                                                                    }
+                                                            )
+                                                        )}
+                                                    >
+                                                        <span>
+                                                            {option.kind
+                                                                == "opening"
+                                                                ? formatOpeningTag(
+                                                                    option.value
+                                                                )
+                                                                : formatPuzzleTheme(
+                                                                    option.value,
+                                                                    i18n
+                                                                        .resolvedLanguage
+                                                                        || "en"
+                                                                )
+                                                            }
+                                                        </span>
+                                                        <small>
+                                                            {option.count}
+                                                        </small>
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+
+                                        {visibleFilterOptions.length == 0 && (
+                                            <p
+                                                className={
+                                                    styles.noSubthemeResults
+                                                }
+                                            >
+                                                {t(
+                                                    "filters.noSubthemeResults"
+                                                )}
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
                             </div>
 
                             <div className={styles.filterBlock}>
@@ -1020,7 +1232,7 @@ function Puzzles() {
                 <CoachCard
                     coach={selectedCoach}
                     expression={coachExpression}
-                    message={t(coachMessage.key, coachMessage.values)}
+                    message={spokenCoachMessage}
                     animationsEnabled={settings.coach.animations}
                     title={t("coach.title", { name: selectedCoach.name })}
                     onCoachClick={() => setCoachPickerOpen(true)}
@@ -1068,7 +1280,10 @@ function Puzzles() {
                             )}
                             {visibleThemes.map(value => (
                                 <span key={value}>
-                                    {t(`themes.${value}`)}
+                                    {formatPuzzleTheme(
+                                        value,
+                                        i18n.resolvedLanguage || "en"
+                                    )}
                                 </span>
                             ))}
                         </div>
@@ -1143,7 +1358,7 @@ function Puzzles() {
                     <CoachCard
                         coach={selectedCoach}
                         expression={coachExpression}
-                        message={t(coachMessage.key, coachMessage.values)}
+                        message={spokenCoachMessage}
                         animationsEnabled={settings.coach.animations}
                         title={t("coach.title", { name: selectedCoach.name })}
                         onCoachClick={() => setCoachPickerOpen(true)}

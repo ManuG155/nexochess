@@ -37,9 +37,14 @@
     },
     "filters": {
         "theme": "Tema",
-        "themeHelp": "Elige un motivo o deja la sesión variada.",
+        "themeHelp": "Elige una categoría y, si quieres, un tipo concreto.",
         "difficulty": "Dificultad",
-        "difficultyHelp": "El modo adaptativo sigue tu Elo de puzles."
+        "difficultyHelp": "El modo adaptativo sigue tu Elo de puzles.",
+        "subtheme": "Elige {{theme}}",
+        "subthemeHelp": "Selecciona un tipo o entrena toda la categoría.",
+        "clearSubtheme": "Todos",
+        "openingSearch": "Buscar apertura…",
+        "noSubthemeResults": "No se ha encontrado ninguna apertura."
     },
     "themes": {
         "all": "Variado",
@@ -153,7 +158,20 @@
         "sourceGame": "Partida de origen"
     },
     "attribution": {
-        "text": "Las posiciones de Lichess son datos de dominio público bajo CC0.",
+        "text": "Las posiciones proceden de la base pública CC0 de Lichess. NexoChess no está afiliado a Lichess.",
         "link": "Abrir la base de datos"
+    },
+    "themeCategories": {
+        "all": "Variado",
+        "checkmate": "Jaque mate",
+        "tactics": "Táctica",
+        "attack": "Ataque",
+        "defense": "Defensa",
+        "advantage": "Ventaja",
+        "endgame": "Finales",
+        "opening": "Aperturas",
+        "phase": "Fase de juego",
+        "length": "Duración",
+        "master": "Partidas de maestros"
     }
 }

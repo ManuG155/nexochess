@@ -3,8 +3,9 @@ import { mkdir } from "node:fs/promises";
 import { createInterface } from "node:readline";
 import { dirname, extname, resolve } from "node:path";
 
-const DEFAULT_LIMIT = 25_000;
+const DEFAULT_LIMIT = 50_000;
 const MIN_POPULARITY = 55;
+const MIN_PER_THEME_AND_LEVEL = 20;
 
 function readArguments() {
     const [, , inputArgument, outputArgument, limitArgument] = process.argv;
@@ -20,7 +21,7 @@ function readArguments() {
     const limit = Number.parseInt(limitArgument || "", 10);
 
     return {
-        input: resolve(inputArgument),
+        input: inputArgument == "-" ? "-" : resolve(inputArgument),
         output: resolve(outputArgument),
         limit: Number.isFinite(limit) && limit > 0
             ? limit
@@ -35,6 +36,12 @@ function normalisePuzzle(raw) {
     const rating = Number(raw.Rating ?? raw.rating);
     const popularity = Number(raw.Popularity ?? raw.popularity);
     const themes = String(raw.Themes ?? raw.themes ?? "")
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+    const openingTags = String(
+        raw.OpeningTags ?? raw.openingTags ?? ""
+    )
         .trim()
         .split(/\s+/)
         .filter(Boolean);
@@ -56,6 +63,7 @@ function normalisePuzzle(raw) {
         rating,
         popularity: Number.isFinite(popularity) ? popularity : 0,
         themes,
+        openingTags,
         gameUrl
     };
 }
@@ -72,7 +80,8 @@ function parseCSVLine(line) {
         Rating: columns[3],
         Popularity: columns[5],
         Themes: columns[7],
-        GameUrl: columns[8]
+        GameUrl: columns[8],
+        OpeningTags: columns[9]
     });
 }
 
@@ -100,18 +109,47 @@ function addToReservoir(reservoir, puzzle, seen, limit) {
     }
 }
 
+function getDifficultyBucket(rating) {
+    if (rating < 1200) return "beginner";
+    if (rating < 1800) return "intermediate";
+    if (rating < 2200) return "advanced";
+    return "expert";
+}
+
+function addToCoverageReservoir(
+    reservoirs,
+    seenByReservoir,
+    key,
+    puzzle
+) {
+    const reservoir = reservoirs.get(key) || [];
+    const seen = (seenByReservoir.get(key) || 0) + 1;
+
+    seenByReservoir.set(key, seen);
+    addToReservoir(
+        reservoir,
+        puzzle,
+        seen,
+        MIN_PER_THEME_AND_LEVEL
+    );
+    reservoirs.set(key, reservoir);
+}
+
 async function main() {
     const { input, output, limit } = readArguments();
-    const parseLine = extname(input) == ".ndjson"
+    const parseLine = input != "-" && extname(input) == ".ndjson"
         ? parseNDJSONLine
         : parseCSVLine;
 
     const lines = createInterface({
-        input: createReadStream(input),
+        input: input == "-" ? process.stdin : createReadStream(input),
         crlfDelay: Infinity
     });
 
-    const puzzles = [];
+    const generalReservoir = [];
+    const coverageReservoirs = new Map();
+    const seenByCoverageReservoir = new Map();
+    const openingCoverage = new Map();
     let accepted = 0;
 
     for await (const line of lines) {
@@ -119,9 +157,59 @@ async function main() {
         if (!puzzle) continue;
 
         accepted++;
-        addToReservoir(puzzles, puzzle, accepted, limit);
+        addToReservoir(
+            generalReservoir,
+            puzzle,
+            accepted,
+            limit
+        );
+
+        const level = getDifficultyBucket(puzzle.rating);
+
+        for (const theme of puzzle.themes) {
+            addToCoverageReservoir(
+                coverageReservoirs,
+                seenByCoverageReservoir,
+                `${theme}\u0000${level}`,
+                puzzle
+            );
+        }
+
+        for (const openingTag of puzzle.openingTags) {
+            const current = openingCoverage.get(openingTag);
+
+            if (
+                !current
+                || puzzle.popularity > current.popularity
+            ) {
+                openingCoverage.set(openingTag, puzzle);
+            }
+        }
     }
 
+    const selected = new Map();
+
+    for (const reservoir of coverageReservoirs.values()) {
+        reservoir.forEach(puzzle => selected.set(puzzle.id, puzzle));
+    }
+
+    for (const puzzle of openingCoverage.values()) {
+        selected.set(puzzle.id, puzzle);
+    }
+
+    for (const puzzle of generalReservoir) {
+        if (selected.size >= limit) break;
+        selected.set(puzzle.id, puzzle);
+    }
+
+    if (selected.size > limit) {
+        throw new Error(
+            `The ${limit} puzzle limit is too small to preserve every `
+            + "observed theme, rating band and opening tag."
+        );
+    }
+
+    const puzzles = [...selected.values()];
     puzzles.sort((left, right) => left.id.localeCompare(right.id));
 
     await mkdir(dirname(output), { recursive: true });
@@ -132,7 +220,16 @@ async function main() {
         source: "Lichess Puzzle Database",
         sourceUrl: "https://database.lichess.org/#puzzles",
         license: "CC0-1.0",
+        sourceSha256: process.env.LICHESS_SOURCE_SHA256 || undefined,
         generatedAt: new Date().toISOString(),
+        coverage: {
+            themes: [...new Set(
+                puzzles.flatMap(puzzle => puzzle.themes)
+            )].sort(),
+            openingTags: [...new Set(
+                puzzles.flatMap(puzzle => puzzle.openingTags)
+            )].sort()
+        },
         puzzles
     }));
 
@@ -143,7 +240,10 @@ async function main() {
 
     console.log(
         `Wrote ${puzzles.length} puzzles from ${accepted} accepted rows `
-        + `to ${output}`
+        + `to ${output}. Coverage: `
+        + `${new Set(puzzles.flatMap(puzzle => puzzle.themes)).size} themes, `
+        + `${new Set(puzzles.flatMap(puzzle => puzzle.openingTags)).size} `
+        + "opening tags."
     );
 }
 

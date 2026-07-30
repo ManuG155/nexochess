@@ -37,9 +37,14 @@
     },
     "filters": {
         "theme": "主题",
-        "themeHelp": "选择一种战术，或保留混合训练。",
+        "themeHelp": "选择一个类别，并可继续选择具体类型。",
         "difficulty": "难度",
-        "difficultyHelp": "自适应模式会跟随你的谜题等级分。"
+        "difficultyHelp": "自适应模式会跟随你的谜题等级分。",
+        "subtheme": "选择{{theme}}",
+        "subthemeHelp": "选择具体类型，或练习整个类别。",
+        "clearSubtheme": "全部",
+        "openingSearch": "搜索开局…",
+        "noSubthemeResults": "未找到匹配的开局。"
     },
     "themes": {
         "all": "混合",
@@ -52,16 +57,40 @@
         "defense": "防守"
     },
     "difficulties": {
-        "adaptive": { "title": "自适应", "range": "你的水平" },
-        "beginner": { "title": "入门", "range": "< 1200" },
-        "intermediate": { "title": "中级", "range": "1200–1799" },
-        "advanced": { "title": "高级", "range": "1800–2199" },
-        "expert": { "title": "专家", "range": "2200+" }
+        "adaptive": {
+            "title": "自适应",
+            "range": "你的水平"
+        },
+        "beginner": {
+            "title": "入门",
+            "range": "< 1200"
+        },
+        "intermediate": {
+            "title": "中级",
+            "range": "1200–1799"
+        },
+        "advanced": {
+            "title": "高级",
+            "range": "1800–2199"
+        },
+        "expert": {
+            "title": "专家",
+            "range": "2200+"
+        }
     },
     "options": {
-        "rated": { "title": "计分", "body": "调整我的谜题等级分" },
-        "hints": { "title": "提示", "body": "允许教练显示一步棋" },
-        "solution": { "title": "答案", "body": "允许显示完整变化" }
+        "rated": {
+            "title": "计分",
+            "body": "调整我的谜题等级分"
+        },
+        "hints": {
+            "title": "提示",
+            "body": "允许教练显示一步棋"
+        },
+        "solution": {
+            "title": "答案",
+            "body": "允许显示完整变化"
+        }
     },
     "coach": {
         "title": "{{name}}，你的教练",
@@ -83,7 +112,10 @@
         "positionError": "这条变化中有无法安全重现的局面，已停止播放。",
         "changeFilters": "随时可以调整训练；已完成的局面仍会保存。"
     },
-    "colours": { "white": "白方", "black": "黑方" },
+    "colours": {
+        "white": "白方",
+        "black": "黑方"
+    },
     "states": {
         "loadingTitle": "正在准备训练",
         "loadingBody": "读取你的档案并加载本地 Lichess 题包。",
@@ -126,7 +158,20 @@
         "sourceGame": "来源对局"
     },
     "attribution": {
-        "text": "Lichess 谜题局面是 CC0 公共领域数据。",
+        "text": "局面来自 Lichess 的公共 CC0 谜题数据库。NexoChess 与 Lichess 无隶属关系。",
         "link": "打开数据库"
+    },
+    "themeCategories": {
+        "all": "混合",
+        "checkmate": "将杀",
+        "tactics": "战术",
+        "attack": "进攻",
+        "defense": "防守",
+        "advantage": "优势",
+        "endgame": "残局",
+        "opening": "开局",
+        "phase": "对局阶段",
+        "length": "长度",
+        "master": "大师对局"
     }
 }

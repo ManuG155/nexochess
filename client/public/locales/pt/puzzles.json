@@ -37,9 +37,14 @@
     },
     "filters": {
         "theme": "Tema",
-        "themeHelp": "Escolha um motivo ou mantenha a sessão variada.",
+        "themeHelp": "Escolha uma categoria e, se quiser, um tipo específico.",
         "difficulty": "Dificuldade",
-        "difficultyHelp": "O modo adaptativo segue o seu rating de puzzles."
+        "difficultyHelp": "O modo adaptativo segue o seu rating de puzzles.",
+        "subtheme": "Escolher {{theme}}",
+        "subthemeHelp": "Escolha um tipo ou treine a categoria inteira.",
+        "clearSubtheme": "Todos",
+        "openingSearch": "Procurar abertura…",
+        "noSubthemeResults": "Nenhuma abertura correspondente foi encontrada."
     },
     "themes": {
         "all": "Variado",
@@ -52,16 +57,40 @@
         "defense": "Defesa"
     },
     "difficulties": {
-        "adaptive": { "title": "Adaptativa", "range": "O seu nível" },
-        "beginner": { "title": "Iniciante", "range": "< 1200" },
-        "intermediate": { "title": "Intermédia", "range": "1200–1799" },
-        "advanced": { "title": "Avançada", "range": "1800–2199" },
-        "expert": { "title": "Especialista", "range": "2200+" }
+        "adaptive": {
+            "title": "Adaptativa",
+            "range": "O seu nível"
+        },
+        "beginner": {
+            "title": "Iniciante",
+            "range": "< 1200"
+        },
+        "intermediate": {
+            "title": "Intermédia",
+            "range": "1200–1799"
+        },
+        "advanced": {
+            "title": "Avançada",
+            "range": "1800–2199"
+        },
+        "expert": {
+            "title": "Especialista",
+            "range": "2200+"
+        }
     },
     "options": {
-        "rated": { "title": "Avaliada", "body": "Ajustar o meu rating de puzzles" },
-        "hints": { "title": "Dicas", "body": "Permitir ao treinador mostrar uma jogada" },
-        "solution": { "title": "Solução", "body": "Permitir revelar a variante completa" }
+        "rated": {
+            "title": "Avaliada",
+            "body": "Ajustar o meu rating de puzzles"
+        },
+        "hints": {
+            "title": "Dicas",
+            "body": "Permitir ao treinador mostrar uma jogada"
+        },
+        "solution": {
+            "title": "Solução",
+            "body": "Permitir revelar a variante completa"
+        }
     },
     "coach": {
         "title": "{{name}}, o seu treinador",
@@ -83,7 +112,10 @@
         "positionError": "Esta variante contém uma posição que não consigo reproduzir com segurança; parei-a.",
         "changeFilters": "Ajuste a sessão quando quiser; as posições concluídas continuam guardadas."
     },
-    "colours": { "white": "Brancas", "black": "Pretas" },
+    "colours": {
+        "white": "Brancas",
+        "black": "Pretas"
+    },
     "states": {
         "loadingTitle": "A preparar o treino",
         "loadingBody": "A ler o seu Arquivo e a carregar o pacote local do Lichess.",
@@ -126,7 +158,20 @@
         "sourceGame": "Partida de origem"
     },
     "attribution": {
-        "text": "As posições do Lichess são dados de domínio público sob CC0.",
+        "text": "As posições vêm da base pública CC0 de puzzles do Lichess. A NexoChess não é afiliada ao Lichess.",
         "link": "Abrir a base de dados"
+    },
+    "themeCategories": {
+        "all": "Variado",
+        "checkmate": "Xeque-mate",
+        "tactics": "Táticas",
+        "attack": "Ataque",
+        "defense": "Defesa",
+        "advantage": "Vantagem",
+        "endgame": "Finais",
+        "opening": "Aberturas",
+        "phase": "Fase do jogo",
+        "length": "Duração",
+        "master": "Partidas de mestres"
     }
 }

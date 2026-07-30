@@ -3,15 +3,24 @@ import Evaluation from "shared/types/game/position/Evaluation";
 
 export type PuzzleSource = "archive" | "lichess";
 
-export type PuzzleTheme =
+export type PuzzleThemeCategory =
     | "all"
-    | "mate"
-    | "fork"
-    | "pin"
+    | "checkmate"
+    | "tactics"
+    | "attack"
+    | "defense"
+    | "advantage"
     | "endgame"
     | "opening"
-    | "sacrifice"
-    | "defense";
+    | "phase"
+    | "length"
+    | "master";
+
+export interface PuzzleThemeSelection {
+    category: PuzzleThemeCategory;
+    kind?: "theme" | "opening";
+    value?: string;
+}
 
 export type PuzzleDifficulty =
     | "adaptive"
@@ -30,6 +39,7 @@ export interface TrainingPuzzle {
     evaluation: Evaluation;
     rating?: number;
     themes: string[];
+    openingTags: string[];
     gameUrl?: string;
     classification?: Classification;
     badMove?: string;
@@ -44,6 +54,7 @@ export interface LichessPuzzleRecord {
     rating: number;
     popularity: number;
     themes: string[];
+    openingTags: string[];
     gameUrl?: string;
 }
 
@@ -51,6 +62,7 @@ export interface LichessPuzzlePack {
     source: string;
     sourceUrl: string;
     license: "CC0-1.0";
+    sourceSha256?: string;
     generatedAt: string;
     puzzles: LichessPuzzleRecord[];
 }

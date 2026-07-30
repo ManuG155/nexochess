@@ -18,10 +18,11 @@ import {
     LichessPuzzleRecord,
     PuzzleDifficulty,
     PuzzleProfile,
-    PuzzleTheme,
+    PuzzleThemeSelection,
     TrainingPuzzle
 } from "../types";
 import { CALIBRATION_ATTEMPTS } from "./progress";
+import { puzzleMatchesThemeSelection } from "./themeCatalogue";
 
 const negativeClassifications = new Set<Classification>([
     Classification.INACCURACY,
@@ -112,6 +113,7 @@ export async function loadArchivePuzzles(): Promise<TrainingPuzzle[]> {
                 solver,
                 evaluation: line.evaluation,
                 themes: [classification],
+                openingTags: [],
                 classification,
                 badMove: node.state.move?.san,
                 gameLabel: `${whiteName} — ${blackName}`,
@@ -123,7 +125,7 @@ export async function loadArchivePuzzles(): Promise<TrainingPuzzle[]> {
     return puzzles;
 }
 
-function normaliseLichessPuzzle(
+export function normaliseLichessPuzzle(
     record: LichessPuzzleRecord
 ): TrainingPuzzle | null {
     try {
@@ -153,6 +155,7 @@ function normaliseLichessPuzzle(
             },
             rating: record.rating,
             themes: record.themes,
+            openingTags: record.openingTags || [],
             gameUrl: record.gameUrl
         };
     } catch {
@@ -160,39 +163,17 @@ function normaliseLichessPuzzle(
     }
 }
 
-export async function loadLichessPuzzles() {
+export async function loadLichessPuzzleRecords() {
     const response = await fetch("/data/lichess-puzzles.json");
     if (!response.ok) return [];
 
     const pack = await response.json() as LichessPuzzlePack;
 
-    return pack.puzzles
-        .map(normaliseLichessPuzzle)
-        .filter((puzzle): puzzle is TrainingPuzzle => Boolean(puzzle));
-}
-
-function matchesTheme(puzzle: TrainingPuzzle, theme: PuzzleTheme) {
-    if (theme == "all") return true;
-
-    if (theme == "mate") {
-        return puzzle.themes.some(value => (
-            value == "mate"
-            || /^mateIn\d+$/.test(value)
-        ));
-    }
-
-    if (theme == "defense") {
-        return puzzle.themes.some(value => (
-            value == "defensiveMove"
-            || value == "equality"
-        ));
-    }
-
-    return puzzle.themes.includes(theme);
+    return pack.puzzles;
 }
 
 function matchesDifficulty(
-    puzzle: TrainingPuzzle,
+    puzzle: { rating?: number },
     difficulty: PuzzleDifficulty,
     profile: PuzzleProfile
 ) {
@@ -220,18 +201,32 @@ function matchesDifficulty(
 export function filterPuzzles(
     puzzles: TrainingPuzzle[],
     completed: Set<string>,
-    theme: PuzzleTheme,
+    theme: PuzzleThemeSelection,
     difficulty: PuzzleDifficulty,
     profile: PuzzleProfile
 ) {
     return puzzles.filter(puzzle => (
         !completed.has(puzzle.id)
-        && matchesTheme(puzzle, theme)
+        && puzzleMatchesThemeSelection(puzzle, theme)
         && matchesDifficulty(puzzle, difficulty, profile)
     ));
 }
 
-export function pickRandomPuzzle(puzzles: TrainingPuzzle[]) {
+export function filterLichessPuzzleRecords(
+    puzzles: LichessPuzzleRecord[],
+    completed: Set<string>,
+    theme: PuzzleThemeSelection,
+    difficulty: PuzzleDifficulty,
+    profile: PuzzleProfile
+) {
+    return puzzles.filter(puzzle => (
+        !completed.has(`lichess:${puzzle.id}`)
+        && puzzleMatchesThemeSelection(puzzle, theme)
+        && matchesDifficulty(puzzle, difficulty, profile)
+    ));
+}
+
+export function pickRandomPuzzle<T>(puzzles: T[]) {
     if (puzzles.length == 0) return;
 
     const randomValues = new Uint32Array(1);

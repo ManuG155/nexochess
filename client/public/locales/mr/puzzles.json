@@ -37,9 +37,14 @@
     },
     "filters": {
         "theme": "विषय",
-        "themeHelp": "एक नमुना निवडा किंवा मिश्र सराव ठेवा.",
+        "themeHelp": "एक श्रेणी निवडा आणि हवे असल्यास विशिष्ट प्रकार निवडा.",
         "difficulty": "अवघडपणा",
-        "difficultyHelp": "अनुकूल मोड तुमच्या कोडे रेटिंगनुसार बदलतो."
+        "difficultyHelp": "अनुकूल मोड तुमच्या कोडे रेटिंगनुसार बदलतो.",
+        "subtheme": "{{theme}} निवडा",
+        "subthemeHelp": "विशिष्ट प्रकार निवडा किंवा संपूर्ण श्रेणीचा सराव करा.",
+        "clearSubtheme": "सर्व",
+        "openingSearch": "प्रारंभ शोधा…",
+        "noSubthemeResults": "जुळणारा प्रारंभ सापडला नाही."
     },
     "themes": {
         "all": "मिश्र",
@@ -52,16 +57,40 @@
         "defense": "बचाव"
     },
     "difficulties": {
-        "adaptive": { "title": "अनुकूल", "range": "तुमचा स्तर" },
-        "beginner": { "title": "नवशिक्या", "range": "< 1200" },
-        "intermediate": { "title": "मध्यम", "range": "1200–1799" },
-        "advanced": { "title": "प्रगत", "range": "1800–2199" },
-        "expert": { "title": "तज्ज्ञ", "range": "2200+" }
+        "adaptive": {
+            "title": "अनुकूल",
+            "range": "तुमचा स्तर"
+        },
+        "beginner": {
+            "title": "नवशिक्या",
+            "range": "< 1200"
+        },
+        "intermediate": {
+            "title": "मध्यम",
+            "range": "1200–1799"
+        },
+        "advanced": {
+            "title": "प्रगत",
+            "range": "1800–2199"
+        },
+        "expert": {
+            "title": "तज्ज्ञ",
+            "range": "2200+"
+        }
     },
     "options": {
-        "rated": { "title": "रेटेड", "body": "माझे कोडे रेटिंग बदला" },
-        "hints": { "title": "सूचना", "body": "प्रशिक्षकाला एक चाल दाखवू द्या" },
-        "solution": { "title": "उत्तर", "body": "संपूर्ण चालक्रम दाखवू द्या" }
+        "rated": {
+            "title": "रेटेड",
+            "body": "माझे कोडे रेटिंग बदला"
+        },
+        "hints": {
+            "title": "सूचना",
+            "body": "प्रशिक्षकाला एक चाल दाखवू द्या"
+        },
+        "solution": {
+            "title": "उत्तर",
+            "body": "संपूर्ण चालक्रम दाखवू द्या"
+        }
     },
     "coach": {
         "title": "{{name}}, तुमचा प्रशिक्षक",
@@ -83,7 +112,10 @@
         "positionError": "या चालक्रमातील एक स्थिती सुरक्षितपणे तयार करता आली नाही, म्हणून तो थांबवला.",
         "changeFilters": "सत्र कधीही बदला; पूर्ण केलेल्या स्थिती जतन राहतील."
     },
-    "colours": { "white": "पांढऱ्या", "black": "काळ्या" },
+    "colours": {
+        "white": "पांढऱ्या",
+        "black": "काळ्या"
+    },
     "states": {
         "loadingTitle": "सराव तयार होत आहे",
         "loadingBody": "तुमचा संग्रह वाचत आहोत आणि स्थानिक Lichess संच लोड करत आहोत.",
@@ -126,7 +158,20 @@
         "sourceGame": "मूळ डाव"
     },
     "attribution": {
-        "text": "Lichess कोडे स्थिती CC0 सार्वजनिक क्षेत्रातील डेटा आहेत.",
+        "text": "स्थिती Lichess च्या सार्वजनिक CC0 कोडे डेटाबेसमधून घेतल्या आहेत. NexoChess चा Lichess शी संबंध नाही.",
         "link": "डेटाबेस उघडा"
+    },
+    "themeCategories": {
+        "all": "मिश्र",
+        "checkmate": "शह-मात",
+        "tactics": "डावपेच",
+        "attack": "हल्ला",
+        "defense": "बचाव",
+        "advantage": "फायदा",
+        "endgame": "अंतिम खेळ",
+        "opening": "प्रारंभ",
+        "phase": "खेळाचा टप्पा",
+        "length": "लांबी",
+        "master": "मास्टर खेळ"
     }
 }

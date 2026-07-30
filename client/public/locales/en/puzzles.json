@@ -37,9 +37,14 @@
     },
     "filters": {
         "theme": "Theme",
-        "themeHelp": "Choose one motif or leave the session mixed.",
+        "themeHelp": "Choose a category, then narrow it to a specific type if you want.",
         "difficulty": "Difficulty",
-        "difficultyHelp": "Adaptive mode follows your puzzle rating."
+        "difficultyHelp": "Adaptive mode follows your puzzle rating.",
+        "subtheme": "Choose {{theme}}",
+        "subthemeHelp": "Pick a specific type or train the whole category.",
+        "clearSubtheme": "All",
+        "openingSearch": "Search openings…",
+        "noSubthemeResults": "No matching opening was found."
     },
     "themes": {
         "all": "Mixed",
@@ -153,7 +158,20 @@
         "sourceGame": "Source game"
     },
     "attribution": {
-        "text": "Lichess puzzle positions are public-domain data under CC0.",
+        "text": "Positions come from the public CC0 Lichess Puzzle Database. NexoChess is not affiliated with Lichess.",
         "link": "Open database"
+    },
+    "themeCategories": {
+        "all": "Mixed",
+        "checkmate": "Checkmate",
+        "tactics": "Tactics",
+        "attack": "Attack",
+        "defense": "Defence",
+        "advantage": "Advantage",
+        "endgame": "Endgames",
+        "opening": "Openings",
+        "phase": "Game phase",
+        "length": "Length",
+        "master": "Master games"
     }
 }

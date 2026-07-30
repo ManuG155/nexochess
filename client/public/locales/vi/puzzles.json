@@ -37,9 +37,14 @@
     },
     "filters": {
         "theme": "Chủ đề",
-        "themeHelp": "Chọn một mô-típ hoặc giữ buổi luyện hỗn hợp.",
+        "themeHelp": "Chọn một nhóm rồi chọn loại cụ thể nếu muốn.",
         "difficulty": "Độ khó",
-        "difficultyHelp": "Chế độ thích ứng theo xếp hạng câu đố của bạn."
+        "difficultyHelp": "Chế độ thích ứng theo xếp hạng câu đố của bạn.",
+        "subtheme": "Chọn {{theme}}",
+        "subthemeHelp": "Chọn một loại hoặc luyện cả nhóm.",
+        "clearSubtheme": "Tất cả",
+        "openingSearch": "Tìm khai cuộc…",
+        "noSubthemeResults": "Không tìm thấy khai cuộc phù hợp."
     },
     "themes": {
         "all": "Hỗn hợp",
@@ -52,16 +57,40 @@
         "defense": "Phòng thủ"
     },
     "difficulties": {
-        "adaptive": { "title": "Thích ứng", "range": "Trình độ của bạn" },
-        "beginner": { "title": "Mới bắt đầu", "range": "< 1200" },
-        "intermediate": { "title": "Trung cấp", "range": "1200–1799" },
-        "advanced": { "title": "Nâng cao", "range": "1800–2199" },
-        "expert": { "title": "Chuyên gia", "range": "2200+" }
+        "adaptive": {
+            "title": "Thích ứng",
+            "range": "Trình độ của bạn"
+        },
+        "beginner": {
+            "title": "Mới bắt đầu",
+            "range": "< 1200"
+        },
+        "intermediate": {
+            "title": "Trung cấp",
+            "range": "1200–1799"
+        },
+        "advanced": {
+            "title": "Nâng cao",
+            "range": "1800–2199"
+        },
+        "expert": {
+            "title": "Chuyên gia",
+            "range": "2200+"
+        }
     },
     "options": {
-        "rated": { "title": "Có xếp hạng", "body": "Điều chỉnh xếp hạng câu đố" },
-        "hints": { "title": "Gợi ý", "body": "Cho phép huấn luyện viên chỉ một nước" },
-        "solution": { "title": "Lời giải", "body": "Cho phép hiện toàn bộ biến" }
+        "rated": {
+            "title": "Có xếp hạng",
+            "body": "Điều chỉnh xếp hạng câu đố"
+        },
+        "hints": {
+            "title": "Gợi ý",
+            "body": "Cho phép huấn luyện viên chỉ một nước"
+        },
+        "solution": {
+            "title": "Lời giải",
+            "body": "Cho phép hiện toàn bộ biến"
+        }
     },
     "coach": {
         "title": "{{name}}, huấn luyện viên",
@@ -83,7 +112,10 @@
         "positionError": "Biến này có thế cờ không thể tái tạo an toàn nên đã dừng.",
         "changeFilters": "Bạn có thể đổi buổi luyện bất cứ lúc nào; các thế đã hoàn thành vẫn được lưu."
     },
-    "colours": { "white": "Trắng", "black": "Đen" },
+    "colours": {
+        "white": "Trắng",
+        "black": "Đen"
+    },
     "states": {
         "loadingTitle": "Đang chuẩn bị buổi luyện",
         "loadingBody": "Đang đọc Kho lưu trữ và tải gói Lichess cục bộ.",
@@ -126,7 +158,20 @@
         "sourceGame": "Ván nguồn"
     },
     "attribution": {
-        "text": "Các thế câu đố Lichess là dữ liệu phạm vi công cộng CC0.",
+        "text": "Các thế cờ đến từ cơ sở câu đố công khai CC0 của Lichess. NexoChess không liên kết với Lichess.",
         "link": "Mở cơ sở dữ liệu"
+    },
+    "themeCategories": {
+        "all": "Hỗn hợp",
+        "checkmate": "Chiếu hết",
+        "tactics": "Chiến thuật",
+        "attack": "Tấn công",
+        "defense": "Phòng thủ",
+        "advantage": "Lợi thế",
+        "endgame": "Tàn cuộc",
+        "opening": "Khai cuộc",
+        "phase": "Giai đoạn",
+        "length": "Độ dài",
+        "master": "Ván đấu cao thủ"
     }
 }
