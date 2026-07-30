@@ -101,6 +101,7 @@ function GameSearchMenu({
     return <Dialog
         className={styles.dialog}
         onClose={onClose}
+        closeOnBackdrop
     >
         <div className={styles.header}>
             <span className={styles.eyebrow}>
@@ -158,6 +159,7 @@ function GameSearchMenu({
                         game={game}
                         perspective={getColourPlayed(game, username)}
                         onClick={selectListing}
+                        visualStyle="nexo"
                     />)
                     : <div className={styles.message}>
                         {t("gameSearchMenu.noGamesFound")}

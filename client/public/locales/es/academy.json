@@ -1,0 +1,123 @@
+{
+  "hero": {
+    "eyebrow": "Academia NexoChess",
+    "title": "Entiende lo que dice cada jugada",
+    "subtitle": "Aprende el lenguaje del ajedrez con lecciones cortas y visuales. Sin conocimientos previos ni tochos de texto.",
+    "start": "Empezar por la notación",
+    "progress": "Módulos de la Academia"
+  },
+  "modules": {
+    "notation": "Notación",
+    "movement": "Cómo se mueven",
+    "classifications": "Calidad de jugada",
+    "challenge": "Reto rápido"
+  },
+  "notation": {
+    "kicker": "Módulo 1 · Notación",
+    "title": "Lee una partida sin tener que traducirla",
+    "intro": "La notación es un registro compacto de lo ocurrido. Las letras de las piezas siempre están en inglés y los peones no usan ninguna.",
+    "piecesTitle": "Las seis piezas",
+    "piecesHelp": "La primera mayúscula te dice qué pieza se ha movido.",
+    "pawnRule": "Una jugada de peón empieza directamente por la casilla de destino: e4 significa que un peón ha ido a e4.",
+    "examplesTitle": "Descifra una jugada",
+    "examplesHelp": "Pulsa un ejemplo y comprueba cómo cambia el significado con cada símbolo.",
+    "pieces": {
+      "K": { "name": "Rey" },
+      "Q": { "name": "Dama" },
+      "R": { "name": "Torre" },
+      "B": { "name": "Alfil" },
+      "N": { "name": "Caballo" },
+      "P": { "name": "Peón" }
+    },
+    "examples": {
+      "e4": "Un peón avanza a e4. Los peones no escriben ninguna letra.",
+      "Nf3": "El caballo (N) se mueve a f3.",
+      "Bxf7+": "El alfil (B) captura (x) en f7 y da jaque (+).",
+      "O-O": "El rey enroca por el flanco de rey.",
+      "Rae1": "La torre (R) de la columna a se mueve a e1. La «a» la distingue de la otra torre.",
+      "e8=Q#": "Un peón llega a e8, corona como dama (=Q) y da jaque mate (#)."
+    }
+  },
+  "movement": {
+    "kicker": "Módulo 2 · Movimiento",
+    "title": "Mira el tablero antes de memorizar reglas",
+    "intro": "Elige una pieza. El tablero marca todas las casillas a las que podría llegar desde d4 si el resto estuviera vacío.",
+    "choosePiece": "Elige una pieza",
+    "move": "Movimiento disponible",
+    "capture": "Captura del peón",
+    "boardLabel": "Casillas de movimiento del {{piece}}",
+    "pieces": {
+      "K": "Una casilla en cualquier dirección. Nunca puede entrar en una casilla atacada por el rival.",
+      "Q": "Cualquier número de casillas por filas, columnas o diagonales. No puede saltar otras piezas.",
+      "R": "Cualquier número de casillas en horizontal o vertical. No puede saltar otras piezas.",
+      "B": "Cualquier número de casillas en diagonal. Un alfil permanece siempre en casillas del mismo color.",
+      "N": "En forma de L: dos casillas en una dirección y una hacia un lado. Es la única pieza que puede saltar.",
+      "P": "Avanza una casilla de frente, pero captura una en diagonal. Desde su salida puede avanzar dos."
+    }
+  },
+  "classifications": {
+    "kicker": "Módulo 3 · Calidad de jugada",
+    "title": "Por qué una jugada recibe cada etiqueta",
+    "intro": "NexoChess compara tu jugada con la posición y las alternativas del motor. Pulsa cualquier etiqueta para verla en lenguaje normal.",
+    "selected": "Clasificación seleccionada",
+    "engineNote": "Una misma jugada puede recibir otra etiqueta en una posición distinta: importan el contexto, las alternativas y el cambio en las posibilidades de ganar.",
+    "descriptions": {
+      "brilliant": "Una jugada muy fuerte y difícil que deja material expuesto o lo sacrifica de forma deliberada por una idea sólida.",
+      "critical": "Una gran jugada en una posición exigente donde las demás alternativas serias son bastante peores.",
+      "best": "La primera opción del motor, verificada sin una pérdida relevante en las posibilidades de ganar.",
+      "excellent": "Muy cercana a la mejor opción. Conserva prácticamente todo el valor de la posición.",
+      "okay": "Una jugada sólida que mantiene la partida, aunque existía una opción más precisa.",
+      "inaccuracy": "Un pequeño desliz. La posición empeora algo, pero la partida ni mucho menos se pierde por ello.",
+      "mistake": "Un error importante que reduce claramente tus posibilidades de ganar o hacer tablas.",
+      "miss": "El rival te dio una oportunidad importante y esta jugada no supo aprovecharla.",
+      "blunder": "Un error grave que provoca un vuelco grande, como perder material, una ventaja o la partida.",
+      "forced": "Solo existía una jugada legal, así que en realidad no había ninguna decisión que tomar.",
+      "theory": "Una jugada de apertura reconocida que todavía pertenece a la teoría conocida.",
+      "risky": "Una etiqueta heredada para una idea dudosa o innecesariamente peligrosa. Se conserva por compatibilidad y aparece muy poco."
+    }
+  },
+  "challenge": {
+    "kicker": "Módulo 4 · Reto rápido",
+    "title": "Tres jugadas. Sin examen eterno.",
+    "intro": "Elige qué significa cada notación. Recibirás la explicación al momento.",
+    "score": "{{score}} de {{total}} correctas",
+    "correct": "Correcto",
+    "incorrect": "Casi, pero no",
+    "completeTitle": "Ya puedes leer una parte muy útil de un PGN",
+    "completeBody": "Abre cualquier partida analizada e intenta reconocer estos símbolos en jugadas reales.",
+    "reset": "Repetir reto",
+    "questions": {
+      "q1": {
+        "prompt": "¿Qué ha ocurrido en f7?",
+        "options": {
+          "a": { "key": "captureCheck", "label": "Un alfil ha capturado y dado jaque" },
+          "b": { "key": "bishopMove", "label": "Un alfil se ha movido sin capturar" },
+          "c": { "key": "mate", "label": "El alfil ha dado jaque mate" }
+        },
+        "explanation": "B significa alfil, x indica captura y + significa jaque."
+      },
+      "q2": {
+        "prompt": "¿Qué significa la notación del enroque largo?",
+        "options": {
+          "a": { "key": "shortCastle", "label": "Enroque por el flanco de rey" },
+          "b": { "key": "longCastle", "label": "Enroque por el flanco de dama" },
+          "c": { "key": "queenMove", "label": "La dama se mueve tres casillas" }
+        },
+        "explanation": "O-O-O es el enroque largo; O-O es el enroque corto."
+      },
+      "q3": {
+        "prompt": "¿Qué tiene de especial esta jugada de peón?",
+        "options": {
+          "a": { "key": "queenCheck", "label": "Corona como dama y da jaque" },
+          "b": { "key": "promotionMate", "label": "Corona como dama y da jaque mate" },
+          "c": { "key": "queenCapture", "label": "Una dama captura en e8" }
+        },
+        "explanation": "=Q indica coronación como dama y # significa jaque mate."
+      }
+    }
+  },
+  "actions": {
+    "previous": "Anterior",
+    "next": "Siguiente"
+  }
+}

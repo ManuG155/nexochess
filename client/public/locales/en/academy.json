@@ -1,0 +1,123 @@
+{
+  "hero": {
+    "eyebrow": "NexoChess Academy",
+    "title": "Understand what every move says",
+    "subtitle": "Learn the language of chess in short, visual lessons. No prior knowledge and no walls of text.",
+    "start": "Start with notation",
+    "progress": "Academy modules"
+  },
+  "modules": {
+    "notation": "Notation",
+    "movement": "How pieces move",
+    "classifications": "Move quality",
+    "challenge": "Quick challenge"
+  },
+  "notation": {
+    "kicker": "Module 1 · Notation",
+    "title": "Read a game without translating it",
+    "intro": "Chess notation is a compact record of what happened. Piece letters are always in English, while pawns use no letter at all.",
+    "piecesTitle": "The six pieces",
+    "piecesHelp": "The first capital letter tells you which piece moved.",
+    "pawnRule": "A pawn move starts directly with its destination square: e4 means a pawn moved to e4.",
+    "examplesTitle": "Decode a move",
+    "examplesHelp": "Tap an example and see how each symbol changes the meaning.",
+    "pieces": {
+      "K": { "name": "King" },
+      "Q": { "name": "Queen" },
+      "R": { "name": "Rook" },
+      "B": { "name": "Bishop" },
+      "N": { "name": "Knight" },
+      "P": { "name": "Pawn" }
+    },
+    "examples": {
+      "e4": "A pawn moves to e4. Pawns do not write a letter.",
+      "Nf3": "The knight (N) moves to f3.",
+      "Bxf7+": "The bishop (B) captures (x) on f7 and gives check (+).",
+      "O-O": "The king castles on the kingside.",
+      "Rae1": "The rook (R) from the a-file moves to e1. The “a” distinguishes it from the other rook.",
+      "e8=Q#": "A pawn reaches e8, promotes to a queen (=Q) and gives checkmate (#)."
+    }
+  },
+  "movement": {
+    "kicker": "Module 2 · Movement",
+    "title": "See the board before memorising rules",
+    "intro": "Choose a piece. The board highlights every square it could reach from d4 on an otherwise empty board.",
+    "choosePiece": "Choose a piece",
+    "move": "Available move",
+    "capture": "Pawn capture",
+    "boardLabel": "Movement squares for the {{piece}}",
+    "pieces": {
+      "K": "One square in any direction. It may never move onto a square attacked by the opponent.",
+      "Q": "Any number of squares along ranks, files or diagonals. It cannot jump over pieces.",
+      "R": "Any number of squares horizontally or vertically. It cannot jump over pieces.",
+      "B": "Any number of squares diagonally. A bishop stays on the same square colour for the whole game.",
+      "N": "In an L: two squares in one direction and one sideways. It is the only piece that can jump over others.",
+      "P": "One square forward, but it captures one square diagonally. From its starting square it may advance two."
+    }
+  },
+  "classifications": {
+    "kicker": "Module 3 · Move quality",
+    "title": "Why a move gets each label",
+    "intro": "NexoChess compares your move with the position and the engine alternatives. Tap any label for its plain-language meaning.",
+    "selected": "Selected classification",
+    "engineNote": "The same move can receive a different label in another position: context, alternatives and the change in winning chances all matter.",
+    "descriptions": {
+      "brilliant": "A very strong, difficult move that deliberately leaves material exposed or sacrifices it for a sound idea.",
+      "critical": "A great move in a demanding position where the other serious alternatives are substantially worse.",
+      "best": "The engine's top move, verified without a meaningful loss in winning chances.",
+      "excellent": "Very close to the best choice. It preserves almost all of the position's value.",
+      "okay": "A sound move that keeps the game on track, although a more precise option existed.",
+      "inaccuracy": "A small slip. The position becomes somewhat worse, but the game is far from lost because of it.",
+      "mistake": "A significant error that clearly reduces your winning or drawing chances.",
+      "miss": "The opponent gave you an important opportunity and this move failed to take advantage of it.",
+      "blunder": "A major error that causes a large swing, such as losing material, an advantage or the game.",
+      "forced": "There was only one legal move, so there was no real decision to make.",
+      "theory": "A recognised opening move that remains inside known opening theory.",
+      "risky": "A legacy label for a dubious or unnecessarily dangerous idea. It is kept for compatibility and appears rarely."
+    }
+  },
+  "challenge": {
+    "kicker": "Module 4 · Quick challenge",
+    "title": "Three moves. No endless exam.",
+    "intro": "Choose what each notation means. You get the explanation immediately.",
+    "score": "{{score}} of {{total}} correct",
+    "correct": "Correct",
+    "incorrect": "Not quite",
+    "completeTitle": "You can already read a useful chunk of a PGN",
+    "completeBody": "Open any analysed game and try to identify these symbols in real moves.",
+    "reset": "Try again",
+    "questions": {
+      "q1": {
+        "prompt": "What happened on f7?",
+        "options": {
+          "a": { "key": "captureCheck", "label": "A bishop captured there and gave check" },
+          "b": { "key": "bishopMove", "label": "A bishop moved there without capturing" },
+          "c": { "key": "mate", "label": "The bishop gave checkmate" }
+        },
+        "explanation": "B is bishop, x means capture and + means check."
+      },
+      "q2": {
+        "prompt": "What does the longer castling notation mean?",
+        "options": {
+          "a": { "key": "shortCastle", "label": "Kingside castling" },
+          "b": { "key": "longCastle", "label": "Queenside castling" },
+          "c": { "key": "queenMove", "label": "The queen moved three squares" }
+        },
+        "explanation": "O-O-O is queenside castling; O-O is kingside castling."
+      },
+      "q3": {
+        "prompt": "What is special about this pawn move?",
+        "options": {
+          "a": { "key": "queenCheck", "label": "It promotes to a queen and gives check" },
+          "b": { "key": "promotionMate", "label": "It promotes to a queen and gives checkmate" },
+          "c": { "key": "queenCapture", "label": "A queen captures on e8" }
+        },
+        "explanation": "=Q is promotion to a queen and # means checkmate."
+      }
+    }
+  },
+  "actions": {
+    "previous": "Previous",
+    "next": "Next"
+  }
+}

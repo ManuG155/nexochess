@@ -1,0 +1,123 @@
+{
+  "hero": {
+    "eyebrow": "Akademia NexoChess",
+    "title": "Zrozum, co mówi każdy ruch",
+    "subtitle": "Poznaj język szachów w krótkich, wizualnych lekcjach. Bez wcześniejszej wiedzy i bez ścian tekstu.",
+    "start": "Zacznij od notacji",
+    "progress": "Moduły Akademii"
+  },
+  "modules": {
+    "notation": "Notacja",
+    "movement": "Ruchy figur",
+    "classifications": "Jakość ruchu",
+    "challenge": "Szybkie wyzwanie"
+  },
+  "notation": {
+    "kicker": "Moduł 1 · Notacja",
+    "title": "Czytaj partię bez tłumaczenia",
+    "intro": "Notacja zwięźle zapisuje wydarzenia partii. Litery figur są zawsze angielskie, a piony nie mają litery.",
+    "piecesTitle": "Sześć figur",
+    "piecesHelp": "Pierwsza wielka litera mówi, która figura wykonała ruch.",
+    "pawnRule": "Ruch piona zaczyna się od razu od pola docelowego: e4 oznacza, że pion przeszedł na e4.",
+    "examplesTitle": "Rozszyfruj ruch",
+    "examplesHelp": "Wybierz przykład i zobacz, jak każdy symbol zmienia znaczenie.",
+    "pieces": {
+      "K": { "name": "Król" },
+      "Q": { "name": "Hetman" },
+      "R": { "name": "Wieża" },
+      "B": { "name": "Goniec" },
+      "N": { "name": "Skoczek" },
+      "P": { "name": "Pion" }
+    },
+    "examples": {
+      "e4": "Pion przechodzi na e4. Przy ruchu piona nie zapisuje się litery.",
+      "Nf3": "Skoczek (N) przechodzi na f3.",
+      "Bxf7+": "Goniec (B) bije (x) na f7 i daje szacha (+).",
+      "O-O": "Król wykonuje krótką roszadę.",
+      "Rae1": "Wieża (R) z linii a przechodzi na e1. „a” odróżnia ją od drugiej wieży.",
+      "e8=Q#": "Pion dociera na e8, promuje na hetmana (=Q) i daje mata (#)."
+    }
+  },
+  "movement": {
+    "kicker": "Moduł 2 · Ruchy",
+    "title": "Zobacz szachownicę, zanim zaczniesz zapamiętywać",
+    "intro": "Wybierz figurę. Szachownica pokaże wszystkie pola, na które mogłaby przejść z d4 na pustej planszy.",
+    "choosePiece": "Wybierz figurę",
+    "move": "Dostępny ruch",
+    "capture": "Bicie pionem",
+    "boardLabel": "Pola ruchu dla figury: {{piece}}",
+    "pieces": {
+      "K": "Jedno pole w dowolnym kierunku. Nie może wejść na pole atakowane przez przeciwnika.",
+      "Q": "Dowolna liczba pól wzdłuż linii, kolumn lub przekątnych. Nie może przeskakiwać figur.",
+      "R": "Dowolna liczba pól poziomo lub pionowo. Nie może przeskakiwać figur.",
+      "B": "Dowolna liczba pól po przekątnej. Goniec przez całą partię pozostaje na polach tego samego koloru.",
+      "N": "W kształcie litery L: dwa pola w jednym kierunku i jedno w bok. Jako jedyny może przeskakiwać figury.",
+      "P": "Jedno pole do przodu, ale bije o jedno pole po skosie. Z pola startowego może ruszyć o dwa."
+    }
+  },
+  "classifications": {
+    "kicker": "Moduł 3 · Jakość ruchu",
+    "title": "Dlaczego ruch otrzymuje daną etykietę",
+    "intro": "NexoChess porównuje twój ruch z pozycją i wariantami silnika. Wybierz etykietę, aby zobaczyć proste wyjaśnienie.",
+    "selected": "Wybrana klasyfikacja",
+    "engineNote": "Ten sam ruch może dostać inną etykietę w innej pozycji: liczą się kontekst, alternatywy i zmiana szans na wygraną.",
+    "descriptions": {
+      "brilliant": "Bardzo silny i trudny ruch, który celowo wystawia materiał lub poświęca go dla poprawnej idei.",
+      "critical": "Świetny ruch w wymagającej pozycji, w której inne poważne możliwości są wyraźnie gorsze.",
+      "best": "Pierwszy wybór silnika, potwierdzony bez istotnej utraty szans na wygraną.",
+      "excellent": "Bardzo blisko najlepszego wyboru. Zachowuje niemal całą wartość pozycji.",
+      "okay": "Solidny ruch, który utrzymuje partię na właściwym torze, choć istniała dokładniejsza opcja.",
+      "inaccuracy": "Małe potknięcie. Pozycja nieco się pogarsza, ale partia wciąż jest daleka od przegranej.",
+      "mistake": "Znaczący błąd, który wyraźnie zmniejsza szanse na wygraną lub remis.",
+      "miss": "Przeciwnik dał ważną okazję, której ten ruch nie wykorzystał.",
+      "blunder": "Poważny błąd powodujący duży zwrot, np. utratę materiału, przewagi lub partii.",
+      "forced": "Istniał tylko jeden legalny ruch, więc nie było prawdziwej decyzji.",
+      "theory": "Znany ruch debiutowy, który nadal należy do teorii.",
+      "risky": "Starsza etykieta wątpliwego lub niepotrzebnie ryzykownego pomysłu. Zachowana dla zgodności i pojawia się rzadko."
+    }
+  },
+  "challenge": {
+    "kicker": "Moduł 4 · Szybkie wyzwanie",
+    "title": "Trzy ruchy. Bez długiego egzaminu.",
+    "intro": "Wybierz znaczenie każdego zapisu. Od razu dostaniesz wyjaśnienie.",
+    "score": "{{score}} z {{total}} poprawnych",
+    "correct": "Dobrze",
+    "incorrect": "Niezupełnie",
+    "completeTitle": "Potrafisz już przeczytać użyteczną część PGN",
+    "completeBody": "Otwórz dowolną przeanalizowaną partię i spróbuj znaleźć te symbole w prawdziwych ruchach.",
+    "reset": "Spróbuj ponownie",
+    "questions": {
+      "q1": {
+        "prompt": "Co wydarzyło się na f7?",
+        "options": {
+          "a": { "key": "captureCheck", "label": "Goniec zbił figurę i dał szacha" },
+          "b": { "key": "bishopMove", "label": "Goniec przeszedł tam bez bicia" },
+          "c": { "key": "mate", "label": "Goniec dał mata" }
+        },
+        "explanation": "B oznacza gońca, x bicie, a + szacha."
+      },
+      "q2": {
+        "prompt": "Co oznacza dłuższy zapis roszady?",
+        "options": {
+          "a": { "key": "shortCastle", "label": "Krótka roszada" },
+          "b": { "key": "longCastle", "label": "Długa roszada" },
+          "c": { "key": "queenMove", "label": "Hetman przesunął się o trzy pola" }
+        },
+        "explanation": "O-O-O to długa roszada; O-O to krótka roszada."
+      },
+      "q3": {
+        "prompt": "Co jest szczególnego w tym ruchu piona?",
+        "options": {
+          "a": { "key": "queenCheck", "label": "Promuje na hetmana i daje szacha" },
+          "b": { "key": "promotionMate", "label": "Promuje na hetmana i daje mata" },
+          "c": { "key": "queenCapture", "label": "Hetman bije na e8" }
+        },
+        "explanation": "=Q oznacza promocję na hetmana, a # mata."
+      }
+    }
+  },
+  "actions": {
+    "previous": "Wstecz",
+    "next": "Dalej"
+  }
+}

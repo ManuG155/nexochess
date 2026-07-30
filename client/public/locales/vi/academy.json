@@ -1,0 +1,123 @@
+{
+  "hero": {
+    "eyebrow": "Học viện NexoChess",
+    "title": "Hiểu ý nghĩa của từng nước đi",
+    "subtitle": "Học ngôn ngữ cờ vua qua các bài ngắn và trực quan. Không cần kiến thức trước, không có những đoạn văn dài.",
+    "start": "Bắt đầu với ký hiệu",
+    "progress": "Các mô-đun Học viện"
+  },
+  "modules": {
+    "notation": "Ký hiệu",
+    "movement": "Cách quân di chuyển",
+    "classifications": "Chất lượng nước đi",
+    "challenge": "Thử thách nhanh"
+  },
+  "notation": {
+    "kicker": "Mô-đun 1 · Ký hiệu",
+    "title": "Đọc một ván cờ mà không cần dịch",
+    "intro": "Ký hiệu ghi lại diễn biến một cách cô đọng. Chữ cái của quân luôn dùng tiếng Anh, còn tốt không có chữ cái.",
+    "piecesTitle": "Sáu loại quân",
+    "piecesHelp": "Chữ in hoa đầu tiên cho biết quân nào đã đi.",
+    "pawnRule": "Nước tốt bắt đầu thẳng bằng ô đích: e4 nghĩa là một quân tốt đã đi đến e4.",
+    "examplesTitle": "Giải mã một nước đi",
+    "examplesHelp": "Chạm vào ví dụ để xem mỗi ký hiệu thay đổi ý nghĩa ra sao.",
+    "pieces": {
+      "K": { "name": "Vua" },
+      "Q": { "name": "Hậu" },
+      "R": { "name": "Xe" },
+      "B": { "name": "Tượng" },
+      "N": { "name": "Mã" },
+      "P": { "name": "Tốt" }
+    },
+    "examples": {
+      "e4": "Một quân tốt đi đến e4. Tốt không ghi chữ cái.",
+      "Nf3": "Mã (N) đi đến f3.",
+      "Bxf7+": "Tượng (B) bắt quân (x) ở f7 và chiếu (+).",
+      "O-O": "Vua nhập thành cánh vua.",
+      "Rae1": "Xe (R) từ cột a đi đến e1. Chữ “a” phân biệt nó với xe còn lại.",
+      "e8=Q#": "Tốt đến e8, phong hậu (=Q) và chiếu hết (#)."
+    }
+  },
+  "movement": {
+    "kicker": "Mô-đun 2 · Di chuyển",
+    "title": "Nhìn bàn cờ trước khi học thuộc luật",
+    "intro": "Chọn một quân. Bàn cờ sẽ đánh dấu mọi ô nó có thể tới từ d4 trên bàn cờ trống.",
+    "choosePiece": "Chọn một quân",
+    "move": "Nước đi hợp lệ",
+    "capture": "Ô bắt quân của tốt",
+    "boardLabel": "Các ô di chuyển của {{piece}}",
+    "pieces": {
+      "K": "Một ô theo mọi hướng. Vua không bao giờ được đi vào ô đang bị đối phương tấn công.",
+      "Q": "Bất kỳ số ô nào theo hàng ngang, dọc hoặc đường chéo. Không thể nhảy qua quân khác.",
+      "R": "Bất kỳ số ô nào theo hàng ngang hoặc dọc. Không thể nhảy qua quân khác.",
+      "B": "Bất kỳ số ô nào theo đường chéo. Một tượng luôn ở trên các ô cùng màu suốt ván.",
+      "N": "Theo hình chữ L: hai ô theo một hướng và một ô sang bên. Đây là quân duy nhất có thể nhảy qua quân khác.",
+      "P": "Đi thẳng một ô nhưng bắt chéo một ô. Từ ô xuất phát, tốt có thể đi hai ô."
+    }
+  },
+  "classifications": {
+    "kicker": "Mô-đun 3 · Chất lượng nước đi",
+    "title": "Vì sao một nước nhận từng nhãn",
+    "intro": "NexoChess so sánh nước của bạn với thế cờ và các phương án của máy. Chạm vào nhãn để xem giải thích dễ hiểu.",
+    "selected": "Phân loại đã chọn",
+    "engineNote": "Cùng một nước có thể nhận nhãn khác trong thế cờ khác: bối cảnh, phương án thay thế và thay đổi cơ hội thắng đều quan trọng.",
+    "descriptions": {
+      "brilliant": "Một nước rất mạnh và khó, chủ động để lộ hoặc thí vật chất cho một ý tưởng hợp lý.",
+      "critical": "Một nước tuyệt vời trong thế khó, nơi các phương án nghiêm túc khác kém hơn rõ rệt.",
+      "best": "Lựa chọn hàng đầu của máy, được xác nhận không làm giảm đáng kể cơ hội thắng.",
+      "excellent": "Rất gần lựa chọn tốt nhất, giữ lại gần như toàn bộ giá trị của thế cờ.",
+      "okay": "Một nước chắc chắn giúp ván cờ tiếp tục ổn, dù có lựa chọn chính xác hơn.",
+      "inaccuracy": "Một sai lệch nhỏ. Thế cờ xấu đi đôi chút nhưng còn xa mới thua vì nó.",
+      "mistake": "Một lỗi đáng kể làm giảm rõ ràng cơ hội thắng hoặc hòa.",
+      "miss": "Đối thủ đã trao một cơ hội quan trọng nhưng nước này không tận dụng được.",
+      "blunder": "Một lỗi nghiêm trọng gây biến động lớn, như mất quân, mất lợi thế hoặc thua ván.",
+      "forced": "Chỉ có một nước hợp lệ nên thực tế không có lựa chọn.",
+      "theory": "Một nước khai cuộc đã được biết và vẫn nằm trong lý thuyết.",
+      "risky": "Nhãn cũ cho một ý tưởng đáng ngờ hoặc nguy hiểm không cần thiết. Được giữ để tương thích và hiếm khi xuất hiện."
+    }
+  },
+  "challenge": {
+    "kicker": "Mô-đun 4 · Thử thách nhanh",
+    "title": "Ba nước. Không có bài thi dài lê thê.",
+    "intro": "Chọn ý nghĩa của từng ký hiệu. Bạn sẽ nhận giải thích ngay.",
+    "score": "Đúng {{score}} / {{total}}",
+    "correct": "Chính xác",
+    "incorrect": "Chưa hẳn",
+    "completeTitle": "Bạn đã có thể đọc một phần hữu ích của PGN",
+    "completeBody": "Mở một ván đã phân tích và thử nhận ra các ký hiệu này trong nước đi thật.",
+    "reset": "Thử lại",
+    "questions": {
+      "q1": {
+        "prompt": "Điều gì đã xảy ra ở f7?",
+        "options": {
+          "a": { "key": "captureCheck", "label": "Tượng bắt quân tại đó và chiếu" },
+          "b": { "key": "bishopMove", "label": "Tượng đi đến đó mà không bắt quân" },
+          "c": { "key": "mate", "label": "Tượng chiếu hết" }
+        },
+        "explanation": "B là tượng, x là bắt quân và + là chiếu."
+      },
+      "q2": {
+        "prompt": "Ký hiệu nhập thành dài nghĩa là gì?",
+        "options": {
+          "a": { "key": "shortCastle", "label": "Nhập thành cánh vua" },
+          "b": { "key": "longCastle", "label": "Nhập thành cánh hậu" },
+          "c": { "key": "queenMove", "label": "Hậu đi ba ô" }
+        },
+        "explanation": "O-O-O là nhập thành cánh hậu; O-O là nhập thành cánh vua."
+      },
+      "q3": {
+        "prompt": "Nước tốt này có gì đặc biệt?",
+        "options": {
+          "a": { "key": "queenCheck", "label": "Phong hậu và chiếu" },
+          "b": { "key": "promotionMate", "label": "Phong hậu và chiếu hết" },
+          "c": { "key": "queenCapture", "label": "Hậu bắt quân ở e8" }
+        },
+        "explanation": "=Q là phong hậu và # là chiếu hết."
+      }
+    }
+  },
+  "actions": {
+    "previous": "Trước",
+    "next": "Tiếp"
+  }
+}

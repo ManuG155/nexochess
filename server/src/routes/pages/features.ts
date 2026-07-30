@@ -8,6 +8,8 @@ router.get("/analysis", appRouter("features/analysis.html"));
 
 router.get("/archive", appRouter("features/archive.html"));
 
+router.get("/academy", appRouter("features/academy.html"));
+
 router.get("/news*", async (_req, res) => {
     res.redirect(308, "/analysis");
 });

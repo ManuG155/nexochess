@@ -270,6 +270,18 @@
 .gameCard > [data-game-listing-section="time-control"] {
     grid-column: 1;
     align-items: center;
+
+    width: 38px !important;
+    height: 38px;
+
+    border: 1px solid rgba(110, 156, 255, 0.16);
+    border-radius: 11px;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(110, 156, 255, 0.09),
+            rgba(110, 156, 255, 0.035)
+        );
 }
 
 

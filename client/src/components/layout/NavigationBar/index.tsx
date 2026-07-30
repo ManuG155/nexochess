@@ -237,6 +237,20 @@ function NavigationBar() {
             "/archive"
         );
 
+    const onAcademyPage =
+        location.pathname.startsWith(
+            "/academy"
+        );
+
+    const onSettingsPage =
+        location.pathname.startsWith(
+            "/settings"
+        );
+
+    const showGameActions =
+        !onSettingsPage
+        && !onAcademyPage;
+
     const analysisGame = useAnalysisGameStore(
         state => state.analysisGame
     );
@@ -322,47 +336,7 @@ function NavigationBar() {
                     {t("sidebar.archive", { ns: "common" })}
                 </NavigationItem>
 
-                <NavigationAction
-                    icon="flip"
-                    onClick={() => (
-                        setBoardFlipped(
-                            !boardFlipped
-                        )
-                    )}
-                >
-                    {t(
-                        "optionsToolbar.flipBoard",
-                        { ns: "analysis" }
-                    )}
-                </NavigationAction>
-
-                <FutureItem
-                    icon="academy"
-                    comingSoon={comingSoon}
-                >
-                    {t("navigationBar.academy", { ns: "common" })}
-                </FutureItem>
-
-                <FutureItem
-                    icon="puzzle"
-                    comingSoon={comingSoon}
-                >
-                    {t("navigationBar.puzzles", { ns: "common" })}
-                </FutureItem>
-
-                <NavigationAction
-                    icon="share"
-                    onClick={() => setShareOpen(true)}
-                >
-                    {t(
-                        "navigationBar.share",
-                        { ns: "common" }
-                    )}
-                </NavigationAction>
-            </nav>
-
-            <div className={styles.rightArea}>
-                <div className={styles.analysisActions}>
+                {showGameActions && (
                     <NavigationAction
                         icon="flip"
                         onClick={() => (
@@ -376,7 +350,24 @@ function NavigationBar() {
                             { ns: "analysis" }
                         )}
                     </NavigationAction>
+                )}
 
+                <NavigationItem
+                    icon="academy"
+                    url="/academy"
+                    current={onAcademyPage}
+                >
+                    {t("navigationBar.academy", { ns: "common" })}
+                </NavigationItem>
+
+                <FutureItem
+                    icon="puzzle"
+                    comingSoon={comingSoon}
+                >
+                    {t("navigationBar.puzzles", { ns: "common" })}
+                </FutureItem>
+
+                {showGameActions && (
                     <NavigationAction
                         icon="share"
                         onClick={() => setShareOpen(true)}
@@ -386,7 +377,37 @@ function NavigationBar() {
                             { ns: "common" }
                         )}
                     </NavigationAction>
-                </div>
+                )}
+            </nav>
+
+            <div className={styles.rightArea}>
+                {showGameActions && (
+                    <div className={styles.analysisActions}>
+                        <NavigationAction
+                            icon="flip"
+                            onClick={() => (
+                                setBoardFlipped(
+                                    !boardFlipped
+                                )
+                            )}
+                        >
+                            {t(
+                                "optionsToolbar.flipBoard",
+                                { ns: "analysis" }
+                            )}
+                        </NavigationAction>
+
+                        <NavigationAction
+                            icon="share"
+                            onClick={() => setShareOpen(true)}
+                        >
+                            {t(
+                                "navigationBar.share",
+                                { ns: "common" }
+                            )}
+                        </NavigationAction>
+                    </div>
+                )}
 
                 <div className={styles.accountArea}>
                     {status == "pending" && (

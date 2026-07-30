@@ -11,6 +11,7 @@ interface GameListingProps<T extends GameListingMetadata> {
     selected?: boolean;
     onClick?: (game: T) => void;
     onSelect?: (selected: boolean, game: T) => void;
+    visualStyle?: "classic" | "nexo";
 }
 
 export default GameListingProps;

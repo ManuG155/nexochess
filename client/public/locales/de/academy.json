@@ -1,0 +1,123 @@
+{
+  "hero": {
+    "eyebrow": "NexoChess-Akademie",
+    "title": "Verstehe, was jeder Zug aussagt",
+    "subtitle": "Lerne die Sprache des Schachs in kurzen, visuellen Lektionen. Ohne Vorwissen und ohne Textwüsten.",
+    "start": "Mit der Notation beginnen",
+    "progress": "Akademie-Module"
+  },
+  "modules": {
+    "notation": "Notation",
+    "movement": "Zugweise der Figuren",
+    "classifications": "Zugqualität",
+    "challenge": "Kurze Aufgabe"
+  },
+  "notation": {
+    "kicker": "Modul 1 · Notation",
+    "title": "Lies eine Partie, ohne sie zu übersetzen",
+    "intro": "Die Notation hält das Geschehen kompakt fest. Die Figurenbuchstaben sind immer Englisch; Bauern haben keinen Buchstaben.",
+    "piecesTitle": "Die sechs Figuren",
+    "piecesHelp": "Der erste Großbuchstabe zeigt, welche Figur gezogen hat.",
+    "pawnRule": "Ein Bauernzug beginnt direkt mit dem Zielfeld: e4 bedeutet, dass ein Bauer nach e4 gezogen ist.",
+    "examplesTitle": "Entschlüssle einen Zug",
+    "examplesHelp": "Tippe auf ein Beispiel und sieh, wie jedes Zeichen die Bedeutung verändert.",
+    "pieces": {
+      "K": { "name": "König" },
+      "Q": { "name": "Dame" },
+      "R": { "name": "Turm" },
+      "B": { "name": "Läufer" },
+      "N": { "name": "Springer" },
+      "P": { "name": "Bauer" }
+    },
+    "examples": {
+      "e4": "Ein Bauer zieht nach e4. Bauern werden ohne Buchstaben notiert.",
+      "Nf3": "Der Springer (N) zieht nach f3.",
+      "Bxf7+": "Der Läufer (B) schlägt (x) auf f7 und gibt Schach (+).",
+      "O-O": "Der König rochiert auf der Königsseite.",
+      "Rae1": "Der Turm (R) von der a-Linie zieht nach e1. Das „a“ unterscheidet ihn vom anderen Turm.",
+      "e8=Q#": "Ein Bauer erreicht e8, wird zur Dame (=Q) und setzt matt (#)."
+    }
+  },
+  "movement": {
+    "kicker": "Modul 2 · Zugweise",
+    "title": "Sieh das Brett, bevor du Regeln auswendig lernst",
+    "intro": "Wähle eine Figur. Das Brett markiert alle Felder, die sie von d4 auf einem sonst leeren Brett erreichen könnte.",
+    "choosePiece": "Figur wählen",
+    "move": "Möglicher Zug",
+    "capture": "Bauernschlag",
+    "boardLabel": "Zugfelder für {{piece}}",
+    "pieces": {
+      "K": "Ein Feld in jede Richtung. Er darf niemals auf ein vom Gegner angegriffenes Feld ziehen.",
+      "Q": "Beliebig viele Felder auf Linien, Reihen oder Diagonalen. Sie kann keine Figuren überspringen.",
+      "R": "Beliebig viele Felder waagerecht oder senkrecht. Er kann keine Figuren überspringen.",
+      "B": "Beliebig viele Felder diagonal. Ein Läufer bleibt während der ganzen Partie auf derselben Feldfarbe.",
+      "N": "In L-Form: zwei Felder in eine Richtung und eines seitwärts. Als einzige Figur kann er andere überspringen.",
+      "P": "Ein Feld vorwärts, geschlagen wird ein Feld diagonal. Vom Startfeld darf er zwei Felder ziehen."
+    }
+  },
+  "classifications": {
+    "kicker": "Modul 3 · Zugqualität",
+    "title": "Warum ein Zug welche Bewertung erhält",
+    "intro": "NexoChess vergleicht deinen Zug mit der Stellung und den Engine-Alternativen. Tippe auf eine Bewertung für eine einfache Erklärung.",
+    "selected": "Ausgewählte Bewertung",
+    "engineNote": "Derselbe Zug kann in einer anderen Stellung anders bewertet werden: Kontext, Alternativen und die Veränderung der Gewinnchancen zählen.",
+    "descriptions": {
+      "brilliant": "Ein sehr starker, schwieriger Zug, der bewusst Material ungedeckt lässt oder für eine stichhaltige Idee opfert.",
+      "critical": "Ein großartiger Zug in einer anspruchsvollen Stellung, in der die anderen ernsthaften Alternativen deutlich schlechter sind.",
+      "best": "Der erste Zug der Engine, bestätigt ohne nennenswerten Verlust an Gewinnchancen.",
+      "excellent": "Sehr nah an der besten Wahl. Fast der gesamte Wert der Stellung bleibt erhalten.",
+      "okay": "Ein solider Zug, der die Partie auf Kurs hält, obwohl eine präzisere Möglichkeit bestand.",
+      "inaccuracy": "Ein kleiner Ausrutscher. Die Stellung wird etwas schlechter, aber die Partie ist dadurch längst nicht verloren.",
+      "mistake": "Ein deutlicher Fehler, der deine Gewinn- oder Remischancen klar reduziert.",
+      "miss": "Der Gegner hat dir eine wichtige Chance gegeben, die dieser Zug nicht genutzt hat.",
+      "blunder": "Ein grober Fehler mit großem Umschwung, etwa dem Verlust von Material, eines Vorteils oder der Partie.",
+      "forced": "Es gab nur einen legalen Zug, also keine echte Entscheidung.",
+      "theory": "Ein anerkannter Eröffnungszug, der noch zur bekannten Theorie gehört.",
+      "risky": "Eine ältere Bewertung für eine zweifelhafte oder unnötig gefährliche Idee. Sie bleibt aus Kompatibilitätsgründen und erscheint selten."
+    }
+  },
+  "challenge": {
+    "kicker": "Modul 4 · Kurze Aufgabe",
+    "title": "Drei Züge. Keine endlose Prüfung.",
+    "intro": "Wähle die Bedeutung jeder Notation. Die Erklärung erhältst du sofort.",
+    "score": "{{score}} von {{total}} richtig",
+    "correct": "Richtig",
+    "incorrect": "Nicht ganz",
+    "completeTitle": "Du kannst bereits einen nützlichen Teil eines PGN lesen",
+    "completeBody": "Öffne eine analysierte Partie und suche diese Zeichen in echten Zügen.",
+    "reset": "Noch einmal",
+    "questions": {
+      "q1": {
+        "prompt": "Was ist auf f7 passiert?",
+        "options": {
+          "a": { "key": "captureCheck", "label": "Ein Läufer hat geschlagen und Schach gegeben" },
+          "b": { "key": "bishopMove", "label": "Ein Läufer zog ohne zu schlagen" },
+          "c": { "key": "mate", "label": "Der Läufer setzte matt" }
+        },
+        "explanation": "B steht für Läufer, x für Schlagen und + für Schach."
+      },
+      "q2": {
+        "prompt": "Was bedeutet die längere Rochade-Notation?",
+        "options": {
+          "a": { "key": "shortCastle", "label": "Königsrochade" },
+          "b": { "key": "longCastle", "label": "Damenrochade" },
+          "c": { "key": "queenMove", "label": "Die Dame zieht drei Felder" }
+        },
+        "explanation": "O-O-O ist die Damenrochade; O-O ist die Königsrochade."
+      },
+      "q3": {
+        "prompt": "Was ist an diesem Bauernzug besonders?",
+        "options": {
+          "a": { "key": "queenCheck", "label": "Umwandlung zur Dame mit Schach" },
+          "b": { "key": "promotionMate", "label": "Umwandlung zur Dame mit Matt" },
+          "c": { "key": "queenCapture", "label": "Eine Dame schlägt auf e8" }
+        },
+        "explanation": "=Q bedeutet Umwandlung zur Dame und # bedeutet Schachmatt."
+      }
+    }
+  },
+  "actions": {
+    "previous": "Zurück",
+    "next": "Weiter"
+  }
+}

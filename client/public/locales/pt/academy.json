@@ -1,0 +1,123 @@
+{
+  "hero": {
+    "eyebrow": "Academia NexoChess",
+    "title": "Entenda o que cada lance diz",
+    "subtitle": "Aprenda a linguagem do xadrez em lições curtas e visuais. Sem conhecimento prévio e sem blocos enormes de texto.",
+    "start": "Começar pela notação",
+    "progress": "Módulos da Academia"
+  },
+  "modules": {
+    "notation": "Notação",
+    "movement": "Movimento das peças",
+    "classifications": "Qualidade do lance",
+    "challenge": "Desafio rápido"
+  },
+  "notation": {
+    "kicker": "Módulo 1 · Notação",
+    "title": "Leia uma partida sem precisar traduzi-la",
+    "intro": "A notação registra o que aconteceu de forma compacta. As letras das peças são sempre em inglês e os peões não usam nenhuma.",
+    "piecesTitle": "As seis peças",
+    "piecesHelp": "A primeira letra maiúscula indica qual peça se moveu.",
+    "pawnRule": "Um lance de peão começa diretamente pela casa de destino: e4 significa que um peão foi para e4.",
+    "examplesTitle": "Decifre um lance",
+    "examplesHelp": "Toque em um exemplo e veja como cada símbolo muda o significado.",
+    "pieces": {
+      "K": { "name": "Rei" },
+      "Q": { "name": "Dama" },
+      "R": { "name": "Torre" },
+      "B": { "name": "Bispo" },
+      "N": { "name": "Cavalo" },
+      "P": { "name": "Peão" }
+    },
+    "examples": {
+      "e4": "Um peão avança para e4. Peões não escrevem nenhuma letra.",
+      "Nf3": "O cavalo (N) move-se para f3.",
+      "Bxf7+": "O bispo (B) captura (x) em f7 e dá xeque (+).",
+      "O-O": "O rei faz o roque pequeno.",
+      "Rae1": "A torre (R) da coluna a vai para e1. O “a” distingue-a da outra torre.",
+      "e8=Q#": "Um peão chega a e8, promove a dama (=Q) e dá xeque-mate (#)."
+    }
+  },
+  "movement": {
+    "kicker": "Módulo 2 · Movimento",
+    "title": "Veja o tabuleiro antes de decorar regras",
+    "intro": "Escolha uma peça. O tabuleiro destaca todas as casas que ela alcançaria a partir de d4 num tabuleiro vazio.",
+    "choosePiece": "Escolha uma peça",
+    "move": "Movimento disponível",
+    "capture": "Captura do peão",
+    "boardLabel": "Casas de movimento para {{piece}}",
+    "pieces": {
+      "K": "Uma casa em qualquer direção. Nunca pode entrar numa casa atacada pelo adversário.",
+      "Q": "Qualquer número de casas em linhas, colunas ou diagonais. Não pode saltar outras peças.",
+      "R": "Qualquer número de casas na horizontal ou vertical. Não pode saltar outras peças.",
+      "B": "Qualquer número de casas na diagonal. Um bispo permanece sempre em casas da mesma cor.",
+      "N": "Em L: duas casas numa direção e uma para o lado. É a única peça que pode saltar sobre outras.",
+      "P": "Avança uma casa, mas captura uma casa na diagonal. Da casa inicial pode avançar duas."
+    }
+  },
+  "classifications": {
+    "kicker": "Módulo 3 · Qualidade do lance",
+    "title": "Por que um lance recebe cada rótulo",
+    "intro": "O NexoChess compara seu lance com a posição e as alternativas do motor. Toque num rótulo para uma explicação simples.",
+    "selected": "Classificação selecionada",
+    "engineNote": "O mesmo lance pode receber outro rótulo em uma posição diferente: contexto, alternativas e mudança nas chances de vitória importam.",
+    "descriptions": {
+      "brilliant": "Um lance muito forte e difícil que deixa material exposto ou o sacrifica de propósito por uma ideia sólida.",
+      "critical": "Um grande lance numa posição exigente em que as outras alternativas sérias são muito piores.",
+      "best": "A primeira escolha do motor, confirmada sem perda relevante nas chances de vitória.",
+      "excellent": "Muito próximo da melhor escolha. Preserva quase todo o valor da posição.",
+      "okay": "Um lance sólido que mantém a partida, embora existisse uma opção mais precisa.",
+      "inaccuracy": "Um pequeno deslize. A posição piora um pouco, mas a partida está longe de ficar perdida.",
+      "mistake": "Um erro importante que reduz claramente suas chances de vencer ou empatar.",
+      "miss": "O adversário ofereceu uma oportunidade importante e este lance não a aproveitou.",
+      "blunder": "Um erro grave que causa uma grande virada, como perder material, uma vantagem ou a partida.",
+      "forced": "Havia apenas um lance legal, portanto não existia uma decisão real.",
+      "theory": "Um lance de abertura reconhecido que ainda pertence à teoria conhecida.",
+      "risky": "Um rótulo antigo para uma ideia duvidosa ou desnecessariamente perigosa. Mantido por compatibilidade, aparece raramente."
+    }
+  },
+  "challenge": {
+    "kicker": "Módulo 4 · Desafio rápido",
+    "title": "Três lances. Sem prova interminável.",
+    "intro": "Escolha o significado de cada notação. A explicação aparece na hora.",
+    "score": "{{score}} de {{total}} corretas",
+    "correct": "Correto",
+    "incorrect": "Quase",
+    "completeTitle": "Você já consegue ler uma parte útil de um PGN",
+    "completeBody": "Abra qualquer partida analisada e tente reconhecer estes símbolos em lances reais.",
+    "reset": "Tentar novamente",
+    "questions": {
+      "q1": {
+        "prompt": "O que aconteceu em f7?",
+        "options": {
+          "a": { "key": "captureCheck", "label": "Um bispo capturou e deu xeque" },
+          "b": { "key": "bishopMove", "label": "Um bispo se moveu sem capturar" },
+          "c": { "key": "mate", "label": "O bispo deu xeque-mate" }
+        },
+        "explanation": "B significa bispo, x indica captura e + significa xeque."
+      },
+      "q2": {
+        "prompt": "O que significa a notação do roque longo?",
+        "options": {
+          "a": { "key": "shortCastle", "label": "Roque pequeno" },
+          "b": { "key": "longCastle", "label": "Roque grande" },
+          "c": { "key": "queenMove", "label": "A dama se move três casas" }
+        },
+        "explanation": "O-O-O é o roque grande; O-O é o roque pequeno."
+      },
+      "q3": {
+        "prompt": "O que há de especial neste lance de peão?",
+        "options": {
+          "a": { "key": "queenCheck", "label": "Promove a dama e dá xeque" },
+          "b": { "key": "promotionMate", "label": "Promove a dama e dá xeque-mate" },
+          "c": { "key": "queenCapture", "label": "Uma dama captura em e8" }
+        },
+        "explanation": "=Q indica promoção a dama e # significa xeque-mate."
+      }
+    }
+  },
+  "actions": {
+    "previous": "Anterior",
+    "next": "Próximo"
+  }
+}

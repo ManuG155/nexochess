@@ -22,6 +22,7 @@ type SupportedLanguage = typeof supportedLanguages[number];
 
 const namespaces = [
     "common",
+    "academy",
     "analysis",
     "settings",
     "otherPages",

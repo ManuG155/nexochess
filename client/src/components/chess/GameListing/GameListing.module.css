@@ -39,6 +39,53 @@
     width: 100%;
 }
 
+.nexoTimeControlIcon {
+    width: 24px;
+    height: 24px;
+
+    color: #8fb2ff;
+    filter: drop-shadow(0 0 7px rgba(92, 145, 255, 0.2));
+}
+
+.nexoResult {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 28px;
+    height: 28px;
+
+    border: 1px solid currentColor;
+    border-radius: 9px;
+}
+
+.nexoResult svg {
+    width: 18px;
+    height: 18px;
+
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+}
+
+.result_win {
+    color: #75d66d;
+    background: rgba(91, 190, 87, 0.1);
+}
+
+.result_lose {
+    color: #e16d72;
+    background: rgba(211, 74, 82, 0.1);
+}
+
+.result_draw,
+.result_unknown {
+    color: rgba(245, 247, 251, 0.58);
+    background: rgba(245, 247, 251, 0.04);
+}
+
 .playerProfile {
     display: flex;
     align-items: center;
