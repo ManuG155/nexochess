@@ -9,8 +9,10 @@
   "modules": {
     "notation": "Notation",
     "movement": "How pieces move",
+    "values": "Piece values",
     "practice": "Guided practice",
     "classifications": "Move quality",
+    "evaluation": "Evaluation bar",
     "challenge": "Quick challenge"
   },
   "notation": {
@@ -23,12 +25,24 @@
     "examplesTitle": "Decode a move",
     "examplesHelp": "Tap an example and see how each symbol changes the meaning.",
     "pieces": {
-      "K": { "name": "King" },
-      "Q": { "name": "Queen" },
-      "R": { "name": "Rook" },
-      "B": { "name": "Bishop" },
-      "N": { "name": "Knight" },
-      "P": { "name": "Pawn" }
+      "K": {
+        "name": "King"
+      },
+      "Q": {
+        "name": "Queen"
+      },
+      "R": {
+        "name": "Rook"
+      },
+      "B": {
+        "name": "Bishop"
+      },
+      "N": {
+        "name": "Knight"
+      },
+      "P": {
+        "name": "Pawn"
+      }
     },
     "examples": {
       "e4": "A pawn moves to e4. Pawns do not write a letter.",
@@ -56,8 +70,23 @@
       "P": "One square forward, but it captures one square diagonally. From its starting square it may advance two."
     }
   },
+  "values": {
+    "kicker": "Module 3 · Piece values",
+    "title": "Know what an exchange costs",
+    "intro": "Piece values are a quick measuring tool, not a price tag. They help you compare captures and sacrifices before calculating deeper.",
+    "points": "{{value}} points",
+    "pieces": {
+      "P": "The basic unit. A passed pawn can become far more valuable near promotion.",
+      "N": "Usually worth three pawns. Strong in closed positions and near the centre.",
+      "B": "Usually worth three pawns. Long diagonals and the bishop pair can raise its value.",
+      "R": "Usually worth five pawns. It becomes especially powerful on open files.",
+      "Q": "About nine pawns. It combines rook and bishop movement, but can still be trapped.",
+      "K": "It has no exchange value: losing it ends the game. In the endgame it is also an active piece."
+    },
+    "note": "Position comes first: an active piece, king safety or a forced tactic can matter more than the arithmetic."
+  },
   "practice": {
-    "kicker": "Module 3 · Guided practice",
+    "kicker": "Module 4 · Guided practice",
     "title": "Make the move on the board",
     "intro": "Select the starting square and then the destination. If you miss, the Academy tells you why and lets you try again.",
     "progress": "Position {{current}} of {{total}}",
@@ -93,7 +122,7 @@
     }
   },
   "classifications": {
-    "kicker": "Module 4 · Move quality",
+    "kicker": "Module 5 · Move quality",
     "title": "Why a move gets each label",
     "intro": "NexoChess compares your move with the position and the engine alternatives. Tap any label for its plain-language meaning.",
     "selected": "Selected classification",
@@ -113,8 +142,58 @@
       "risky": "A legacy label for a dubious or unnecessarily dangerous idea. It is kept for compatibility and appears rarely."
     }
   },
+  "evaluation": {
+    "kicker": "Module 6 · Evaluation bar",
+    "title": "Read who is better at a glance",
+    "intro": "The bar converts the engine's assessment into a visual balance. Move the examples and watch which colour gains space.",
+    "white": "White",
+    "black": "Black",
+    "tryLabel": "Try five positions",
+    "current": "What this means",
+    "presets": {
+      "blackWinning": {
+        "title": "Black is winning",
+        "body": "Black has a decisive advantage. White would need a serious mistake from the opponent to recover."
+      },
+      "blackBetter": {
+        "title": "Black is better",
+        "body": "Black has a useful advantage, but the game still needs accurate play."
+      },
+      "equal": {
+        "title": "Balanced",
+        "body": "Neither side has a meaningful engine advantage. That does not mean the position is simple or drawn."
+      },
+      "whiteBetter": {
+        "title": "White is better",
+        "body": "White has a useful advantage, but it can disappear after one inaccurate move."
+      },
+      "whiteWinning": {
+        "title": "White is winning",
+        "body": "White has a decisive advantage and should be able to convert it with correct play."
+      }
+    },
+    "facts": {
+      "scale": {
+        "title": "Pawns are the unit",
+        "body": "+1.0 is roughly the value of one pawn; +3.0 is about one minor piece."
+      },
+      "colours": {
+        "title": "Space shows the advantage",
+        "body": "More white means White is better; more dark space means Black is better."
+      },
+      "sign": {
+        "title": "The sign names the side",
+        "body": "Positive values favour White. Negative values favour Black."
+      },
+      "mate": {
+        "title": "M is forced mate",
+        "body": "M3 means the engine sees a forced checkmate in three moves, not a material score."
+      }
+    },
+    "note": "The bar measures the position, not how easy it is for a human to play. Always combine it with the engine line and the coach's explanation."
+  },
   "challenge": {
-    "kicker": "Module 5 · Quick challenge",
+    "kicker": "Module 7 · Quick challenge",
     "title": "Three moves. No endless exam.",
     "intro": "Choose what each notation means. You get the explanation immediately.",
     "score": "{{score}} of {{total}} correct",
@@ -127,27 +206,54 @@
       "q1": {
         "prompt": "What happened on f7?",
         "options": {
-          "a": { "key": "captureCheck", "label": "A bishop captured there and gave check" },
-          "b": { "key": "bishopMove", "label": "A bishop moved there without capturing" },
-          "c": { "key": "mate", "label": "The bishop gave checkmate" }
+          "a": {
+            "key": "captureCheck",
+            "label": "A bishop captured there and gave check"
+          },
+          "b": {
+            "key": "bishopMove",
+            "label": "A bishop moved there without capturing"
+          },
+          "c": {
+            "key": "mate",
+            "label": "The bishop gave checkmate"
+          }
         },
         "explanation": "B is bishop, x means capture and + means check."
       },
       "q2": {
         "prompt": "What does the longer castling notation mean?",
         "options": {
-          "a": { "key": "shortCastle", "label": "Kingside castling" },
-          "b": { "key": "longCastle", "label": "Queenside castling" },
-          "c": { "key": "queenMove", "label": "The queen moved three squares" }
+          "a": {
+            "key": "shortCastle",
+            "label": "Kingside castling"
+          },
+          "b": {
+            "key": "longCastle",
+            "label": "Queenside castling"
+          },
+          "c": {
+            "key": "queenMove",
+            "label": "The queen moved three squares"
+          }
         },
         "explanation": "O-O-O is queenside castling; O-O is kingside castling."
       },
       "q3": {
         "prompt": "What is special about this pawn move?",
         "options": {
-          "a": { "key": "queenCheck", "label": "It promotes to a queen and gives check" },
-          "b": { "key": "promotionMate", "label": "It promotes to a queen and gives checkmate" },
-          "c": { "key": "queenCapture", "label": "A queen captures on e8" }
+          "a": {
+            "key": "queenCheck",
+            "label": "It promotes to a queen and gives check"
+          },
+          "b": {
+            "key": "promotionMate",
+            "label": "It promotes to a queen and gives checkmate"
+          },
+          "c": {
+            "key": "queenCapture",
+            "label": "A queen captures on e8"
+          }
         },
         "explanation": "=Q is promotion to a queen and # means checkmate."
       }

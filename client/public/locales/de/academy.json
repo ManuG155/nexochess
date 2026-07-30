@@ -9,8 +9,10 @@
   "modules": {
     "notation": "Notation",
     "movement": "Zugweise der Figuren",
+    "values": "Figurenwerte",
     "practice": "Geführte Übungen",
     "classifications": "Zugqualität",
+    "evaluation": "Bewertungsbalken",
     "challenge": "Kurze Aufgabe"
   },
   "notation": {
@@ -23,12 +25,24 @@
     "examplesTitle": "Entschlüssle einen Zug",
     "examplesHelp": "Tippe auf ein Beispiel und sieh, wie jedes Zeichen die Bedeutung verändert.",
     "pieces": {
-      "K": { "name": "König" },
-      "Q": { "name": "Dame" },
-      "R": { "name": "Turm" },
-      "B": { "name": "Läufer" },
-      "N": { "name": "Springer" },
-      "P": { "name": "Bauer" }
+      "K": {
+        "name": "König"
+      },
+      "Q": {
+        "name": "Dame"
+      },
+      "R": {
+        "name": "Turm"
+      },
+      "B": {
+        "name": "Läufer"
+      },
+      "N": {
+        "name": "Springer"
+      },
+      "P": {
+        "name": "Bauer"
+      }
     },
     "examples": {
       "e4": "Ein Bauer zieht nach e4. Bauern werden ohne Buchstaben notiert.",
@@ -56,8 +70,23 @@
       "P": "Ein Feld vorwärts, geschlagen wird ein Feld diagonal. Vom Startfeld darf er zwei Felder ziehen."
     }
   },
+  "values": {
+    "kicker": "Modul 3 · Figurenwerte",
+    "title": "Verstehe die Kosten eines Tauschs",
+    "intro": "Figurenwerte sind eine schnelle Orientierung, kein fester Preis. Sie helfen beim Vergleich von Schlägen und Opfern.",
+    "points": "{{value}} Punkte",
+    "pieces": {
+      "P": "Die Grundeinheit. Ein Freibauer wird nahe der Umwandlung deutlich wertvoller.",
+      "N": "Meist drei Bauern wert. Stark in geschlossenen Stellungen und nahe dem Zentrum.",
+      "B": "Meist drei Bauern wert. Offene Diagonalen und das Läuferpaar erhöhen seinen Wert.",
+      "R": "Meist fünf Bauern wert. Auf offenen Linien wird er besonders stark.",
+      "Q": "Etwa neun Bauern wert. Sie vereint Turm und Läufer, kann aber gefangen werden.",
+      "K": "Kein Tauschwert: Sein Verlust beendet die Partie. Im Endspiel ist er eine aktive Figur."
+    },
+    "note": "Die Stellung entscheidet: Aktivität, Königssicherheit und forcierte Taktik können wichtiger als die Summe sein."
+  },
   "practice": {
-    "kicker": "Modul 3 · Geführte Übungen",
+    "kicker": "Modul 4 · Geführte Übung",
     "title": "Führe den Zug auf dem Brett aus",
     "intro": "Wähle zuerst das Startfeld und dann das Zielfeld. Bei einem Fehler erklärt dir die Akademie warum und lässt dich erneut versuchen.",
     "progress": "Stellung {{current}} von {{total}}",
@@ -93,7 +122,7 @@
     }
   },
   "classifications": {
-    "kicker": "Modul 4 · Zugqualität",
+    "kicker": "Modul 5 · Zugqualität",
     "title": "Warum ein Zug welche Bewertung erhält",
     "intro": "NexoChess vergleicht deinen Zug mit der Stellung und den Engine-Alternativen. Tippe auf eine Bewertung für eine einfache Erklärung.",
     "selected": "Ausgewählte Bewertung",
@@ -113,8 +142,58 @@
       "risky": "Eine ältere Bewertung für eine zweifelhafte oder unnötig gefährliche Idee. Sie bleibt aus Kompatibilitätsgründen und erscheint selten."
     }
   },
+  "evaluation": {
+    "kicker": "Modul 6 · Bewertungsbalken",
+    "title": "Erkenne den Vorteil auf einen Blick",
+    "intro": "Der Balken macht die Motorbewertung sichtbar. Probiere die Beispiele und beobachte, welche Farbe Raum gewinnt.",
+    "white": "Weiß",
+    "black": "Schwarz",
+    "tryLabel": "Fünf Stellungen testen",
+    "current": "Bedeutung",
+    "presets": {
+      "blackWinning": {
+        "title": "Schwarz gewinnt",
+        "body": "Schwarz hat entscheidenden Vorteil. Weiß braucht einen schweren gegnerischen Fehler."
+      },
+      "blackBetter": {
+        "title": "Schwarz steht besser",
+        "body": "Schwarz hat einen nützlichen Vorteil, muss aber genau weiterspielen."
+      },
+      "equal": {
+        "title": "Ausgeglichen",
+        "body": "Keine Seite hat einen deutlichen Motorvorteil. Die Stellung kann trotzdem schwierig sein."
+      },
+      "whiteBetter": {
+        "title": "Weiß steht besser",
+        "body": "Weiß hat einen nützlichen Vorteil, der nach einer Ungenauigkeit verschwinden kann."
+      },
+      "whiteWinning": {
+        "title": "Weiß gewinnt",
+        "body": "Weiß hat entscheidenden Vorteil und sollte ihn bei korrektem Spiel verwerten."
+      }
+    },
+    "facts": {
+      "scale": {
+        "title": "Der Bauer ist die Einheit",
+        "body": "+1,0 entspricht ungefähr einem Bauern; +3,0 etwa einer Leichtfigur."
+      },
+      "colours": {
+        "title": "Fläche zeigt den Vorteil",
+        "body": "Mehr Weiß bedeutet Vorteil für Weiß, mehr Dunkel Vorteil für Schwarz."
+      },
+      "sign": {
+        "title": "Das Vorzeichen nennt die Seite",
+        "body": "Positive Werte begünstigen Weiß, negative Schwarz."
+      },
+      "mate": {
+        "title": "M bedeutet erzwungenes Matt",
+        "body": "M3 zeigt ein erzwungenes Matt in drei Zügen, keinen Materialwert."
+      }
+    },
+    "note": "Der Balken bewertet die Stellung, nicht ihre menschliche Spielbarkeit. Nutze auch Variante und Trainererklärung."
+  },
   "challenge": {
-    "kicker": "Modul 5 · Kurze Aufgabe",
+    "kicker": "Modul 7 · Kurztest",
     "title": "Drei Züge. Keine endlose Prüfung.",
     "intro": "Wähle die Bedeutung jeder Notation. Die Erklärung erhältst du sofort.",
     "score": "{{score}} von {{total}} richtig",
@@ -127,27 +206,54 @@
       "q1": {
         "prompt": "Was ist auf f7 passiert?",
         "options": {
-          "a": { "key": "captureCheck", "label": "Ein Läufer hat geschlagen und Schach gegeben" },
-          "b": { "key": "bishopMove", "label": "Ein Läufer zog ohne zu schlagen" },
-          "c": { "key": "mate", "label": "Der Läufer setzte matt" }
+          "a": {
+            "key": "captureCheck",
+            "label": "Ein Läufer hat geschlagen und Schach gegeben"
+          },
+          "b": {
+            "key": "bishopMove",
+            "label": "Ein Läufer zog ohne zu schlagen"
+          },
+          "c": {
+            "key": "mate",
+            "label": "Der Läufer setzte matt"
+          }
         },
         "explanation": "B steht für Läufer, x für Schlagen und + für Schach."
       },
       "q2": {
         "prompt": "Was bedeutet die längere Rochade-Notation?",
         "options": {
-          "a": { "key": "shortCastle", "label": "Königsrochade" },
-          "b": { "key": "longCastle", "label": "Damenrochade" },
-          "c": { "key": "queenMove", "label": "Die Dame zieht drei Felder" }
+          "a": {
+            "key": "shortCastle",
+            "label": "Königsrochade"
+          },
+          "b": {
+            "key": "longCastle",
+            "label": "Damenrochade"
+          },
+          "c": {
+            "key": "queenMove",
+            "label": "Die Dame zieht drei Felder"
+          }
         },
         "explanation": "O-O-O ist die Damenrochade; O-O ist die Königsrochade."
       },
       "q3": {
         "prompt": "Was ist an diesem Bauernzug besonders?",
         "options": {
-          "a": { "key": "queenCheck", "label": "Umwandlung zur Dame mit Schach" },
-          "b": { "key": "promotionMate", "label": "Umwandlung zur Dame mit Matt" },
-          "c": { "key": "queenCapture", "label": "Eine Dame schlägt auf e8" }
+          "a": {
+            "key": "queenCheck",
+            "label": "Umwandlung zur Dame mit Schach"
+          },
+          "b": {
+            "key": "promotionMate",
+            "label": "Umwandlung zur Dame mit Matt"
+          },
+          "c": {
+            "key": "queenCapture",
+            "label": "Eine Dame schlägt auf e8"
+          }
         },
         "explanation": "=Q bedeutet Umwandlung zur Dame und # bedeutet Schachmatt."
       }

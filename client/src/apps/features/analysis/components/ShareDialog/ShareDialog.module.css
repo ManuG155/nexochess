@@ -30,11 +30,19 @@
     top: 18px !important;
     right: 18px !important;
     z-index: 2;
-    padding: 8px !important;
+    padding: 0 !important;
 
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.wrapper > button img {
+    display: block;
+    width: 18px;
+    height: 18px;
+
+    object-fit: contain;
 }
 
 .wrapper > button:hover {

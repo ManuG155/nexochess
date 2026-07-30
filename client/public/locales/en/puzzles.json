@@ -1,0 +1,159 @@
+{
+    "hero": {
+        "eyebrow": "NexoChess tactical training",
+        "title": "Turn every mistake into a lesson",
+        "subtitle": "Train positions from your own analysed games or practise rated, themed puzzles from the open Lichess database. Your coach stays with you throughout the line."
+    },
+    "stats": {
+        "rating": "Puzzle rating",
+        "calibrating_one": "{{count}} puzzle to calibrate",
+        "calibrating_other": "{{count}} puzzles to calibrate",
+        "calibrated": "Rating calibrated",
+        "accuracy": "Accuracy",
+        "attempts_one": "{{count}} rated attempt",
+        "attempts_other": "{{count}} rated attempts",
+        "streak": "Streak",
+        "best_one": "Best: {{count}}",
+        "best_other": "Best: {{count}}"
+    },
+    "setup": {
+        "kicker": "Build your session",
+        "title": "What do you want to train?",
+        "subtitle": "NexoChess remembers completed positions on this device so they are not served again.",
+        "start": "Start training"
+    },
+    "sources": {
+        "archive": {
+            "title": "Learn from my games",
+            "body": "Puzzles created from inaccuracies, mistakes, misses and blunders.",
+            "emptyTitle": "There are no analysed positions yet",
+            "emptyBody": "Analyse a game first and NexoChess will turn its mistakes into training.",
+            "action": "Analyse a game"
+        },
+        "lichess": {
+            "title": "Lichess training",
+            "body": "Rated CC0 puzzles filtered by theme and difficulty."
+        }
+    },
+    "filters": {
+        "theme": "Theme",
+        "themeHelp": "Choose one motif or leave the session mixed.",
+        "difficulty": "Difficulty",
+        "difficultyHelp": "Adaptive mode follows your puzzle rating."
+    },
+    "themes": {
+        "all": "Mixed",
+        "mate": "Checkmate",
+        "fork": "Fork",
+        "pin": "Pin",
+        "endgame": "Endgame",
+        "opening": "Opening",
+        "sacrifice": "Sacrifice",
+        "defense": "Defence"
+    },
+    "difficulties": {
+        "adaptive": {
+            "title": "Adaptive",
+            "range": "Your level"
+        },
+        "beginner": {
+            "title": "Beginner",
+            "range": "< 1200"
+        },
+        "intermediate": {
+            "title": "Intermediate",
+            "range": "1200–1799"
+        },
+        "advanced": {
+            "title": "Advanced",
+            "range": "1800–2199"
+        },
+        "expert": {
+            "title": "Expert",
+            "range": "2200+"
+        }
+    },
+    "options": {
+        "rated": {
+            "title": "Rated",
+            "body": "Adjust my puzzle rating"
+        },
+        "hints": {
+            "title": "Hints",
+            "body": "Allow the coach to show a move"
+        },
+        "solution": {
+            "title": "Solution",
+            "body": "Allow the complete line to be revealed"
+        }
+    },
+    "coach": {
+        "title": "{{name}}, your coach",
+        "loading": "I am preparing your positions.",
+        "setupArchive": "Your analysed games already contain useful lessons. Choose a session and we will revisit them calmly.",
+        "setupLichess": "No personal positions yet, but the Lichess pack is ready whenever you are.",
+        "archiveTurn": "{{colour}} to move. This position appeared just after a costly move. Find the punishment.",
+        "lichessTurn": "{{colour}} to move. Look for forcing moves before calculating quieter ideas.",
+        "wrong": "Not this one. The move is legal, but it lets the key opportunity slip. Recheck checks, captures and threats.",
+        "correctContinue": "Good move. Watch the reply; the idea is not finished yet.",
+        "yourTurnAgain": "That was the expected defence. Continue the combination.",
+        "hint": "A useful clue: examine {{move}}. Work out why it is stronger before playing it.",
+        "solvedClean": "Excellent. You found the whole idea without help.",
+        "solvedAfterHelp": "Solved. Repeat the pattern mentally once more so the idea sticks.",
+        "solutionShown": "Here is the complete line. Use the arrows below the board to review every position.",
+        "noArchive": "I cannot build a puzzle until at least one analysed game is in your Archive.",
+        "noFiltered": "There are no unseen puzzles with these filters. Try another theme or difficulty.",
+        "loadError": "I could not load the training positions. Refresh the page and we will try again.",
+        "positionError": "This line contains a position I cannot reproduce safely, so I have stopped it.",
+        "changeFilters": "Adjust the session whenever you like; your completed positions remain saved."
+    },
+    "colours": {
+        "white": "White",
+        "black": "Black"
+    },
+    "states": {
+        "loadingTitle": "Preparing your training",
+        "loadingBody": "Reading your Archive and loading the local Lichess puzzle pack.",
+        "errorTitle": "The training could not be loaded",
+        "errorBody": "Nothing has been lost. Refresh the page to try again.",
+        "noArchiveTitle": "No personal puzzles available",
+        "noArchiveBody": "Analyse and save a game to create positions from both players' mistakes.",
+        "noMatchTitle": "You have completed this selection",
+        "noMatchBody": "Change the theme or difficulty to keep training without repeating positions."
+    },
+    "puzzle": {
+        "archiveSource": "From your Archive",
+        "lichessSource": "Lichess CC0 puzzle",
+        "toMove": "{{colour}} to move",
+        "rating": "Rating {{rating}}",
+        "objective": "Current objective",
+        "findMove": "Find the best continuation",
+        "solvedTitle": "Puzzle solved",
+        "revealedTitle": "Solution reviewed",
+        "archiveContext": "Move {{move}} after {{badMove}} in {{game}}. Punish the error and keep the advantage.",
+        "lichessContext": "Every solver move in the line is an only move or a clearly strongest continuation.",
+        "evaluation": "Position advantage",
+        "evaluationNote": "Stockfish updates it locally, always from White's point of view."
+    },
+    "controls": {
+        "previous": "Previous position",
+        "next": "Next position",
+        "beforeMistake": "Position before the mistake",
+        "current": "Current position",
+        "linePosition": "Position {{current}} of {{total}}"
+    },
+    "actions": {
+        "hint": "Hint",
+        "hintHelp": "Show the key move",
+        "solution": "Solution",
+        "solutionHelp": "Reveal the line",
+        "disabled": "Disabled for this session",
+        "nextPuzzle": "Next puzzle",
+        "changeFilters": "Change session",
+        "sourceGame": "Source game"
+    },
+    "attribution": {
+        "text": "Lichess puzzle positions are public-domain data under CC0.",
+        "link": "Open database"
+    }
+}

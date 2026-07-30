@@ -513,6 +513,65 @@
     box-shadow: 0 0 14px rgba(70, 125, 232, 0.12);
 }
 
+.valueGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.valueCard {
+    display: grid;
+    grid-template-columns: 76px minmax(0, 1fr);
+    align-items: center;
+    gap: 14px;
+
+    min-width: 0;
+    padding: 18px;
+
+    border: 1px solid rgba(255, 255, 255, 0.065);
+    border-radius: 14px;
+    background:
+        radial-gradient(
+            circle at 0 0,
+            rgba(70, 125, 232, 0.1),
+            transparent 54%
+        ),
+        rgba(14, 17, 22, 0.28);
+}
+
+.valuePiece {
+    width: 76px;
+    height: 76px;
+    filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.22));
+}
+
+.valueLabel {
+    display: inline-flex;
+    margin-bottom: 4px;
+
+    color: #91b4ff;
+    font-size: 0.69rem;
+    font-weight: 760;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.valueCard h3,
+.valueCard p {
+    margin: 0;
+}
+
+.valueCard h3 {
+    font-size: 1.02rem;
+}
+
+.valueCard p {
+    margin-top: 5px;
+    color: rgba(245, 247, 251, 0.54);
+    font-size: 0.76rem;
+    line-height: 1.45;
+}
+
 .movementName {
     margin-top: 0 !important;
 }
@@ -990,6 +1049,201 @@
     margin-top: 16px;
 }
 
+.evaluationLesson {
+    display: grid;
+    grid-template-columns: minmax(210px, 0.58fr) minmax(320px, 1.42fr);
+    gap: 18px;
+}
+
+.evaluationDemo,
+.evaluationControls {
+    border: 1px solid rgba(255, 255, 255, 0.065);
+    border-radius: 15px;
+    background: rgba(14, 17, 22, 0.28);
+}
+
+.evaluationDemo {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    min-height: 340px;
+    padding: 24px;
+}
+
+.academyEvaluationBar {
+    width: 38px;
+    height: 292px;
+    flex: 0 0 38px;
+
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 8px;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25);
+}
+
+.evaluationScale {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    height: 292px;
+    padding: 2px 0;
+}
+
+.evaluationScale span {
+    color: rgba(245, 247, 251, 0.45);
+    font-size: 0.69rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.evaluationScale strong {
+    color: #b7ccff;
+    font-size: 1.15rem;
+}
+
+.evaluationControls {
+    padding: 22px;
+}
+
+.evaluationControls > span,
+.evaluationDetail > span {
+    color: #80a9ff;
+    font-size: 0.68rem;
+    font-weight: 760;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.evaluationPresets {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 7px;
+    margin-top: 12px;
+}
+
+.evaluationPresets button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+
+    min-width: 0;
+    min-height: 66px;
+    padding: 9px 7px;
+
+    color: rgba(245, 247, 251, 0.54);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.02);
+
+    font-size: 0.67rem;
+    line-height: 1.25;
+    cursor: pointer;
+}
+
+.evaluationPresets button > span {
+    color: #a9c4ff;
+    font-size: 0.9rem;
+    font-weight: 760;
+}
+
+.evaluationPresets button:hover,
+.evaluationPresets .evaluationPresetActive {
+    color: white;
+    border-color: rgba(110, 156, 255, 0.32);
+    background: rgba(70, 125, 232, 0.11);
+}
+
+.evaluationPresets .evaluationPresetActive {
+    box-shadow: inset 0 -2px 0 #6e9cff;
+}
+
+.evaluationDetail {
+    min-height: 126px;
+    margin-top: 16px;
+    padding: 18px;
+
+    border: 1px solid rgba(110, 156, 255, 0.14);
+    border-radius: 12px;
+    background:
+        radial-gradient(
+            circle at 10% 0,
+            rgba(70, 125, 232, 0.11),
+            transparent 62%
+        ),
+        rgba(0, 0, 0, 0.13);
+}
+
+.evaluationDetail h3,
+.evaluationDetail p {
+    margin: 0;
+}
+
+.evaluationDetail h3 {
+    margin-top: 6px;
+    font-size: 1.18rem;
+}
+
+.evaluationDetail p {
+    margin-top: 7px;
+    color: rgba(245, 247, 251, 0.58);
+    font-size: 0.82rem;
+    line-height: 1.55;
+}
+
+.evaluationFacts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+    margin-top: 16px;
+}
+
+.evaluationFacts article {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 15px;
+
+    border: 1px solid rgba(255, 255, 255, 0.055);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.018);
+}
+
+.evaluationFacts article > span {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 27px;
+    height: 27px;
+
+    color: #9fc0ff;
+    border: 1px solid rgba(110, 156, 255, 0.22);
+    border-radius: 8px;
+    background: rgba(70, 125, 232, 0.07);
+
+    font-size: 0.7rem;
+    font-weight: 750;
+}
+
+.evaluationFacts h3,
+.evaluationFacts p {
+    margin: 0;
+}
+
+.evaluationFacts h3 {
+    font-size: 0.86rem;
+}
+
+.evaluationFacts p {
+    margin-top: 4px;
+    color: rgba(245, 247, 251, 0.52);
+    font-size: 0.75rem;
+    line-height: 1.45;
+}
+
 .challengeHeader {
     display: grid;
     grid-template-columns: auto minmax(120px, 240px);
@@ -1235,7 +1489,7 @@
 
     .moduleNavigation {
         display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         position: static;
     }
 
@@ -1245,6 +1499,10 @@
 
     .classificationLayout {
         grid-template-columns: 1fr;
+    }
+
+    .valueGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .classificationDetail {
@@ -1257,6 +1515,10 @@
 
     .practiceLayout {
         grid-template-columns: minmax(220px, 0.8fr) minmax(300px, 1.2fr);
+    }
+
+    .evaluationPresets {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .questionCard > p {
@@ -1289,7 +1551,8 @@
 
     .twoColumns,
     .boardLesson,
-    .practiceLayout {
+    .practiceLayout,
+    .evaluationLesson {
         grid-template-columns: 1fr;
     }
 
@@ -1303,6 +1566,10 @@
 
     .practiceTabs {
         grid-template-columns: 1fr;
+    }
+
+    .evaluationDemo {
+        min-height: 330px;
     }
 }
 
@@ -1325,6 +1592,24 @@
 
     .pieceSelector {
         grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .valueGrid,
+    .evaluationFacts {
+        grid-template-columns: 1fr;
+    }
+
+    .valueCard {
+        grid-template-columns: 64px minmax(0, 1fr);
+    }
+
+    .valuePiece {
+        width: 64px;
+        height: 64px;
+    }
+
+    .evaluationPresets {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .classificationGrid {

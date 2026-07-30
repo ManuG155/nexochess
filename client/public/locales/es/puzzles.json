@@ -1,0 +1,159 @@
+{
+    "hero": {
+        "eyebrow": "Entrenamiento táctico NexoChess",
+        "title": "Convierte cada error en una lección",
+        "subtitle": "Entrena posiciones de tus propias partidas analizadas o practica puzles evaluados y temáticos de la base abierta de Lichess. Tu entrenador te acompaña durante toda la línea."
+    },
+    "stats": {
+        "rating": "Elo de puzles",
+        "calibrating_one": "Falta {{count}} puzle para calibrarte",
+        "calibrating_other": "Faltan {{count}} puzles para calibrarte",
+        "calibrated": "Elo calibrado",
+        "accuracy": "Aciertos",
+        "attempts_one": "{{count}} intento evaluado",
+        "attempts_other": "{{count}} intentos evaluados",
+        "streak": "Racha",
+        "best_one": "Mejor: {{count}}",
+        "best_other": "Mejor: {{count}}"
+    },
+    "setup": {
+        "kicker": "Prepara la sesión",
+        "title": "¿Qué quieres entrenar?",
+        "subtitle": "NexoChess recuerda en este dispositivo las posiciones completadas para no volver a mostrártelas.",
+        "start": "Empezar a entrenar"
+    },
+    "sources": {
+        "archive": {
+            "title": "Aprender de mis partidas",
+            "body": "Puzles creados a partir de imprecisiones, errores, oportunidades perdidas y errores graves.",
+            "emptyTitle": "Todavía no hay posiciones analizadas",
+            "emptyBody": "Analiza primero una partida y NexoChess convertirá sus errores en entrenamiento.",
+            "action": "Analizar una partida"
+        },
+        "lichess": {
+            "title": "Entrenamiento Lichess",
+            "body": "Puzles CC0 evaluados y filtrables por tema y dificultad."
+        }
+    },
+    "filters": {
+        "theme": "Tema",
+        "themeHelp": "Elige un motivo o deja la sesión variada.",
+        "difficulty": "Dificultad",
+        "difficultyHelp": "El modo adaptativo sigue tu Elo de puzles."
+    },
+    "themes": {
+        "all": "Variado",
+        "mate": "Jaque mate",
+        "fork": "Doble ataque",
+        "pin": "Clavada",
+        "endgame": "Final",
+        "opening": "Apertura",
+        "sacrifice": "Sacrificio",
+        "defense": "Defensa"
+    },
+    "difficulties": {
+        "adaptive": {
+            "title": "Adaptativa",
+            "range": "Tu nivel"
+        },
+        "beginner": {
+            "title": "Principiante",
+            "range": "< 1200"
+        },
+        "intermediate": {
+            "title": "Intermedia",
+            "range": "1200–1799"
+        },
+        "advanced": {
+            "title": "Avanzada",
+            "range": "1800–2199"
+        },
+        "expert": {
+            "title": "Experta",
+            "range": "2200+"
+        }
+    },
+    "options": {
+        "rated": {
+            "title": "Evaluada",
+            "body": "Ajusta mi Elo de puzles"
+        },
+        "hints": {
+            "title": "Pistas",
+            "body": "Permite al entrenador mostrar una jugada"
+        },
+        "solution": {
+            "title": "Solución",
+            "body": "Permite revelar la línea completa"
+        }
+    },
+    "coach": {
+        "title": "{{name}}, tu entrenador",
+        "loading": "Estoy preparando tus posiciones.",
+        "setupArchive": "Tus partidas analizadas ya contienen lecciones útiles. Elige una sesión y las repasaremos con calma.",
+        "setupLichess": "Todavía no hay posiciones propias, pero el paquete de Lichess está listo cuando tú quieras.",
+        "archiveTurn": "Juegan {{colour}}. Esta posición apareció justo después de una jugada costosa. Encuentra cómo castigarla.",
+        "lichessTurn": "Juegan {{colour}}. Busca primero jaques, capturas y amenazas antes de calcular ideas tranquilas.",
+        "wrong": "Esta no. La jugada es legal, pero deja escapar la oportunidad clave. Revisa jaques, capturas y amenazas.",
+        "correctContinue": "Buena jugada. Mira la respuesta; la idea todavía no ha terminado.",
+        "yourTurnAgain": "Esa era la defensa esperada. Continúa la combinación.",
+        "hint": "Una pista útil: estudia {{move}}. Intenta entender por qué es más fuerte antes de jugarla.",
+        "solvedClean": "Excelente. Has encontrado toda la idea sin ayuda.",
+        "solvedAfterHelp": "Resuelto. Repite el patrón mentalmente una vez más para fijarlo.",
+        "solutionShown": "Aquí tienes la línea completa. Usa las flechas bajo el tablero para revisar cada posición.",
+        "noArchive": "No puedo formar un puzle hasta que haya al menos una partida analizada en tu Archivo.",
+        "noFiltered": "No quedan puzles sin ver con estos filtros. Prueba otro tema o dificultad.",
+        "loadError": "No he podido cargar las posiciones. Actualiza la página y lo intentamos de nuevo.",
+        "positionError": "Esta línea contiene una posición que no puedo reproducir con seguridad, así que la he detenido.",
+        "changeFilters": "Ajusta la sesión cuando quieras; las posiciones completadas siguen guardadas."
+    },
+    "colours": {
+        "white": "Blancas",
+        "black": "Negras"
+    },
+    "states": {
+        "loadingTitle": "Preparando tu entrenamiento",
+        "loadingBody": "Leyendo tu Archivo y cargando el paquete local de puzles de Lichess.",
+        "errorTitle": "No se ha podido cargar el entrenamiento",
+        "errorBody": "No se ha perdido nada. Actualiza la página para volver a intentarlo.",
+        "noArchiveTitle": "No hay puzles propios disponibles",
+        "noArchiveBody": "Analiza y guarda una partida para crear posiciones con los errores de ambos jugadores.",
+        "noMatchTitle": "Has completado esta selección",
+        "noMatchBody": "Cambia el tema o la dificultad para seguir entrenando sin repetir posiciones."
+    },
+    "puzzle": {
+        "archiveSource": "Desde tu Archivo",
+        "lichessSource": "Puzle CC0 de Lichess",
+        "toMove": "Juegan {{colour}}",
+        "rating": "Elo {{rating}}",
+        "objective": "Objetivo actual",
+        "findMove": "Encuentra la mejor continuación",
+        "solvedTitle": "Puzle resuelto",
+        "revealedTitle": "Solución revisada",
+        "archiveContext": "Jugada {{move}}, después de {{badMove}}, en {{game}}. Castiga el error y conserva la ventaja.",
+        "lichessContext": "Cada jugada del jugador en la línea es única o claramente superior a las alternativas.",
+        "evaluation": "Ventaja de la posición",
+        "evaluationNote": "Stockfish la actualiza en local, siempre desde el punto de vista de las blancas."
+    },
+    "controls": {
+        "previous": "Posición anterior",
+        "next": "Posición siguiente",
+        "beforeMistake": "Posición antes del error",
+        "current": "Posición actual",
+        "linePosition": "Posición {{current}} de {{total}}"
+    },
+    "actions": {
+        "hint": "Pista",
+        "hintHelp": "Muestra la jugada clave",
+        "solution": "Solución",
+        "solutionHelp": "Revela la línea",
+        "disabled": "Desactivado en esta sesión",
+        "nextPuzzle": "Siguiente puzle",
+        "changeFilters": "Cambiar sesión",
+        "sourceGame": "Partida de origen"
+    },
+    "attribution": {
+        "text": "Las posiciones de Lichess son datos de dominio público bajo CC0.",
+        "link": "Abrir la base de datos"
+    }
+}

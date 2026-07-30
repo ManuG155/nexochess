@@ -9,8 +9,10 @@
   "modules": {
     "notation": "Notação",
     "movement": "Movimento das peças",
+    "values": "Valor das peças",
     "practice": "Prática guiada",
     "classifications": "Qualidade do lance",
+    "evaluation": "Barra de avaliação",
     "challenge": "Desafio rápido"
   },
   "notation": {
@@ -23,12 +25,24 @@
     "examplesTitle": "Decifre um lance",
     "examplesHelp": "Toque em um exemplo e veja como cada símbolo muda o significado.",
     "pieces": {
-      "K": { "name": "Rei" },
-      "Q": { "name": "Dama" },
-      "R": { "name": "Torre" },
-      "B": { "name": "Bispo" },
-      "N": { "name": "Cavalo" },
-      "P": { "name": "Peão" }
+      "K": {
+        "name": "Rei"
+      },
+      "Q": {
+        "name": "Dama"
+      },
+      "R": {
+        "name": "Torre"
+      },
+      "B": {
+        "name": "Bispo"
+      },
+      "N": {
+        "name": "Cavalo"
+      },
+      "P": {
+        "name": "Peão"
+      }
     },
     "examples": {
       "e4": "Um peão avança para e4. Peões não escrevem nenhuma letra.",
@@ -56,8 +70,23 @@
       "P": "Avança uma casa, mas captura uma casa na diagonal. Da casa inicial pode avançar duas."
     }
   },
+  "values": {
+    "kicker": "Módulo 3 · Valor das peças",
+    "title": "Entenda o custo de uma troca",
+    "intro": "O valor das peças é uma medida rápida, não um preço fixo. Ajuda a comparar capturas e sacrifícios.",
+    "points": "{{value}} pontos",
+    "pieces": {
+      "P": "A unidade básica. Um peão passado vale mais quando se aproxima da promoção.",
+      "N": "Geralmente vale três peões. É forte em posições fechadas e perto do centro.",
+      "B": "Geralmente vale três peões. Diagonais abertas e o par de bispos aumentam seu valor.",
+      "R": "Geralmente vale cinco peões. Torna-se muito forte em colunas abertas.",
+      "Q": "Vale cerca de nove peões. Combina torre e bispo, mas também pode ficar presa.",
+      "K": "Não tem valor de troca: perdê-lo encerra a partida. No final também é ativo."
+    },
+    "note": "A posição manda: atividade, segurança do rei e táticas forçadas podem valer mais que a soma."
+  },
   "practice": {
-    "kicker": "Módulo 3 · Prática guiada",
+    "kicker": "Módulo 4 · Prática guiada",
     "title": "Faz o lance no tabuleiro",
     "intro": "Seleciona a casa de origem e depois o destino. Se errares, a Academia explica porquê e deixa-te tentar novamente.",
     "progress": "Posição {{current}} de {{total}}",
@@ -93,7 +122,7 @@
     }
   },
   "classifications": {
-    "kicker": "Módulo 4 · Qualidade do lance",
+    "kicker": "Módulo 5 · Qualidade do lance",
     "title": "Por que um lance recebe cada rótulo",
     "intro": "O NexoChess compara seu lance com a posição e as alternativas do motor. Toque num rótulo para uma explicação simples.",
     "selected": "Classificação selecionada",
@@ -113,8 +142,58 @@
       "risky": "Um rótulo antigo para uma ideia duvidosa ou desnecessariamente perigosa. Mantido por compatibilidade, aparece raramente."
     }
   },
+  "evaluation": {
+    "kicker": "Módulo 6 · Barra de avaliação",
+    "title": "Veja quem está melhor de imediato",
+    "intro": "A barra transforma a avaliação do motor em equilíbrio visual. Teste os exemplos e veja qual cor ganha espaço.",
+    "white": "Brancas",
+    "black": "Pretas",
+    "tryLabel": "Teste cinco posições",
+    "current": "O que significa",
+    "presets": {
+      "blackWinning": {
+        "title": "Pretas estão ganhando",
+        "body": "Pretas têm vantagem decisiva. Brancas precisam de um erro grave do rival."
+      },
+      "blackBetter": {
+        "title": "Pretas estão melhores",
+        "body": "Pretas têm vantagem útil, mas ainda precisam jogar com precisão."
+      },
+      "equal": {
+        "title": "Equilibrada",
+        "body": "Nenhum lado tem vantagem relevante para o motor. A posição ainda pode ser difícil."
+      },
+      "whiteBetter": {
+        "title": "Brancas estão melhores",
+        "body": "Brancas têm vantagem útil, mas uma imprecisão pode apagá-la."
+      },
+      "whiteWinning": {
+        "title": "Brancas estão ganhando",
+        "body": "Brancas têm vantagem decisiva e devem convertê-la com jogo correto."
+      }
+    },
+    "facts": {
+      "scale": {
+        "title": "O peão é a unidade",
+        "body": "+1,0 vale aproximadamente um peão; +3,0, uma peça menor."
+      },
+      "colours": {
+        "title": "O espaço mostra a vantagem",
+        "body": "Mais branco favorece as Brancas; mais escuro favorece as Pretas."
+      },
+      "sign": {
+        "title": "O sinal indica o lado",
+        "body": "Valores positivos favorecem as Brancas e negativos as Pretas."
+      },
+      "mate": {
+        "title": "M indica mate forçado",
+        "body": "M3 significa mate forçado em três lances, não valor material."
+      }
+    },
+    "note": "A barra avalia a posição, não a facilidade humana. Combine-a com a variante e a explicação do treinador."
+  },
   "challenge": {
-    "kicker": "Módulo 5 · Desafio rápido",
+    "kicker": "Módulo 7 · Desafio rápido",
     "title": "Três lances. Sem prova interminável.",
     "intro": "Escolha o significado de cada notação. A explicação aparece na hora.",
     "score": "{{score}} de {{total}} corretas",
@@ -127,27 +206,54 @@
       "q1": {
         "prompt": "O que aconteceu em f7?",
         "options": {
-          "a": { "key": "captureCheck", "label": "Um bispo capturou e deu xeque" },
-          "b": { "key": "bishopMove", "label": "Um bispo se moveu sem capturar" },
-          "c": { "key": "mate", "label": "O bispo deu xeque-mate" }
+          "a": {
+            "key": "captureCheck",
+            "label": "Um bispo capturou e deu xeque"
+          },
+          "b": {
+            "key": "bishopMove",
+            "label": "Um bispo se moveu sem capturar"
+          },
+          "c": {
+            "key": "mate",
+            "label": "O bispo deu xeque-mate"
+          }
         },
         "explanation": "B significa bispo, x indica captura e + significa xeque."
       },
       "q2": {
         "prompt": "O que significa a notação do roque longo?",
         "options": {
-          "a": { "key": "shortCastle", "label": "Roque pequeno" },
-          "b": { "key": "longCastle", "label": "Roque grande" },
-          "c": { "key": "queenMove", "label": "A dama se move três casas" }
+          "a": {
+            "key": "shortCastle",
+            "label": "Roque pequeno"
+          },
+          "b": {
+            "key": "longCastle",
+            "label": "Roque grande"
+          },
+          "c": {
+            "key": "queenMove",
+            "label": "A dama se move três casas"
+          }
         },
         "explanation": "O-O-O é o roque grande; O-O é o roque pequeno."
       },
       "q3": {
         "prompt": "O que há de especial neste lance de peão?",
         "options": {
-          "a": { "key": "queenCheck", "label": "Promove a dama e dá xeque" },
-          "b": { "key": "promotionMate", "label": "Promove a dama e dá xeque-mate" },
-          "c": { "key": "queenCapture", "label": "Uma dama captura em e8" }
+          "a": {
+            "key": "queenCheck",
+            "label": "Promove a dama e dá xeque"
+          },
+          "b": {
+            "key": "promotionMate",
+            "label": "Promove a dama e dá xeque-mate"
+          },
+          "c": {
+            "key": "queenCapture",
+            "label": "Uma dama captura em e8"
+          }
         },
         "explanation": "=Q indica promoção a dama e # significa xeque-mate."
       }

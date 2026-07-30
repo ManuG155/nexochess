@@ -11,6 +11,8 @@ import * as styles from "./Sidebar.module.css";
 import iconInterfaceClose from "@assets/img/interface/close.svg";
 import iconIconsAnalysis from "@assets/img/icons/analysis.png";
 import iconIconsArchive from "@assets/img/icons/archive.png";
+import iconIconsAcademy from "@assets/img/icons/academy.svg";
+import iconIconsPuzzles from "@assets/img/icons/puzzles.svg";
 import iconIconsSettings from "@assets/img/icons/settings.png";
 
 function Sidebar({ style, onClose }: SidebarProps) {
@@ -59,6 +61,24 @@ function Sidebar({ style, onClose }: SidebarProps) {
                     style={{ width: "100%" }}
                 >
                     {t("sidebar.archive")}
+                </SidebarTab>
+
+                <SidebarTab
+                    url="/academy"
+                    icon={iconIconsAcademy}
+                    iconSize="22px"
+                    style={{ width: "100%" }}
+                >
+                    {t("navigationBar.academy")}
+                </SidebarTab>
+
+                <SidebarTab
+                    url="/puzzles"
+                    icon={iconIconsPuzzles}
+                    iconSize="22px"
+                    style={{ width: "100%" }}
+                >
+                    {t("navigationBar.puzzles")}
                 </SidebarTab>
 
             </div>

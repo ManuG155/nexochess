@@ -9,8 +9,10 @@
   "modules": {
     "notation": "记谱法",
     "movement": "棋子走法",
+    "values": "棋子价值",
     "practice": "引导练习",
     "classifications": "着法质量",
+    "evaluation": "评估条",
     "challenge": "快速挑战"
   },
   "notation": {
@@ -23,12 +25,24 @@
     "examplesTitle": "拆解一手棋",
     "examplesHelp": "点击示例，看看每个符号如何改变含义。",
     "pieces": {
-      "K": { "name": "王" },
-      "Q": { "name": "后" },
-      "R": { "name": "车" },
-      "B": { "name": "象" },
-      "N": { "name": "马" },
-      "P": { "name": "兵" }
+      "K": {
+        "name": "王"
+      },
+      "Q": {
+        "name": "后"
+      },
+      "R": {
+        "name": "车"
+      },
+      "B": {
+        "name": "象"
+      },
+      "N": {
+        "name": "马"
+      },
+      "P": {
+        "name": "兵"
+      }
     },
     "examples": {
       "e4": "一个兵走到 e4。兵不写字母。",
@@ -56,8 +70,23 @@
       "P": "向前走一格，却沿斜线吃一格。从初始位置可以向前走两格。"
     }
   },
+  "values": {
+    "kicker": "模块 3 · 棋子价值",
+    "title": "了解交换的代价",
+    "intro": "棋子价值是快速衡量工具，不是固定价格。它帮助你比较吃子和弃子。",
+    "points": "{{value}} 分",
+    "pieces": {
+      "P": "基本单位。通路兵越接近升变，价值越高。",
+      "N": "通常值三个兵。在封闭局面和中心附近很强。",
+      "B": "通常值三个兵。开放斜线和双象会提高它的价值。",
+      "R": "通常值五个兵。在开放线上尤其强大。",
+      "Q": "约值九个兵。兼具车与象的走法，但也可能被困住。",
+      "K": "无法交换：失去王就输棋。残局中王也是主动棋子。"
+    },
+    "note": "局面优先：活跃度、王的安全和强制战术可能比简单加减更重要。"
+  },
   "practice": {
-    "kicker": "模块 3 · 引导练习",
+    "kicker": "模块 4 · 引导练习",
     "title": "在棋盘上走出这步棋",
     "intro": "先选择起始格，再选择目标格。走错时，学院会说明原因，并让你重新尝试。",
     "progress": "第 {{current}} 个局面，共 {{total}} 个",
@@ -93,7 +122,7 @@
     }
   },
   "classifications": {
-    "kicker": "模块 4 · 着法质量",
+    "kicker": "模块 5 · 着法质量",
     "title": "每种标签为什么会出现",
     "intro": "NexoChess 会把你的着法与局面和引擎候选着比较。点击标签即可查看通俗解释。",
     "selected": "当前分类",
@@ -113,8 +142,58 @@
       "risky": "用于可疑或不必要冒险构思的旧标签。为兼容保留，极少出现。"
     }
   },
+  "evaluation": {
+    "kicker": "模块 6 · 评估条",
+    "title": "一眼看出谁更好",
+    "intro": "评估条把引擎判断变成视觉平衡。切换示例，观察哪一方占据更多空间。",
+    "white": "白方",
+    "black": "黑方",
+    "tryLabel": "试试五种局面",
+    "current": "这意味着什么",
+    "presets": {
+      "blackWinning": {
+        "title": "黑方胜势",
+        "body": "黑方有决定性优势。白方需要对手出现严重失误才可能挽回。"
+      },
+      "blackBetter": {
+        "title": "黑方较好",
+        "body": "黑方有实际优势，但仍需准确行棋。"
+      },
+      "equal": {
+        "title": "局面均衡",
+        "body": "引擎认为双方没有明显优势，但局面仍可能非常复杂。"
+      },
+      "whiteBetter": {
+        "title": "白方较好",
+        "body": "白方有实际优势，但一次不准确就可能失去。"
+      },
+      "whiteWinning": {
+        "title": "白方胜势",
+        "body": "白方有决定性优势，准确行棋应能兑现。"
+      }
+    },
+    "facts": {
+      "scale": {
+        "title": "兵是计量单位",
+        "body": "+1.0 约等于一个兵，+3.0 约等于一个轻子。"
+      },
+      "colours": {
+        "title": "面积表示优势",
+        "body": "白色更多表示白方较好；深色更多表示黑方较好。"
+      },
+      "sign": {
+        "title": "正负号表示一方",
+        "body": "正值有利白方，负值有利黑方。"
+      },
+      "mate": {
+        "title": "M 表示强制将杀",
+        "body": "M3 表示三步内强制将杀，不是子力分数。"
+      }
+    },
+    "note": "评估条衡量局面，不代表人类操作难度。请结合引擎变化和教练解释。"
+  },
   "challenge": {
-    "kicker": "模块 5 · 快速挑战",
+    "kicker": "模块 7 · 快速挑战",
     "title": "三步棋，不来漫长考试。",
     "intro": "选择每条记谱的含义，马上就能看到解释。",
     "score": "答对 {{score}} / {{total}}",
@@ -127,27 +206,54 @@
       "q1": {
         "prompt": "f7 上发生了什么？",
         "options": {
-          "a": { "key": "captureCheck", "label": "象在此吃子并将军" },
-          "b": { "key": "bishopMove", "label": "象走到这里但没有吃子" },
-          "c": { "key": "mate", "label": "象完成将死" }
+          "a": {
+            "key": "captureCheck",
+            "label": "象在此吃子并将军"
+          },
+          "b": {
+            "key": "bishopMove",
+            "label": "象走到这里但没有吃子"
+          },
+          "c": {
+            "key": "mate",
+            "label": "象完成将死"
+          }
         },
         "explanation": "B 表示象，x 表示吃子，+ 表示将军。"
       },
       "q2": {
         "prompt": "较长的易位记谱表示什么？",
         "options": {
-          "a": { "key": "shortCastle", "label": "王翼易位" },
-          "b": { "key": "longCastle", "label": "后翼易位" },
-          "c": { "key": "queenMove", "label": "后移动三格" }
+          "a": {
+            "key": "shortCastle",
+            "label": "王翼易位"
+          },
+          "b": {
+            "key": "longCastle",
+            "label": "后翼易位"
+          },
+          "c": {
+            "key": "queenMove",
+            "label": "后移动三格"
+          }
         },
         "explanation": "O-O-O 是后翼易位；O-O 是王翼易位。"
       },
       "q3": {
         "prompt": "这一步兵有什么特别？",
         "options": {
-          "a": { "key": "queenCheck", "label": "升变为后并将军" },
-          "b": { "key": "promotionMate", "label": "升变为后并将死" },
-          "c": { "key": "queenCapture", "label": "后在 e8 吃子" }
+          "a": {
+            "key": "queenCheck",
+            "label": "升变为后并将军"
+          },
+          "b": {
+            "key": "promotionMate",
+            "label": "升变为后并将死"
+          },
+          "c": {
+            "key": "queenCapture",
+            "label": "后在 e8 吃子"
+          }
         },
         "explanation": "=Q 表示升变为后，# 表示将死。"
       }

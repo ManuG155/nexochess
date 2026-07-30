@@ -9,8 +9,10 @@
   "modules": {
     "notation": "Ký hiệu",
     "movement": "Cách quân di chuyển",
+    "values": "Giá trị quân cờ",
     "practice": "Luyện tập có hướng dẫn",
     "classifications": "Chất lượng nước đi",
+    "evaluation": "Thanh đánh giá",
     "challenge": "Thử thách nhanh"
   },
   "notation": {
@@ -23,12 +25,24 @@
     "examplesTitle": "Giải mã một nước đi",
     "examplesHelp": "Chạm vào ví dụ để xem mỗi ký hiệu thay đổi ý nghĩa ra sao.",
     "pieces": {
-      "K": { "name": "Vua" },
-      "Q": { "name": "Hậu" },
-      "R": { "name": "Xe" },
-      "B": { "name": "Tượng" },
-      "N": { "name": "Mã" },
-      "P": { "name": "Tốt" }
+      "K": {
+        "name": "Vua"
+      },
+      "Q": {
+        "name": "Hậu"
+      },
+      "R": {
+        "name": "Xe"
+      },
+      "B": {
+        "name": "Tượng"
+      },
+      "N": {
+        "name": "Mã"
+      },
+      "P": {
+        "name": "Tốt"
+      }
     },
     "examples": {
       "e4": "Một quân tốt đi đến e4. Tốt không ghi chữ cái.",
@@ -56,8 +70,23 @@
       "P": "Đi thẳng một ô nhưng bắt chéo một ô. Từ ô xuất phát, tốt có thể đi hai ô."
     }
   },
+  "values": {
+    "kicker": "Mô-đun 3 · Giá trị quân cờ",
+    "title": "Hiểu chi phí của một cuộc đổi quân",
+    "intro": "Giá trị quân là thước đo nhanh, không phải giá cố định. Nó giúp so sánh bắt quân và thí quân.",
+    "points": "{{value}} điểm",
+    "pieces": {
+      "P": "Đơn vị cơ bản. Tốt thông trở nên giá trị hơn khi gần phong cấp.",
+      "N": "Thường bằng ba tốt. Mạnh trong thế đóng và gần trung tâm.",
+      "B": "Thường bằng ba tốt. Đường chéo mở và cặp tượng làm tăng giá trị.",
+      "R": "Thường bằng năm tốt. Đặc biệt mạnh trên cột mở.",
+      "Q": "Khoảng chín tốt. Kết hợp cách đi của xe và tượng nhưng vẫn có thể bị bẫy.",
+      "K": "Không có giá đổi quân: mất vua là hết ván. Trong tàn cuộc vua rất tích cực."
+    },
+    "note": "Vị trí quan trọng hơn: hoạt động, an toàn của vua và chiến thuật cưỡng bức có thể vượt phép cộng."
+  },
   "practice": {
-    "kicker": "Mô-đun 3 · Luyện tập có hướng dẫn",
+    "kicker": "Mô-đun 4 · Luyện tập có hướng dẫn",
     "title": "Thực hiện nước đi trên bàn cờ",
     "intro": "Chọn ô xuất phát rồi chọn ô đích. Nếu sai, Học viện sẽ giải thích lý do và cho bạn thử lại.",
     "progress": "Thế cờ {{current}} / {{total}}",
@@ -93,7 +122,7 @@
     }
   },
   "classifications": {
-    "kicker": "Mô-đun 4 · Chất lượng nước đi",
+    "kicker": "Mô-đun 5 · Chất lượng nước đi",
     "title": "Vì sao một nước nhận từng nhãn",
     "intro": "NexoChess so sánh nước của bạn với thế cờ và các phương án của máy. Chạm vào nhãn để xem giải thích dễ hiểu.",
     "selected": "Phân loại đã chọn",
@@ -113,8 +142,58 @@
       "risky": "Nhãn cũ cho một ý tưởng đáng ngờ hoặc nguy hiểm không cần thiết. Được giữ để tương thích và hiếm khi xuất hiện."
     }
   },
+  "evaluation": {
+    "kicker": "Mô-đun 6 · Thanh đánh giá",
+    "title": "Nhìn nhanh bên nào tốt hơn",
+    "intro": "Thanh biến đánh giá của máy thành cân bằng trực quan. Thử các ví dụ và xem màu nào chiếm nhiều chỗ hơn.",
+    "white": "Trắng",
+    "black": "Đen",
+    "tryLabel": "Thử năm vị trí",
+    "current": "Điều này có nghĩa gì",
+    "presets": {
+      "blackWinning": {
+        "title": "Đen thắng thế",
+        "body": "Đen có lợi thế quyết định. Trắng cần đối thủ mắc sai lầm nghiêm trọng."
+      },
+      "blackBetter": {
+        "title": "Đen tốt hơn",
+        "body": "Đen có lợi thế hữu ích nhưng vẫn phải chơi chính xác."
+      },
+      "equal": {
+        "title": "Cân bằng",
+        "body": "Không bên nào có lợi thế máy đáng kể. Vị trí vẫn có thể phức tạp."
+      },
+      "whiteBetter": {
+        "title": "Trắng tốt hơn",
+        "body": "Trắng có lợi thế hữu ích nhưng có thể mất sau một nước thiếu chính xác."
+      },
+      "whiteWinning": {
+        "title": "Trắng thắng thế",
+        "body": "Trắng có lợi thế quyết định và nên chuyển hóa bằng lối chơi chính xác."
+      }
+    },
+    "facts": {
+      "scale": {
+        "title": "Tốt là đơn vị",
+        "body": "+1,0 xấp xỉ một tốt; +3,0 gần bằng một quân nhẹ."
+      },
+      "colours": {
+        "title": "Diện tích cho thấy lợi thế",
+        "body": "Nhiều trắng hơn có lợi cho Trắng; nhiều tối hơn có lợi cho Đen."
+      },
+      "sign": {
+        "title": "Dấu cho biết bên",
+        "body": "Số dương có lợi cho Trắng, số âm có lợi cho Đen."
+      },
+      "mate": {
+        "title": "M là chiếu hết cưỡng bức",
+        "body": "M3 nghĩa là chiếu hết bắt buộc trong ba nước, không phải điểm vật chất."
+      }
+    },
+    "note": "Thanh đánh giá vị trí, không đo độ dễ chơi của con người. Hãy xem cả biến máy và lời giải thích của huấn luyện viên."
+  },
   "challenge": {
-    "kicker": "Mô-đun 5 · Thử thách nhanh",
+    "kicker": "Mô-đun 7 · Thử thách nhanh",
     "title": "Ba nước. Không có bài thi dài lê thê.",
     "intro": "Chọn ý nghĩa của từng ký hiệu. Bạn sẽ nhận giải thích ngay.",
     "score": "Đúng {{score}} / {{total}}",
@@ -127,27 +206,54 @@
       "q1": {
         "prompt": "Điều gì đã xảy ra ở f7?",
         "options": {
-          "a": { "key": "captureCheck", "label": "Tượng bắt quân tại đó và chiếu" },
-          "b": { "key": "bishopMove", "label": "Tượng đi đến đó mà không bắt quân" },
-          "c": { "key": "mate", "label": "Tượng chiếu hết" }
+          "a": {
+            "key": "captureCheck",
+            "label": "Tượng bắt quân tại đó và chiếu"
+          },
+          "b": {
+            "key": "bishopMove",
+            "label": "Tượng đi đến đó mà không bắt quân"
+          },
+          "c": {
+            "key": "mate",
+            "label": "Tượng chiếu hết"
+          }
         },
         "explanation": "B là tượng, x là bắt quân và + là chiếu."
       },
       "q2": {
         "prompt": "Ký hiệu nhập thành dài nghĩa là gì?",
         "options": {
-          "a": { "key": "shortCastle", "label": "Nhập thành cánh vua" },
-          "b": { "key": "longCastle", "label": "Nhập thành cánh hậu" },
-          "c": { "key": "queenMove", "label": "Hậu đi ba ô" }
+          "a": {
+            "key": "shortCastle",
+            "label": "Nhập thành cánh vua"
+          },
+          "b": {
+            "key": "longCastle",
+            "label": "Nhập thành cánh hậu"
+          },
+          "c": {
+            "key": "queenMove",
+            "label": "Hậu đi ba ô"
+          }
         },
         "explanation": "O-O-O là nhập thành cánh hậu; O-O là nhập thành cánh vua."
       },
       "q3": {
         "prompt": "Nước tốt này có gì đặc biệt?",
         "options": {
-          "a": { "key": "queenCheck", "label": "Phong hậu và chiếu" },
-          "b": { "key": "promotionMate", "label": "Phong hậu và chiếu hết" },
-          "c": { "key": "queenCapture", "label": "Hậu bắt quân ở e8" }
+          "a": {
+            "key": "queenCheck",
+            "label": "Phong hậu và chiếu"
+          },
+          "b": {
+            "key": "promotionMate",
+            "label": "Phong hậu và chiếu hết"
+          },
+          "c": {
+            "key": "queenCapture",
+            "label": "Hậu bắt quân ở e8"
+          }
         },
         "explanation": "=Q là phong hậu và # là chiếu hết."
       }

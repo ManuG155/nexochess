@@ -1,0 +1,132 @@
+{
+    "hero": {
+        "eyebrow": "Trening taktyczny NexoChess",
+        "title": "Zamień każdy błąd w lekcję",
+        "subtitle": "Ćwicz pozycje z własnych przeanalizowanych partii lub rozwiązuj oceniane zadania tematyczne z otwartej bazy Lichess. Trener towarzyszy Ci przez cały wariant."
+    },
+    "stats": {
+        "rating": "Ranking zadań",
+        "calibrating_one": "Jeszcze {{count}} zadanie do kalibracji",
+        "calibrating_other": "Jeszcze {{count}} zadań do kalibracji",
+        "calibrated": "Ranking skalibrowany",
+        "accuracy": "Skuteczność",
+        "attempts_one": "{{count}} oceniana próba",
+        "attempts_other": "{{count}} ocenianych prób",
+        "streak": "Seria",
+        "best_one": "Najlepsza: {{count}}",
+        "best_other": "Najlepsza: {{count}}"
+    },
+    "setup": {
+        "kicker": "Przygotuj sesję",
+        "title": "Co chcesz trenować?",
+        "subtitle": "NexoChess zapamiętuje ukończone pozycje na tym urządzeniu, aby ich nie powtarzać.",
+        "start": "Rozpocznij trening"
+    },
+    "sources": {
+        "archive": {
+            "title": "Ucz się z moich partii",
+            "body": "Zadania tworzone z niedokładności, błędów, niewykorzystanych szans i poważnych błędów.",
+            "emptyTitle": "Brak przeanalizowanych pozycji",
+            "emptyBody": "Najpierw przeanalizuj partię, a NexoChess zamieni jej błędy w ćwiczenia.",
+            "action": "Przeanalizuj partię"
+        },
+        "lichess": {
+            "title": "Trening Lichess",
+            "body": "Oceniane zadania CC0 filtrowane według tematu i trudności."
+        }
+    },
+    "filters": {
+        "theme": "Temat",
+        "themeHelp": "Wybierz motyw albo pozostaw trening mieszany.",
+        "difficulty": "Trudność",
+        "difficultyHelp": "Tryb adaptacyjny podąża za Twoim rankingiem zadań."
+    },
+    "themes": {
+        "all": "Mieszane",
+        "mate": "Mat",
+        "fork": "Widełki",
+        "pin": "Związanie",
+        "endgame": "Końcówka",
+        "opening": "Debiut",
+        "sacrifice": "Ofiara",
+        "defense": "Obrona"
+    },
+    "difficulties": {
+        "adaptive": { "title": "Adaptacyjna", "range": "Twój poziom" },
+        "beginner": { "title": "Początkująca", "range": "< 1200" },
+        "intermediate": { "title": "Średnia", "range": "1200–1799" },
+        "advanced": { "title": "Zaawansowana", "range": "1800–2199" },
+        "expert": { "title": "Ekspercka", "range": "2200+" }
+    },
+    "options": {
+        "rated": { "title": "Oceniana", "body": "Zmieniaj mój ranking zadań" },
+        "hints": { "title": "Podpowiedzi", "body": "Pozwól trenerowi pokazać ruch" },
+        "solution": { "title": "Rozwiązanie", "body": "Pozwól ujawnić cały wariant" }
+    },
+    "coach": {
+        "title": "{{name}}, Twój trener",
+        "loading": "Przygotowuję Twoje pozycje.",
+        "setupArchive": "Twoje przeanalizowane partie zawierają już dobre lekcje. Wybierz sesję i spokojnie je przejrzymy.",
+        "setupLichess": "Nie ma jeszcze własnych pozycji, ale pakiet Lichess jest gotowy.",
+        "archiveTurn": "Ruch {{colour}}. Ta pozycja powstała po kosztownym błędzie. Znajdź karę.",
+        "lichessTurn": "Ruch {{colour}}. Najpierw sprawdź szachy, bicia i groźby.",
+        "wrong": "Nie ten ruch. Jest legalny, ale wypuszcza kluczową szansę. Ponownie sprawdź szachy, bicia i groźby.",
+        "correctContinue": "Dobry ruch. Obserwuj odpowiedź; pomysł jeszcze się nie skończył.",
+        "yourTurnAgain": "To była oczekiwana obrona. Kontynuuj kombinację.",
+        "hint": "Podpowiedź: zbadaj {{move}} i zrozum, dlaczego ten ruch jest silniejszy.",
+        "solvedClean": "Świetnie. Cały pomysł został znaleziony bez pomocy.",
+        "solvedAfterHelp": "Rozwiązane. Powtórz jeszcze raz ten motyw w myślach.",
+        "solutionShown": "Oto cały wariant. Strzałkami pod szachownicą możesz przejrzeć każdą pozycję.",
+        "noArchive": "Do utworzenia zadania potrzebna jest co najmniej jedna przeanalizowana partia w Archiwum.",
+        "noFiltered": "Brak nowych zadań z tymi filtrami. Zmień temat lub trudność.",
+        "loadError": "Nie udało się wczytać pozycji. Odśwież stronę i spróbuj ponownie.",
+        "positionError": "Tego wariantu nie można bezpiecznie odtworzyć, więc został zatrzymany.",
+        "changeFilters": "Zmień sesję w dowolnej chwili; ukończone pozycje pozostaną zapisane."
+    },
+    "colours": { "white": "białych", "black": "czarnych" },
+    "states": {
+        "loadingTitle": "Przygotowywanie treningu",
+        "loadingBody": "Odczyt Archiwum i ładowanie lokalnego pakietu Lichess.",
+        "errorTitle": "Nie udało się wczytać treningu",
+        "errorBody": "Nic nie zginęło. Odśwież stronę i spróbuj ponownie.",
+        "noArchiveTitle": "Brak własnych zadań",
+        "noArchiveBody": "Przeanalizuj i zapisz partię, aby tworzyć pozycje z błędów obu graczy.",
+        "noMatchTitle": "Ta kolekcja została ukończona",
+        "noMatchBody": "Zmień temat lub trudność, aby trenować dalej bez powtórek."
+    },
+    "puzzle": {
+        "archiveSource": "Z Twojego Archiwum",
+        "lichessSource": "Zadanie Lichess CC0",
+        "toMove": "Ruch {{colour}}",
+        "rating": "Ranking {{rating}}",
+        "objective": "Bieżący cel",
+        "findMove": "Znajdź najlepszą kontynuację",
+        "solvedTitle": "Zadanie rozwiązane",
+        "revealedTitle": "Rozwiązanie przejrzane",
+        "archiveContext": "Ruch {{move}}, po {{badMove}}, w {{game}}. Ukarz błąd i utrzymaj przewagę.",
+        "lichessContext": "Każdy ruch rozwiązującego jest jedyny albo wyraźnie najsilniejszy.",
+        "evaluation": "Przewaga w pozycji",
+        "evaluationNote": "Stockfish aktualizuje go lokalnie, zawsze z perspektywy białych."
+    },
+    "controls": {
+        "previous": "Poprzednia pozycja",
+        "next": "Następna pozycja",
+        "beforeMistake": "Pozycja przed błędem",
+        "current": "Aktualna pozycja",
+        "linePosition": "Pozycja {{current}} z {{total}}"
+    },
+    "actions": {
+        "hint": "Podpowiedź",
+        "hintHelp": "Pokaż kluczowy ruch",
+        "solution": "Rozwiązanie",
+        "solutionHelp": "Ujawnij wariant",
+        "disabled": "Wyłączone w tej sesji",
+        "nextPuzzle": "Następne zadanie",
+        "changeFilters": "Zmień sesję",
+        "sourceGame": "Partia źródłowa"
+    },
+    "attribution": {
+        "text": "Pozycje zadań Lichess są danymi domeny publicznej CC0.",
+        "link": "Otwórz bazę"
+    }
+}

@@ -1,0 +1,1033 @@
+.page {
+    box-sizing: border-box;
+    width: min(1360px, 100%);
+    min-height: calc(100vh - 62px);
+    padding: 42px 34px 30px;
+
+    color: #f4f7fc;
+}
+
+.hero {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+    margin-bottom: 28px;
+}
+
+.eyebrow,
+.sectionHeader > span {
+    color: #7fa9ff;
+    font-size: 0.7rem;
+    font-weight: 780;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+}
+
+.hero h1 {
+    margin: 5px 0 8px;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    letter-spacing: -0.045em;
+}
+
+.hero p {
+    max-width: 690px;
+    margin: 0;
+    color: rgba(244, 247, 252, 0.57);
+    font-size: 0.92rem;
+    line-height: 1.65;
+}
+
+.profileStats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(112px, 1fr));
+    gap: 8px;
+    flex: 0 0 auto;
+}
+
+.profileStats > div {
+    display: flex;
+    flex-direction: column;
+    min-width: 108px;
+    padding: 12px 14px;
+
+    border: 1px solid rgba(255, 255, 255, 0.075);
+    border-radius: 12px;
+    background: rgba(15, 18, 24, 0.44);
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0.018);
+}
+
+.profileStats span,
+.profileStats small {
+    color: rgba(244, 247, 252, 0.42);
+    font-size: 0.62rem;
+}
+
+.profileStats strong {
+    margin: 2px 0;
+    font-size: 1.35rem;
+}
+
+.setupGrid,
+.trainingGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 355px;
+    align-items: start;
+    gap: 18px;
+}
+
+.setupMain,
+.trainingPanel,
+.stateCard {
+    border: 1px solid rgba(255, 255, 255, 0.075);
+    border-radius: 18px;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(31, 35, 44, 0.95),
+            rgba(22, 25, 32, 0.96)
+        );
+    box-shadow:
+        0 28px 76px rgba(0, 0, 0, 0.26),
+        inset 0 1px rgba(255, 255, 255, 0.025);
+}
+
+.setupMain {
+    padding: 26px;
+}
+
+.sectionHeader h2 {
+    margin: 5px 0 5px;
+    font-size: 1.65rem;
+    letter-spacing: -0.025em;
+}
+
+.sectionHeader p {
+    margin: 0;
+    color: rgba(244, 247, 252, 0.52);
+    font-size: 0.83rem;
+    line-height: 1.55;
+}
+
+.sourceSelector {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.sourceSelector > button {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    text-align: left;
+
+    color: rgba(244, 247, 252, 0.74);
+    border: 1px solid rgba(255, 255, 255, 0.075);
+    border-radius: 13px;
+    background: rgba(7, 9, 13, 0.22);
+    cursor: pointer;
+
+    transition:
+        border-color 0.18s ease,
+        background-color 0.18s ease,
+        transform 0.18s ease;
+}
+
+.sourceSelector > button:hover {
+    transform: translateY(-1px);
+    border-color: rgba(110, 156, 255, 0.28);
+    background: rgba(70, 125, 232, 0.07);
+}
+
+.sourceSelector > button.sourceActive {
+    border-color: rgba(110, 156, 255, 0.48);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(70, 125, 232, 0.18),
+            rgba(70, 125, 232, 0.07)
+        );
+    box-shadow: inset 0 0 0 1px rgba(110, 156, 255, 0.06);
+}
+
+.sourceSelector > button > span:nth-child(2) {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.sourceSelector strong {
+    margin-bottom: 3px;
+    color: #f4f7fc;
+    font-size: 0.84rem;
+}
+
+.sourceSelector small {
+    color: rgba(244, 247, 252, 0.45);
+    font-size: 0.69rem;
+    line-height: 1.4;
+}
+
+.sourceSelector b {
+    display: grid;
+    place-items: center;
+    min-width: 34px;
+    height: 25px;
+
+    color: #9abaff;
+    border: 1px solid rgba(110, 156, 255, 0.2);
+    border-radius: 999px;
+    background: rgba(70, 125, 232, 0.08);
+    font-size: 0.7rem;
+}
+
+.sourceIcon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+
+    color: #8eb3ff;
+    border: 1px solid rgba(110, 156, 255, 0.2);
+    border-radius: 11px;
+    background: rgba(70, 125, 232, 0.09);
+}
+
+.sourceIcon svg {
+    width: 21px;
+    height: 21px;
+
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+}
+
+.filterBlock {
+    margin-top: 22px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.filterHeading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 11px;
+}
+
+.filterHeading strong {
+    font-size: 0.82rem;
+}
+
+.filterHeading span {
+    color: rgba(244, 247, 252, 0.39);
+    font-size: 0.67rem;
+}
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.chips button {
+    padding: 7px 11px;
+
+    color: rgba(244, 247, 252, 0.58);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.025);
+    font-size: 0.69rem;
+    cursor: pointer;
+}
+
+.chips button:hover,
+.chips button.chipActive {
+    color: #dce8ff;
+    border-color: rgba(110, 156, 255, 0.36);
+    background: rgba(70, 125, 232, 0.13);
+}
+
+.difficultyGrid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 7px;
+}
+
+.difficultyGrid button {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    min-width: 0;
+    padding: 10px;
+
+    color: rgba(244, 247, 252, 0.58);
+    text-align: left;
+    border: 1px solid rgba(255, 255, 255, 0.065);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.022);
+    cursor: pointer;
+}
+
+.difficultyGrid strong {
+    overflow: hidden;
+    max-width: 100%;
+    color: rgba(244, 247, 252, 0.78);
+    font-size: 0.71rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.difficultyGrid small {
+    margin-top: 3px;
+    color: rgba(244, 247, 252, 0.35);
+    font-size: 0.59rem;
+}
+
+.difficultyGrid button:hover,
+.difficultyGrid button.difficultyActive {
+    border-color: rgba(110, 156, 255, 0.35);
+    background: rgba(70, 125, 232, 0.1);
+}
+
+.difficultyGrid button.difficultyActive strong {
+    color: #a9c5ff;
+}
+
+.sessionOptions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sessionOptions button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 11px 12px;
+
+    color: rgba(244, 247, 252, 0.6);
+    text-align: left;
+    border: 1px solid rgba(255, 255, 255, 0.065);
+    border-radius: 11px;
+    background: rgba(255, 255, 255, 0.022);
+    cursor: pointer;
+}
+
+.sessionOptions button > span {
+    display: flex;
+    flex-direction: column;
+}
+
+.sessionOptions strong {
+    color: rgba(244, 247, 252, 0.8);
+    font-size: 0.71rem;
+}
+
+.sessionOptions small {
+    margin-top: 2px;
+    color: rgba(244, 247, 252, 0.35);
+    font-size: 0.59rem;
+    line-height: 1.35;
+}
+
+.sessionOptions i {
+    position: relative;
+    flex: 0 0 auto;
+    width: 30px;
+    height: 17px;
+
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.11);
+}
+
+.sessionOptions i b {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 11px;
+    height: 11px;
+
+    border-radius: 50%;
+    background: rgba(244, 247, 252, 0.62);
+    transition: transform 0.18s ease;
+}
+
+.sessionOptions button.optionEnabled {
+    border-color: rgba(110, 156, 255, 0.21);
+    background: rgba(70, 125, 232, 0.055);
+}
+
+.sessionOptions button.optionEnabled i {
+    background: #4c7edf;
+}
+
+.sessionOptions button.optionEnabled i b {
+    background: white;
+    transform: translateX(13px);
+}
+
+.startButton,
+.nextPuzzle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 44px;
+
+    color: white;
+    border: 1px solid rgba(134, 171, 247, 0.32);
+    border-radius: 11px;
+    background: linear-gradient(180deg, #5489ee, #3d70d0);
+    box-shadow: 0 10px 24px rgba(38, 77, 157, 0.27);
+    font-size: 0.8rem;
+    font-weight: 720;
+    cursor: pointer;
+}
+
+.startButton {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.startButton:hover,
+.nextPuzzle:hover {
+    background: linear-gradient(180deg, #6194f1, #477bd8);
+    transform: translateY(-1px);
+}
+
+.startButton:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.archiveEmpty,
+.noMatch {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-top: 18px;
+    padding: 13px 14px;
+
+    border: 1px solid rgba(244, 184, 92, 0.16);
+    border-radius: 12px;
+    background: rgba(244, 184, 92, 0.055);
+}
+
+.archiveEmpty > span {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+
+    color: #f1bd70;
+    border-radius: 10px;
+    background: rgba(244, 184, 92, 0.09);
+}
+
+.archiveEmpty > div,
+.noMatch {
+    min-width: 0;
+}
+
+.archiveEmpty h3 {
+    margin: 0 0 2px;
+    font-size: 0.77rem;
+}
+
+.archiveEmpty p {
+    margin: 0;
+    color: rgba(244, 247, 252, 0.42);
+    font-size: 0.67rem;
+    line-height: 1.4;
+}
+
+.archiveEmpty a {
+    flex: 0 0 auto;
+    padding: 7px 10px;
+
+    color: #f5d29b;
+    border: 1px solid rgba(244, 184, 92, 0.2);
+    border-radius: 9px;
+    background: rgba(244, 184, 92, 0.07);
+    font-size: 0.67rem;
+    text-decoration: none;
+}
+
+.noMatch {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
+    color: #f3c27b;
+    font-size: 0.72rem;
+}
+
+.noMatch span {
+    color: rgba(244, 247, 252, 0.45);
+}
+
+.coachCard {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 132px;
+    align-items: end;
+    min-height: 188px;
+    overflow: hidden;
+
+    border: 1px solid rgba(255, 255, 255, 0.075);
+    border-radius: 18px;
+    background:
+        radial-gradient(
+            circle at 95% 90%,
+            rgba(70, 125, 232, 0.16),
+            transparent 60%
+        ),
+        linear-gradient(
+            180deg,
+            rgba(31, 35, 44, 0.95),
+            rgba(22, 25, 32, 0.96)
+        );
+    box-shadow: 0 28px 76px rgba(0, 0, 0, 0.24);
+}
+
+.coachCopy {
+    align-self: center;
+    z-index: 2;
+    margin: 18px 0 18px 18px;
+    padding: 14px;
+
+    border: 1px solid rgba(255, 255, 255, 0.075);
+    border-radius: 13px 13px 4px 13px;
+    background: rgba(10, 13, 18, 0.57);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+}
+
+.coachCopy::after {
+    position: absolute;
+    content: "";
+    width: 11px;
+    height: 11px;
+    margin: 7px 0 0 4px;
+
+    border-right: 1px solid rgba(255, 255, 255, 0.075);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.075);
+    background: rgba(10, 13, 18, 0.84);
+    transform: rotate(-45deg);
+}
+
+.coachCopy > span {
+    color: #80a9ff;
+    font-size: 0.62rem;
+    font-weight: 760;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.coachCopy p {
+    margin: 6px 0 0;
+    color: rgba(244, 247, 252, 0.74);
+    font-size: 0.76rem;
+    line-height: 1.5;
+}
+
+.coachPortrait {
+    align-self: end;
+    width: 150px;
+    height: 176px;
+    margin-left: -17px;
+}
+
+.trainingGrid {
+    grid-template-columns: minmax(0, 760px) minmax(330px, 1fr);
+}
+
+.boardColumn {
+    min-width: 0;
+}
+
+.puzzleMeta {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 13px;
+}
+
+.puzzleMeta > div:first-child > span {
+    color: #7fa9ff;
+    font-size: 0.66rem;
+    font-weight: 740;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.puzzleMeta h2 {
+    margin: 3px 0 0;
+    font-size: 1.25rem;
+}
+
+.puzzleBadges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.puzzleBadges span {
+    padding: 5px 8px;
+
+    color: rgba(244, 247, 252, 0.57);
+    border: 1px solid rgba(255, 255, 255, 0.075);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.025);
+    font-size: 0.62rem;
+}
+
+.puzzleBadges span.errorBadge {
+    color: #f1b0a7;
+    border-color: rgba(224, 112, 96, 0.2);
+    background: rgba(224, 112, 96, 0.07);
+}
+
+.boardStage {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+}
+
+.evaluationBar {
+    width: 17px;
+    min-width: 17px;
+    margin-right: 8px;
+}
+
+.boardShell {
+    position: relative;
+    width: calc(100% - 25px);
+    aspect-ratio: 1;
+}
+
+.outsideRanks {
+    position: absolute;
+    top: 0;
+    right: calc(100% + 5px);
+    bottom: 0;
+    display: grid;
+    grid-template-rows: repeat(8, 1fr);
+
+    color: rgba(244, 247, 252, 0.46);
+    font-size: 0.62rem;
+    font-weight: 690;
+}
+
+.outsideRanks span {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+}
+
+.outsideFiles {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    right: 0;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+
+    color: rgba(244, 247, 252, 0.46);
+    font-size: 0.62rem;
+    font-weight: 690;
+}
+
+.outsideFiles span {
+    text-align: center;
+}
+
+.historyControls {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr) 38px;
+    align-items: center;
+    gap: 8px;
+    margin: 13px 25px 0;
+}
+
+.historyControls button {
+    display: grid;
+    place-items: center;
+    height: 34px;
+
+    color: rgba(244, 247, 252, 0.68);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.03);
+    cursor: pointer;
+}
+
+.historyControls button:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+.historyControls span {
+    color: rgba(244, 247, 252, 0.42);
+    text-align: center;
+    font-size: 0.68rem;
+}
+
+.trainingPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+}
+
+.trainingPanel .coachCard {
+    min-height: 172px;
+    border-radius: 14px;
+    box-shadow: none;
+}
+
+.objectiveCard,
+.evaluationSummary {
+    padding: 15px;
+
+    border: 1px solid rgba(255, 255, 255, 0.065);
+    border-radius: 12px;
+    background: rgba(7, 9, 13, 0.19);
+}
+
+.objectiveCard > span,
+.evaluationSummary > span {
+    color: #80a9ff;
+    font-size: 0.61rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.objectiveCard h3 {
+    margin: 4px 0 4px;
+    font-size: 0.98rem;
+}
+
+.objectiveCard p {
+    margin: 0;
+    color: rgba(244, 247, 252, 0.44);
+    font-size: 0.69rem;
+    line-height: 1.5;
+}
+
+.lineProgress {
+    display: flex;
+    gap: 5px;
+    margin-top: 13px;
+}
+
+.lineProgress i {
+    flex: 1 1 0;
+    height: 3px;
+
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.lineProgress i.lineDone {
+    background: #6f9cf2;
+}
+
+.lineProgress i.lineCurrent {
+    background: #9cbaff;
+    box-shadow: 0 0 0 3px rgba(110, 156, 255, 0.09);
+}
+
+.puzzleActions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.puzzleActions button {
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr);
+    column-gap: 8px;
+    padding: 10px;
+    text-align: left;
+
+    color: rgba(244, 247, 252, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 11px;
+    background: rgba(255, 255, 255, 0.028);
+    cursor: pointer;
+}
+
+.puzzleActions button > span {
+    grid-row: 1 / 3;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+
+    color: #a8c5ff;
+    border: 1px solid rgba(110, 156, 255, 0.2);
+    border-radius: 9px;
+    background: rgba(70, 125, 232, 0.08);
+}
+
+.puzzleActions strong {
+    align-self: end;
+    font-size: 0.7rem;
+}
+
+.puzzleActions small {
+    color: rgba(244, 247, 252, 0.35);
+    font-size: 0.58rem;
+}
+
+.puzzleActions button:hover:not(:disabled) {
+    border-color: rgba(110, 156, 255, 0.28);
+    background: rgba(70, 125, 232, 0.07);
+}
+
+.puzzleActions button:disabled {
+    opacity: 0.37;
+    cursor: not-allowed;
+}
+
+.nextPuzzle {
+    width: 100%;
+}
+
+.secondaryActions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.secondaryActions button,
+.secondaryActions a {
+    color: rgba(244, 247, 252, 0.43);
+    border: 0;
+    background: none;
+    font-size: 0.64rem;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.secondaryActions button:hover,
+.secondaryActions a:hover {
+    color: #a9c5ff;
+}
+
+.evaluationSummary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    margin-top: auto;
+}
+
+.evaluationSummary strong {
+    grid-row: 1 / 3;
+    grid-column: 2;
+    font-size: 1.1rem;
+}
+
+.evaluationSummary small {
+    margin-top: 3px;
+    color: rgba(244, 247, 252, 0.34);
+    font-size: 0.58rem;
+}
+
+.stateCard {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 70px 24px;
+    text-align: center;
+}
+
+.stateCard h2 {
+    margin: 16px 0 5px;
+}
+
+.stateCard p {
+    max-width: 520px;
+    margin: 0;
+    color: rgba(244, 247, 252, 0.46);
+    line-height: 1.55;
+}
+
+.stateSpinner {
+    width: 32px;
+    height: 32px;
+
+    border: 3px solid rgba(255, 255, 255, 0.09);
+    border-top-color: #79a3f6;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+.attribution {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 24px;
+
+    color: rgba(244, 247, 252, 0.27);
+    font-size: 0.62rem;
+}
+
+.attribution a {
+    color: rgba(140, 178, 250, 0.55);
+    text-decoration: none;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 1100px) {
+    .page {
+        padding-inline: 22px;
+    }
+
+    .hero {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .setupGrid,
+    .trainingGrid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .setupGrid > .coachCard {
+        order: -1;
+    }
+
+    .trainingPanel {
+        min-height: 0;
+    }
+}
+
+@media (max-width: 760px) {
+    .page {
+        min-height: calc(100vh - 56px);
+        padding: 26px 13px 22px;
+    }
+
+    .profileStats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        width: 100%;
+    }
+
+    .profileStats > div {
+        min-width: 0;
+        padding: 10px;
+    }
+
+    .sourceSelector,
+    .sessionOptions {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .difficultyGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .setupMain {
+        padding: 18px;
+    }
+
+    .filterHeading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .coachCard {
+        grid-template-columns: minmax(0, 1fr) 110px;
+    }
+
+    .coachPortrait {
+        width: 125px;
+        height: 154px;
+    }
+
+    .puzzleMeta {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .puzzleBadges {
+        justify-content: flex-start;
+    }
+
+    .evaluationBar {
+        width: 14px;
+        min-width: 14px;
+        margin-right: 5px;
+    }
+
+    .boardShell {
+        width: calc(100% - 19px);
+    }
+
+    .historyControls {
+        margin-inline: 19px 0;
+    }
+
+    .attribution {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .profileStats strong {
+        font-size: 1.05rem;
+    }
+
+    .profileStats small {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .sourceSelector > button {
+        grid-template-columns: 38px minmax(0, 1fr) auto;
+    }
+
+    .archiveEmpty {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .archiveEmpty a {
+        margin-left: 47px;
+    }
+
+    .coachCopy {
+        margin-left: 12px;
+        padding: 11px;
+    }
+
+    .puzzleActions {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

@@ -1,0 +1,132 @@
+{
+    "hero": {
+        "eyebrow": "NexoChess-Taktiktraining",
+        "title": "Mach aus jedem Fehler eine Lektion",
+        "subtitle": "Trainiere Stellungen aus deinen analysierten Partien oder gewertete Themenaufgaben aus der offenen Lichess-Datenbank. Dein Trainer begleitet die ganze Variante."
+    },
+    "stats": {
+        "rating": "Aufgabenwertung",
+        "calibrating_one": "Noch {{count}} Aufgabe zur Kalibrierung",
+        "calibrating_other": "Noch {{count}} Aufgaben zur Kalibrierung",
+        "calibrated": "Wertung kalibriert",
+        "accuracy": "Trefferquote",
+        "attempts_one": "{{count}} gewerteter Versuch",
+        "attempts_other": "{{count}} gewertete Versuche",
+        "streak": "Serie",
+        "best_one": "Bestwert: {{count}}",
+        "best_other": "Bestwert: {{count}}"
+    },
+    "setup": {
+        "kicker": "Training vorbereiten",
+        "title": "Was möchtest du trainieren?",
+        "subtitle": "NexoChess merkt sich gelöste Stellungen auf diesem Gerät und zeigt sie nicht erneut.",
+        "start": "Training starten"
+    },
+    "sources": {
+        "archive": {
+            "title": "Aus meinen Partien lernen",
+            "body": "Aufgaben aus Ungenauigkeiten, Fehlern, verpassten Chancen und Patzern.",
+            "emptyTitle": "Noch keine analysierten Stellungen",
+            "emptyBody": "Analysiere zuerst eine Partie; NexoChess macht aus ihren Fehlern Übungen.",
+            "action": "Partie analysieren"
+        },
+        "lichess": {
+            "title": "Lichess-Training",
+            "body": "Gewertete CC0-Aufgaben nach Thema und Schwierigkeit."
+        }
+    },
+    "filters": {
+        "theme": "Thema",
+        "themeHelp": "Wähle ein Motiv oder ein gemischtes Training.",
+        "difficulty": "Schwierigkeit",
+        "difficultyHelp": "Adaptiv folgt deiner Aufgabenwertung."
+    },
+    "themes": {
+        "all": "Gemischt",
+        "mate": "Schachmatt",
+        "fork": "Gabel",
+        "pin": "Fesselung",
+        "endgame": "Endspiel",
+        "opening": "Eröffnung",
+        "sacrifice": "Opfer",
+        "defense": "Verteidigung"
+    },
+    "difficulties": {
+        "adaptive": { "title": "Adaptiv", "range": "Dein Niveau" },
+        "beginner": { "title": "Anfänger", "range": "< 1200" },
+        "intermediate": { "title": "Mittel", "range": "1200–1799" },
+        "advanced": { "title": "Fortgeschritten", "range": "1800–2199" },
+        "expert": { "title": "Experte", "range": "2200+" }
+    },
+    "options": {
+        "rated": { "title": "Gewertet", "body": "Meine Aufgabenwertung anpassen" },
+        "hints": { "title": "Hinweise", "body": "Trainer darf einen Zug zeigen" },
+        "solution": { "title": "Lösung", "body": "Vollständige Variante darf gezeigt werden" }
+    },
+    "coach": {
+        "title": "{{name}}, dein Trainer",
+        "loading": "Ich bereite deine Stellungen vor.",
+        "setupArchive": "Deine analysierten Partien enthalten schon wertvolle Lektionen. Wähle ein Training und wir gehen sie ruhig durch.",
+        "setupLichess": "Noch keine eigenen Stellungen, aber das Lichess-Paket ist bereit.",
+        "archiveTurn": "{{colour}} am Zug. Diese Stellung entstand nach einem teuren Fehler. Finde die Bestrafung.",
+        "lichessTurn": "{{colour}} am Zug. Prüfe zuerst Schachs, Schlagzüge und Drohungen.",
+        "wrong": "Nicht dieser Zug. Er ist legal, lässt aber die entscheidende Chance aus. Prüfe erneut Schachs, Schlagzüge und Drohungen.",
+        "correctContinue": "Guter Zug. Beachte die Antwort; die Idee ist noch nicht beendet.",
+        "yourTurnAgain": "Das war die erwartete Verteidigung. Setze die Kombination fort.",
+        "hint": "Ein Hinweis: Untersuche {{move}} und finde heraus, warum er stärker ist.",
+        "solvedClean": "Ausgezeichnet. Du hast die ganze Idee ohne Hilfe gefunden.",
+        "solvedAfterHelp": "Gelöst. Wiederhole das Muster noch einmal im Kopf.",
+        "solutionShown": "Hier ist die vollständige Variante. Mit den Pfeilen unter dem Brett kannst du jede Stellung prüfen.",
+        "noArchive": "Ich brauche mindestens eine analysierte Partie im Archiv, um eine Aufgabe zu erstellen.",
+        "noFiltered": "Mit diesen Filtern gibt es keine ungesehenen Aufgaben. Ändere Thema oder Schwierigkeit.",
+        "loadError": "Die Stellungen konnten nicht geladen werden. Aktualisiere die Seite.",
+        "positionError": "Diese Variante enthält eine Stellung, die ich nicht sicher nachstellen kann; ich habe sie angehalten.",
+        "changeFilters": "Du kannst das Training jederzeit ändern; gelöste Stellungen bleiben gespeichert."
+    },
+    "colours": { "white": "Weiß", "black": "Schwarz" },
+    "states": {
+        "loadingTitle": "Training wird vorbereitet",
+        "loadingBody": "Archiv wird gelesen und das lokale Lichess-Paket geladen.",
+        "errorTitle": "Training konnte nicht geladen werden",
+        "errorBody": "Nichts ging verloren. Aktualisiere die Seite und versuche es erneut.",
+        "noArchiveTitle": "Keine eigenen Aufgaben verfügbar",
+        "noArchiveBody": "Analysiere und speichere eine Partie, um Aufgaben aus den Fehlern beider Spieler zu erstellen.",
+        "noMatchTitle": "Diese Auswahl ist abgeschlossen",
+        "noMatchBody": "Ändere Thema oder Schwierigkeit, um ohne Wiederholungen weiterzutrainieren."
+    },
+    "puzzle": {
+        "archiveSource": "Aus deinem Archiv",
+        "lichessSource": "Lichess-CC0-Aufgabe",
+        "toMove": "{{colour}} am Zug",
+        "rating": "Wertung {{rating}}",
+        "objective": "Aktuelles Ziel",
+        "findMove": "Finde die beste Fortsetzung",
+        "solvedTitle": "Aufgabe gelöst",
+        "revealedTitle": "Lösung geprüft",
+        "archiveContext": "Zug {{move}}, nach {{badMove}}, in {{game}}. Bestrafe den Fehler und behalte den Vorteil.",
+        "lichessContext": "Jeder Lösungszug ist der einzige oder klar stärkste Zug.",
+        "evaluation": "Stellungsvorteil",
+        "evaluationNote": "Stockfish aktualisiert sie lokal, immer aus der Sicht von Weiß."
+    },
+    "controls": {
+        "previous": "Vorherige Stellung",
+        "next": "Nächste Stellung",
+        "beforeMistake": "Stellung vor dem Fehler",
+        "current": "Aktuelle Stellung",
+        "linePosition": "Stellung {{current}} von {{total}}"
+    },
+    "actions": {
+        "hint": "Hinweis",
+        "hintHelp": "Schlüsselzug zeigen",
+        "solution": "Lösung",
+        "solutionHelp": "Variante aufdecken",
+        "disabled": "Für dieses Training deaktiviert",
+        "nextPuzzle": "Nächste Aufgabe",
+        "changeFilters": "Training ändern",
+        "sourceGame": "Quellpartie"
+    },
+    "attribution": {
+        "text": "Lichess-Aufgabenstellungen sind gemeinfreie CC0-Daten.",
+        "link": "Datenbank öffnen"
+    }
+}

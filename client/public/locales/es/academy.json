@@ -9,8 +9,10 @@
   "modules": {
     "notation": "Notación",
     "movement": "Cómo se mueven",
+    "values": "Valor de las piezas",
     "practice": "Práctica guiada",
     "classifications": "Calidad de jugada",
+    "evaluation": "Barra de evaluación",
     "challenge": "Reto rápido"
   },
   "notation": {
@@ -23,12 +25,24 @@
     "examplesTitle": "Descifra una jugada",
     "examplesHelp": "Pulsa un ejemplo y comprueba cómo cambia el significado con cada símbolo.",
     "pieces": {
-      "K": { "name": "Rey" },
-      "Q": { "name": "Dama" },
-      "R": { "name": "Torre" },
-      "B": { "name": "Alfil" },
-      "N": { "name": "Caballo" },
-      "P": { "name": "Peón" }
+      "K": {
+        "name": "Rey"
+      },
+      "Q": {
+        "name": "Dama"
+      },
+      "R": {
+        "name": "Torre"
+      },
+      "B": {
+        "name": "Alfil"
+      },
+      "N": {
+        "name": "Caballo"
+      },
+      "P": {
+        "name": "Peón"
+      }
     },
     "examples": {
       "e4": "Un peón avanza a e4. Los peones no escriben ninguna letra.",
@@ -56,8 +70,23 @@
       "P": "Avanza una casilla de frente, pero captura una en diagonal. Desde su salida puede avanzar dos."
     }
   },
+  "values": {
+    "kicker": "Módulo 3 · Valor de las piezas",
+    "title": "Entiende cuánto cuesta un intercambio",
+    "intro": "El valor de las piezas es una medida rápida, no un precio fijo. Sirve para comparar capturas y sacrificios antes de calcular más.",
+    "points": "{{value}} puntos",
+    "pieces": {
+      "P": "Es la unidad básica. Un peón pasado puede valer mucho más cuando se acerca a coronar.",
+      "N": "Suele valer tres peones. Es fuerte en posiciones cerradas y cerca del centro.",
+      "B": "Suele valer tres peones. Las diagonales abiertas y la pareja de alfiles aumentan su valor.",
+      "R": "Suele valer cinco peones. Se vuelve especialmente potente en columnas abiertas.",
+      "Q": "Vale unos nueve peones. Combina el movimiento de torre y alfil, pero también puede quedar atrapada.",
+      "K": "No tiene valor de intercambio: perderlo termina la partida. En el final también es una pieza activa."
+    },
+    "note": "La posición manda: la actividad, la seguridad del rey o una táctica forzada pueden importar más que la suma."
+  },
   "practice": {
-    "kicker": "Módulo 3 · Práctica guiada",
+    "kicker": "Módulo 4 · Práctica guiada",
     "title": "Haz el movimiento en el tablero",
     "intro": "Selecciona la casilla de origen y después el destino. Si fallas, la Academia te explica por qué y te deja repetirlo.",
     "progress": "Posición {{current}} de {{total}}",
@@ -93,7 +122,7 @@
     }
   },
   "classifications": {
-    "kicker": "Módulo 4 · Calidad de jugada",
+    "kicker": "Módulo 5 · Calidad de jugada",
     "title": "Por qué una jugada recibe cada etiqueta",
     "intro": "NexoChess compara tu jugada con la posición y las alternativas del motor. Pulsa cualquier etiqueta para verla en lenguaje normal.",
     "selected": "Clasificación seleccionada",
@@ -113,8 +142,58 @@
       "risky": "Una etiqueta heredada para una idea dudosa o innecesariamente peligrosa. Se conserva por compatibilidad y aparece muy poco."
     }
   },
+  "evaluation": {
+    "kicker": "Módulo 6 · Barra de evaluación",
+    "title": "Descubre quién está mejor de un vistazo",
+    "intro": "La barra convierte la valoración del motor en un equilibrio visual. Prueba los ejemplos y observa qué color gana espacio.",
+    "white": "Blancas",
+    "black": "Negras",
+    "tryLabel": "Prueba cinco posiciones",
+    "current": "Qué significa",
+    "presets": {
+      "blackWinning": {
+        "title": "Negras están ganando",
+        "body": "Negras tienen una ventaja decisiva. Blancas necesitarían un error grave del rival para recuperarse."
+      },
+      "blackBetter": {
+        "title": "Negras están mejor",
+        "body": "Negras tienen una ventaja útil, pero todavía deben jugar con precisión."
+      },
+      "equal": {
+        "title": "Posición equilibrada",
+        "body": "Ningún bando tiene una ventaja relevante para el motor. Eso no significa que la posición sea fácil ni tablas."
+      },
+      "whiteBetter": {
+        "title": "Blancas están mejor",
+        "body": "Blancas tienen una ventaja útil, aunque puede desaparecer tras una imprecisión."
+      },
+      "whiteWinning": {
+        "title": "Blancas están ganando",
+        "body": "Blancas tienen una ventaja decisiva y deberían convertirla con juego correcto."
+      }
+    },
+    "facts": {
+      "scale": {
+        "title": "El peón es la unidad",
+        "body": "+1,0 equivale aproximadamente a un peón; +3,0 se acerca a una pieza menor."
+      },
+      "colours": {
+        "title": "El espacio muestra la ventaja",
+        "body": "Más blanco favorece a Blancas; más zona oscura favorece a Negras."
+      },
+      "sign": {
+        "title": "El signo indica el bando",
+        "body": "Los valores positivos favorecen a Blancas y los negativos a Negras."
+      },
+      "mate": {
+        "title": "M significa mate forzado",
+        "body": "M3 indica un jaque mate forzado en tres jugadas, no una ventaja material."
+      }
+    },
+    "note": "La barra valora la posición, no lo fácil que resulta jugarla para una persona. Combínala con la variante del motor y la explicación del entrenador."
+  },
   "challenge": {
-    "kicker": "Módulo 5 · Reto rápido",
+    "kicker": "Módulo 7 · Reto rápido",
     "title": "Tres jugadas. Sin examen eterno.",
     "intro": "Elige qué significa cada notación. Recibirás la explicación al momento.",
     "score": "{{score}} de {{total}} correctas",
@@ -127,27 +206,54 @@
       "q1": {
         "prompt": "¿Qué ha ocurrido en f7?",
         "options": {
-          "a": { "key": "captureCheck", "label": "Un alfil ha capturado y dado jaque" },
-          "b": { "key": "bishopMove", "label": "Un alfil se ha movido sin capturar" },
-          "c": { "key": "mate", "label": "El alfil ha dado jaque mate" }
+          "a": {
+            "key": "captureCheck",
+            "label": "Un alfil ha capturado y dado jaque"
+          },
+          "b": {
+            "key": "bishopMove",
+            "label": "Un alfil se ha movido sin capturar"
+          },
+          "c": {
+            "key": "mate",
+            "label": "El alfil ha dado jaque mate"
+          }
         },
         "explanation": "B significa alfil, x indica captura y + significa jaque."
       },
       "q2": {
         "prompt": "¿Qué significa la notación del enroque largo?",
         "options": {
-          "a": { "key": "shortCastle", "label": "Enroque por el flanco de rey" },
-          "b": { "key": "longCastle", "label": "Enroque por el flanco de dama" },
-          "c": { "key": "queenMove", "label": "La dama se mueve tres casillas" }
+          "a": {
+            "key": "shortCastle",
+            "label": "Enroque por el flanco de rey"
+          },
+          "b": {
+            "key": "longCastle",
+            "label": "Enroque por el flanco de dama"
+          },
+          "c": {
+            "key": "queenMove",
+            "label": "La dama se mueve tres casillas"
+          }
         },
         "explanation": "O-O-O es el enroque largo; O-O es el enroque corto."
       },
       "q3": {
         "prompt": "¿Qué tiene de especial esta jugada de peón?",
         "options": {
-          "a": { "key": "queenCheck", "label": "Corona como dama y da jaque" },
-          "b": { "key": "promotionMate", "label": "Corona como dama y da jaque mate" },
-          "c": { "key": "queenCapture", "label": "Una dama captura en e8" }
+          "a": {
+            "key": "queenCheck",
+            "label": "Corona como dama y da jaque"
+          },
+          "b": {
+            "key": "promotionMate",
+            "label": "Corona como dama y da jaque mate"
+          },
+          "c": {
+            "key": "queenCapture",
+            "label": "Una dama captura en e8"
+          }
         },
         "explanation": "=Q indica coronación como dama y # significa jaque mate."
       }

@@ -178,34 +178,6 @@ function NavigationAction({
 }
 
 
-interface FutureItemProps {
-    children: ReactNode;
-    icon: IconName;
-    comingSoon: string;
-}
-
-
-function FutureItem({
-    children,
-    icon,
-    comingSoon
-}: FutureItemProps) {
-    return (
-        <button
-            type="button"
-            className={`${styles.navItem} ${styles.futureItem}`}
-            title={comingSoon}
-            aria-label={`${children} — ${comingSoon}`}
-            disabled
-        >
-            <NavIcon name={icon} />
-            <span className={styles.navLabel}>{children}</span>
-            <span className={styles.soonDot} aria-hidden="true" />
-        </button>
-    );
-}
-
-
 function NavigationBar() {
     const { t } = useTranslation([
         "common",
@@ -247,9 +219,15 @@ function NavigationBar() {
             "/settings"
         );
 
+    const onPuzzlesPage =
+        location.pathname.startsWith(
+            "/puzzles"
+        );
+
     const showGameActions =
         !onSettingsPage
-        && !onAcademyPage;
+        && !onAcademyPage
+        && !onPuzzlesPage;
 
     const analysisGame = useAnalysisGameStore(
         state => state.analysisGame
@@ -276,11 +254,6 @@ function NavigationBar() {
 
         location.href = "/signin";
     }
-
-    const comingSoon = t(
-        "navigationBar.comingSoon",
-        { ns: "common" }
-    );
 
     return (
         <header className={styles.wrapper}>
@@ -360,12 +333,13 @@ function NavigationBar() {
                     {t("navigationBar.academy", { ns: "common" })}
                 </NavigationItem>
 
-                <FutureItem
+                <NavigationItem
                     icon="puzzle"
-                    comingSoon={comingSoon}
+                    url="/puzzles"
+                    current={onPuzzlesPage}
                 >
                     {t("navigationBar.puzzles", { ns: "common" })}
-                </FutureItem>
+                </NavigationItem>
 
                 {showGameActions && (
                     <NavigationAction

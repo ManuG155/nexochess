@@ -37,6 +37,17 @@ The generated opening database uses data from `lichess-org/chess-openings`.
 
 The dataset is an aggregated collection of chess opening names. Its upstream project asks users to recognise the curation effort even though the data is released into the public domain.
 
+## Lichess puzzle data
+
+The tactics trainer uses positions from the
+[Lichess Puzzle Database](https://database.lichess.org/#puzzles), released
+under the Creative Commons CC0 1.0 Universal public-domain dedication.
+
+NexoChess applies the first UCI move in each row as the opponent's setup move
+before presenting the puzzle, as required by the published database format.
+The remaining moves form the solution. NexoChess is not affiliated with or
+endorsed by Lichess.
+
 ## Package dependencies
 
 JavaScript and TypeScript dependencies are declared in the root and workspace `package.json` files and resolved in `package-lock.json`. Each package remains subject to its own license terms. A production release should generate and review a dependency-license report rather than assuming every npm package uses the same license as NexoChess.

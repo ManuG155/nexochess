@@ -10,6 +10,8 @@ router.get("/archive", appRouter("features/archive.html"));
 
 router.get("/academy", appRouter("features/academy.html"));
 
+router.get("/puzzles", appRouter("features/puzzles.html"));
+
 router.get("/news*", async (_req, res) => {
     res.redirect(308, "/analysis");
 });

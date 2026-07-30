@@ -9,8 +9,10 @@
   "modules": {
     "notation": "Notation",
     "movement": "Déplacement des pièces",
+    "values": "Valeur des pièces",
     "practice": "Exercices guidés",
     "classifications": "Qualité du coup",
+    "evaluation": "Barre d’évaluation",
     "challenge": "Défi rapide"
   },
   "notation": {
@@ -23,12 +25,24 @@
     "examplesTitle": "Décodez un coup",
     "examplesHelp": "Touchez un exemple pour voir comment chaque symbole change le sens.",
     "pieces": {
-      "K": { "name": "Roi" },
-      "Q": { "name": "Dame" },
-      "R": { "name": "Tour" },
-      "B": { "name": "Fou" },
-      "N": { "name": "Cavalier" },
-      "P": { "name": "Pion" }
+      "K": {
+        "name": "Roi"
+      },
+      "Q": {
+        "name": "Dame"
+      },
+      "R": {
+        "name": "Tour"
+      },
+      "B": {
+        "name": "Fou"
+      },
+      "N": {
+        "name": "Cavalier"
+      },
+      "P": {
+        "name": "Pion"
+      }
     },
     "examples": {
       "e4": "Un pion avance en e4. Les pions ne portent aucune lettre.",
@@ -56,8 +70,23 @@
       "P": "Une case vers l'avant, mais il capture d'une case en diagonale. Depuis sa case initiale, il peut avancer de deux."
     }
   },
+  "values": {
+    "kicker": "Module 3 · Valeur des pièces",
+    "title": "Comprendre le coût d’un échange",
+    "intro": "La valeur des pièces est un repère rapide, pas un prix fixe. Elle aide à comparer prises et sacrifices.",
+    "points": "{{value}} points",
+    "pieces": {
+      "P": "L’unité de base. Un pion passé vaut davantage lorsqu’il approche de la promotion.",
+      "N": "Environ trois pions. Très fort dans les positions fermées et près du centre.",
+      "B": "Environ trois pions. Les diagonales ouvertes et la paire de fous augmentent sa valeur.",
+      "R": "Environ cinq pions. Elle devient très puissante sur une colonne ouverte.",
+      "Q": "Environ neuf pions. Elle combine tour et fou, mais peut aussi se faire piéger.",
+      "K": "Aucune valeur d’échange : le perdre termine la partie. En finale, il devient actif."
+    },
+    "note": "La position prime : activité, sécurité du roi et tactiques forcées comptent parfois plus que l’addition."
+  },
   "practice": {
-    "kicker": "Module 3 · Exercices guidés",
+    "kicker": "Module 4 · Pratique guidée",
     "title": "Joue le coup sur l'échiquier",
     "intro": "Sélectionne la case de départ puis la destination. En cas d'erreur, l'Académie t'explique pourquoi et te laisse recommencer.",
     "progress": "Position {{current}} sur {{total}}",
@@ -93,7 +122,7 @@
     }
   },
   "classifications": {
-    "kicker": "Module 4 · Qualité du coup",
+    "kicker": "Module 5 · Qualité du coup",
     "title": "Pourquoi un coup reçoit chaque étiquette",
     "intro": "NexoChess compare votre coup à la position et aux variantes du moteur. Touchez une étiquette pour une explication simple.",
     "selected": "Classement sélectionné",
@@ -113,8 +142,58 @@
       "risky": "Une ancienne étiquette pour une idée douteuse ou inutilement dangereuse. Conservée pour compatibilité, elle apparaît rarement."
     }
   },
+  "evaluation": {
+    "kicker": "Module 6 · Barre d’évaluation",
+    "title": "Voir immédiatement qui est mieux",
+    "intro": "La barre transforme l’évaluation du moteur en équilibre visuel. Testez les exemples et regardez la couleur gagner de l’espace.",
+    "white": "Blancs",
+    "black": "Noirs",
+    "tryLabel": "Tester cinq positions",
+    "current": "Ce que cela signifie",
+    "presets": {
+      "blackWinning": {
+        "title": "Les Noirs gagnent",
+        "body": "Les Noirs ont un avantage décisif. Les Blancs ont besoin d’une grosse erreur adverse."
+      },
+      "blackBetter": {
+        "title": "Les Noirs sont mieux",
+        "body": "Les Noirs ont un avantage utile, mais doivent encore jouer précisément."
+      },
+      "equal": {
+        "title": "Position équilibrée",
+        "body": "Aucun camp n’a d’avantage moteur notable. Cela ne signifie pas que la position est simple."
+      },
+      "whiteBetter": {
+        "title": "Les Blancs sont mieux",
+        "body": "Les Blancs ont un avantage utile qui peut disparaître après une imprécision."
+      },
+      "whiteWinning": {
+        "title": "Les Blancs gagnent",
+        "body": "Les Blancs ont un avantage décisif et devraient le convertir correctement."
+      }
+    },
+    "facts": {
+      "scale": {
+        "title": "Le pion est l’unité",
+        "body": "+1,0 vaut environ un pion ; +3,0 correspond à une pièce mineure."
+      },
+      "colours": {
+        "title": "L’espace montre l’avantage",
+        "body": "Plus de blanc favorise les Blancs ; plus de sombre favorise les Noirs."
+      },
+      "sign": {
+        "title": "Le signe indique le camp",
+        "body": "Une valeur positive favorise les Blancs, une négative les Noirs."
+      },
+      "mate": {
+        "title": "M indique un mat forcé",
+        "body": "M3 signifie un mat forcé en trois coups, pas un score matériel."
+      }
+    },
+    "note": "La barre juge la position, pas sa facilité pour un humain. Consultez aussi la variante et l’explication de l’entraîneur."
+  },
   "challenge": {
-    "kicker": "Module 5 · Défi rapide",
+    "kicker": "Module 7 · Défi rapide",
     "title": "Trois coups. Pas d'examen interminable.",
     "intro": "Choisissez la signification de chaque notation. L'explication apparaît immédiatement.",
     "score": "{{score}} sur {{total}} correctes",
@@ -127,27 +206,54 @@
       "q1": {
         "prompt": "Que s'est-il passé en f7 ?",
         "options": {
-          "a": { "key": "captureCheck", "label": "Un fou a capturé et donné échec" },
-          "b": { "key": "bishopMove", "label": "Un fou s'est déplacé sans capturer" },
-          "c": { "key": "mate", "label": "Le fou a donné échec et mat" }
+          "a": {
+            "key": "captureCheck",
+            "label": "Un fou a capturé et donné échec"
+          },
+          "b": {
+            "key": "bishopMove",
+            "label": "Un fou s'est déplacé sans capturer"
+          },
+          "c": {
+            "key": "mate",
+            "label": "Le fou a donné échec et mat"
+          }
         },
         "explanation": "B signifie fou, x indique une prise et + signifie échec."
       },
       "q2": {
         "prompt": "Que signifie la notation du grand roque ?",
         "options": {
-          "a": { "key": "shortCastle", "label": "Petit roque" },
-          "b": { "key": "longCastle", "label": "Grand roque" },
-          "c": { "key": "queenMove", "label": "La dame se déplace de trois cases" }
+          "a": {
+            "key": "shortCastle",
+            "label": "Petit roque"
+          },
+          "b": {
+            "key": "longCastle",
+            "label": "Grand roque"
+          },
+          "c": {
+            "key": "queenMove",
+            "label": "La dame se déplace de trois cases"
+          }
         },
         "explanation": "O-O-O est le grand roque ; O-O est le petit roque."
       },
       "q3": {
         "prompt": "Quelle est la particularité de ce coup de pion ?",
         "options": {
-          "a": { "key": "queenCheck", "label": "Promotion en dame avec échec" },
-          "b": { "key": "promotionMate", "label": "Promotion en dame avec échec et mat" },
-          "c": { "key": "queenCapture", "label": "Une dame capture en e8" }
+          "a": {
+            "key": "queenCheck",
+            "label": "Promotion en dame avec échec"
+          },
+          "b": {
+            "key": "promotionMate",
+            "label": "Promotion en dame avec échec et mat"
+          },
+          "c": {
+            "key": "queenCapture",
+            "label": "Une dame capture en e8"
+          }
         },
         "explanation": "=Q indique une promotion en dame et # signifie échec et mat."
       }

@@ -2,11 +2,14 @@ import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Classification } from "shared/constants/Classification";
+import PieceColour from "shared/constants/PieceColour";
 
 import {
     classificationColours,
     classificationImages
 } from "@analysis/constants/classifications";
+import EvaluationBar from
+    "@analysis/components/EvaluationBar";
 
 import useSettingsStore from "@/stores/SettingsStore";
 
@@ -20,8 +23,10 @@ import * as styles from "./Academy.module.css";
 type ModuleId =
     | "notation"
     | "movement"
+    | "values"
     | "practice"
     | "classifications"
+    | "evaluation"
     | "challenge";
 
 type PieceId = "K" | "Q" | "R" | "B" | "N" | "P";
@@ -35,12 +40,37 @@ interface Square {
 const moduleOrder: ModuleId[] = [
     "notation",
     "movement",
+    "values",
     "practice",
     "classifications",
+    "evaluation",
     "challenge"
 ];
 
 const pieces: PieceId[] = ["K", "Q", "R", "B", "N", "P"];
+
+const pieceValues: Array<{
+    piece: PieceId;
+    value: string;
+}> = [
+    { piece: "P", value: "1" },
+    { piece: "N", value: "3" },
+    { piece: "B", value: "3" },
+    { piece: "R", value: "5" },
+    { piece: "Q", value: "9" },
+    { piece: "K", value: "∞" }
+];
+
+const evaluationPresets = [
+    { id: "blackWinning", value: -600 },
+    { id: "blackBetter", value: -200 },
+    { id: "equal", value: 0 },
+    { id: "whiteBetter", value: 200 },
+    { id: "whiteWinning", value: 600 }
+] as const;
+
+type EvaluationPresetId =
+    typeof evaluationPresets[number]["id"];
 
 const whitePieceCodes: Record<PieceId, PieceCode> = {
     K: "wK",
@@ -204,6 +234,10 @@ function ModuleIcon({ module }: { module: ModuleId }) {
             <path d="M7 17.5c1.5-2.8 1.8-5.7 1-9L12 4l5 4.5-2.2 3.2 2.7 5.8z" />
             <path d="M6 20h12" />
         </>,
+        values: <>
+            <circle cx="12" cy="12" r="8" />
+            <path d="M9 9.5h4.2a2 2 0 0 1 0 4H9M12 7v10" />
+        </>,
         practice: <>
             <rect x="4" y="4" width="16" height="16" rx="2" />
             <path d="M12 4v16M4 12h16" />
@@ -212,6 +246,10 @@ function ModuleIcon({ module }: { module: ModuleId }) {
         classifications: <>
             <path d="M5 5h14v14H5z" />
             <path d="M8 15.5 11 12l2.2 2.2L17 9" />
+        </>,
+        evaluation: <>
+            <rect x="7" y="3" width="10" height="18" rx="2" />
+            <path d="M7 11h10M10 7h4M10 16h4" />
         </>,
         challenge: <>
             <path d="M8 4h8v3H8zM6 6h12v14H6z" />
@@ -250,6 +288,9 @@ function Academy() {
     const [ selectedClassification, setSelectedClassification ] =
         useState<Classification>(Classification.BRILLIANT);
 
+    const [ selectedEvaluation, setSelectedEvaluation ] =
+        useState<EvaluationPresetId>("whiteBetter");
+
     const [ answers, setAnswers ] =
         useState<Record<number, string>>({});
 
@@ -276,6 +317,9 @@ function Academy() {
     );
 
     const practiceExercise = practiceExercises[practiceIndex];
+    const evaluationPreset = evaluationPresets.find(
+        preset => preset.id == selectedEvaluation
+    )!;
 
     const score = challengeQuestions.filter(
         (question, index) => answers[index] == question.answer
@@ -619,6 +663,47 @@ function Academy() {
                     </section>
                 )}
 
+                {activeModule == "values" && (
+                    <section>
+                        <LessonHeading
+                            kicker={t("values.kicker")}
+                            title={t("values.title")}
+                            intro={t("values.intro")}
+                        />
+
+                        <div className={styles.valueGrid}>
+                            {pieceValues.map(({ piece, value }) => (
+                                <article
+                                    className={styles.valueCard}
+                                    key={piece}
+                                >
+                                    <span className={styles.valuePiece}>
+                                        <PieceAsset
+                                            theme={pieceTheme}
+                                            piece={whitePieceCodes[piece]}
+                                            size="100%"
+                                        />
+                                    </span>
+                                    <div>
+                                        <span className={styles.valueLabel}>
+                                            {t("values.points", { value })}
+                                        </span>
+                                        <h3>
+                                            {t(`notation.pieces.${piece}.name`)}
+                                        </h3>
+                                        <p>{t(`values.pieces.${piece}`)}</p>
+                                    </div>
+                                </article>
+                            ))}
+                        </div>
+
+                        <div className={styles.engineNote}>
+                            <span aria-hidden="true">i</span>
+                            {t("values.note")}
+                        </div>
+                    </section>
+                )}
+
                 {activeModule == "practice" && (
                     <section>
                         <LessonHeading
@@ -872,6 +957,102 @@ function Academy() {
                         <div className={styles.engineNote}>
                             <span aria-hidden="true">↗</span>
                             {t("classifications.engineNote")}
+                        </div>
+                    </section>
+                )}
+
+                {activeModule == "evaluation" && (
+                    <section>
+                        <LessonHeading
+                            kicker={t("evaluation.kicker")}
+                            title={t("evaluation.title")}
+                            intro={t("evaluation.intro")}
+                        />
+
+                        <div className={styles.evaluationLesson}>
+                            <div className={styles.evaluationDemo}>
+                                <EvaluationBar
+                                    className={styles.academyEvaluationBar}
+                                    evaluation={{
+                                        type: "centipawn",
+                                        value: evaluationPreset.value
+                                    }}
+                                    moveColour={PieceColour.WHITE}
+                                />
+
+                                <div className={styles.evaluationScale}>
+                                    <span>{t("evaluation.black")}</span>
+                                    <strong>
+                                        {evaluationPreset.value > 0 ? "+" : ""}
+                                        {(evaluationPreset.value / 100).toFixed(1)}
+                                    </strong>
+                                    <span>{t("evaluation.white")}</span>
+                                </div>
+                            </div>
+
+                            <div className={styles.evaluationControls}>
+                                <span>{t("evaluation.tryLabel")}</span>
+
+                                <div className={styles.evaluationPresets}>
+                                    {evaluationPresets.map(preset => (
+                                        <button
+                                            type="button"
+                                            key={preset.id}
+                                            className={
+                                                selectedEvaluation == preset.id
+                                                    ? styles.evaluationPresetActive
+                                                    : ""
+                                            }
+                                            onClick={() => (
+                                                setSelectedEvaluation(preset.id)
+                                            )}
+                                        >
+                                            <span>
+                                                {preset.value > 0 ? "+" : ""}
+                                                {(preset.value / 100).toFixed(1)}
+                                            </span>
+                                            {t(`evaluation.presets.${preset.id}.title`)}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <article className={styles.evaluationDetail}>
+                                    <span>{t("evaluation.current")}</span>
+                                    <h3>
+                                        {t(
+                                            `evaluation.presets.${selectedEvaluation}.title`
+                                        )}
+                                    </h3>
+                                    <p>
+                                        {t(
+                                            `evaluation.presets.${selectedEvaluation}.body`
+                                        )}
+                                    </p>
+                                </article>
+                            </div>
+                        </div>
+
+                        <div className={styles.evaluationFacts}>
+                            {(["scale", "colours", "sign", "mate"] as const)
+                                .map((fact, index) => (
+                                    <article key={fact}>
+                                        <span>{index + 1}</span>
+                                        <div>
+                                            <h3>
+                                                {t(`evaluation.facts.${fact}.title`)}
+                                            </h3>
+                                            <p>
+                                                {t(`evaluation.facts.${fact}.body`)}
+                                            </p>
+                                        </div>
+                                    </article>
+                                ))
+                            }
+                        </div>
+
+                        <div className={styles.engineNote}>
+                            <span aria-hidden="true">↗</span>
+                            {t("evaluation.note")}
                         </div>
                     </section>
                 )}
