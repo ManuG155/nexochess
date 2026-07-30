@@ -164,10 +164,22 @@ export function normaliseLichessPuzzle(
 }
 
 export async function loadLichessPuzzleRecords() {
-    const response = await fetch("/data/lichess-puzzles.json");
-    if (!response.ok) return [];
+    const response = await fetch(
+        "/data/lichess-puzzles.json",
+        { cache: "force-cache" }
+    );
+
+    if (!response.ok) {
+        throw new Error(
+            `Unable to load the Lichess puzzle pack (${response.status}).`
+        );
+    }
 
     const pack = await response.json() as LichessPuzzlePack;
+
+    if (!Array.isArray(pack?.puzzles)) {
+        throw new Error("The Lichess puzzle pack is malformed.");
+    }
 
     return pack.puzzles;
 }
