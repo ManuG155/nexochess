@@ -24,7 +24,7 @@
 
 .trainingPage .hero p {
     max-width: 710px;
-    font-size: 0.82rem;
+    font-size: 0.94rem;
     line-height: 1.48;
 }
 
@@ -43,7 +43,7 @@
 .eyebrow,
 .sectionHeader > span {
     color: #7fa9ff;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     font-weight: 780;
     letter-spacing: 0.11em;
     text-transform: uppercase;
@@ -59,7 +59,7 @@
     max-width: 690px;
     margin: 0;
     color: rgba(244, 247, 252, 0.57);
-    font-size: 0.92rem;
+    font-size: 1rem;
     line-height: 1.65;
 }
 
@@ -85,7 +85,7 @@
 .profileStats span,
 .profileStats small {
     color: rgba(244, 247, 252, 0.42);
-    font-size: 0.62rem;
+    font-size: 0.74rem;
 }
 
 .profileStats strong {
@@ -151,7 +151,7 @@
 .sectionHeader p {
     margin: 0;
     color: rgba(244, 247, 252, 0.52);
-    font-size: 0.83rem;
+    font-size: 0.96rem;
     line-height: 1.55;
 }
 
@@ -164,10 +164,10 @@
 
 .sourceSelector > button {
     display: grid;
-    grid-template-columns: 42px minmax(0, 1fr) auto;
+    grid-template-columns: 46px minmax(0, 1fr);
     align-items: center;
     gap: 12px;
-    padding: 14px;
+    padding: 16px;
     text-align: left;
 
     color: rgba(244, 247, 252, 0.74);
@@ -208,26 +208,13 @@
 .sourceSelector strong {
     margin-bottom: 3px;
     color: #f4f7fc;
-    font-size: 0.84rem;
+    font-size: 1rem;
 }
 
 .sourceSelector small {
     color: rgba(244, 247, 252, 0.62);
-    font-size: 0.71rem;
-    line-height: 1.4;
-}
-
-.sourceSelector b {
-    display: grid;
-    place-items: center;
-    min-width: 34px;
-    height: 25px;
-
-    color: #9abaff;
-    border: 1px solid rgba(110, 156, 255, 0.2);
-    border-radius: 999px;
-    background: rgba(70, 125, 232, 0.08);
-    font-size: 0.7rem;
+    font-size: 0.84rem;
+    line-height: 1.45;
 }
 
 .sourceIcon {
@@ -268,12 +255,12 @@
 }
 
 .filterHeading strong {
-    font-size: 0.82rem;
+    font-size: 0.96rem;
 }
 
 .filterHeading span {
     color: rgba(244, 247, 252, 0.39);
-    font-size: 0.67rem;
+    font-size: 0.8rem;
 }
 
 .themeCategories {
@@ -285,25 +272,19 @@
 .themeCategories button {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 8px;
-    min-height: 39px;
-    padding: 8px 10px;
+    min-height: 45px;
+    padding: 10px 12px;
 
     color: rgba(244, 247, 252, 0.76);
     text-align: left;
     border: 1px solid rgba(255, 255, 255, 0.07);
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.025);
-    font-size: 0.73rem;
+    font-size: 0.86rem;
     font-weight: 650;
     cursor: pointer;
-}
-
-.themeCategories button small {
-    flex: 0 0 auto;
-    color: rgba(159, 190, 252, 0.7);
-    font-size: 0.61rem;
 }
 
 .themeCategories button:hover,
@@ -338,12 +319,12 @@
 
 .subthemeHeading strong {
     color: rgba(244, 247, 252, 0.88);
-    font-size: 0.74rem;
+    font-size: 0.9rem;
 }
 
 .subthemeHeading span {
     color: rgba(244, 247, 252, 0.54);
-    font-size: 0.65rem;
+    font-size: 0.78rem;
     line-height: 1.35;
 }
 
@@ -354,14 +335,14 @@
     color: #9cbcff;
     border: 0;
     background: transparent;
-    font-size: 0.62rem;
+    font-size: 0.76rem;
     cursor: pointer;
 }
 
 .subthemePanel > input {
     box-sizing: border-box;
     width: 100%;
-    height: 36px;
+    height: 42px;
     margin-bottom: 9px;
     padding: 0 11px;
 
@@ -371,7 +352,7 @@
     outline: none;
     background: rgba(255, 255, 255, 0.035);
     font: inherit;
-    font-size: 0.72rem;
+    font-size: 0.84rem;
 }
 
 .subthemePanel > input::placeholder {
@@ -398,29 +379,23 @@
 .subthemeGrid button {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 8px;
-    min-height: 38px;
-    padding: 7px 9px;
+    min-height: 44px;
+    padding: 9px 11px;
 
     color: rgba(244, 247, 252, 0.72);
     text-align: left;
     border: 1px solid rgba(255, 255, 255, 0.065);
     border-radius: 9px;
     background: rgba(255, 255, 255, 0.024);
-    font-size: 0.7rem;
-    line-height: 1.3;
+    font-size: 0.84rem;
+    line-height: 1.35;
     cursor: pointer;
 }
 
 .subthemeGrid button > span {
     overflow-wrap: anywhere;
-}
-
-.subthemeGrid button > small {
-    flex: 0 0 auto;
-    color: rgba(159, 190, 252, 0.68);
-    font-size: 0.59rem;
 }
 
 .subthemeGrid button:hover,
@@ -433,7 +408,7 @@
 .noSubthemeResults {
     margin: 10px 2px 2px;
     color: rgba(244, 247, 252, 0.5);
-    font-size: 0.69rem;
+    font-size: 0.82rem;
 }
 
 .difficultyGrid {
@@ -447,8 +422,8 @@
     align-items: flex-start;
     flex-direction: column;
     min-width: 0;
-    min-height: 56px;
-    padding: 10px;
+    min-height: 64px;
+    padding: 12px;
 
     color: rgba(244, 247, 252, 0.72);
     text-align: left;
@@ -461,7 +436,7 @@
 .difficultyGrid strong {
     max-width: 100%;
     color: rgba(244, 247, 252, 0.88);
-    font-size: 0.73rem;
+    font-size: 0.86rem;
     line-height: 1.3;
     overflow-wrap: anywhere;
 }
@@ -469,7 +444,7 @@
 .difficultyGrid small {
     margin-top: 3px;
     color: rgba(244, 247, 252, 0.54);
-    font-size: 0.61rem;
+    font-size: 0.74rem;
 }
 
 .difficultyGrid button:hover,
@@ -500,7 +475,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    padding: 11px 12px;
+    padding: 13px 14px;
 
     color: rgba(244, 247, 252, 0.72);
     text-align: left;
@@ -517,13 +492,13 @@
 
 .sessionOptions strong {
     color: rgba(244, 247, 252, 0.9);
-    font-size: 0.73rem;
+    font-size: 0.86rem;
 }
 
 .sessionOptions small {
     margin-top: 2px;
     color: rgba(244, 247, 252, 0.54);
-    font-size: 0.61rem;
+    font-size: 0.74rem;
     line-height: 1.35;
 }
 
@@ -569,14 +544,14 @@
     align-items: center;
     justify-content: center;
     gap: 9px;
-    min-height: 44px;
+    min-height: 48px;
 
     color: white;
     border: 1px solid rgba(134, 171, 247, 0.32);
     border-radius: 11px;
     background: linear-gradient(180deg, #5489ee, #3d70d0);
     box-shadow: 0 10px 24px rgba(38, 77, 157, 0.27);
-    font-size: 0.8rem;
+    font-size: 0.92rem;
     font-weight: 720;
     cursor: pointer;
 }
@@ -630,13 +605,13 @@
 
 .archiveEmpty h3 {
     margin: 0 0 2px;
-    font-size: 0.77rem;
+    font-size: 0.9rem;
 }
 
 .archiveEmpty p {
     margin: 0;
     color: rgba(244, 247, 252, 0.42);
-    font-size: 0.67rem;
+    font-size: 0.8rem;
     line-height: 1.4;
 }
 
@@ -648,7 +623,7 @@
     border: 1px solid rgba(244, 184, 92, 0.2);
     border-radius: 9px;
     background: rgba(244, 184, 92, 0.07);
-    font-size: 0.67rem;
+    font-size: 0.8rem;
     text-decoration: none;
 }
 
@@ -657,7 +632,7 @@
     flex-direction: column;
     gap: 3px;
     color: #f3c27b;
-    font-size: 0.72rem;
+    font-size: 0.84rem;
 }
 
 .noMatch span {
@@ -715,7 +690,7 @@
 
 .coachCopy > span {
     color: #80a9ff;
-    font-size: 0.62rem;
+    font-size: 0.74rem;
     font-weight: 760;
     letter-spacing: 0.07em;
     text-transform: uppercase;
@@ -724,7 +699,7 @@
 .coachCopy p {
     margin: 6px 0 0;
     color: rgba(244, 247, 252, 0.74);
-    font-size: 0.76rem;
+    font-size: 0.88rem;
     line-height: 1.5;
 }
 
@@ -777,7 +752,7 @@
 
 .puzzleMeta > div:first-child > span {
     color: #7fa9ff;
-    font-size: 0.66rem;
+    font-size: 0.78rem;
     font-weight: 740;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -785,7 +760,7 @@
 
 .puzzleMeta h2 {
     margin: 3px 0 0;
-    font-size: 1.25rem;
+    font-size: 1.45rem;
 }
 
 .puzzleBadges {
@@ -802,7 +777,7 @@
     border: 1px solid rgba(255, 255, 255, 0.075);
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.025);
-    font-size: 0.62rem;
+    font-size: 0.74rem;
 }
 
 .puzzleBadges span.errorBadge {
@@ -838,6 +813,65 @@
     width: calc(100% - 33px);
 }
 
+.squareFeedbackSurface {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    pointer-events: none;
+    animation: feedbackGlow 0.82s ease-out both;
+}
+
+.squareFeedbackCorrect {
+    background:
+        radial-gradient(
+            circle at 50% 50%,
+            rgba(143, 218, 148, 0.7),
+            rgba(111, 194, 120, 0.5)
+        );
+    box-shadow: inset 0 0 18px rgba(218, 255, 220, 0.18);
+}
+
+.squareFeedbackBrilliant {
+    background:
+        radial-gradient(
+            circle at 50% 50%,
+            rgba(111, 224, 214, 0.72),
+            rgba(52, 190, 183, 0.52)
+        );
+    box-shadow: inset 0 0 20px rgba(210, 255, 250, 0.2);
+}
+
+.squareFeedbackIcon {
+    position: absolute;
+    top: 5%;
+    right: 5%;
+    z-index: 8;
+    display: grid;
+    place-items: center;
+    width: 29%;
+    aspect-ratio: 1;
+
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.78);
+    border-radius: 50%;
+    box-shadow: 0 3px 10px rgba(12, 18, 24, 0.3);
+    font-size: clamp(0.58rem, 1.45vw, 0.9rem);
+    font-weight: 850;
+    line-height: 1;
+    pointer-events: none;
+    animation: feedbackIconPop 0.3s cubic-bezier(0.2, 0.9, 0.28, 1.25);
+}
+
+.squareFeedbackIconCorrect {
+    background: #6cbc70;
+}
+
+.squareFeedbackIconBrilliant {
+    background: #2bb9b0;
+    font-size: clamp(0.48rem, 1.25vw, 0.76rem);
+    letter-spacing: -0.08em;
+}
+
 .outsideRanks {
     position: absolute;
     top: 0;
@@ -847,7 +881,7 @@
     grid-template-rows: repeat(8, 1fr);
 
     color: rgba(244, 247, 252, 0.46);
-    font-size: 0.62rem;
+    font-size: 0.72rem;
     font-weight: 690;
 }
 
@@ -866,7 +900,7 @@
     grid-template-columns: repeat(8, 1fr);
 
     color: rgba(244, 247, 252, 0.46);
-    font-size: 0.62rem;
+    font-size: 0.72rem;
     font-weight: 690;
 }
 
@@ -905,7 +939,7 @@
 .historyControls span {
     color: rgba(244, 247, 252, 0.42);
     text-align: center;
-    font-size: 0.68rem;
+    font-size: 0.8rem;
 }
 
 .trainingPanel {
@@ -933,7 +967,7 @@
 .objectiveCard > span,
 .evaluationSummary > span {
     color: #80a9ff;
-    font-size: 0.61rem;
+    font-size: 0.73rem;
     font-weight: 750;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -941,13 +975,13 @@
 
 .objectiveCard h3 {
     margin: 4px 0 4px;
-    font-size: 0.98rem;
+    font-size: 1.12rem;
 }
 
 .objectiveCard p {
     margin: 0;
     color: rgba(244, 247, 252, 0.44);
-    font-size: 0.69rem;
+    font-size: 0.82rem;
     line-height: 1.5;
 }
 
@@ -984,7 +1018,7 @@
     display: grid;
     grid-template-columns: 30px minmax(0, 1fr);
     column-gap: 8px;
-    padding: 10px;
+    padding: 12px;
     text-align: left;
 
     color: rgba(244, 247, 252, 0.7);
@@ -1009,12 +1043,12 @@
 
 .puzzleActions strong {
     align-self: end;
-    font-size: 0.7rem;
+    font-size: 0.84rem;
 }
 
 .puzzleActions small {
     color: rgba(244, 247, 252, 0.35);
-    font-size: 0.58rem;
+    font-size: 0.72rem;
 }
 
 .puzzleActions button:hover:not(:disabled) {
@@ -1043,7 +1077,7 @@
     color: rgba(244, 247, 252, 0.43);
     border: 0;
     background: none;
-    font-size: 0.64rem;
+    font-size: 0.76rem;
     text-decoration: none;
     cursor: pointer;
 }
@@ -1069,7 +1103,7 @@
 .evaluationSummary small {
     margin-top: 3px;
     color: rgba(244, 247, 252, 0.34);
-    font-size: 0.58rem;
+    font-size: 0.7rem;
 }
 
 .stateCard {
@@ -1120,6 +1154,36 @@
 @keyframes spin {
     to {
         transform: rotate(360deg);
+    }
+}
+
+@keyframes feedbackGlow {
+    0% {
+        opacity: 0;
+        transform: scale(0.88);
+    }
+
+    24%,
+    72% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(1);
+    }
+}
+
+@keyframes feedbackIconPop {
+    from {
+        opacity: 0;
+        transform: scale(0.45) rotate(-10deg);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
     }
 }
 
@@ -1244,7 +1308,7 @@
     }
 
     .sourceSelector > button {
-        grid-template-columns: 38px minmax(0, 1fr) auto;
+        grid-template-columns: 40px minmax(0, 1fr);
     }
 
     .archiveEmpty {

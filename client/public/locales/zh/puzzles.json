@@ -2,7 +2,7 @@
     "hero": {
         "eyebrow": "NexoChess 战术训练",
         "title": "把每个错误变成一堂课",
-        "subtitle": "练习自己已分析对局中的局面，或按主题挑战 Lichess 开放数据库中的评级谜题。教练会陪你走完整条变化。"
+        "subtitle": "练习自己已分析对局中的局面，或按主题挑战评级国际象棋题。教练会陪你走完整条变化。"
     },
     "stats": {
         "rating": "谜题等级分",
@@ -31,8 +31,8 @@
             "action": "分析对局"
         },
         "lichess": {
-            "title": "Lichess 训练",
-            "body": "可按主题和难度筛选的 CC0 评级谜题。"
+            "title": "国际象棋题",
+            "body": "可按主题和难度筛选的评级题目。"
         }
     },
     "filters": {
@@ -96,7 +96,7 @@
         "title": "{{name}}，你的教练",
         "loading": "我正在准备训练局面。",
         "setupArchive": "你分析过的对局已经包含很多好教材。选一组，我们慢慢复盘。",
-        "setupLichess": "暂时没有个人局面，不过 Lichess 题包已经准备好了。",
+        "setupLichess": "暂时没有个人局面，不过国际象棋题已经准备好了。",
         "archiveTurn": "{{colour}}走。这是一次代价很大的着法之后的局面，找出惩罚手段。",
         "lichessTurn": "{{colour}}走。先检查将军、吃子和威胁，再计算安静着。",
         "wrong": "不是这步。它虽然合法，却错过了关键机会。再检查将军、吃子和威胁。",
@@ -118,7 +118,7 @@
     },
     "states": {
         "loadingTitle": "正在准备训练",
-        "loadingBody": "读取你的档案并加载本地 Lichess 题包。",
+        "loadingBody": "读取你的档案并加载国际象棋题。",
         "errorTitle": "无法加载训练",
         "errorBody": "数据没有丢失。刷新页面后再试。",
         "noArchiveTitle": "没有个人谜题",
@@ -128,7 +128,7 @@
     },
     "puzzle": {
         "archiveSource": "来自你的档案",
-        "lichessSource": "Lichess CC0 谜题",
+        "lichessSource": "国际象棋题",
         "toMove": "{{colour}}走",
         "rating": "等级分 {{rating}}",
         "objective": "当前目标",

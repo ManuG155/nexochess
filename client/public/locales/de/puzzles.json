@@ -2,7 +2,7 @@
     "hero": {
         "eyebrow": "NexoChess-Taktiktraining",
         "title": "Mach aus jedem Fehler eine Lektion",
-        "subtitle": "Trainiere Stellungen aus deinen analysierten Partien oder gewertete Themenaufgaben aus der offenen Lichess-Datenbank. Dein Trainer begleitet die ganze Variante."
+        "subtitle": "Trainiere Stellungen aus deinen analysierten Partien oder gewertete thematische Schachaufgaben. Dein Trainer begleitet die ganze Variante."
     },
     "stats": {
         "rating": "Aufgabenwertung",
@@ -31,8 +31,8 @@
             "action": "Partie analysieren"
         },
         "lichess": {
-            "title": "Lichess-Training",
-            "body": "Gewertete CC0-Aufgaben nach Thema und Schwierigkeit."
+            "title": "Schachaufgaben",
+            "body": "Gewertete Aufgaben nach Thema und Schwierigkeit."
         }
     },
     "filters": {
@@ -96,7 +96,7 @@
         "title": "{{name}}, dein Trainer",
         "loading": "Ich bereite deine Stellungen vor.",
         "setupArchive": "Deine analysierten Partien enthalten schon wertvolle Lektionen. Wähle ein Training und wir gehen sie ruhig durch.",
-        "setupLichess": "Noch keine eigenen Stellungen, aber das Lichess-Paket ist bereit.",
+        "setupLichess": "Noch keine eigenen Stellungen, aber die Schachaufgaben sind bereit.",
         "archiveTurn": "{{colour}} am Zug. Diese Stellung entstand nach einem teuren Fehler. Finde die Bestrafung.",
         "lichessTurn": "{{colour}} am Zug. Prüfe zuerst Schachs, Schlagzüge und Drohungen.",
         "wrong": "Nicht dieser Zug. Er ist legal, lässt aber die entscheidende Chance aus. Prüfe erneut Schachs, Schlagzüge und Drohungen.",
@@ -118,7 +118,7 @@
     },
     "states": {
         "loadingTitle": "Training wird vorbereitet",
-        "loadingBody": "Archiv wird gelesen und das lokale Lichess-Paket geladen.",
+        "loadingBody": "Archiv wird gelesen und die Schachaufgaben werden geladen.",
         "errorTitle": "Training konnte nicht geladen werden",
         "errorBody": "Nichts ging verloren. Aktualisiere die Seite und versuche es erneut.",
         "noArchiveTitle": "Keine eigenen Aufgaben verfügbar",
@@ -128,7 +128,7 @@
     },
     "puzzle": {
         "archiveSource": "Aus deinem Archiv",
-        "lichessSource": "Lichess-CC0-Aufgabe",
+        "lichessSource": "Schachaufgaben",
         "toMove": "{{colour}} am Zug",
         "rating": "Wertung {{rating}}",
         "objective": "Aktuelles Ziel",

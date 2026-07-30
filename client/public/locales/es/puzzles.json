@@ -2,7 +2,7 @@
     "hero": {
         "eyebrow": "Entrenamiento táctico NexoChess",
         "title": "Convierte cada error en una lección",
-        "subtitle": "Entrena posiciones de tus propias partidas analizadas o practica puzles evaluados y temáticos de la base abierta de Lichess. Tu entrenador te acompaña durante toda la línea."
+        "subtitle": "Entrena posiciones de tus propias partidas analizadas o practica problemas evaluados y temáticos. Tu entrenador te acompaña durante toda la línea."
     },
     "stats": {
         "rating": "Elo de puzles",
@@ -31,8 +31,8 @@
             "action": "Analizar una partida"
         },
         "lichess": {
-            "title": "Entrenamiento Lichess",
-            "body": "Puzles CC0 evaluados y filtrables por tema y dificultad."
+            "title": "Problemas de ajedrez",
+            "body": "Problemas evaluados y filtrables por tema y dificultad."
         }
     },
     "filters": {
@@ -96,7 +96,7 @@
         "title": "{{name}}, tu entrenador",
         "loading": "Estoy preparando tus posiciones.",
         "setupArchive": "Tus partidas analizadas ya contienen lecciones útiles. Elige una sesión y las repasaremos con calma.",
-        "setupLichess": "Todavía no hay posiciones propias, pero el paquete de Lichess está listo cuando tú quieras.",
+        "setupLichess": "Todavía no hay posiciones propias, pero los problemas de ajedrez están listos cuando tú quieras.",
         "archiveTurn": "Juegan {{colour}}. Esta posición apareció justo después de una jugada costosa. Encuentra cómo castigarla.",
         "lichessTurn": "Juegan {{colour}}. Busca primero jaques, capturas y amenazas antes de calcular ideas tranquilas.",
         "wrong": "Esta no. La jugada es legal, pero deja escapar la oportunidad clave. Revisa jaques, capturas y amenazas.",
@@ -118,7 +118,7 @@
     },
     "states": {
         "loadingTitle": "Preparando tu entrenamiento",
-        "loadingBody": "Leyendo tu Archivo y cargando el paquete local de puzles de Lichess.",
+        "loadingBody": "Leyendo tu Archivo y cargando los problemas de ajedrez.",
         "errorTitle": "No se ha podido cargar el entrenamiento",
         "errorBody": "No se ha perdido nada. Actualiza la página para volver a intentarlo.",
         "noArchiveTitle": "No hay puzles propios disponibles",
@@ -128,7 +128,7 @@
     },
     "puzzle": {
         "archiveSource": "Desde tu Archivo",
-        "lichessSource": "Puzle CC0 de Lichess",
+        "lichessSource": "Problemas de ajedrez",
         "toMove": "Juegan {{colour}}",
         "rating": "Elo {{rating}}",
         "objective": "Objetivo actual",

@@ -2,7 +2,7 @@
     "hero": {
         "eyebrow": "Luyện chiến thuật NexoChess",
         "title": "Biến mọi sai lầm thành bài học",
-        "subtitle": "Luyện các thế cờ từ ván đã phân tích hoặc giải câu đố có xếp hạng theo chủ đề từ cơ sở dữ liệu mở Lichess. Huấn luyện viên sẽ theo bạn suốt biến."
+        "subtitle": "Luyện các thế cờ từ ván đã phân tích hoặc giải bài tập cờ vua có xếp hạng theo chủ đề. Huấn luyện viên sẽ theo bạn suốt biến."
     },
     "stats": {
         "rating": "Xếp hạng câu đố",
@@ -31,8 +31,8 @@
             "action": "Phân tích ván"
         },
         "lichess": {
-            "title": "Luyện Lichess",
-            "body": "Câu đố CC0 có xếp hạng, lọc theo chủ đề và độ khó."
+            "title": "Bài tập cờ vua",
+            "body": "Bài tập có xếp hạng, lọc theo chủ đề và độ khó."
         }
     },
     "filters": {
@@ -96,7 +96,7 @@
         "title": "{{name}}, huấn luyện viên",
         "loading": "Tôi đang chuẩn bị các thế cờ.",
         "setupArchive": "Các ván đã phân tích chứa nhiều bài học tốt. Hãy chọn buổi luyện và ta cùng xem lại.",
-        "setupLichess": "Chưa có thế cá nhân, nhưng gói Lichess đã sẵn sàng.",
+        "setupLichess": "Chưa có thế cá nhân, nhưng các bài tập cờ vua đã sẵn sàng.",
         "archiveTurn": "{{colour}} đi. Thế này xuất hiện ngay sau một nước tốn kém. Hãy tìm cách trừng phạt.",
         "lichessTurn": "{{colour}} đi. Kiểm tra chiếu, bắt quân và đe dọa trước.",
         "wrong": "Không phải nước này. Nó hợp lệ nhưng bỏ lỡ cơ hội chính. Hãy xem lại chiếu, bắt quân và đe dọa.",
@@ -118,7 +118,7 @@
     },
     "states": {
         "loadingTitle": "Đang chuẩn bị buổi luyện",
-        "loadingBody": "Đang đọc Kho lưu trữ và tải gói Lichess cục bộ.",
+        "loadingBody": "Đang đọc Kho lưu trữ và tải các bài tập cờ vua.",
         "errorTitle": "Không thể tải buổi luyện",
         "errorBody": "Không có gì bị mất. Hãy làm mới trang và thử lại.",
         "noArchiveTitle": "Chưa có câu đố cá nhân",
@@ -128,7 +128,7 @@
     },
     "puzzle": {
         "archiveSource": "Từ Kho lưu trữ",
-        "lichessSource": "Câu đố Lichess CC0",
+        "lichessSource": "Bài tập cờ vua",
         "toMove": "{{colour}} đi",
         "rating": "Xếp hạng {{rating}}",
         "objective": "Mục tiêu hiện tại",

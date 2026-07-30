@@ -2,7 +2,7 @@
     "hero": {
         "eyebrow": "Trening taktyczny NexoChess",
         "title": "Zamień każdy błąd w lekcję",
-        "subtitle": "Ćwicz pozycje z własnych przeanalizowanych partii lub rozwiązuj oceniane zadania tematyczne z otwartej bazy Lichess. Trener towarzyszy Ci przez cały wariant."
+        "subtitle": "Ćwicz pozycje z własnych przeanalizowanych partii lub rozwiązuj oceniane tematyczne zadania szachowe. Trener towarzyszy Ci przez cały wariant."
     },
     "stats": {
         "rating": "Ranking zadań",
@@ -31,8 +31,8 @@
             "action": "Przeanalizuj partię"
         },
         "lichess": {
-            "title": "Trening Lichess",
-            "body": "Oceniane zadania CC0 filtrowane według tematu i trudności."
+            "title": "Zadania szachowe",
+            "body": "Oceniane zadania filtrowane według tematu i trudności."
         }
     },
     "filters": {
@@ -96,7 +96,7 @@
         "title": "{{name}}, Twój trener",
         "loading": "Przygotowuję Twoje pozycje.",
         "setupArchive": "Twoje przeanalizowane partie zawierają już dobre lekcje. Wybierz sesję i spokojnie je przejrzymy.",
-        "setupLichess": "Nie ma jeszcze własnych pozycji, ale pakiet Lichess jest gotowy.",
+        "setupLichess": "Nie ma jeszcze własnych pozycji, ale zadania szachowe są gotowe.",
         "archiveTurn": "Ruch {{colour}}. Ta pozycja powstała po kosztownym błędzie. Znajdź karę.",
         "lichessTurn": "Ruch {{colour}}. Najpierw sprawdź szachy, bicia i groźby.",
         "wrong": "Nie ten ruch. Jest legalny, ale wypuszcza kluczową szansę. Ponownie sprawdź szachy, bicia i groźby.",
@@ -118,7 +118,7 @@
     },
     "states": {
         "loadingTitle": "Przygotowywanie treningu",
-        "loadingBody": "Odczyt Archiwum i ładowanie lokalnego pakietu Lichess.",
+        "loadingBody": "Odczyt Archiwum i ładowanie zadań szachowych.",
         "errorTitle": "Nie udało się wczytać treningu",
         "errorBody": "Nic nie zginęło. Odśwież stronę i spróbuj ponownie.",
         "noArchiveTitle": "Brak własnych zadań",
@@ -128,7 +128,7 @@
     },
     "puzzle": {
         "archiveSource": "Z Twojego Archiwum",
-        "lichessSource": "Zadanie Lichess CC0",
+        "lichessSource": "Zadania szachowe",
         "toMove": "Ruch {{colour}}",
         "rating": "Ranking {{rating}}",
         "objective": "Bieżący cel",

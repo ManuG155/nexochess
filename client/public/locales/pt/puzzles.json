@@ -2,7 +2,7 @@
     "hero": {
         "eyebrow": "Treino tático NexoChess",
         "title": "Transforme cada erro numa lição",
-        "subtitle": "Treine posições das suas partidas analisadas ou resolva puzzles avaliados e temáticos da base aberta do Lichess. O seu treinador acompanha toda a variante."
+        "subtitle": "Treine posições das suas partidas analisadas ou resolva problemas de xadrez avaliados e temáticos. O seu treinador acompanha toda a variante."
     },
     "stats": {
         "rating": "Rating de puzzles",
@@ -31,8 +31,8 @@
             "action": "Analisar uma partida"
         },
         "lichess": {
-            "title": "Treino Lichess",
-            "body": "Puzzles CC0 avaliados e filtrados por tema e dificuldade."
+            "title": "Problemas de xadrez",
+            "body": "Problemas avaliados e filtrados por tema e dificuldade."
         }
     },
     "filters": {
@@ -96,7 +96,7 @@
         "title": "{{name}}, o seu treinador",
         "loading": "Estou a preparar as suas posições.",
         "setupArchive": "As suas partidas analisadas já contêm boas lições. Escolha uma sessão e vamos revê-las com calma.",
-        "setupLichess": "Ainda não há posições próprias, mas o pacote Lichess está pronto.",
+        "setupLichess": "Ainda não há posições próprias, mas os problemas de xadrez estão prontos.",
         "archiveTurn": "Jogam as {{colour}}. Esta posição surgiu após uma jogada cara. Encontre o castigo.",
         "lichessTurn": "Jogam as {{colour}}. Procure primeiro xeques, capturas e ameaças.",
         "wrong": "Não é esta. A jogada é legal, mas deixa escapar a oportunidade principal. Reveja xeques, capturas e ameaças.",
@@ -118,7 +118,7 @@
     },
     "states": {
         "loadingTitle": "A preparar o treino",
-        "loadingBody": "A ler o seu Arquivo e a carregar o pacote local do Lichess.",
+        "loadingBody": "A ler o seu Arquivo e a carregar os problemas de xadrez.",
         "errorTitle": "Não foi possível carregar o treino",
         "errorBody": "Nada foi perdido. Atualize a página e tente novamente.",
         "noArchiveTitle": "Não há puzzles próprios",
@@ -128,7 +128,7 @@
     },
     "puzzle": {
         "archiveSource": "Do seu Arquivo",
-        "lichessSource": "Puzzle CC0 do Lichess",
+        "lichessSource": "Problemas de xadrez",
         "toMove": "Jogam as {{colour}}",
         "rating": "Rating {{rating}}",
         "objective": "Objetivo atual",

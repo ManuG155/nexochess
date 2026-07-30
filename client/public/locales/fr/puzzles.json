@@ -2,7 +2,7 @@
     "hero": {
         "eyebrow": "Entraînement tactique NexoChess",
         "title": "Transformez chaque erreur en leçon",
-        "subtitle": "Entraînez les positions de vos parties analysées ou résolvez des puzzles classés et thématiques de la base ouverte de Lichess. Votre entraîneur vous accompagne sur toute la variante."
+        "subtitle": "Entraînez les positions de vos parties analysées ou résolvez des problèmes d’échecs classés et thématiques. Votre entraîneur vous accompagne sur toute la variante."
     },
     "stats": {
         "rating": "Classement puzzles",
@@ -31,8 +31,8 @@
             "action": "Analyser une partie"
         },
         "lichess": {
-            "title": "Entraînement Lichess",
-            "body": "Puzzles CC0 classés, filtrés par thème et difficulté."
+            "title": "Problèmes d’échecs",
+            "body": "Problèmes classés, filtrés par thème et difficulté."
         }
     },
     "filters": {
@@ -96,7 +96,7 @@
         "title": "{{name}}, votre entraîneur",
         "loading": "Je prépare vos positions.",
         "setupArchive": "Vos parties analysées contiennent déjà de bonnes leçons. Choisissez une séance et revoyons-les calmement.",
-        "setupLichess": "Pas encore de positions personnelles, mais le pack Lichess est prêt.",
+        "setupLichess": "Pas encore de positions personnelles, mais les problèmes d’échecs sont prêts.",
         "archiveTurn": "Aux {{colour}}. Cette position suit un coup coûteux. Trouvez comment le punir.",
         "lichessTurn": "Aux {{colour}}. Cherchez d'abord les échecs, prises et menaces.",
         "wrong": "Pas ce coup. Il est légal, mais laisse passer l'occasion clé. Revérifiez échecs, prises et menaces.",
@@ -118,7 +118,7 @@
     },
     "states": {
         "loadingTitle": "Préparation de l'entraînement",
-        "loadingBody": "Lecture de vos Archives et chargement du pack local Lichess.",
+        "loadingBody": "Lecture de vos Archives et chargement des problèmes d’échecs.",
         "errorTitle": "Impossible de charger l'entraînement",
         "errorBody": "Rien n'est perdu. Actualisez la page pour réessayer.",
         "noArchiveTitle": "Aucun puzzle personnel",
@@ -128,7 +128,7 @@
     },
     "puzzle": {
         "archiveSource": "Depuis vos Archives",
-        "lichessSource": "Puzzle Lichess CC0",
+        "lichessSource": "Problèmes d’échecs",
         "toMove": "Aux {{colour}}",
         "rating": "Classement {{rating}}",
         "objective": "Objectif actuel",

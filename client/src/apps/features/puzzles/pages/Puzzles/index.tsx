@@ -59,7 +59,6 @@ import {
     formatPuzzleTheme,
     getPuzzleFilterOptions,
     getVisiblePuzzleThemes,
-    puzzleMatchesCategory,
     puzzleThemeCategories
 } from "../../lib/themeCatalogue";
 
@@ -86,6 +85,64 @@ interface WrongMovePreview {
     from: Square;
     to: Square;
 }
+
+interface MoveFeedback {
+    square: Square;
+    kind: "correct" | "brilliant";
+}
+
+interface PuzzleBoardSquareProps {
+    children: React.ReactNode;
+    square: Square;
+    squareColor: "white" | "black";
+    style: Record<string, string | number>;
+}
+
+const PuzzleBoardSquare = React.forwardRef<
+    HTMLDivElement,
+    PuzzleBoardSquareProps
+>(({ children, style }, ref) => {
+    const feedbackKind = style["--nexo-puzzle-feedback"];
+    const squareStyle = { ...style };
+
+    delete squareStyle["--nexo-puzzle-feedback"];
+
+    return <div
+        ref={ref}
+        style={{
+            ...squareStyle,
+            position: "relative"
+        }}
+    >
+        {feedbackKind && (
+            <>
+                <span
+                    className={[
+                        styles.squareFeedbackSurface,
+                        feedbackKind == "brilliant"
+                            ? styles.squareFeedbackBrilliant
+                            : styles.squareFeedbackCorrect
+                    ].join(" ")}
+                    aria-hidden="true"
+                />
+                <span
+                    className={[
+                        styles.squareFeedbackIcon,
+                        feedbackKind == "brilliant"
+                            ? styles.squareFeedbackIconBrilliant
+                            : styles.squareFeedbackIconCorrect
+                    ].join(" ")}
+                    aria-hidden="true"
+                >
+                    {feedbackKind == "brilliant" ? "!!" : "✓"}
+                </span>
+            </>
+        )}
+        {children}
+    </div>;
+});
+
+PuzzleBoardSquare.displayName = "PuzzleBoardSquare";
 
 const difficulties: PuzzleDifficulty[] = [
     "adaptive",
@@ -155,6 +212,8 @@ function Puzzles() {
         useState<Square>();
     const [ wrongMovePreview, setWrongMovePreview ] =
         useState<WrongMovePreview>();
+    const [ moveFeedback, setMoveFeedback ] =
+        useState<MoveFeedback>();
     const [ hintArrow, setHintArrow ] =
         useState<NonNullable<
             React.ComponentProps<typeof Chessboard>["customArrows"]
@@ -180,6 +239,7 @@ function Puzzles() {
 
     const replyTimer = useRef<number | undefined>(undefined);
     const wrongMoveTimer = useRef<number | undefined>(undefined);
+    const moveFeedbackTimer = useRef<number | undefined>(undefined);
     const liveFen = useRef("");
     const failedAttempt = useRef(false);
     const completedCurrentPuzzle = useRef(false);
@@ -259,12 +319,14 @@ function Puzzles() {
             cancelled = true;
             window.clearTimeout(replyTimer.current);
             window.clearTimeout(wrongMoveTimer.current);
+            window.clearTimeout(moveFeedbackTimer.current);
         };
     }, []);
 
     function initialisePuzzle(nextPuzzle: TrainingPuzzle) {
         window.clearTimeout(replyTimer.current);
         window.clearTimeout(wrongMoveTimer.current);
+        window.clearTimeout(moveFeedbackTimer.current);
 
         const history = nextPuzzle.previousFen
             ? [nextPuzzle.previousFen, nextPuzzle.startFen]
@@ -277,6 +339,7 @@ function Puzzles() {
         setSolutionIndex(0);
         setSelectedSquare(undefined);
         setWrongMovePreview(undefined);
+        setMoveFeedback(undefined);
         setHintArrow([]);
         setPendingReply(false);
         setPageState("playing");
@@ -376,6 +439,24 @@ function Puzzles() {
         });
     }
 
+    async function skipPuzzle() {
+        if (!puzzle || completedCurrentPuzzle.current) {
+            startTraining();
+            return;
+        }
+
+        window.clearTimeout(replyTimer.current);
+        window.clearTimeout(wrongMoveTimer.current);
+        window.clearTimeout(moveFeedbackTimer.current);
+        setPendingReply(false);
+        setWrongMovePreview(undefined);
+        setMoveFeedback(undefined);
+        failedAttempt.current = true;
+
+        await finishPuzzle(true);
+        startTraining();
+    }
+
     function appendPosition(fen: string) {
         setBoardHistory(previous => {
             const next = [...previous, fen];
@@ -409,6 +490,7 @@ function Puzzles() {
             failedAttempt.current = true;
             setSelectedSquare(undefined);
             setHintArrow([]);
+            setMoveFeedback(undefined);
             setCoachExpression("worried");
             setCoachMessage({ key: "coach.wrong" });
 
@@ -452,12 +534,26 @@ function Puzzles() {
 
         const afterPlayer = board.fen();
         const nextIndex = solutionIndex + 1;
+        const feedbackKind = (
+            solutionIndex == 0
+            && puzzle.themes.includes("sacrifice")
+        )
+            ? "brilliant"
+            : "correct";
 
         liveFen.current = afterPlayer;
         appendPosition(afterPlayer);
         setSolutionIndex(nextIndex);
         setSelectedSquare(undefined);
         setHintArrow([]);
+        setMoveFeedback({
+            square: to as Square,
+            kind: feedbackKind
+        });
+        window.clearTimeout(moveFeedbackTimer.current);
+        moveFeedbackTimer.current = window.setTimeout(() => {
+            setMoveFeedback(undefined);
+        }, 820);
 
         if (nextIndex >= puzzle.solution.length) {
             void finishPuzzle(false);
@@ -497,7 +593,7 @@ function Puzzles() {
 
             setCoachExpression("explaining");
             setCoachMessage({ key: "coach.yourTurnAgain" });
-        }, 420);
+        }, 680);
 
         return true;
     }
@@ -558,6 +654,7 @@ function Puzzles() {
 
         window.clearTimeout(wrongMoveTimer.current);
         setWrongMovePreview(undefined);
+        setMoveFeedback(undefined);
         const expected = puzzle.solution[solutionIndex];
         if (!expected) return;
 
@@ -581,8 +678,10 @@ function Puzzles() {
 
         window.clearTimeout(replyTimer.current);
         window.clearTimeout(wrongMoveTimer.current);
+        window.clearTimeout(moveFeedbackTimer.current);
         failedAttempt.current = true;
         setWrongMovePreview(undefined);
+        setMoveFeedback(undefined);
 
         const board = new Chess(liveFen.current);
         const positions: string[] = [];
@@ -650,16 +749,6 @@ function Puzzles() {
         openingSearch,
         themeSelection.category
     ]);
-    const categoryCounts = useMemo(() => (
-        Object.fromEntries(
-            puzzleThemeCategories.map(category => [
-                category,
-                lichessPuzzles.filter(puzzleItem => (
-                    puzzleMatchesCategory(puzzleItem, category)
-                )).length
-            ])
-        )
-    ), [lichessPuzzles]);
     const translatedCoachMessage = t(
         coachMessage.key,
         coachMessage.values
@@ -727,6 +816,12 @@ function Puzzles() {
             return squareStyles;
         }
 
+        if (moveFeedback) {
+            squareStyles[moveFeedback.square] = {
+                "--nexo-puzzle-feedback": moveFeedback.kind
+            };
+        }
+
         if (selectedSquare) {
             squareStyles[selectedSquare] = {
                 boxShadow:
@@ -773,6 +868,7 @@ function Puzzles() {
         pendingReply,
         selectedSquare,
         settings.themes.board.legalMoveHints,
+        moveFeedback,
         wrongMovePreview
     ]);
 
@@ -949,12 +1045,6 @@ function Puzzles() {
                                 <strong>{t("sources.archive.title")}</strong>
                                 <small>{t("sources.archive.body")}</small>
                             </span>
-                            <b>
-                                {archiveLoadState == "loading"
-                                    ? "…"
-                                    : archivePuzzles.length
-                                }
-                            </b>
                         </button>
 
                         <button
@@ -974,12 +1064,6 @@ function Puzzles() {
                                 <strong>{t("sources.lichess.title")}</strong>
                                 <small>{t("sources.lichess.body")}</small>
                             </span>
-                            <b>
-                                {lichessLoadState == "loading"
-                                    ? "…"
-                                    : lichessPuzzles.length
-                                }
-                            </b>
                         </button>
                     </div>
 
@@ -1035,9 +1119,6 @@ function Puzzles() {
                                                     `themeCategories.${value}`
                                                 )}
                                             </span>
-                                            <small>
-                                                {categoryCounts[value] || 0}
-                                            </small>
                                         </button>
                                     ))}
                                 </div>
@@ -1162,9 +1243,6 @@ function Puzzles() {
                                                                 )
                                                             }
                                                         </span>
-                                                        <small>
-                                                            {option.count}
-                                                        </small>
                                                     </button>
                                                 );
                                             })}
@@ -1381,6 +1459,13 @@ function Puzzles() {
                                 )}
                                 onSquareClick={selectBoardSquare}
                                 customPieces={customPieces}
+                                customSquare={
+                                    PuzzleBoardSquare as unknown as NonNullable<
+                                        React.ComponentProps<
+                                            typeof Chessboard
+                                        >["customSquare"]
+                                    >
+                                }
                                 customArrows={hintArrow}
                                 customArrowColor="#78a7ff"
                                 customSquareStyles={boardSquareStyles}
@@ -1495,7 +1580,7 @@ function Puzzles() {
                         )}
                     </div>
 
-                    {pageState == "playing" ? (
+                    {pageState == "playing" && (
                         <div className={styles.puzzleActions}>
                             <button
                                 type="button"
@@ -1526,15 +1611,22 @@ function Puzzles() {
                                 </small>
                             </button>
                         </div>
-                    ) : (
-                        <button
-                            type="button"
-                            className={styles.nextPuzzle}
-                            onClick={startTraining}
-                        >
-                            {t("actions.nextPuzzle")} →
-                        </button>
                     )}
+
+                    <button
+                        type="button"
+                        className={styles.nextPuzzle}
+                        onClick={() => {
+                            if (pageState == "playing") {
+                                void skipPuzzle();
+                                return;
+                            }
+
+                            startTraining();
+                        }}
+                    >
+                        {t("actions.nextPuzzle")} →
+                    </button>
 
                     <div className={styles.secondaryActions}>
                         <button
@@ -1574,17 +1666,6 @@ function Puzzles() {
                 </aside>
             </section>
         )}
-
-        <footer className={styles.attribution}>
-            <span>{t("attribution.text")}</span>
-            <a
-                href="https://database.lichess.org/#puzzles"
-                target="_blank"
-                rel="noreferrer"
-            >
-                {t("attribution.link")} ↗
-            </a>
-        </footer>
 
         {coachPickerOpen && (
             <CoachPicker
