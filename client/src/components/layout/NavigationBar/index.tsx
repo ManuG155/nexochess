@@ -94,7 +94,7 @@ function NavIcon({ name }: NavIconProps) {
 
         settings: <>
             <circle cx="12" cy="12" r="3" />
-            <path d="M19 13.5v-3l-2-.7-.7-1.7.9-1.9-2.1-2.1-1.9.9-1.7-.7-.7-2h-3l-.7 2-1.7.7-1.9-.9-2.1 2.1.9 1.9-.7 1.7-2 .7v3l2 .7.7 1.7-.9 1.9 2.1 2.1 1.9-.9 1.7.7.7 2h3l.7-2 1.7-.7 1.9.9 2.1-2.1-.9-1.9.7-1.7z" />
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.09a2 2 0 0 1 1 1.74v.5a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2Z" />
         </>,
 
         user: <>
@@ -322,21 +322,19 @@ function NavigationBar() {
                     {t("sidebar.archive", { ns: "common" })}
                 </NavigationItem>
 
-                {onAnalysisPage && (
-                    <NavigationAction
-                        icon="flip"
-                        onClick={() => (
-                            setBoardFlipped(
-                                !boardFlipped
-                            )
-                        )}
-                    >
-                        {t(
-                            "optionsToolbar.flipBoard",
-                            { ns: "analysis" }
-                        )}
-                    </NavigationAction>
-                )}
+                <NavigationAction
+                    icon="flip"
+                    onClick={() => (
+                        setBoardFlipped(
+                            !boardFlipped
+                        )
+                    )}
+                >
+                    {t(
+                        "optionsToolbar.flipBoard",
+                        { ns: "analysis" }
+                    )}
+                </NavigationAction>
 
                 <FutureItem
                     icon="academy"
@@ -352,7 +350,33 @@ function NavigationBar() {
                     {t("navigationBar.puzzles", { ns: "common" })}
                 </FutureItem>
 
-                {onAnalysisPage && (
+                <NavigationAction
+                    icon="share"
+                    onClick={() => setShareOpen(true)}
+                >
+                    {t(
+                        "navigationBar.share",
+                        { ns: "common" }
+                    )}
+                </NavigationAction>
+            </nav>
+
+            <div className={styles.rightArea}>
+                <div className={styles.analysisActions}>
+                    <NavigationAction
+                        icon="flip"
+                        onClick={() => (
+                            setBoardFlipped(
+                                !boardFlipped
+                            )
+                        )}
+                    >
+                        {t(
+                            "optionsToolbar.flipBoard",
+                            { ns: "analysis" }
+                        )}
+                    </NavigationAction>
+
                     <NavigationAction
                         icon="share"
                         onClick={() => setShareOpen(true)}
@@ -362,37 +386,7 @@ function NavigationBar() {
                             { ns: "common" }
                         )}
                     </NavigationAction>
-                )}
-            </nav>
-
-            <div className={styles.rightArea}>
-                {onAnalysisPage && (
-                    <div className={styles.analysisActions}>
-                        <NavigationAction
-                            icon="flip"
-                            onClick={() => (
-                                setBoardFlipped(
-                                    !boardFlipped
-                                )
-                            )}
-                        >
-                            {t(
-                                "optionsToolbar.flipBoard",
-                                { ns: "analysis" }
-                            )}
-                        </NavigationAction>
-
-                        <NavigationAction
-                            icon="share"
-                            onClick={() => setShareOpen(true)}
-                        >
-                            {t(
-                                "navigationBar.share",
-                                { ns: "common" }
-                            )}
-                        </NavigationAction>
-                    </div>
-                )}
+                </div>
 
                 <div className={styles.accountArea}>
                     {status == "pending" && (

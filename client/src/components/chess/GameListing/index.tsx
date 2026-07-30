@@ -112,7 +112,10 @@ function GameListing<T extends GameListingMetadata>({
             onClick={event => event.stopPropagation()}
         />}
         
-        {game.timeControl && <div style={{ width: "30px" }}>
+        {game.timeControl && <div
+            data-game-listing-section="time-control"
+            style={{ width: "30px" }}
+        >
             <img
                 className={styles.timeControlIcon}
                 src={timeControlIcons[game.timeControl]}
@@ -120,7 +123,10 @@ function GameListing<T extends GameListingMetadata>({
             />
         </div>}
 
-        <div style={{ width: "250px" }}>
+        <div
+            data-game-listing-section="players"
+            style={{ width: "250px" }}
+        >
             {Object.entries(game.players)
                 .map(([ colour, player ]) => <div
                     className={styles.playerProfile}
@@ -149,7 +155,10 @@ function GameListing<T extends GameListingMetadata>({
             }
         </div>
 
-        <div style={{ width: "110px" }}>
+        <div
+            data-game-listing-section="date"
+            style={{ width: "110px" }}
+        >
             <span title={game.date?.toLocaleString()}>
                 {game.date ? formatDate(new Date(game.date)) : t(
                     "gameListing.gameResults.opinionated.unknown"
@@ -157,7 +166,10 @@ function GameListing<T extends GameListingMetadata>({
             </span>
         </div>
 
-        {displayResult && <div style={{ width: "20px" }}>
+        {displayResult && <div
+            data-game-listing-section="result"
+            style={{ width: "20px" }}
+        >
             <img
                 src={perspective
                     ? gameResultIcons.opinionated[displayResult]
