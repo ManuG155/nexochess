@@ -2,7 +2,7 @@
     "hero": {
         "eyebrow": "NexoChess 战术训练",
         "title": "把每个错误变成一堂课",
-        "subtitle": "练习自己已分析对局中的局面，或按主题挑战评级国际象棋题。教练会陪你走完整条变化。"
+        "subtitle": "练习已分析对局中的局面，或按主题和难度以自己的节奏完成棋题。"
     },
     "stats": {
         "rating": "谜题等级分",
@@ -31,8 +31,8 @@
             "action": "分析对局"
         },
         "lichess": {
-            "title": "国际象棋题",
-            "body": "可按主题和难度筛选的评级题目。"
+            "title": "训练",
+            "body": "可按主题和难度筛选棋题。"
         }
     },
     "filters": {
@@ -96,7 +96,7 @@
         "title": "{{name}}，你的教练",
         "loading": "我正在准备训练局面。",
         "setupArchive": "你分析过的对局已经包含很多好教材。选一组，我们慢慢复盘。",
-        "setupLichess": "暂时没有个人局面，不过国际象棋题已经准备好了。",
+        "setupLichess": "选择主题和难度，练习不同类型的棋题。",
         "archiveTurn": "{{colour}}走。这是一次代价很大的着法之后的局面，找出惩罚手段。",
         "lichessTurn": "{{colour}}走。先检查将军、吃子和威胁，再计算安静着。",
         "wrong": "不是这步。它虽然合法，却错过了关键机会。再检查将军、吃子和威胁。",
@@ -110,7 +110,12 @@
         "noFiltered": "这些筛选条件下没有未见过的题。试试其他主题或难度。",
         "loadError": "无法加载训练局面。请刷新页面重试。",
         "positionError": "这条变化中有无法安全重现的局面，已停止播放。",
-        "changeFilters": "随时可以调整训练；已完成的局面仍会保存。"
+        "changeFilters": "随时可以调整训练；已完成的局面仍会保存。",
+        "archiveChecking": "我正在检查你已分析的对局，寻找值得复盘的局面。",
+        "archiveNoGames": "你还没有分析过任何对局。先分析一局，我会把关键时刻变成棋题。",
+        "archiveNoErrors": "已分析的对局中没有可供训练的错误。这是个好消息。",
+        "archiveReady": "从已分析对局中出现的错误里学习。",
+        "trainingSetup": "选择主题和难度，练习不同类型的棋题。"
     },
     "colours": {
         "white": "白方",
@@ -118,17 +123,19 @@
     },
     "states": {
         "loadingTitle": "正在准备训练",
-        "loadingBody": "读取你的档案并加载国际象棋题。",
+        "loadingBody": "正在读取档案并加载国际象棋棋题。",
         "errorTitle": "无法加载训练",
         "errorBody": "数据没有丢失。刷新页面后再试。",
         "noArchiveTitle": "没有个人谜题",
         "noArchiveBody": "分析并保存一盘对局，即可根据双方的错误生成局面。",
         "noMatchTitle": "你已完成此选择",
-        "noMatchBody": "更换主题或难度，继续训练而不重复局面。"
+        "noMatchBody": "更换主题或难度，继续训练而不重复局面。",
+        "noErrorsTitle": "没有可训练的错误",
+        "noErrorsBody": "已分析的对局中暂时没有可改进的局面。"
     },
     "puzzle": {
         "archiveSource": "来自你的档案",
-        "lichessSource": "国际象棋题",
+        "lichessSource": "国际象棋棋题",
         "toMove": "{{colour}}走",
         "rating": "等级分 {{rating}}",
         "objective": "当前目标",
@@ -173,5 +180,76 @@
         "phase": "对局阶段",
         "length": "长度",
         "master": "大师对局"
+    },
+    "themeLabels": {
+        "mate": "任意将杀",
+        "mateIn1": "一步将杀",
+        "mateIn2": "两步将杀",
+        "mateIn3": "三步将杀",
+        "mateIn4": "四步将杀",
+        "mateIn5": "五步或更多步将杀",
+        "anastasiaMate": "阿纳斯塔西娅将杀",
+        "arabianMate": "阿拉伯将杀",
+        "backRankMate": "底线将杀",
+        "balestraMate": "弩炮将杀",
+        "blindSwineMate": "双车将杀",
+        "bodenMate": "博登将杀",
+        "cornerMate": "角落将杀",
+        "doubleBishopMate": "双象将杀",
+        "dovetailMate": "燕尾将杀",
+        "epauletteMate": "肩章将杀",
+        "hookMate": "钩形将杀",
+        "killBoxMate": "死亡盒将杀",
+        "morphysMate": "莫菲将杀",
+        "operaMate": "歌剧院将杀",
+        "pillsburysMate": "皮尔斯伯里将杀",
+        "smotheredMate": "闷杀",
+        "swallowstailMate": "燕尾将杀",
+        "triangleMate": "三角将杀",
+        "vukovicMate": "武科维奇将杀",
+        "advancedPawn": "深入敌阵的兵",
+        "attraction": "引诱",
+        "capturingDefender": "消除防守者",
+        "castling": "王车易位",
+        "clearance": "腾挪",
+        "collinearMove": "共线移动",
+        "deflection": "偏离防守",
+        "discoveredAttack": "闪击",
+        "discoveredCheck": "闪将",
+        "doubleCheck": "双将",
+        "enPassant": "吃过路兵",
+        "fork": "双攻",
+        "hangingPiece": "无保护棋子",
+        "interference": "干扰",
+        "intermezzo": "中间着",
+        "pin": "牵制",
+        "promotion": "升变",
+        "quietMove": "安静着",
+        "sacrifice": "弃子",
+        "skewer": "串击",
+        "trappedPiece": "困住棋子",
+        "underPromotion": "低级升变",
+        "xRayAttack": "X射线攻击",
+        "zugzwang": "楚茨文克",
+        "attackingF2F7": "攻击 f2 或 f7",
+        "exposedKing": "暴露的王",
+        "kingsideAttack": "王翼进攻",
+        "queensideAttack": "后翼进攻",
+        "defensiveMove": "防守着",
+        "equality": "恢复均势",
+        "crushing": "压倒性优势",
+        "bishopEndgame": "象残局",
+        "knightEndgame": "马残局",
+        "pawnEndgame": "兵残局",
+        "queenEndgame": "后残局",
+        "queenRookEndgame": "后车残局",
+        "rookEndgame": "车残局",
+        "middlegame": "中局",
+        "oneMove": "一步棋题",
+        "short": "两步棋题",
+        "long": "三步棋题",
+        "veryLong": "四步或更多",
+        "masterVsMaster": "大师对大师",
+        "superGM": "超级特级大师对局"
     }
 }

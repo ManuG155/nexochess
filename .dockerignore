@@ -21,3 +21,10 @@ wintrchess-openings-v2
 wintrchess-review-movelist-v3-pack
 .nexochess-backup
 release-artifacts
+client/public/data/lichess-puzzles.json
+lichess_db_puzzle.csv
+lichess_db_puzzle.csv.zst
+*.puzzle-db.csv
+*.puzzle-db.csv.zst
+puzzle-data
+mongo-backups

@@ -2,7 +2,7 @@
     "hero": {
         "eyebrow": "Luyện chiến thuật NexoChess",
         "title": "Biến mọi sai lầm thành bài học",
-        "subtitle": "Luyện các thế cờ từ ván đã phân tích hoặc giải bài tập cờ vua có xếp hạng theo chủ đề. Huấn luyện viên sẽ theo bạn suốt biến."
+        "subtitle": "Luyện các thế cờ từ những ván đã phân tích hoặc giải bài theo chủ đề và độ khó theo nhịp của bạn."
     },
     "stats": {
         "rating": "Xếp hạng câu đố",
@@ -31,8 +31,8 @@
             "action": "Phân tích ván"
         },
         "lichess": {
-            "title": "Bài tập cờ vua",
-            "body": "Bài tập có xếp hạng, lọc theo chủ đề và độ khó."
+            "title": "Luyện tập",
+            "body": "Bài tập có thể lọc theo chủ đề và độ khó."
         }
     },
     "filters": {
@@ -96,7 +96,7 @@
         "title": "{{name}}, huấn luyện viên",
         "loading": "Tôi đang chuẩn bị các thế cờ.",
         "setupArchive": "Các ván đã phân tích chứa nhiều bài học tốt. Hãy chọn buổi luyện và ta cùng xem lại.",
-        "setupLichess": "Chưa có thế cá nhân, nhưng các bài tập cờ vua đã sẵn sàng.",
+        "setupLichess": "Chọn chủ đề và độ khó để luyện nhiều dạng bài khác nhau.",
         "archiveTurn": "{{colour}} đi. Thế này xuất hiện ngay sau một nước tốn kém. Hãy tìm cách trừng phạt.",
         "lichessTurn": "{{colour}} đi. Kiểm tra chiếu, bắt quân và đe dọa trước.",
         "wrong": "Không phải nước này. Nó hợp lệ nhưng bỏ lỡ cơ hội chính. Hãy xem lại chiếu, bắt quân và đe dọa.",
@@ -110,7 +110,12 @@
         "noFiltered": "Không còn câu chưa xem với bộ lọc này. Hãy đổi chủ đề hoặc độ khó.",
         "loadError": "Không thể tải các thế cờ. Hãy làm mới trang và thử lại.",
         "positionError": "Biến này có thế cờ không thể tái tạo an toàn nên đã dừng.",
-        "changeFilters": "Bạn có thể đổi buổi luyện bất cứ lúc nào; các thế đã hoàn thành vẫn được lưu."
+        "changeFilters": "Bạn có thể đổi buổi luyện bất cứ lúc nào; các thế đã hoàn thành vẫn được lưu.",
+        "archiveChecking": "Tôi đang kiểm tra các ván đã phân tích để tìm những thế cờ đáng ôn lại.",
+        "archiveNoGames": "Bạn chưa phân tích ván nào. Hãy phân tích một ván và tôi sẽ biến các thời điểm quan trọng thành bài tập.",
+        "archiveNoErrors": "Không có sai lầm nào cần luyện trong các ván đã phân tích. Đó là tin tốt.",
+        "archiveReady": "Học từ những sai lầm xuất hiện trong các ván đã phân tích.",
+        "trainingSetup": "Chọn chủ đề và độ khó để luyện nhiều dạng bài khác nhau."
     },
     "colours": {
         "white": "Trắng",
@@ -124,7 +129,9 @@
         "noArchiveTitle": "Chưa có câu đố cá nhân",
         "noArchiveBody": "Phân tích và lưu một ván để tạo thế từ sai lầm của cả hai bên.",
         "noMatchTitle": "Bạn đã hoàn thành lựa chọn này",
-        "noMatchBody": "Đổi chủ đề hoặc độ khó để tiếp tục mà không lặp."
+        "noMatchBody": "Đổi chủ đề hoặc độ khó để tiếp tục mà không lặp.",
+        "noErrorsTitle": "Không có sai lầm để luyện",
+        "noErrorsBody": "Các ván đã phân tích chưa có thế cờ nào cần cải thiện."
     },
     "puzzle": {
         "archiveSource": "Từ Kho lưu trữ",
@@ -173,5 +180,76 @@
         "phase": "Giai đoạn",
         "length": "Độ dài",
         "master": "Ván đấu cao thủ"
+    },
+    "themeLabels": {
+        "mate": "Mọi kiểu chiếu hết",
+        "mateIn1": "Chiếu hết trong 1 nước",
+        "mateIn2": "Chiếu hết trong 2 nước",
+        "mateIn3": "Chiếu hết trong 3 nước",
+        "mateIn4": "Chiếu hết trong 4 nước",
+        "mateIn5": "Chiếu hết trong 5 nước trở lên",
+        "anastasiaMate": "Chiếu hết Anastasia",
+        "arabianMate": "Chiếu hết Ả Rập",
+        "backRankMate": "Chiếu hết hàng cuối",
+        "balestraMate": "Chiếu hết Balestra",
+        "blindSwineMate": "Chiếu hết hai xe",
+        "bodenMate": "Chiếu hết Boden",
+        "cornerMate": "Chiếu hết trong góc",
+        "doubleBishopMate": "Chiếu hết bằng hai tượng",
+        "dovetailMate": "Chiếu hết đuôi én",
+        "epauletteMate": "Chiếu hết cầu vai",
+        "hookMate": "Chiếu hết móc câu",
+        "killBoxMate": "Chiếu hết hộp tử thần",
+        "morphysMate": "Chiếu hết Morphy",
+        "operaMate": "Chiếu hết Opera",
+        "pillsburysMate": "Chiếu hết Pillsbury",
+        "smotheredMate": "Chiếu hết nghẹt",
+        "swallowstailMate": "Chiếu hết đuôi én",
+        "triangleMate": "Chiếu hết tam giác",
+        "vukovicMate": "Chiếu hết Vuković",
+        "advancedPawn": "Tốt tiến sâu",
+        "attraction": "Thu hút",
+        "capturingDefender": "Bắt quân phòng thủ",
+        "castling": "Nhập thành",
+        "clearance": "Dọn đường",
+        "collinearMove": "Nước đi thẳng hàng",
+        "deflection": "Đánh lạc hướng",
+        "discoveredAttack": "Tấn công mở",
+        "discoveredCheck": "Chiếu mở",
+        "doubleCheck": "Chiếu đôi",
+        "enPassant": "Bắt tốt qua đường",
+        "fork": "Đòn chĩa",
+        "hangingPiece": "Quân không được bảo vệ",
+        "interference": "Cản đường",
+        "intermezzo": "Nước trung gian",
+        "pin": "Ghim",
+        "promotion": "Phong cấp",
+        "quietMove": "Nước đi yên tĩnh",
+        "sacrifice": "Thí quân",
+        "skewer": "Xiên",
+        "trappedPiece": "Quân bị mắc kẹt",
+        "underPromotion": "Phong cấp thấp",
+        "xRayAttack": "Tấn công xuyên tia X",
+        "zugzwang": "Zugzwang",
+        "attackingF2F7": "Tấn công f2 hoặc f7",
+        "exposedKing": "Vua lộ",
+        "kingsideAttack": "Tấn công cánh vua",
+        "queensideAttack": "Tấn công cánh hậu",
+        "defensiveMove": "Nước phòng thủ",
+        "equality": "Khôi phục cân bằng",
+        "crushing": "Ưu thế áp đảo",
+        "bishopEndgame": "Tàn cuộc tượng",
+        "knightEndgame": "Tàn cuộc mã",
+        "pawnEndgame": "Tàn cuộc tốt",
+        "queenEndgame": "Tàn cuộc hậu",
+        "queenRookEndgame": "Tàn cuộc hậu và xe",
+        "rookEndgame": "Tàn cuộc xe",
+        "middlegame": "Trung cuộc",
+        "oneMove": "Bài một nước",
+        "short": "Bài hai nước",
+        "long": "Bài ba nước",
+        "veryLong": "Bốn nước trở lên",
+        "masterVsMaster": "Kiện tướng đấu kiện tướng",
+        "superGM": "Ván đấu siêu đại kiện tướng"
     }
 }

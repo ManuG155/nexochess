@@ -2,7 +2,7 @@
     "hero": {
         "eyebrow": "Entraînement tactique NexoChess",
         "title": "Transformez chaque erreur en leçon",
-        "subtitle": "Entraînez les positions de vos parties analysées ou résolvez des problèmes d’échecs classés et thématiques. Votre entraîneur vous accompagne sur toute la variante."
+        "subtitle": "Entraînez les positions de vos parties analysées ou résolvez des problèmes par thème et difficulté à votre rythme."
     },
     "stats": {
         "rating": "Classement puzzles",
@@ -31,8 +31,8 @@
             "action": "Analyser une partie"
         },
         "lichess": {
-            "title": "Problèmes d’échecs",
-            "body": "Problèmes classés, filtrés par thème et difficulté."
+            "title": "Entraînement",
+            "body": "Problèmes filtrables par thème et difficulté."
         }
     },
     "filters": {
@@ -96,7 +96,7 @@
         "title": "{{name}}, votre entraîneur",
         "loading": "Je prépare vos positions.",
         "setupArchive": "Vos parties analysées contiennent déjà de bonnes leçons. Choisissez une séance et revoyons-les calmement.",
-        "setupLichess": "Pas encore de positions personnelles, mais les problèmes d’échecs sont prêts.",
+        "setupLichess": "Choisissez un thème et une difficulté pour résoudre des problèmes variés.",
         "archiveTurn": "Aux {{colour}}. Cette position suit un coup coûteux. Trouvez comment le punir.",
         "lichessTurn": "Aux {{colour}}. Cherchez d'abord les échecs, prises et menaces.",
         "wrong": "Pas ce coup. Il est légal, mais laisse passer l'occasion clé. Revérifiez échecs, prises et menaces.",
@@ -110,7 +110,12 @@
         "noFiltered": "Aucun puzzle inédit avec ces filtres. Essayez un autre thème ou niveau.",
         "loadError": "Impossible de charger les positions. Actualisez la page pour réessayer.",
         "positionError": "Cette variante contient une position que je ne peux pas reproduire sûrement ; je l'ai arrêtée.",
-        "changeFilters": "Modifiez la séance quand vous voulez ; les positions terminées restent enregistrées."
+        "changeFilters": "Modifiez la séance quand vous voulez ; les positions terminées restent enregistrées.",
+        "archiveChecking": "Je vérifie vos parties analysées pour trouver des positions utiles à revoir.",
+        "archiveNoGames": "Vous n’avez encore analysé aucune partie. Analysez-en une et j’en transformerai les moments clés en problèmes.",
+        "archiveNoErrors": "Il n’y a aucune erreur à travailler dans vos parties analysées. C’est une bonne nouvelle.",
+        "archiveReady": "Apprenez des erreurs apparues dans vos parties analysées.",
+        "trainingSetup": "Choisissez un thème et une difficulté pour résoudre des problèmes variés."
     },
     "colours": {
         "white": "Blancs",
@@ -124,7 +129,9 @@
         "noArchiveTitle": "Aucun puzzle personnel",
         "noArchiveBody": "Analysez et enregistrez une partie pour créer des positions à partir des erreurs des deux joueurs.",
         "noMatchTitle": "Cette sélection est terminée",
-        "noMatchBody": "Changez le thème ou la difficulté pour continuer sans répétition."
+        "noMatchBody": "Changez le thème ou la difficulté pour continuer sans répétition.",
+        "noErrorsTitle": "Aucune erreur à travailler",
+        "noErrorsBody": "Vos parties analysées ne contiennent encore aucune position améliorable."
     },
     "puzzle": {
         "archiveSource": "Depuis vos Archives",
@@ -173,5 +180,76 @@
         "phase": "Phase de jeu",
         "length": "Longueur",
         "master": "Parties de maîtres"
+    },
+    "themeLabels": {
+        "mate": "Tous les mats",
+        "mateIn1": "Mat en 1",
+        "mateIn2": "Mat en 2",
+        "mateIn3": "Mat en 3",
+        "mateIn4": "Mat en 4",
+        "mateIn5": "Mat en 5 ou plus",
+        "anastasiaMate": "Mat d’Anastasie",
+        "arabianMate": "Mat des Arabes",
+        "backRankMate": "Mat du couloir",
+        "balestraMate": "Mat de l’arbalète",
+        "blindSwineMate": "Mat des deux tours",
+        "bodenMate": "Mat de Boden",
+        "cornerMate": "Mat en coin",
+        "doubleBishopMate": "Mat des deux fous",
+        "dovetailMate": "Mat en queue d’aronde",
+        "epauletteMate": "Mat des épaulettes",
+        "hookMate": "Mat du hameçon",
+        "killBoxMate": "Mat par mise en boîte",
+        "morphysMate": "Mat de Morphy",
+        "operaMate": "Mat de l’Opéra",
+        "pillsburysMate": "Mat de Pillsbury",
+        "smotheredMate": "Mat à l’étouffée",
+        "swallowstailMate": "Mat en queue d’hirondelle",
+        "triangleMate": "Mat triangulaire",
+        "vukovicMate": "Mat de Vuković",
+        "advancedPawn": "Pion avancé",
+        "attraction": "Attraction",
+        "capturingDefender": "Capturer le défenseur",
+        "castling": "Roque",
+        "clearance": "Dégagement",
+        "collinearMove": "Coup colinéaire",
+        "deflection": "Déviation",
+        "discoveredAttack": "Attaque à la découverte",
+        "discoveredCheck": "Échec à la découverte",
+        "doubleCheck": "Échec double",
+        "enPassant": "Prise en passant",
+        "fork": "Fourchette",
+        "hangingPiece": "Pièce en prise",
+        "interference": "Interception",
+        "intermezzo": "Coup intermédiaire",
+        "pin": "Clouage",
+        "promotion": "Promotion",
+        "quietMove": "Coup calme",
+        "sacrifice": "Sacrifice",
+        "skewer": "Enfilade",
+        "trappedPiece": "Pièce piégée",
+        "underPromotion": "Sous-promotion",
+        "xRayAttack": "Attaque à rayons X",
+        "zugzwang": "Zugzwang",
+        "attackingF2F7": "Attaque sur f2 ou f7",
+        "exposedKing": "Roi exposé",
+        "kingsideAttack": "Attaque sur l’aile roi",
+        "queensideAttack": "Attaque sur l’aile dame",
+        "defensiveMove": "Coup défensif",
+        "equality": "Rétablir l’égalité",
+        "crushing": "Avantage écrasant",
+        "bishopEndgame": "Finale de fous",
+        "knightEndgame": "Finale de cavaliers",
+        "pawnEndgame": "Finale de pions",
+        "queenEndgame": "Finale de dames",
+        "queenRookEndgame": "Finale dames et tours",
+        "rookEndgame": "Finale de tours",
+        "middlegame": "Milieu de partie",
+        "oneMove": "Problème en un coup",
+        "short": "Problème en deux coups",
+        "long": "Problème en trois coups",
+        "veryLong": "Quatre coups ou plus",
+        "masterVsMaster": "Maître contre maître",
+        "superGM": "Partie de super-GM"
     }
 }

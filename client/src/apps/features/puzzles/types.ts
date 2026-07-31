@@ -58,13 +58,16 @@ export interface LichessPuzzleRecord {
     gameUrl?: string;
 }
 
-export interface LichessPuzzlePack {
-    source: string;
-    sourceUrl: string;
-    license: "CC0-1.0";
-    sourceSha256?: string;
-    generatedAt: string;
-    puzzles: LichessPuzzleRecord[];
+export interface PuzzleCatalogueItem {
+    value: string;
+    count: number;
+}
+
+export interface PuzzleCatalogue {
+    count: number;
+    themes: PuzzleCatalogueItem[];
+    openingTags: PuzzleCatalogueItem[];
+    importedAt: string;
 }
 
 export interface PuzzleProfile {

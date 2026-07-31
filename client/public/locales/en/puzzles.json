@@ -2,7 +2,7 @@
     "hero": {
         "eyebrow": "NexoChess tactical training",
         "title": "Turn every mistake into a lesson",
-        "subtitle": "Train positions from your own analysed games or practise rated, themed chess puzzles. Your coach stays with you throughout the line."
+        "subtitle": "Train positions from your analysed games or practise puzzles by theme and difficulty at your own pace."
     },
     "stats": {
         "rating": "Puzzle rating",
@@ -31,8 +31,8 @@
             "action": "Analyse a game"
         },
         "lichess": {
-            "title": "Chess puzzles",
-            "body": "Rated puzzles filtered by theme and difficulty."
+            "title": "Training",
+            "body": "Puzzles filterable by theme and difficulty."
         }
     },
     "filters": {
@@ -96,7 +96,7 @@
         "title": "{{name}}, your coach",
         "loading": "I am preparing your positions.",
         "setupArchive": "Your analysed games already contain useful lessons. Choose a session and we will revisit them calmly.",
-        "setupLichess": "No personal positions yet, but the chess puzzles are ready whenever you are.",
+        "setupLichess": "Choose a theme and difficulty to practise a varied set of puzzles.",
         "archiveTurn": "{{colour}} to move. This position appeared just after a costly move. Find the punishment.",
         "lichessTurn": "{{colour}} to move. Look for forcing moves before calculating quieter ideas.",
         "wrong": "Not this one. The move is legal, but it lets the key opportunity slip. Recheck checks, captures and threats.",
@@ -110,7 +110,12 @@
         "noFiltered": "There are no unseen puzzles with these filters. Try another theme or difficulty.",
         "loadError": "I could not load the training positions. Refresh the page and we will try again.",
         "positionError": "This line contains a position I cannot reproduce safely, so I have stopped it.",
-        "changeFilters": "Adjust the session whenever you like; your completed positions remain saved."
+        "changeFilters": "Adjust the session whenever you like; your completed positions remain saved.",
+        "archiveChecking": "I am checking your analysed games for positions worth revisiting.",
+        "archiveNoGames": "You have not analysed any games yet. Analyse one and I will turn its key moments into puzzles.",
+        "archiveNoErrors": "There are no mistakes to practise in your analysed games. That is good news.",
+        "archiveReady": "Learn from the mistakes that appeared in your analysed games.",
+        "trainingSetup": "Choose a theme and difficulty to practise a varied set of puzzles."
     },
     "colours": {
         "white": "White",
@@ -124,7 +129,9 @@
         "noArchiveTitle": "No personal puzzles available",
         "noArchiveBody": "Analyse and save a game to create positions from both players' mistakes.",
         "noMatchTitle": "You have completed this selection",
-        "noMatchBody": "Change the theme or difficulty to keep training without repeating positions."
+        "noMatchBody": "Change the theme or difficulty to keep training without repeating positions.",
+        "noErrorsTitle": "No mistakes to practise",
+        "noErrorsBody": "Your analysed games do not contain any improvable positions yet."
     },
     "puzzle": {
         "archiveSource": "From your Archive",
@@ -173,5 +180,76 @@
         "phase": "Game phase",
         "length": "Length",
         "master": "Master games"
+    },
+    "themeLabels": {
+        "mate": "Any checkmate",
+        "mateIn1": "Mate in 1",
+        "mateIn2": "Mate in 2",
+        "mateIn3": "Mate in 3",
+        "mateIn4": "Mate in 4",
+        "mateIn5": "Mate in 5 or more",
+        "anastasiaMate": "Anastasia's mate",
+        "arabianMate": "Arabian mate",
+        "backRankMate": "Back-rank mate",
+        "balestraMate": "Balestra mate",
+        "blindSwineMate": "Blind swine mate",
+        "bodenMate": "Boden's mate",
+        "cornerMate": "Corner mate",
+        "doubleBishopMate": "Double-bishop mate",
+        "dovetailMate": "Dovetail mate",
+        "epauletteMate": "Epaulette mate",
+        "hookMate": "Hook mate",
+        "killBoxMate": "Kill-box mate",
+        "morphysMate": "Morphy's mate",
+        "operaMate": "Opera mate",
+        "pillsburysMate": "Pillsbury's mate",
+        "smotheredMate": "Smothered mate",
+        "swallowstailMate": "Swallow's-tail mate",
+        "triangleMate": "Triangle mate",
+        "vukovicMate": "Vuković mate",
+        "advancedPawn": "Advanced pawn",
+        "attraction": "Attraction",
+        "capturingDefender": "Capture the defender",
+        "castling": "Castling",
+        "clearance": "Clearance",
+        "collinearMove": "Collinear move",
+        "deflection": "Deflection",
+        "discoveredAttack": "Discovered attack",
+        "discoveredCheck": "Discovered check",
+        "doubleCheck": "Double check",
+        "enPassant": "En passant",
+        "fork": "Fork",
+        "hangingPiece": "Hanging piece",
+        "interference": "Interference",
+        "intermezzo": "Intermezzo",
+        "pin": "Pin",
+        "promotion": "Promotion",
+        "quietMove": "Quiet move",
+        "sacrifice": "Sacrifice",
+        "skewer": "Skewer",
+        "trappedPiece": "Trapped piece",
+        "underPromotion": "Underpromotion",
+        "xRayAttack": "X-ray attack",
+        "zugzwang": "Zugzwang",
+        "attackingF2F7": "Attack f2 or f7",
+        "exposedKing": "Exposed king",
+        "kingsideAttack": "Kingside attack",
+        "queensideAttack": "Queenside attack",
+        "defensiveMove": "Defensive move",
+        "equality": "Recover equality",
+        "crushing": "Crushing advantage",
+        "bishopEndgame": "Bishop endgame",
+        "knightEndgame": "Knight endgame",
+        "pawnEndgame": "Pawn endgame",
+        "queenEndgame": "Queen endgame",
+        "queenRookEndgame": "Queen and rook endgame",
+        "rookEndgame": "Rook endgame",
+        "middlegame": "Middlegame",
+        "oneMove": "One-move puzzle",
+        "short": "Two-move puzzle",
+        "long": "Three-move puzzle",
+        "veryLong": "Four moves or more",
+        "masterVsMaster": "Master vs master",
+        "superGM": "Super-GM game"
     }
 }

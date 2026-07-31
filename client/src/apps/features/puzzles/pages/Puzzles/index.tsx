@@ -39,15 +39,15 @@ import {
     recordRatedAttempt
 } from "../../lib/progress";
 import {
-    filterLichessPuzzleRecords,
     filterPuzzles,
-    loadArchivePuzzles,
-    loadLichessPuzzleRecords,
+    loadArchivePuzzleLibrary,
+    loadNextLichessPuzzleRecord,
+    loadPuzzleCatalogue,
     normaliseLichessPuzzle,
     pickRandomPuzzle
 } from "../../lib/sources";
 import {
-    LichessPuzzleRecord,
+    PuzzleCatalogue,
     PuzzleDifficulty,
     PuzzleProfile,
     PuzzleSource,
@@ -63,6 +63,8 @@ import {
 } from "../../lib/themeCatalogue";
 
 import * as styles from "./Puzzles.module.css";
+import * as readable from "./Puzzles.readability.module.css";
+import { getPuzzlePageCopy } from "./copy";
 
 type PageState =
     | "loading"
@@ -77,6 +79,7 @@ type SourceLoadState = "loading" | "ready" | "error";
 
 interface CoachMessage {
     key: string;
+    text?: string;
     values?: Record<string, string | number>;
 }
 
@@ -169,6 +172,10 @@ function Puzzles() {
     const { t: tCoach } = useTranslation("coach", {
         useSuspense: false
     });
+    const pageCopy = useMemo(
+        () => getPuzzlePageCopy(t),
+        [i18n.resolvedLanguage, t]
+    );
 
     const [ pageState, setPageState ] =
         useState<PageState>("loading");
@@ -187,12 +194,16 @@ function Puzzles() {
         useState(true);
     const [ archivePuzzles, setArchivePuzzles ] =
         useState<TrainingPuzzle[]>([]);
+    const [ analysedGameCount, setAnalysedGameCount ] =
+        useState(0);
     const [ archiveLoadState, setArchiveLoadState ] =
         useState<SourceLoadState>("loading");
-    const [ lichessPuzzles, setLichessPuzzles ] =
-        useState<LichessPuzzleRecord[]>([]);
+    const [ puzzleCatalogue, setPuzzleCatalogue ] =
+        useState<PuzzleCatalogue>();
     const [ lichessLoadState, setLichessLoadState ] =
         useState<SourceLoadState>("loading");
+    const [ requestingPuzzle, setRequestingPuzzle ] =
+        useState(false);
     const [ profile, setProfile ] =
         useState<PuzzleProfile>(getPuzzleProfile);
     const [ puzzle, setPuzzle ] =
@@ -232,6 +243,7 @@ function Puzzles() {
     const selectedCoach = getCoachById(
         settings.appearance.selectedCoach
     );
+    const coachEnabled = settings.coach.enabled;
     const customPieces = useMemo(
         () => createCustomPieces(settings.themes.piece),
         [settings.themes.piece]
@@ -248,6 +260,7 @@ function Puzzles() {
     const evaluationCacheRef = useRef(new Map<string, Evaluation>());
     const evaluationRequestRef = useRef(0);
     const setupRevealedRef = useRef(false);
+    const requestingPuzzleRef = useRef(false);
 
     useEffect(() => {
         profileRef.current = profile;
@@ -277,42 +290,45 @@ function Puzzles() {
                 // Progress has its own localStorage fallback.
             });
 
-        const archivePromise = loadArchivePuzzles()
-            .then(archive => {
+        const archivePromise = loadArchivePuzzleLibrary()
+            .then(library => {
                 if (cancelled) return;
 
-                setArchivePuzzles(archive);
+                setArchivePuzzles(library.puzzles);
+                setAnalysedGameCount(library.analysedGameCount);
                 setArchiveLoadState("ready");
-
-                if (archive.length > 0) {
-                    revealSetup("archive", "coach.setupArchive");
-                }
+                revealSetup("archive", "coach.setupArchive");
             })
-            .catch(() => {
+            .catch(error => {
                 if (!cancelled) setArchiveLoadState("error");
+                throw error;
             });
 
-        const lichessPromise = loadLichessPuzzleRecords()
-            .then(lichess => {
+        const lichessPromise = loadPuzzleCatalogue()
+            .then(catalogue => {
                 if (cancelled) return;
 
-                setLichessPuzzles(lichess);
+                setPuzzleCatalogue(catalogue);
                 setLichessLoadState("ready");
-                revealSetup("lichess", "coach.setupLichess");
             })
-            .catch(() => {
+            .catch(error => {
                 if (!cancelled) setLichessLoadState("error");
+                throw error;
             });
 
         void Promise.allSettled([
             archivePromise,
             lichessPromise
-        ]).then(() => {
+        ]).then(results => {
             if (cancelled || setupRevealedRef.current) return;
 
-            setPageState("error");
-            setCoachMessage({ key: "coach.loadError" });
-            setCoachExpression("worried");
+            if (results[1].status == "fulfilled") {
+                revealSetup("lichess", "coach.setupLichess");
+            } else {
+                setPageState("error");
+                setCoachMessage({ key: "coach.loadError" });
+                setCoachExpression("worried");
+            }
         });
 
         return () => {
@@ -347,7 +363,10 @@ function Puzzles() {
         setCoachMessage({
             key: nextPuzzle.source == "archive"
                 ? "coach.archiveTurn"
-                : "coach.lichessTurn",
+                : "coach.trainingTurn",
+            text: nextPuzzle.source == "archive"
+                ? undefined
+                : pageCopy.trainingTurn,
             values: {
                 colour: t(`colours.${nextPuzzle.solver}`)
             }
@@ -358,7 +377,7 @@ function Puzzles() {
         completedCurrentPuzzle.current = false;
     }
 
-    function getNextAvailablePuzzle() {
+    async function getNextAvailablePuzzle() {
         if (source == "archive") {
             return pickRandomPuzzle(filterPuzzles(
                 archivePuzzles,
@@ -369,32 +388,50 @@ function Puzzles() {
             ));
         }
 
-        const record = pickRandomPuzzle(filterLichessPuzzleRecords(
-            lichessPuzzles,
+        const record = await loadNextLichessPuzzleRecord(
             completedIdsRef.current,
             themeSelection,
             difficulty,
             profileRef.current
-        ));
+        );
 
         return record ? normaliseLichessPuzzle(record) || undefined : undefined;
     }
 
-    function startTraining() {
-        const nextPuzzle = getNextAvailablePuzzle();
+    async function startTraining() {
+        if (requestingPuzzleRef.current) return;
 
-        if (!nextPuzzle) {
-            setPageState("empty");
+        requestingPuzzleRef.current = true;
+        setRequestingPuzzle(true);
+
+        try {
+            const nextPuzzle = await getNextAvailablePuzzle();
+
+            if (!nextPuzzle) {
+                setPageState("empty");
+                setCoachMessage({
+                    key: source == "archive"
+                        ? "coach.noArchive"
+                        : "coach.noFiltered",
+                    text: source == "archive"
+                        ? undefined
+                        : pageCopy.noFilteredPuzzle
+                });
+                setCoachExpression("worried");
+                return;
+            }
+
+            initialisePuzzle(nextPuzzle);
+        } catch {
+            setPageState("error");
             setCoachMessage({
-                key: source == "archive"
-                    ? "coach.noArchive"
-                    : "coach.noFiltered"
+                key: "coach.loadError"
             });
             setCoachExpression("worried");
-            return;
+        } finally {
+            requestingPuzzleRef.current = false;
+            setRequestingPuzzle(false);
         }
-
-        initialisePuzzle(nextPuzzle);
     }
 
     async function finishPuzzle(revealed: boolean) {
@@ -441,7 +478,7 @@ function Puzzles() {
 
     async function skipPuzzle() {
         if (!puzzle || completedCurrentPuzzle.current) {
-            startTraining();
+            void startTraining();
             return;
         }
 
@@ -454,7 +491,7 @@ function Puzzles() {
         failedAttempt.current = true;
 
         await finishPuzzle(true);
-        startTraining();
+        await startTraining();
     }
 
     function appendPosition(fen: string) {
@@ -723,10 +760,10 @@ function Puzzles() {
         : [];
     const filterOptions = useMemo(
         () => getPuzzleFilterOptions(
-            lichessPuzzles,
+            puzzleCatalogue,
             themeSelection.category
         ),
-        [lichessPuzzles, themeSelection.category]
+        [puzzleCatalogue, themeSelection.category]
     );
     const visibleFilterOptions = useMemo(() => {
         const query = openingSearch.trim().toLocaleLowerCase(
@@ -739,8 +776,10 @@ function Puzzles() {
         ) return filterOptions;
 
         return filterOptions.filter(option => (
-            formatOpeningTag(option.value)
-                .toLocaleLowerCase(i18n.resolvedLanguage)
+            formatOpeningTag(
+                option.value,
+                i18n.resolvedLanguage || "en"
+            ).toLocaleLowerCase(i18n.resolvedLanguage)
                 .includes(query)
         ));
     }, [
@@ -749,7 +788,7 @@ function Puzzles() {
         openingSearch,
         themeSelection.category
     ]);
-    const translatedCoachMessage = t(
+    const translatedCoachMessage = coachMessage.text || t(
         coachMessage.key,
         coachMessage.values
     );
@@ -759,18 +798,56 @@ function Puzzles() {
             translatedCoachMessage,
             [
                 puzzle?.id || "setup",
-                coachMessage.key,
+                coachMessage.text || coachMessage.key,
                 solutionIndex
             ].join("|"),
             tCoach
         ),
         [
             coachMessage.key,
+            coachMessage.text,
             puzzle?.id,
             selectedCoach,
             solutionIndex,
             tCoach,
             translatedCoachMessage
+        ]
+    );
+    const setupCoachMessage = useMemo(() => {
+        if (source != "archive") return pageCopy.trainingSetup;
+        if (archiveLoadState == "loading") return pageCopy.archiveChecking;
+        if (analysedGameCount == 0) return pageCopy.archiveNoGames;
+        if (archivePuzzles.length == 0) return pageCopy.archiveNoErrors;
+
+        return pageCopy.archiveReady;
+    }, [
+        analysedGameCount,
+        archiveLoadState,
+        archivePuzzles.length,
+        pageCopy,
+        source
+    ]);
+    const spokenSetupCoachMessage = useMemo(
+        () => getCoachSpokenLine(
+            selectedCoach,
+            setupCoachMessage,
+            [
+                "setup",
+                source,
+                archiveLoadState,
+                analysedGameCount,
+                archivePuzzles.length
+            ].join("|"),
+            tCoach
+        ),
+        [
+            analysedGameCount,
+            archiveLoadState,
+            archivePuzzles.length,
+            selectedCoach,
+            setupCoachMessage,
+            source,
+            tCoach
         ]
     );
     const calibrationRemaining = Math.max(
@@ -792,6 +869,13 @@ function Puzzles() {
         puzzle?.source
         || source
     ) == "lichess";
+
+    useEffect(() => {
+        if (!coachEnabled && coachPickerOpen) {
+            setCoachPickerOpen(false);
+        }
+    }, [coachEnabled, coachPickerOpen]);
+
     const boardSquareStyles = useMemo<
         NonNullable<
             React.ComponentProps<typeof Chessboard>["customSquareStyles"]
@@ -954,6 +1038,7 @@ function Puzzles() {
     return <main
         className={[
             styles.page,
+            readable.page,
             trainingActive ? styles.trainingPage : ""
         ].filter(Boolean).join(" ")}
     >
@@ -961,7 +1046,7 @@ function Puzzles() {
             <div>
                 <span className={styles.eyebrow}>{t("hero.eyebrow")}</span>
                 <h1>{t("hero.title")}</h1>
-                <p>{t("hero.subtitle")}</p>
+                <p>{pageCopy.heroSubtitle}</p>
             </div>
 
             {showRatedProfile && <div className={styles.profileStats}>
@@ -1002,32 +1087,45 @@ function Puzzles() {
             <section className={styles.stateCard}>
                 <span className={styles.stateSpinner}/>
                 <h2>
-                    {t(
-                        pageState == "loading"
-                            ? "states.loadingTitle"
-                            : "states.errorTitle"
-                    )}
+                    {pageState == "loading"
+                        ? t("states.loadingTitle")
+                        : pageCopy.loadErrorTitle
+                    }
                 </h2>
                 <p>
-                    {t(
-                        pageState == "loading"
-                            ? "states.loadingBody"
-                            : "states.errorBody"
-                    )}
+                    {pageState == "loading"
+                        ? t("states.loadingBody")
+                        : pageCopy.loadErrorBody
+                    }
                 </p>
             </section>
         )}
 
         {(pageState == "setup" || pageState == "empty") && (
-            <section className={styles.setupGrid}>
-                <div className={styles.setupMain}>
-                    <header className={styles.sectionHeader}>
+            <section className={[
+                styles.setupGrid,
+                readable.setupGrid,
+                !coachEnabled
+                    ? readable.setupGridWithoutCoach
+                    : ""
+            ].filter(Boolean).join(" ")}>
+                <div className={[
+                    styles.setupMain,
+                    readable.setupMain
+                ].join(" ")}>
+                    <header className={[
+                        styles.sectionHeader,
+                        readable.sectionHeader
+                    ].join(" ")}>
                         <span>{t("setup.kicker")}</span>
                         <h2>{t("setup.title")}</h2>
                         <p>{t("setup.subtitle")}</p>
                     </header>
 
-                    <div className={styles.sourceSelector}>
+                    <div className={[
+                        styles.sourceSelector,
+                        readable.sourceSelector
+                    ].join(" ")}>
                         <button
                             type="button"
                             className={source == "archive"
@@ -1061,8 +1159,8 @@ function Puzzles() {
                                 </svg>
                             </span>
                             <span>
-                                <strong>{t("sources.lichess.title")}</strong>
-                                <small>{t("sources.lichess.body")}</small>
+                                <strong>{pageCopy.trainingTitle}</strong>
+                                <small>{pageCopy.trainingSubtitle}</small>
                             </span>
                         </button>
                     </div>
@@ -1075,8 +1173,18 @@ function Puzzles() {
                             <div className={styles.archiveEmpty}>
                                 <span aria-hidden="true">↗</span>
                                 <div>
-                                    <h3>{t("sources.archive.emptyTitle")}</h3>
-                                    <p>{t("sources.archive.emptyBody")}</p>
+                                    <h3>
+                                        {analysedGameCount == 0
+                                            ? pageCopy.noGamesTitle
+                                            : pageCopy.noErrorsTitle
+                                        }
+                                    </h3>
+                                    <p>
+                                        {analysedGameCount == 0
+                                            ? pageCopy.noGamesBody
+                                            : pageCopy.noErrorsBody
+                                        }
+                                    </p>
                                 </div>
                                 <a href="/analysis">
                                     {t("sources.archive.action")}
@@ -1087,12 +1195,21 @@ function Puzzles() {
 
                     {source == "lichess" && (
                         <>
-                            <div className={styles.filterBlock}>
-                                <div className={styles.filterHeading}>
+                            <div className={[
+                                styles.filterBlock,
+                                readable.filterBlock
+                            ].join(" ")}>
+                                <div className={[
+                                    styles.filterHeading,
+                                    readable.filterHeading
+                                ].join(" ")}>
                                     <strong>{t("filters.theme")}</strong>
                                     <span>{t("filters.themeHelp")}</span>
                                 </div>
-                                <div className={styles.themeCategories}>
+                                <div className={[
+                                    styles.themeCategories,
+                                    readable.themeCategories
+                                ].join(" ")}>
                                     {puzzleThemeCategories.map(value => (
                                         <button
                                             type="button"
@@ -1124,10 +1241,16 @@ function Puzzles() {
                                 </div>
 
                                 {filterOptions.length > 0 && (
-                                    <div className={styles.subthemePanel}>
+                                    <div className={[
+                                        styles.subthemePanel,
+                                        readable.subthemePanel
+                                    ].join(" ")}>
                                         <div
                                             className={
-                                                styles.subthemeHeading
+                                                [
+                                                    styles.subthemeHeading,
+                                                    readable.subthemeHeading
+                                                ].join(" ")
                                             }
                                         >
                                             <div>
@@ -1183,10 +1306,16 @@ function Puzzles() {
                                                     aria-label={t(
                                                         "filters.openingSearch"
                                                     )}
+                                                    className={
+                                                        readable.openingSearch
+                                                    }
                                                 />
                                             )}
 
-                                        <div className={styles.subthemeGrid}>
+                                        <div className={[
+                                            styles.subthemeGrid,
+                                            readable.subthemeGrid
+                                        ].join(" ")}>
                                             {visibleFilterOptions.map(option => {
                                                 const active = (
                                                     themeSelection.kind
@@ -1233,7 +1362,10 @@ function Puzzles() {
                                                             {option.kind
                                                                 == "opening"
                                                                 ? formatOpeningTag(
-                                                                    option.value
+                                                                    option.value,
+                                                                    i18n
+                                                                        .resolvedLanguage
+                                                                        || "en"
                                                                 )
                                                                 : formatPuzzleTheme(
                                                                     option.value,
@@ -1263,12 +1395,21 @@ function Puzzles() {
                                 )}
                             </div>
 
-                            <div className={styles.filterBlock}>
-                                <div className={styles.filterHeading}>
+                            <div className={[
+                                styles.filterBlock,
+                                readable.filterBlock
+                            ].join(" ")}>
+                                <div className={[
+                                    styles.filterHeading,
+                                    readable.filterHeading
+                                ].join(" ")}>
                                     <strong>{t("filters.difficulty")}</strong>
                                     <span>{t("filters.difficultyHelp")}</span>
                                 </div>
-                                <div className={styles.difficultyGrid}>
+                                <div className={[
+                                    styles.difficultyGrid,
+                                    readable.difficultyGrid
+                                ].join(" ")}>
                                     {difficulties.map(value => (
                                         <button
                                             type="button"
@@ -1294,6 +1435,7 @@ function Puzzles() {
 
                     <div className={[
                         styles.sessionOptions,
+                        readable.sessionOptions,
                         source == "archive"
                             ? styles.archiveSessionOptions
                             : ""
@@ -1323,27 +1465,30 @@ function Puzzles() {
                     {pageState == "empty" && (
                         <div className={styles.noMatch} role="status">
                             <strong>
-                                {t(
-                                    source == "archive"
-                                        ? "states.noArchiveTitle"
-                                        : "states.noMatchTitle"
-                                )}
+                                {source == "archive"
+                                    ? t("states.noArchiveTitle")
+                                    : pageCopy.noMatchTitle
+                                }
                             </strong>
                             <span>
-                                {t(
-                                    source == "archive"
-                                        ? "states.noArchiveBody"
-                                        : "states.noMatchBody"
-                                )}
+                                {source == "archive"
+                                    ? t("states.noArchiveBody")
+                                    : pageCopy.noMatchBody
+                                }
                             </span>
                         </div>
                     )}
 
                     <button
                         type="button"
-                        className={styles.startButton}
-                        onClick={startTraining}
+                        className={[
+                            styles.startButton,
+                            readable.startButton
+                        ].join(" ")}
+                        onClick={() => void startTraining()}
                         disabled={
+                            requestingPuzzle
+                            ||
                             (
                                 source == "archive"
                                 && (
@@ -1362,14 +1507,22 @@ function Puzzles() {
                     </button>
                 </div>
 
-                <CoachCard
-                    coach={selectedCoach}
-                    expression={coachExpression}
-                    message={spokenCoachMessage}
-                    animationsEnabled={settings.coach.animations}
-                    title={t("coach.title", { name: selectedCoach.name })}
-                    onCoachClick={() => setCoachPickerOpen(true)}
-                />
+                {coachEnabled && (
+                    <CoachCard
+                        coach={selectedCoach}
+                        expression={coachExpression}
+                        message={
+                            pageState == "setup"
+                                ? spokenSetupCoachMessage
+                                : spokenCoachMessage
+                        }
+                        animationsEnabled={settings.coach.animations}
+                        title={t("coach.title", {
+                            name: selectedCoach.name
+                        })}
+                        onCoachClick={() => setCoachPickerOpen(true)}
+                    />
+                )}
             </section>
         )}
 
@@ -1385,7 +1538,7 @@ function Puzzles() {
                             <span>
                                 {puzzle.source == "archive"
                                     ? t("puzzle.archiveSource")
-                                    : t("puzzle.lichessSource")
+                                    : pageCopy.thematicSource
                                 }
                             </span>
                             <h2>
@@ -1494,15 +1647,22 @@ function Puzzles() {
 
                 </div>
 
-                <aside className={styles.trainingPanel}>
-                    <CoachCard
-                        coach={selectedCoach}
-                        expression={coachExpression}
-                        message={spokenCoachMessage}
-                        animationsEnabled={settings.coach.animations}
-                        title={t("coach.title", { name: selectedCoach.name })}
-                        onCoachClick={() => setCoachPickerOpen(true)}
-                    />
+                <aside className={[
+                    styles.trainingPanel,
+                    readable.trainingPanel
+                ].join(" ")}>
+                    {coachEnabled && (
+                        <CoachCard
+                            coach={selectedCoach}
+                            expression={coachExpression}
+                            message={spokenCoachMessage}
+                            animationsEnabled={settings.coach.animations}
+                            title={t("coach.title", {
+                                name: selectedCoach.name
+                            })}
+                            onCoachClick={() => setCoachPickerOpen(true)}
+                        />
+                    )}
 
                     <div className={styles.objectiveCard}>
                         <span>{t("puzzle.objective")}</span>
@@ -1521,7 +1681,7 @@ function Puzzles() {
                                     badMove: puzzle.badMove || "—",
                                     game: puzzle.gameLabel || ""
                                 })
-                                : t("puzzle.lichessContext")
+                                : pageCopy.thematicContext
                             }
                         </p>
 
@@ -1622,7 +1782,7 @@ function Puzzles() {
                                 return;
                             }
 
-                            startTraining();
+                            void startTraining();
                         }}
                     >
                         {t("actions.nextPuzzle")} →
@@ -1647,7 +1807,7 @@ function Puzzles() {
                                 target="_blank"
                                 rel="noreferrer"
                             >
-                                {t("actions.sourceGame")} ↗
+                                {pageCopy.sourceGame} ↗
                             </a>
                         )}
                     </div>
@@ -1667,7 +1827,7 @@ function Puzzles() {
             </section>
         )}
 
-        {coachPickerOpen && (
+        {coachEnabled && coachPickerOpen && (
             <CoachPicker
                 selectedCoach={selectedCoach}
                 onClose={() => setCoachPickerOpen(false)}
@@ -1723,14 +1883,23 @@ function CoachCard({
     title: string;
     onCoachClick: () => void;
 }) {
-    return <div className={styles.coachCard}>
-        <div className={styles.coachCopy}>
+    return <div className={[
+        styles.coachCard,
+        readable.coachCard
+    ].join(" ")}>
+        <div className={[
+            styles.coachCopy,
+            readable.coachCopy
+        ].join(" ")}>
             <span>{title}</span>
             <p>{message}</p>
         </div>
         <button
             type="button"
-            className={styles.coachPortrait}
+            className={[
+                styles.coachPortrait,
+                readable.coachPortrait
+            ].join(" ")}
             onClick={onCoachClick}
             aria-label={title}
             title={title}

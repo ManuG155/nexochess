@@ -14,8 +14,8 @@ import {
 } from "@/lib/gameArchive";
 
 import {
-    LichessPuzzlePack,
     LichessPuzzleRecord,
+    PuzzleCatalogue,
     PuzzleDifficulty,
     PuzzleProfile,
     PuzzleThemeSelection,
@@ -33,6 +33,11 @@ const negativeClassifications = new Set<Classification>([
 
 const ARCHIVE_CONCURRENCY = 6;
 const ARCHIVE_REQUEST_TIMEOUT_MS = 20_000;
+
+export interface ArchivePuzzleLibrary {
+    puzzles: TrainingPuzzle[];
+    analysedGameCount: number;
+}
 
 function withTimeout<T>(
     promise: Promise<T>,
@@ -97,7 +102,8 @@ function createArchivePuzzleId(
     return `archive:${fingerprint}:${nodeId}`;
 }
 
-export async function loadArchivePuzzles(): Promise<TrainingPuzzle[]> {
+export async function loadArchivePuzzleLibrary():
+    Promise<ArchivePuzzleLibrary> {
     const archiveResponse = await withTimeout(
         getArchivedGames(),
         ARCHIVE_REQUEST_TIMEOUT_MS,
@@ -190,7 +196,16 @@ export async function loadArchivePuzzles(): Promise<TrainingPuzzle[]> {
         )
     );
 
-    return puzzles;
+    return {
+        puzzles,
+        analysedGameCount: entries.length
+    };
+}
+
+export async function loadArchivePuzzles(): Promise<TrainingPuzzle[]> {
+    const library = await loadArchivePuzzleLibrary();
+
+    return library.puzzles;
 }
 
 export function normaliseLichessPuzzle(
@@ -231,24 +246,26 @@ export function normaliseLichessPuzzle(
     }
 }
 
-export async function loadLichessPuzzleRecords() {
-    const response = await fetch(
-        "/data/lichess-puzzles.json",
-        { cache: "force-cache" }
-    );
+export async function loadPuzzleCatalogue() {
+    const response = await fetch("/api/public/puzzles/catalogue");
     if (!response.ok) {
         throw new Error(
-            `Unable to load the Lichess puzzle pack (${response.status}).`
+            `Unable to load the puzzle catalogue (${response.status}).`
         );
     }
 
-    const pack = await response.json() as LichessPuzzlePack;
+    const catalogue = await response.json() as PuzzleCatalogue;
 
-    if (!Array.isArray(pack.puzzles) || pack.puzzles.length == 0) {
-        throw new Error("The Lichess puzzle pack is empty or malformed.");
+    if (
+        !Number.isFinite(catalogue.count)
+        || catalogue.count <= 0
+        || !Array.isArray(catalogue.themes)
+        || !Array.isArray(catalogue.openingTags)
+    ) {
+        throw new Error("The puzzle catalogue is empty or malformed.");
     }
 
-    return pack.puzzles;
+    return catalogue;
 }
 
 function matchesDifficulty(
@@ -291,18 +308,59 @@ export function filterPuzzles(
     ));
 }
 
-export function filterLichessPuzzleRecords(
-    puzzles: LichessPuzzleRecord[],
+export async function loadNextLichessPuzzleRecord(
     completed: Set<string>,
     theme: PuzzleThemeSelection,
     difficulty: PuzzleDifficulty,
     profile: PuzzleProfile
 ) {
-    return puzzles.filter(puzzle => (
-        !completed.has(`lichess:${puzzle.id}`)
-        && puzzleMatchesThemeSelection(puzzle, theme)
-        && matchesDifficulty(puzzle, difficulty, profile)
-    ));
+    const parameters = new URLSearchParams({
+        category: theme.category,
+        difficulty,
+        rating: String(profile.rating),
+        attempts: String(profile.attempts)
+    });
+
+    if (theme.kind) parameters.set("kind", theme.kind);
+    if (theme.value) parameters.set("value", theme.value);
+
+    const excluded = [...completed]
+        .filter(id => id.startsWith("lichess:"))
+        .slice(-120);
+
+    if (excluded.length > 0) {
+        parameters.set("exclude", excluded.join(","));
+    }
+
+    const response = await fetch(
+        `/api/public/puzzles/next?${parameters.toString()}`,
+        { cache: "no-store" }
+    );
+
+    if (response.status == 404) return;
+
+    if (!response.ok) {
+        throw new Error(
+            `Unable to load the next puzzle (${response.status}).`
+        );
+    }
+
+    const result = await response.json() as {
+        puzzle?: LichessPuzzleRecord;
+    };
+
+    if (
+        !result.puzzle
+        || typeof result.puzzle.id != "string"
+        || typeof result.puzzle.fen != "string"
+        || !Array.isArray(result.puzzle.moves)
+        || !Array.isArray(result.puzzle.themes)
+        || !Array.isArray(result.puzzle.openingTags)
+    ) {
+        throw new Error("The puzzle response is malformed.");
+    }
+
+    return result.puzzle;
 }
 
 export function pickRandomPuzzle<T>(puzzles: T[]) {

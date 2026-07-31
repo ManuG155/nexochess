@@ -2,7 +2,7 @@
     "hero": {
         "eyebrow": "Entrenamiento táctico NexoChess",
         "title": "Convierte cada error en una lección",
-        "subtitle": "Entrena posiciones de tus propias partidas analizadas o practica problemas evaluados y temáticos. Tu entrenador te acompaña durante toda la línea."
+        "subtitle": "Entrena posiciones de tus partidas analizadas o practica puzzles por tema y dificultad a tu ritmo."
     },
     "stats": {
         "rating": "Elo de puzles",
@@ -31,8 +31,8 @@
             "action": "Analizar una partida"
         },
         "lichess": {
-            "title": "Problemas de ajedrez",
-            "body": "Problemas evaluados y filtrables por tema y dificultad."
+            "title": "Entrenamiento",
+            "body": "Puzzles filtrables por tema y dificultad."
         }
     },
     "filters": {
@@ -96,7 +96,7 @@
         "title": "{{name}}, tu entrenador",
         "loading": "Estoy preparando tus posiciones.",
         "setupArchive": "Tus partidas analizadas ya contienen lecciones útiles. Elige una sesión y las repasaremos con calma.",
-        "setupLichess": "Todavía no hay posiciones propias, pero los problemas de ajedrez están listos cuando tú quieras.",
+        "setupLichess": "Elige una temática y una dificultad para practicar puzzles variados.",
         "archiveTurn": "Juegan {{colour}}. Esta posición apareció justo después de una jugada costosa. Encuentra cómo castigarla.",
         "lichessTurn": "Juegan {{colour}}. Busca primero jaques, capturas y amenazas antes de calcular ideas tranquilas.",
         "wrong": "Esta no. La jugada es legal, pero deja escapar la oportunidad clave. Revisa jaques, capturas y amenazas.",
@@ -110,7 +110,12 @@
         "noFiltered": "No quedan puzles sin ver con estos filtros. Prueba otro tema o dificultad.",
         "loadError": "No he podido cargar las posiciones. Actualiza la página y lo intentamos de nuevo.",
         "positionError": "Esta línea contiene una posición que no puedo reproducir con seguridad, así que la he detenido.",
-        "changeFilters": "Ajusta la sesión cuando quieras; las posiciones completadas siguen guardadas."
+        "changeFilters": "Ajusta la sesión cuando quieras; las posiciones completadas siguen guardadas.",
+        "archiveChecking": "Estoy revisando tus partidas analizadas para encontrar posiciones que merezca la pena repetir.",
+        "archiveNoGames": "Todavía no has analizado ninguna partida. Analiza una y convertiré sus momentos clave en puzzles.",
+        "archiveNoErrors": "No hay errores que practicar en tus partidas analizadas. Eso es una buena señal.",
+        "archiveReady": "Aprende de los errores que han aparecido en tus partidas analizadas.",
+        "trainingSetup": "Elige una temática y una dificultad para practicar puzzles variados."
     },
     "colours": {
         "white": "Blancas",
@@ -124,7 +129,9 @@
         "noArchiveTitle": "No hay puzles propios disponibles",
         "noArchiveBody": "Analiza y guarda una partida para crear posiciones con los errores de ambos jugadores.",
         "noMatchTitle": "Has completado esta selección",
-        "noMatchBody": "Cambia el tema o la dificultad para seguir entrenando sin repetir posiciones."
+        "noMatchBody": "Cambia el tema o la dificultad para seguir entrenando sin repetir posiciones.",
+        "noErrorsTitle": "No hay errores que practicar",
+        "noErrorsBody": "Tus partidas analizadas todavía no contienen posiciones mejorables."
     },
     "puzzle": {
         "archiveSource": "Desde tu Archivo",
@@ -173,5 +180,76 @@
         "phase": "Fase de juego",
         "length": "Duración",
         "master": "Partidas de maestros"
+    },
+    "themeLabels": {
+        "mate": "Cualquier mate",
+        "mateIn1": "Mate en 1",
+        "mateIn2": "Mate en 2",
+        "mateIn3": "Mate en 3",
+        "mateIn4": "Mate en 4",
+        "mateIn5": "Mate en 5 o más",
+        "anastasiaMate": "Mate de Anastasia",
+        "arabianMate": "Mate árabe",
+        "backRankMate": "Mate del pasillo",
+        "balestraMate": "Mate de Balestra",
+        "blindSwineMate": "Mate de los cerdos ciegos",
+        "bodenMate": "Mate de Boden",
+        "cornerMate": "Mate en la esquina",
+        "doubleBishopMate": "Mate de dos alfiles",
+        "dovetailMate": "Mate de cola de milano",
+        "epauletteMate": "Mate de las charreteras",
+        "hookMate": "Mate del gancho",
+        "killBoxMate": "Mate de la caja",
+        "morphysMate": "Mate de Morphy",
+        "operaMate": "Mate de la Ópera",
+        "pillsburysMate": "Mate de Pillsbury",
+        "smotheredMate": "Mate de la coz",
+        "swallowstailMate": "Mate de cola de golondrina",
+        "triangleMate": "Mate del triángulo",
+        "vukovicMate": "Mate de Vuković",
+        "advancedPawn": "Peón avanzado",
+        "attraction": "Atracción",
+        "capturingDefender": "Capturar al defensor",
+        "castling": "Enroque",
+        "clearance": "Despeje",
+        "collinearMove": "Movimiento colineal",
+        "deflection": "Desviación",
+        "discoveredAttack": "Ataque descubierto",
+        "discoveredCheck": "Jaque descubierto",
+        "doubleCheck": "Jaque doble",
+        "enPassant": "Captura al paso",
+        "fork": "Doble ataque",
+        "hangingPiece": "Pieza colgada",
+        "interference": "Interferencia",
+        "intermezzo": "Jugada intermedia",
+        "pin": "Clavada",
+        "promotion": "Promoción",
+        "quietMove": "Jugada tranquila",
+        "sacrifice": "Sacrificio",
+        "skewer": "Enfilada",
+        "trappedPiece": "Pieza atrapada",
+        "underPromotion": "Subpromoción",
+        "xRayAttack": "Ataque de rayos X",
+        "zugzwang": "Zugzwang",
+        "attackingF2F7": "Ataque a f2 o f7",
+        "exposedKing": "Rey expuesto",
+        "kingsideAttack": "Ataque en el flanco de rey",
+        "queensideAttack": "Ataque en el flanco de dama",
+        "defensiveMove": "Jugada defensiva",
+        "equality": "Recuperar la igualdad",
+        "crushing": "Ventaja aplastante",
+        "bishopEndgame": "Final de alfiles",
+        "knightEndgame": "Final de caballos",
+        "pawnEndgame": "Final de peones",
+        "queenEndgame": "Final de damas",
+        "queenRookEndgame": "Final de damas y torres",
+        "rookEndgame": "Final de torres",
+        "middlegame": "Medio juego",
+        "oneMove": "Problema de una jugada",
+        "short": "Problema de dos jugadas",
+        "long": "Problema de tres jugadas",
+        "veryLong": "Cuatro jugadas o más",
+        "masterVsMaster": "Maestro contra maestro",
+        "superGM": "Partida de súper GM"
     }
 }

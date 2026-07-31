@@ -171,7 +171,7 @@
 .navItem.active::after {
     content: "";
 
-    width: 18px;
+    width: min(44px, calc(100% - 24px));
     height: 2px;
 
     position: absolute;

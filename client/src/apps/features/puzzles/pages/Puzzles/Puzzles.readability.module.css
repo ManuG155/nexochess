@@ -1,0 +1,179 @@
+.page {
+    font-size: 17px;
+    height: auto !important;
+    min-height: calc(100vh - 65px);
+    overflow: visible;
+}
+
+.page button,
+.page input {
+    font: inherit;
+}
+
+.sectionHeader h2 {
+    font-size: clamp(1.6rem, 2vw, 2rem);
+    line-height: 1.15;
+}
+
+.sectionHeader p {
+    font-size: 1.04rem;
+    line-height: 1.5;
+}
+
+.sourceSelector strong,
+.difficultyGrid strong,
+.sessionOptions strong {
+    font-size: 1rem;
+    line-height: 1.3;
+}
+
+.sourceSelector small,
+.difficultyGrid small,
+.sessionOptions small {
+    font-size: .9rem;
+    line-height: 1.4;
+}
+
+.setupGrid {
+    align-items: start;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+.setupGridWithoutCoach {
+    grid-template-columns: minmax(0, 1fr) !important;
+}
+
+.setupMain {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+.filterBlock {
+    overflow: visible !important;
+}
+
+.filterHeading strong,
+.subthemeHeading strong {
+    font-size: 1.08rem;
+    line-height: 1.3;
+}
+
+.filterHeading span,
+.subthemeHeading span {
+    font-size: .95rem;
+    line-height: 1.4;
+}
+
+.themeCategories button {
+    min-height: 46px;
+    padding: 10px 14px;
+}
+
+.themeCategories button span {
+    font-size: .98rem;
+    line-height: 1.25;
+}
+
+.subthemePanel {
+    max-height: none !important;
+    overflow: visible !important;
+    scrollbar-gutter: auto;
+}
+
+.openingSearch {
+    min-height: 44px;
+    padding: 10px 13px;
+    font-size: 1rem !important;
+}
+
+.subthemeGrid {
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(min(100%, 210px), 1fr)
+    );
+    gap: 10px;
+}
+
+.subthemeGrid button {
+    min-height: 58px;
+    padding: 11px 13px;
+    text-align: left;
+}
+
+.subthemeGrid button span {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.32;
+    overflow-wrap: anywhere;
+}
+
+.startButton {
+    min-height: 52px;
+    font-size: 1.05rem !important;
+}
+
+.coachCard {
+    font-size: 17px;
+    position: sticky;
+    top: 84px;
+}
+
+.coachCopy > span {
+    font-size: .94rem;
+    line-height: 1.3;
+}
+
+.coachCopy > p {
+    font-size: 1.08rem;
+    line-height: 1.48;
+}
+
+.coachPortrait :is(p, span) {
+    font-size: 1rem !important;
+    line-height: 1.4 !important;
+}
+
+.trainingPanel :is(p, small, button) {
+    font-size: max(.94rem, 15px);
+    line-height: 1.4;
+}
+
+@media (max-width: 700px) {
+    .page,
+    .coachCard {
+        font-size: 16px;
+    }
+
+    .subthemePanel {
+        max-height: none !important;
+    }
+
+    .subthemeGrid {
+        grid-template-columns: repeat(
+            2,
+            minmax(0, 1fr)
+        );
+    }
+
+    .subthemeGrid button {
+        min-height: 54px;
+        padding: 10px;
+    }
+
+    .subthemeGrid button span {
+        font-size: .94rem;
+    }
+
+    .coachCard {
+        position: static;
+    }
+}
+
+@media (max-width: 420px) {
+    .subthemeGrid {
+        grid-template-columns: 1fr;
+    }
+}
