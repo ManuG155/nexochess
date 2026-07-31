@@ -1,15 +1,12 @@
 .wrapper {
-    --summary-bg: #0D131D;
-    --summary-card: #121A26;
-    --summary-card-soft: #151F2E;
-    --summary-border: rgba(111, 154, 232, 0.19);
-    --summary-border-strong: rgba(111, 160, 247, 0.42);
-    --summary-blue: #75A2F2;
-    --summary-blue-strong: #4F88EA;
-    --summary-text: #F3F6FB;
-    --summary-muted: rgba(222, 229, 240, 0.68);
-
-    position: relative;
+    --summary-bg: #0d141e;
+    --summary-surface: rgba(255, 255, 255, 0.035);
+    --summary-surface-hover: rgba(255, 255, 255, 0.055);
+    --summary-line: rgba(130, 164, 220, 0.13);
+    --summary-line-strong: rgba(117, 162, 242, 0.34);
+    --summary-blue: #79a6f3;
+    --summary-text: #f2f5fa;
+    --summary-muted: rgba(222, 229, 240, 0.66);
 
     display: flex;
     flex: 1;
@@ -21,19 +18,12 @@
     height: 100%;
     min-height: 0;
 
-    border: 1px solid var(--summary-border);
-    border-radius: 18px;
+    border: 1px solid var(--summary-line);
+    border-radius: 17px;
 
     background:
-        radial-gradient(
-            circle at 92% 0%,
-            rgba(76, 128, 218, 0.13),
-            transparent 31%
-        ),
-        linear-gradient(155deg, #111925, var(--summary-bg) 72%);
-    box-shadow:
-        0 22px 54px rgba(0, 0, 0, 0.32),
-        0 0 0 1px rgba(255, 255, 255, 0.018) inset;
+        linear-gradient(160deg, #111a26 0%, var(--summary-bg) 54%, #0b1119 100%);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.25);
 
     overflow: hidden;
 }
@@ -43,12 +33,12 @@
 
     width: 100%;
 
-    padding: 20px 20px 28px;
+    padding: 22px 22px 28px;
 
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-width: thin;
-    scrollbar-color: rgba(112, 156, 232, 0.34) transparent;
+    scrollbar-color: rgba(117, 162, 242, 0.3) transparent;
 }
 
 .scrollArea::-webkit-scrollbar {
@@ -63,44 +53,42 @@
     border: 2px solid transparent;
     border-radius: 999px;
 
-    background: rgba(112, 156, 232, 0.34);
+    background: rgba(117, 162, 242, 0.3);
     background-clip: padding-box;
 }
 
 .scrollArea::-webkit-scrollbar-thumb:hover {
-    background: rgba(112, 156, 232, 0.52);
+    background: rgba(117, 162, 242, 0.48);
     background-clip: padding-box;
 }
 
-.scrollArea::-webkit-scrollbar-corner {
-    background: transparent;
-}
-
 .title {
-    display: flex;
-    align-items: center;
-    gap: 11px;
+    position: relative;
 
     margin: 0 0 18px;
+    padding-bottom: 13px;
 
     color: var(--summary-text);
 
     font-size: clamp(1.42rem, 2vw, 1.68rem);
-    font-weight: 840;
+    font-weight: 820;
     letter-spacing: -0.025em;
     line-height: 1.15;
 }
 
-.title::before {
+.title::after {
     content: "";
 
-    width: 4px;
-    height: 27px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+
+    width: 48px;
+    height: 3px;
 
     border-radius: 999px;
 
-    background: linear-gradient(180deg, #8AB2FA, #4D83E1);
-    box-shadow: 0 0 18px rgba(89, 142, 233, 0.34);
+    background: linear-gradient(90deg, #6d9cea, rgba(109, 156, 234, 0.18));
 }
 
 .analysisProgressBridge {
@@ -108,29 +96,15 @@
 }
 
 .coachSection {
-    position: relative;
-
     display: grid;
-    grid-template-columns: 136px minmax(0, 1fr);
-    gap: 13px;
+    grid-template-columns: 122px minmax(0, 1fr);
+    gap: 14px;
     align-items: end;
 
-    margin-bottom: 15px;
-    padding: 12px 13px 0;
+    margin-bottom: 12px;
+    padding: 2px 4px 14px;
 
-    border: 1px solid var(--summary-border);
-    border-radius: 16px;
-
-    background:
-        radial-gradient(
-            circle at 15% 25%,
-            rgba(93, 145, 235, 0.13),
-            transparent 48%
-        ),
-        linear-gradient(145deg, rgba(27, 39, 58, 0.93), rgba(16, 23, 34, 0.96));
-    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.2);
-
-    overflow: hidden;
+    border-bottom: 1px solid var(--summary-line);
 }
 
 .coachPortraitButton {
@@ -138,11 +112,10 @@
     align-items: flex-end;
     justify-content: center;
 
-    width: 136px;
-    min-width: 136px;
-    height: 138px;
+    width: 122px;
+    min-width: 122px;
+    height: 126px;
 
-    margin-bottom: -1px;
     padding: 0;
 
     border: 0;
@@ -153,7 +126,7 @@
 
 .coachPortraitButton:focus-visible {
     border-radius: 12px;
-    outline: 2px solid rgba(120, 169, 255, 0.74);
+    outline: 2px solid rgba(120, 169, 255, 0.68);
     outline-offset: -2px;
 }
 
@@ -164,7 +137,7 @@
     object-fit: contain;
     object-position: center bottom;
 
-    filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.26));
+    filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.22));
 }
 
 .coachBubble {
@@ -172,24 +145,20 @@
 
     display: flex;
     flex-direction: column;
-    gap: 11px;
+    gap: 10px;
 
     box-sizing: border-box;
 
     width: 100%;
-    max-width: none;
-    min-height: 92px;
+    min-height: 88px;
 
-    margin-bottom: 14px;
-    padding: 16px 18px;
+    margin-bottom: 5px;
+    padding: 15px 17px;
 
-    border: 1px solid var(--summary-border-strong);
-    border-radius: 15px;
+    border: 1px solid rgba(117, 162, 242, 0.25);
+    border-radius: 14px;
 
-    background: rgba(12, 18, 27, 0.88);
-    box-shadow:
-        0 12px 28px rgba(0, 0, 0, 0.23),
-        0 0 0 1px rgba(255, 255, 255, 0.015) inset;
+    background: rgba(7, 12, 19, 0.52);
 }
 
 .coachBubble::before,
@@ -197,49 +166,46 @@
     content: "";
 
     position: absolute;
-    left: -17px;
+    left: -16px;
     bottom: 20px;
 
-    width: 18px;
-    height: 27px;
+    width: 17px;
+    height: 25px;
 
     clip-path: polygon(100% 0, 100% 100%, 0 68%);
 }
 
 .coachBubble::before {
-    background: rgba(112, 160, 246, 0.68);
+    background: rgba(117, 162, 242, 0.48);
 }
 
 .coachBubble::after {
-    left: -15px;
+    left: -14px;
     bottom: 21px;
 
-    width: 16px;
-    height: 25px;
+    width: 15px;
+    height: 23px;
 
-    background: #101722;
+    background: #0b121b;
 }
 
 .coachMessage {
     margin: 0;
 
-    color: #EEF3FB;
+    color: #edf2f9;
 
-    font-size: 1.02rem;
-    font-weight: 650;
-    line-height: 1.43;
+    font-size: 1rem;
+    font-weight: 620;
+    line-height: 1.45;
 }
 
 .coachProgressTrack {
-    position: relative;
-
     width: 100%;
-    height: 8px;
+    height: 7px;
 
-    border: 1px solid rgba(116, 160, 237, 0.17);
     border-radius: 999px;
 
-    background: rgba(4, 8, 13, 0.52);
+    background: rgba(255, 255, 255, 0.07);
 
     overflow: hidden;
 }
@@ -249,8 +215,7 @@
 
     border-radius: inherit;
 
-    background: linear-gradient(90deg, #4C82DF, #86AEF7);
-    box-shadow: 0 0 14px rgba(105, 157, 246, 0.42);
+    background: linear-gradient(90deg, #4f83dc, #82acf4);
 
     transition: width 180ms ease;
 }
@@ -259,22 +224,19 @@
     color: var(--summary-blue);
 
     font-size: 0.82rem;
-    font-weight: 800;
+    font-weight: 760;
     line-height: 1;
 
     text-align: right;
 }
 
 .graphCard {
-    margin-bottom: 15px;
-    padding: 10px;
+    margin-bottom: 12px;
+    padding: 7px;
 
-    border: 1px solid var(--summary-border);
-    border-radius: 15px;
+    border-radius: 12px;
 
-    background:
-        linear-gradient(145deg, rgba(22, 31, 45, 0.94), rgba(13, 19, 29, 0.97));
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+    background: var(--summary-surface);
 
     overflow: hidden;
 }
@@ -284,69 +246,30 @@
 }
 
 .playersSection {
-    margin-bottom: 15px;
-    padding: 13px;
+    margin-bottom: 8px;
+    padding: 14px 0;
 
-    border: 1px solid var(--summary-border);
-    border-radius: 15px;
-
-    background: rgba(18, 27, 40, 0.78);
+    border-top: 1px solid var(--summary-line);
+    border-bottom: 1px solid var(--summary-line);
 }
 
 .playersGrid {
-    position: relative;
-
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 11px;
-}
-
-.playersGrid::after {
-    content: "";
-
-    position: absolute;
-    top: 13px;
-    bottom: 13px;
-    left: 50%;
-
-    width: 1px;
-
-    background: linear-gradient(
-        180deg,
-        transparent,
-        rgba(113, 157, 234, 0.2) 25%,
-        rgba(113, 157, 234, 0.2) 75%,
-        transparent
-    );
-
-    transform: translateX(-50%);
-    pointer-events: none;
+    gap: 22px;
 }
 
 .playerColumn {
     display: grid;
-    grid-template-columns: 58px minmax(0, 1fr);
+    grid-template-columns: 54px minmax(0, 1fr);
     grid-template-areas:
         "avatar name"
         "avatar accuracy";
-    gap: 5px 10px;
+    gap: 5px 11px;
     align-items: center;
 
     min-width: 0;
-    padding: 11px;
-
-    border: 1px solid rgba(255, 255, 255, 0.055);
-    border-radius: 12px;
-
-    background: linear-gradient(145deg, rgba(32, 43, 60, 0.74), rgba(19, 27, 40, 0.8));
-}
-
-.playerColumn:first-child {
-    box-shadow: inset 3px 0 0 rgba(227, 235, 247, 0.74);
-}
-
-.playerColumn:last-child {
-    box-shadow: inset -3px 0 0 rgba(90, 137, 220, 0.75);
+    padding: 4px 6px;
 }
 
 .playerName {
@@ -356,9 +279,9 @@
 
     color: var(--summary-text);
 
-    font-size: 0.96rem;
-    font-weight: 760;
-    line-height: 1.18;
+    font-size: 0.98rem;
+    font-weight: 730;
+    line-height: 1.2;
 
     overflow: hidden;
     text-overflow: ellipsis;
@@ -368,34 +291,32 @@
 .playerAvatar {
     grid-area: avatar;
 
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
 
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    border-radius: 13px;
 
     object-fit: cover;
 
-    background-color: #E7EBF1;
-    box-shadow: 0 9px 18px rgba(0, 0, 0, 0.24);
+    background-color: #e7ebf1;
 }
 
 .accuracyBox {
     grid-area: accuracy;
     justify-self: start;
 
-    min-width: 56px;
+    min-width: 52px;
 
-    padding: 5px 9px;
+    padding: 4px 9px;
 
-    border: 1px solid rgba(113, 160, 242, 0.24);
     border-radius: 999px;
 
-    background: rgba(68, 113, 193, 0.13);
-    color: #DCE9FF;
+    background: rgba(86, 132, 210, 0.14);
+    color: #dce8fb;
 
-    font-size: 1.08rem;
-    font-weight: 840;
+    font-size: 1.02rem;
+    font-weight: 810;
     line-height: 1.1;
 
     text-align: center;
@@ -403,20 +324,16 @@
 
 .moveTableSection,
 .phaseSection {
-    border: 1px solid var(--summary-border);
-    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
 
-    background: rgba(17, 25, 37, 0.78);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+    padding: 8px 0;
 }
 
 .moveTableSection {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+    gap: 0;
 
-    margin-bottom: 15px;
-    padding: 11px;
+    border-bottom: 1px solid var(--summary-line);
 }
 
 .moveRow {
@@ -424,54 +341,50 @@
     grid-template-columns: minmax(100px, 1fr) 42px 38px 42px;
     align-items: center;
 
-    min-height: 39px;
-    padding: 3px 9px;
+    min-height: 40px;
+    padding: 3px 8px;
 
-    border: 1px solid transparent;
-    border-radius: 10px;
+    border-radius: 8px;
 
-    background: rgba(255, 255, 255, 0.023);
-
-    transition:
-        border-color 140ms ease,
-        background-color 140ms ease;
+    transition: background-color 140ms ease;
 }
 
-.moveRow:nth-child(odd) {
-    background: rgba(84, 118, 177, 0.035);
+.moveRow:nth-child(even) {
+    background: rgba(255, 255, 255, 0.018);
 }
 
 .moveRow:hover {
-    border-color: rgba(112, 156, 232, 0.12);
-    background: rgba(90, 132, 207, 0.065);
+    background: var(--summary-surface-hover);
 }
 
-.moveLabel {
-    color: rgba(239, 243, 250, 0.86);
+.moveLabel,
+.phaseLabel {
+    color: rgba(239, 243, 250, 0.84);
 
-    font-size: 0.94rem;
-    font-weight: 620;
+    font-size: 0.95rem;
+    font-weight: 610;
 }
 
 .moveCount {
     font-size: 1rem;
-    font-weight: 840;
+    font-weight: 810;
 
     text-align: center;
 }
 
-.moveIconCell {
+.moveIconCell,
+.phaseValue {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.moveIcon {
+.moveIcon,
+.phaseIcon {
     width: 29px;
     height: 29px;
 
     object-fit: contain;
-    filter: drop-shadow(0 4px 7px rgba(0, 0, 0, 0.22));
 }
 
 .missIcon {
@@ -484,21 +397,18 @@
 
     border-radius: 999px;
 
-    background: rgba(231, 92, 82, 0.9);
-    color: #FFFFFF;
-    box-shadow: 0 5px 12px rgba(202, 65, 57, 0.22);
+    background: rgba(231, 92, 82, 0.88);
+    color: #fff;
 
     font-size: 1.08rem;
-    font-weight: 840;
+    font-weight: 820;
     line-height: 1;
 }
 
 .phaseSection {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+    gap: 1px;
 
-    padding: 11px;
+    padding-top: 10px;
 }
 
 .phaseRow {
@@ -506,41 +416,20 @@
     grid-template-columns: minmax(120px, 1fr) 74px 74px;
     align-items: center;
 
-    min-height: 42px;
-    padding: 3px 9px;
+    min-height: 41px;
+    padding: 3px 8px;
 
-    border-radius: 10px;
+    border-radius: 8px;
+}
 
-    background: rgba(255, 255, 255, 0.023);
+.phaseRow:hover {
+    background: var(--summary-surface-hover);
 }
 
 .phaseRow:first-child {
-    min-height: 48px;
+    margin-bottom: 3px;
 
-    border: 1px solid rgba(111, 159, 240, 0.12);
-
-    background: linear-gradient(90deg, rgba(68, 112, 192, 0.1), rgba(68, 112, 192, 0.035));
-}
-
-.phaseLabel {
-    color: rgba(239, 243, 250, 0.86);
-
-    font-size: 0.94rem;
-    font-weight: 650;
-}
-
-.phaseValue {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.phaseIcon {
-    width: 29px;
-    height: 29px;
-
-    object-fit: contain;
-    filter: drop-shadow(0 4px 7px rgba(0, 0, 0, 0.22));
+    background: rgba(86, 132, 210, 0.075);
 }
 
 .noPhase {
@@ -554,17 +443,15 @@
 
     min-width: 58px;
 
-    padding: 6px 7px;
+    padding: 5px 7px;
 
-    border: 1px solid rgba(112, 159, 240, 0.19);
-    border-radius: 9px;
+    border-radius: 8px;
 
-    background: rgba(67, 112, 193, 0.12);
-    color: #DFEAFF;
+    background: rgba(86, 132, 210, 0.11);
+    color: #e4edfb;
 
-    font-size: 1.02rem;
-    font-weight: 840;
-    line-height: 1.1;
+    font-size: 1rem;
+    font-weight: 800;
 
     text-align: center;
 }
@@ -572,12 +459,11 @@
 .footer {
     flex-shrink: 0;
 
-    padding: 13px 18px 17px;
+    padding: 13px 20px 17px;
 
-    border-top: 1px solid rgba(111, 154, 232, 0.14);
+    border-top: 1px solid var(--summary-line);
 
-    background: rgba(11, 16, 24, 0.95);
-    box-shadow: 0 -12px 30px rgba(0, 0, 0, 0.16);
+    background: rgba(8, 13, 20, 0.58);
 }
 
 .startReviewButton {
@@ -585,36 +471,30 @@
 
     padding: 14px 18px;
 
-    border: 1px solid rgba(143, 181, 248, 0.34);
-    border-radius: 12px;
+    border: 1px solid rgba(146, 183, 248, 0.24);
+    border-radius: 11px;
 
-    background: linear-gradient(180deg, #588FEF, #3F74D0);
-    color: #FFFFFF;
-    box-shadow:
-        0 12px 24px rgba(35, 82, 163, 0.28),
-        0 1px 0 rgba(255, 255, 255, 0.12) inset;
+    background: linear-gradient(180deg, #548bea, #3f78d8);
+    color: #fff;
 
     font-family: inherit;
     font-size: 1.03rem;
-    font-weight: 780;
+    font-weight: 790;
 
     cursor: pointer;
 
+    box-shadow: 0 8px 20px rgba(36, 82, 158, 0.2);
+
     transition:
-        border-color 150ms ease,
-        box-shadow 150ms ease,
-        filter 150ms ease,
-        transform 150ms ease;
+        background-color 150ms ease,
+        transform 150ms ease,
+        box-shadow 150ms ease;
 }
 
 .startReviewButton:hover {
-    border-color: rgba(166, 196, 249, 0.54);
+    background: linear-gradient(180deg, #6196ef, #477fdf);
+    box-shadow: 0 10px 24px rgba(36, 82, 158, 0.26);
 
-    box-shadow:
-        0 15px 28px rgba(35, 82, 163, 0.34),
-        0 1px 0 rgba(255, 255, 255, 0.14) inset;
-
-    filter: brightness(1.05);
     transform: translateY(-1px);
 }
 
@@ -623,8 +503,8 @@
 }
 
 .startReviewButton:focus-visible {
-    outline: 2px solid rgba(138, 181, 255, 0.82);
-    outline-offset: 3px;
+    outline: 2px solid rgba(130, 177, 255, 0.78);
+    outline-offset: 2px;
 }
 
 .scrollAreaWithoutCoach {
@@ -632,80 +512,35 @@
 }
 
 .graphCardWithoutCoach {
-    margin-top: 0;
-    margin-bottom: 15px;
+    margin-top: 2px;
 }
 
-.graphCardWithoutCoach > * {
-    width: 100%;
-}
-
-@media (max-width: 620px) {
+@media (max-width: 640px) {
     .scrollArea {
-        padding: 16px 14px 24px;
+        padding: 16px 14px 22px;
     }
 
-    .coachSection {
-        grid-template-columns: 108px minmax(0, 1fr);
-        padding-inline: 10px;
-    }
-
-    .coachPortraitButton {
-        width: 108px;
-        min-width: 108px;
-        height: 118px;
-    }
-
-    .coachBubble {
-        margin-bottom: 11px;
-        padding: 13px 14px;
-    }
-
-    .coachMessage {
-        font-size: 0.95rem;
-    }
-
-    .playerColumn {
-        grid-template-columns: 48px minmax(0, 1fr);
-        padding: 9px;
-    }
-
-    .playerAvatar {
-        width: 48px;
-        height: 48px;
-        border-radius: 10px;
-    }
-
-    .moveRow {
-        grid-template-columns: minmax(82px, 1fr) 34px 32px 34px;
-        padding-inline: 6px;
-    }
-
-    .phaseRow {
-        grid-template-columns: minmax(98px, 1fr) 62px 62px;
-        padding-inline: 6px;
-    }
-}
-
-@media (max-width: 430px) {
     .title {
-        font-size: 1.34rem;
+        margin-bottom: 14px;
     }
 
     .coachSection {
-        grid-template-columns: 1fr;
-        padding-top: 8px;
+        grid-template-columns: 88px minmax(0, 1fr);
+        gap: 9px;
+
+        padding-inline: 0;
     }
 
     .coachPortraitButton {
-        justify-self: center;
-
-        width: 118px;
-        height: 112px;
+        width: 88px;
+        min-width: 88px;
+        height: 92px;
     }
 
     .coachBubble {
-        margin-top: -4px;
+        min-height: 76px;
+
+        padding: 13px 14px;
     }
 
     .coachBubble::before,
@@ -713,24 +548,49 @@
         display: none;
     }
 
+    .coachMessage {
+        font-size: 0.94rem;
+    }
+
     .playersGrid {
-        grid-template-columns: 1fr;
+        gap: 8px;
     }
 
-    .playersGrid::after {
-        display: none;
+    .playerColumn {
+        grid-template-columns: 44px minmax(0, 1fr);
+        gap: 4px 8px;
+
+        padding-inline: 2px;
     }
 
-    .playerColumn:last-child {
-        box-shadow: inset 3px 0 0 rgba(90, 137, 220, 0.75);
+    .playerAvatar {
+        width: 42px;
+        height: 42px;
     }
 
-    .moveLabel,
-    .phaseLabel {
+    .playerName {
         font-size: 0.88rem;
     }
 
+    .accuracyBox {
+        min-width: 44px;
+
+        font-size: 0.94rem;
+    }
+
+    .moveRow {
+        grid-template-columns: minmax(92px, 1fr) 36px 32px 36px;
+
+        padding-inline: 4px;
+    }
+
+    .phaseRow {
+        grid-template-columns: minmax(106px, 1fr) 62px 62px;
+
+        padding-inline: 4px;
+    }
+
     .footer {
-        padding-inline: 14px;
+        padding: 11px 14px 14px;
     }
 }
