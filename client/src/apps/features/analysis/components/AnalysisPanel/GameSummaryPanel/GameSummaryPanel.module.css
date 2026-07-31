@@ -713,3 +713,30 @@
 .graphCardWithoutCoach > * {
     width: 100%;
 }
+
+/* NEXO_SUMMARY_BUBBLE_OUTLINE */
+.coachBubble {
+    border-color: rgba(112, 160, 246, 0.52);
+}
+
+.coachBubble::before,
+.coachBubble::after {
+    content: "";
+    position: absolute;
+    top: 30px;
+    clip-path: polygon(100% 0, 100% 100%, 0 50%);
+}
+
+.coachBubble::before {
+    left: -22px;
+    width: 22px;
+    height: 32px;
+    background: rgba(112, 160, 246, 0.72);
+}
+
+.coachBubble::after {
+    left: -20px;
+    width: 20px;
+    height: 30px;
+    background: #FFFFFF;
+}

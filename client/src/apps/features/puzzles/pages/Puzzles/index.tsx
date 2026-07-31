@@ -10,7 +10,6 @@ import { Chessboard } from "react-chessboard";
 
 import PieceColour from "shared/constants/PieceColour";
 import EngineVersion from "shared/constants/EngineVersion";
-import { stringifyEvaluation } from "shared/lib/utils/chess";
 import Evaluation from "shared/types/game/position/Evaluation";
 
 import useSettingsStore from "@/stores/SettingsStore";
@@ -359,14 +358,20 @@ function Puzzles() {
         setHintArrow([]);
         setPendingReply(false);
         setPageState("playing");
+
+        window.requestAnimationFrame(() => {
+            window.scrollTo({
+                top: 0,
+                left: 0,
+                behavior: "auto"
+            });
+        });
+
         setCoachExpression("explaining");
         setCoachMessage({
             key: nextPuzzle.source == "archive"
                 ? "coach.archiveTurn"
-                : "coach.trainingTurn",
-            text: nextPuzzle.source == "archive"
-                ? undefined
-                : pageCopy.trainingTurn,
+                : "coach.lichessTurn",
             values: {
                 colour: t(`colours.${nextPuzzle.solver}`)
             }
@@ -957,13 +962,13 @@ function Puzzles() {
     ]);
 
     useEffect(() => {
-        if (!puzzle || !reviewedFen) return;
+        if (!puzzle || !currentFen) return;
 
         const requestId = ++evaluationRequestRef.current;
         const updateEvaluation = (evaluation: Evaluation) => {
             if (requestId != evaluationRequestRef.current) return;
 
-            evaluationCacheRef.current.set(reviewedFen, evaluation);
+            evaluationCacheRef.current.set(currentFen, evaluation);
             setBoardEvaluation({ ...evaluation });
         };
 
@@ -975,14 +980,14 @@ function Puzzles() {
          */
         if (
             puzzle.source == "archive"
-            && reviewedFen == puzzle.startFen
+            && currentFen == puzzle.startFen
         ) {
             updateEvaluation(puzzle.evaluation);
             return;
         }
 
         const cachedEvaluation =
-            evaluationCacheRef.current.get(reviewedFen);
+            evaluationCacheRef.current.get(currentFen);
         if (cachedEvaluation) {
             setBoardEvaluation({ ...cachedEvaluation });
         }
@@ -997,7 +1002,7 @@ function Puzzles() {
         engine
             .setThreadCount(1)
             .setLineCount(1)
-            .setPosition(reviewedFen);
+            .setPosition(currentFen);
 
         void engine.evaluate({
             depth: Math.min(
@@ -1029,7 +1034,7 @@ function Puzzles() {
             engine.terminate();
         };
     }, [
-        reviewedFen,
+        currentFen,
         puzzle?.id,
         settings.analysis.engine.depth,
         settings.analysis.engine.version
@@ -1810,20 +1815,7 @@ function Puzzles() {
                                 {pageCopy.sourceGame} ↗
                             </a>
                         )}
-                    </div>
-
-                    <div className={styles.evaluationSummary}>
-                        <span>{t("puzzle.evaluation")}</span>
-                        <strong>
-                            {stringifyEvaluation(
-                                boardEvaluation,
-                                true,
-                                1
-                            )}
-                        </strong>
-                        <small>{t("puzzle.evaluationNote")}</small>
-                    </div>
-                </aside>
+                    </div>                </aside>
             </section>
         )}
 

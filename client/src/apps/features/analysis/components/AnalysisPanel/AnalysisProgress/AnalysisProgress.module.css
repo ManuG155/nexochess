@@ -161,3 +161,12 @@
         font-size: 0.92rem;
     }
 }
+
+/* NEXO_PROGRESS_BUBBLE_OUTLINE */
+.speechBubble {
+    border-color: rgba(112, 160, 246, 0.46);
+}
+
+.speechBubble::before {
+    border-color: transparent rgba(112, 160, 246, 0.66) transparent transparent;
+}

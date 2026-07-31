@@ -400,3 +400,31 @@
         padding-block: 13px;
     }
 }
+
+/* NEXO_PICKER_BUBBLE_OUTLINE */
+.leadBubble {
+    border-color: rgba(112, 160, 246, 0.46);
+}
+
+.leadBubble::before,
+.leadBubble::after {
+    content: "";
+    position: absolute;
+    top: auto;
+    bottom: 18px;
+    clip-path: polygon(100% 0, 100% 100%, 0 68%);
+}
+
+.leadBubble::before {
+    left: -19px;
+    width: 19px;
+    height: 30px;
+    background: rgba(112, 160, 246, 0.66);
+}
+
+.leadBubble::after {
+    left: -17px;
+    width: 18px;
+    height: 28px;
+    background: #151A23;
+}
