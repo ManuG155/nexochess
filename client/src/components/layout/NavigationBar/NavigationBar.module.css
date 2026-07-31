@@ -492,3 +492,81 @@
         height: 19px;
     }
 }
+
+
+/* NEXO_NAVIGATION_SCALE_POLISH */
+@media (min-width: 801px) {
+    .wrapper {
+        height: 72px;
+        gap: 20px;
+        padding-inline: 20px;
+    }
+
+    .brandArea {
+        gap: 11px;
+        padding-right: 20px;
+    }
+
+    .navItem,
+    .actionButton,
+    .utilityButton,
+    .profileButton,
+    .menuButton {
+        height: 46px;
+        gap: 10px;
+        border-radius: 11px;
+        font-size: 0.98rem;
+    }
+
+    .navItem {
+        padding-inline: 14px;
+    }
+
+    .icon {
+        width: 22px;
+        height: 22px;
+    }
+
+    .utilityButton,
+    .menuButton {
+        width: 46px;
+        flex-basis: 46px;
+    }
+
+    .signIn {
+        padding-inline: 16px;
+    }
+
+    .typographyText {
+        height: 52px;
+        max-width: 265px;
+    }
+
+    .typographyIcon {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+@media (min-width: 801px) and (max-width: 1250px) {
+    .wrapper {
+        gap: 14px;
+        padding-inline: 15px;
+    }
+
+    .brandArea {
+        padding-right: 15px;
+    }
+
+    .navItem {
+        padding-inline: 11px;
+    }
+}
+
+@media (min-width: 801px) and (max-width: 1050px) {
+    .navItem,
+    .actionButton {
+        width: 46px;
+        padding: 0;
+    }
+}

@@ -173,6 +173,58 @@ function getAutoNextPreference() {
     }
 }
 
+function getProvisionalEvaluation(fen: string): Evaluation {
+    try {
+        const board = new Chess(fen);
+
+        if (board.isCheckmate()) {
+            return {
+                type: "mate",
+                value: board.turn() == "b" ? 1 : -1
+            };
+        }
+
+        if (board.isDraw()) {
+            return {
+                type: "centipawn",
+                value: 0
+            };
+        }
+
+        let material = 0;
+
+        board.board().forEach(row => {
+            row.forEach(piece => {
+                if (!piece) return;
+
+                const value = piece.type == "p"
+                    ? 100
+                    : piece.type == "n"
+                        ? 320
+                        : piece.type == "b"
+                            ? 330
+                            : piece.type == "r"
+                                ? 500
+                                : piece.type == "q"
+                                    ? 900
+                                    : 0;
+
+                material += piece.color == "w" ? value : -value;
+            });
+        });
+
+        return {
+            type: "centipawn",
+            value: material
+        };
+    } catch {
+        return {
+            type: "centipawn",
+            value: 0
+        };
+    }
+}
+
 function getMoveSAN(fen: string, uci: string) {
     try {
         const board = new Chess(fen);
@@ -1049,11 +1101,16 @@ function Puzzles() {
             return;
         }
 
+        const provisionalEvaluation =
+            getProvisionalEvaluation(currentFen);
         const cachedEvaluation =
             evaluationCacheRef.current.get(currentFen);
-        if (cachedEvaluation) {
-            setBoardEvaluation({ ...cachedEvaluation });
-        }
+
+        setBoardEvaluation(
+            cachedEvaluation
+                ? { ...cachedEvaluation }
+                : { ...provisionalEvaluation }
+        );
 
         let cancelled = false;
         const selectedVersion = settings.analysis.engine.version;
@@ -1069,12 +1126,16 @@ function Puzzles() {
 
         void engine.evaluate({
             depth: Math.min(
-                14,
-                Math.max(10, settings.analysis.engine.depth)
+                18,
+                Math.max(12, settings.analysis.engine.depth)
             ),
-            timeLimit: 450,
+            timeLimit: 1100,
             onEngineLine: line => {
-                if (!cancelled && line.index == 1) {
+                if (
+                    !cancelled
+                    && line.index == 1
+                    && line.depth >= 6
+                ) {
                     updateEvaluation(line.evaluation);
                 }
             }
@@ -1087,7 +1148,12 @@ function Puzzles() {
                 updateEvaluation(finalLine.evaluation);
             }
         }).catch(() => {
-            // Keep the last safe evaluation if this device cannot run a worker.
+            if (
+                !cancelled
+                && requestId == evaluationRequestRef.current
+            ) {
+                setBoardEvaluation({ ...provisionalEvaluation });
+            }
         }).finally(() => {
             engine.terminate();
         });
@@ -1655,32 +1721,6 @@ function Puzzles() {
                                     colour: t(`colours.${puzzle.solver}`)
                                 })}
                             </h2>
-
-                            <div className={styles.puzzleBadges}>
-                                {puzzle.rating && (
-                                    <span>
-                                        {t("puzzle.rating", {
-                                            rating: puzzle.rating
-                                        })}
-                                    </span>
-                                )}
-                                {puzzle.classification && (
-                                    <span className={styles.errorBadge}>
-                                        {t(
-                                            `classifications.${puzzle.classification}`,
-                                            { ns: "analysis" }
-                                        )}
-                                    </span>
-                                )}
-                                {visibleThemes.map(value => (
-                                    <span key={value}>
-                                        {formatPuzzleTheme(
-                                            value,
-                                            i18n.resolvedLanguage || "en"
-                                        )}
-                                    </span>
-                                ))}
-                            </div>
                         </div>
                     </div>
                 </header>
@@ -1849,6 +1889,32 @@ function Puzzles() {
                                 </button>
                             </div>
                         )}
+
+                        <div className={styles.positionDetails}>
+                            {puzzle.rating && (
+                                <span>
+                                    {t("puzzle.rating", {
+                                        rating: puzzle.rating
+                                    })}
+                                </span>
+                            )}
+                            {puzzle.classification && (
+                                <span className={styles.positionErrorBadge}>
+                                    {t(
+                                        `classifications.${puzzle.classification}`,
+                                        { ns: "analysis" }
+                                    )}
+                                </span>
+                            )}
+                            {visibleThemes.map(value => (
+                                <span key={value}>
+                                    {formatPuzzleTheme(
+                                        value,
+                                        i18n.resolvedLanguage || "en"
+                                    )}
+                                </span>
+                            ))}
+                        </div>
                     </div>
 
                     {showRatedProfile && (
