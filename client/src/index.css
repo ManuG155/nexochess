@@ -23,29 +23,58 @@
 :root {
     --ui-blue: #467de8;
     --ui-lavender: #625eb1;
-    --ui-shade-1: #211f1d;
-    --ui-shade-2: #17191e;
-    --ui-shade-3: #1f2125;
-    --ui-shade-4: #2c2f35;
-    --ui-shade-5: #3b3e43;
-    --ui-shade-6: #3e4349;
-    --ui-shade-7: #50575f;
+
+    --ui-page-bg: #09111a;
+    --ui-page-bg-soft: #0d1824;
+    --ui-page-background:
+        radial-gradient(
+            circle at 18% -12%,
+            rgba(71, 111, 169, 0.14),
+            transparent 34rem
+        ),
+        radial-gradient(
+            circle at 88% 4%,
+            rgba(42, 79, 127, 0.08),
+            transparent 28rem
+        ),
+        linear-gradient(
+            145deg,
+            #0d1722 0%,
+            #09111a 55%,
+            #070d14 100%
+        );
+
+    --ui-shade-1: #09111a;
+    --ui-shade-2: #0d141e;
+    --ui-shade-3: #151e2a;
+    --ui-shade-4: #232e3b;
+    --ui-shade-5: #34404d;
+    --ui-shade-6: #3b4856;
+    --ui-shade-7: #536170;
 
     --rt-color-dark: #111 !important;
 }
 
 html,
 body,
-#root {
+#root,
+.root {
     min-height: 100%;
-    background-color: #211f1d;
+
+    background-color: var(--ui-page-bg);
+}
+
+html {
+    color-scheme: dark;
 }
 
 body {
     margin: 0;
     overflow-x: hidden;
 
-    background-color: var(--ui-shade-1);
+    background: var(--ui-page-background);
+    background-attachment: fixed;
+    color: #eef3fa;
 }
 
 * {
