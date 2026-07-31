@@ -1,7 +1,7 @@
 .moveEntry {
     display: grid;
     grid-template-columns:
-        28px
+        27px
         minmax(0, 1fr);
 
     align-items: center;
@@ -9,7 +9,7 @@
     width: 100%;
     min-width: 0;
 
-    column-gap: 7px;
+    column-gap: 6px;
 }
 
 .iconSlot {
@@ -17,17 +17,17 @@
     align-items: center;
     justify-content: center;
 
-    width: 28px;
-    height: 28px;
+    width: 27px;
+    height: 27px;
 }
 
 .classificationIcon {
-    width: 24px;
-    height: 24px;
+    width: 23px;
+    height: 23px;
 
     object-fit: contain;
 
-    filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.24));
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.18));
 }
 
 .wrapper {
@@ -41,16 +41,16 @@
     max-width: 100%;
     min-width: 0;
 
-    padding: 7px 9px;
+    padding: 6px 8px;
 
-    border: 1px solid transparent;
-    border-radius: 8px;
+    border: 0;
+    border-radius: 7px;
 
     background: transparent;
-    color: #eef3fb;
+    color: #edf2f8;
 
     font-size: 16px;
-    font-weight: 720;
+    font-weight: 690;
     line-height: 1;
 
     white-space: nowrap;
@@ -59,32 +59,18 @@
 
     transition:
         background-color 150ms ease,
-        border-color 150ms ease,
         color 150ms ease,
-        box-shadow 150ms ease,
-        transform 150ms ease;
+        box-shadow 150ms ease;
 }
 
 .wrapper:hover {
-    border-color: rgba(117, 162, 242, 0.18);
-
-    background: rgba(83, 126, 202, 0.12);
-    color: #ffffff;
-
-    transform: translateY(-1px);
+    background: rgba(117, 162, 242, 0.085);
+    color: #fff;
 }
 
 .current {
     z-index: 1;
 
-    border-color: rgba(117, 162, 242, 0.58) !important;
-
-    background: linear-gradient(
-        180deg,
-        rgba(67, 106, 173, 0.36),
-        rgba(42, 69, 112, 0.34)
-    ) !important;
-    box-shadow:
-        0 7px 18px rgba(19, 49, 101, 0.18),
-        inset 0 -2px 0 #75a2f2 !important;
+    background: rgba(86, 132, 210, 0.14) !important;
+    box-shadow: inset 0 -2px 0 #79a6f3 !important;
 }
