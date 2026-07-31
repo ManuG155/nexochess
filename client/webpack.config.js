@@ -29,8 +29,14 @@ module.exports = {
         unfound: "./src/apps/unfound/index.tsx"
     },
     output: {
+        // Entry bundles keep their stable names because the existing HTML files
+        // reference them directly. Lazy chunks receive a content hash so every
+        // deployment produces a new URL whenever their code or CSS changes.
         filename: "[name].bundle.js",
-        path: resolve("./dist")
+        chunkFilename: "[name].[contenthash:8].bundle.js",
+        path: resolve("./dist"),
+        publicPath: "/",
+        clean: true
     },
     resolve: {
         extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
