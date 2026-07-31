@@ -1,0 +1,364 @@
+.nexo-review-mode {
+    min-height: 0;
+    padding: 10px !important;
+}
+
+.nexo-review-card {
+    --review-bg: #0d131d;
+    --review-card: #121a26;
+    --review-card-soft: #151f2e;
+    --review-border: rgba(111, 154, 232, 0.19);
+    --review-border-strong: rgba(111, 160, 247, 0.42);
+    --review-blue: #75a2f2;
+    --review-blue-strong: #4f88ea;
+    --review-text: #f3f6fb;
+    --review-muted: rgba(222, 229, 240, 0.68);
+
+    position: relative;
+
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+
+    min-height: 0;
+
+    border: 1px solid var(--review-border) !important;
+    border-radius: 18px !important;
+
+    background:
+        radial-gradient(
+            circle at 92% 0%,
+            rgba(76, 128, 218, 0.13),
+            transparent 31%
+        ),
+        linear-gradient(155deg, #111925, var(--review-bg) 72%) !important;
+    box-shadow:
+        0 22px 54px rgba(0, 0, 0, 0.32),
+        0 0 0 1px rgba(255, 255, 255, 0.018) inset;
+
+    overflow: hidden;
+}
+
+.nexo-review-content {
+    gap: 11px !important;
+
+    padding: 13px 14px 10px !important;
+
+    background: transparent;
+}
+
+.nexo-review-header {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px;
+
+    min-height: 42px !important;
+
+    padding: 0 2px 4px;
+
+    border-bottom: 1px solid rgba(111, 154, 232, 0.12);
+}
+
+.nexo-review-header::after {
+    content: "";
+
+    flex: 1;
+
+    height: 1px;
+
+    background: linear-gradient(
+        90deg,
+        rgba(117, 162, 242, 0.34),
+        transparent
+    );
+}
+
+.nexo-review-back {
+    width: 38px !important;
+    height: 38px !important;
+
+    border: 1px solid rgba(117, 162, 242, 0.23) !important;
+    border-radius: 11px !important;
+
+    background: rgba(9, 14, 22, 0.52) !important;
+    color: rgba(234, 241, 251, 0.86) !important;
+
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+
+    transition:
+        border-color 150ms ease,
+        background-color 150ms ease,
+        color 150ms ease,
+        transform 150ms ease !important;
+}
+
+.nexo-review-back:hover {
+    border-color: rgba(117, 162, 242, 0.58) !important;
+
+    background: rgba(72, 116, 194, 0.18) !important;
+    color: #ffffff !important;
+
+    transform: translateX(-1px) !important;
+}
+
+.nexo-review-engine {
+    padding: 8px;
+
+    border: 1px solid var(--review-border);
+    border-radius: 14px;
+
+    background: linear-gradient(
+        145deg,
+        rgba(22, 31, 45, 0.92),
+        rgba(13, 19, 29, 0.96)
+    );
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+}
+
+.nexo-review-engine > * {
+    border-radius: 10px !important;
+
+    background: rgba(8, 13, 20, 0.42) !important;
+}
+
+.nexo-review-coach {
+    border: 1px solid var(--review-border);
+    border-radius: 16px;
+
+    background:
+        radial-gradient(
+            circle at 14% 24%,
+            rgba(93, 145, 235, 0.13),
+            transparent 48%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(27, 39, 58, 0.93),
+            rgba(16, 23, 34, 0.96)
+        );
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.2);
+
+    overflow: hidden;
+}
+
+.nexo-review-coach > section {
+    align-items: flex-end !important;
+    gap: 13px !important;
+
+    padding: 10px 12px 0 !important;
+}
+
+.nexo-review-coach > section > button {
+    flex-basis: 126px !important;
+
+    width: 126px !important;
+    height: 126px !important;
+
+    margin-bottom: -1px;
+}
+
+.nexo-review-coach > section > div {
+    min-height: 92px !important;
+
+    margin: 0 0 13px;
+    padding: 17px 19px !important;
+
+    border: 1px solid var(--review-border-strong) !important;
+    border-radius: 15px !important;
+
+    background: rgba(12, 18, 27, 0.9) !important;
+    color: #eef3fb !important;
+    box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.23),
+        0 0 0 1px rgba(255, 255, 255, 0.015) inset !important;
+
+    font-size: 1.05rem !important;
+    font-weight: 650 !important;
+    line-height: 1.43 !important;
+}
+
+.nexo-review-coach > section > div::before {
+    background: rgba(112, 160, 246, 0.68) !important;
+}
+
+.nexo-review-coach > section > div::after {
+    background: #101722 !important;
+}
+
+.nexo-review-graph {
+    box-sizing: border-box;
+
+    padding: 9px !important;
+
+    border: 1px solid var(--review-border);
+    border-radius: 15px;
+
+    background: linear-gradient(
+        145deg,
+        rgba(22, 31, 45, 0.94),
+        rgba(13, 19, 29, 0.97)
+    );
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+
+    overflow: hidden;
+}
+
+.nexo-review-graph > * {
+    width: 100%;
+}
+
+.nexo-review-moves {
+    min-height: 150px !important;
+
+    padding: 6px 0 8px;
+
+    border: 1px solid var(--review-border);
+    border-radius: 15px !important;
+
+    background: rgba(12, 18, 27, 0.72);
+    box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.012) inset;
+
+    scrollbar-color: rgba(112, 156, 232, 0.34) transparent !important;
+}
+
+.nexo-review-moves::-webkit-scrollbar {
+    width: 7px !important;
+}
+
+.nexo-review-moves::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: 999px;
+
+    background: rgba(112, 156, 232, 0.34) !important;
+    background-clip: padding-box !important;
+}
+
+.nexo-review-moves > div {
+    background: transparent !important;
+}
+
+.nexo-review-footer {
+    position: static !important;
+
+    flex: 0 0 auto;
+
+    box-sizing: border-box;
+
+    width: 100%;
+
+    margin: 0 !important;
+    padding: 12px 14px 14px !important;
+
+    border-top: 1px solid rgba(111, 154, 232, 0.14);
+
+    background: linear-gradient(
+        180deg,
+        rgba(15, 22, 33, 0.82),
+        rgba(9, 14, 22, 0.96)
+    );
+}
+
+.nexo-review-traverser {
+    width: 100% !important;
+    max-width: none !important;
+
+    gap: 9px !important;
+}
+
+.nexo-review-traverser button {
+    height: 52px !important;
+
+    border: 1px solid rgba(111, 156, 236, 0.2) !important;
+    border-radius: 11px !important;
+
+    background: linear-gradient(
+        180deg,
+        rgba(31, 44, 64, 0.96),
+        rgba(20, 29, 43, 0.98)
+    ) !important;
+    color: rgba(224, 233, 246, 0.78) !important;
+    box-shadow:
+        0 8px 18px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.015) inset !important;
+}
+
+.nexo-review-traverser button:hover {
+    border-color: rgba(117, 162, 242, 0.5) !important;
+
+    background: linear-gradient(
+        180deg,
+        rgba(43, 62, 90, 0.98),
+        rgba(25, 37, 55, 1)
+    ) !important;
+    color: #ffffff !important;
+
+    transform: translateY(-1px) !important;
+}
+
+.nexo-review-traverser button:nth-child(3) {
+    border-color: rgba(119, 164, 244, 0.62) !important;
+
+    background: linear-gradient(180deg, #568def, #3975d8) !important;
+    color: #ffffff !important;
+    box-shadow:
+        0 10px 24px rgba(38, 91, 181, 0.28),
+        0 0 0 1px rgba(255, 255, 255, 0.11) inset !important;
+}
+
+.nexo-review-traverser button:nth-child(3):hover {
+    background: linear-gradient(180deg, #6499f4, #427edf) !important;
+}
+
+@media (max-width: 900px) {
+    .nexo-review-mode {
+        padding-bottom: 10px !important;
+    }
+
+    .nexo-review-footer {
+        left: auto !important;
+        bottom: auto !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .nexo-review-content {
+        padding: 10px 10px 8px !important;
+    }
+
+    .nexo-review-coach > section {
+        align-items: flex-start !important;
+        gap: 9px !important;
+
+        padding: 9px 9px 0 !important;
+    }
+
+    .nexo-review-coach > section > button {
+        flex-basis: 88px !important;
+
+        width: 88px !important;
+        height: 88px !important;
+    }
+
+    .nexo-review-coach > section > div {
+        min-height: 78px !important;
+
+        margin-bottom: 9px;
+        padding: 13px 15px !important;
+
+        font-size: 0.96rem !important;
+    }
+
+    .nexo-review-footer {
+        padding: 10px !important;
+    }
+
+    .nexo-review-traverser {
+        gap: 6px !important;
+    }
+
+    .nexo-review-traverser button {
+        height: 48px !important;
+    }
+}

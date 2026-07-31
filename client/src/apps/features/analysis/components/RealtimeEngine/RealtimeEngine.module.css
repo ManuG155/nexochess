@@ -1,27 +1,37 @@
 .wrapper {
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    padding: 10px;
-    padding-top: 7px;
+    gap: 7px;
 
+    padding: 10px 12px;
+
+    border: 1px solid rgba(111, 154, 232, 0.12);
     border-radius: 10px;
-    background-color: var(--ui-shade-4);
+
+    background: rgba(7, 12, 19, 0.38);
 }
 
 .depth {
     display: flex;
-    gap: 5px;
+    gap: 6px;
 
-    color: gray;
-    font-size: 0.7rem;
+    color: rgba(213, 224, 239, 0.58);
+
+    font-size: 0.76rem;
+    font-weight: 650;
 }
 
 .engineLineSeparator {
-    margin: 0;
     width: 100%;
     height: 1px;
 
-    border-width: 1px 0 0 0;
-    border-color: #a5a5a5;
+    margin: 1px 0;
+
+    border: 0;
+
+    background: linear-gradient(
+        90deg,
+        rgba(117, 162, 242, 0.2),
+        transparent
+    );
 }
