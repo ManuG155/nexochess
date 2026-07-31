@@ -162,7 +162,9 @@
         "disabled": "या सत्रात बंद",
         "nextPuzzle": "पुढील कोडे",
         "changeFilters": "सत्र बदला",
-        "sourceGame": "मूळ डाव"
+        "sourceGame": "मूळ डाव",
+        "autoNext": "पुढचे कोडे आपोआप",
+        "autoNextHelp": "सोडवल्यावर पुढचे कोडे उघडा"
     },
     "attribution": {
         "text": "स्थिती Lichess च्या सार्वजनिक CC0 कोडे डेटाबेसमधून घेतल्या आहेत. NexoChess चा Lichess शी संबंध नाही.",

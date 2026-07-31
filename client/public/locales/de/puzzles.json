@@ -162,7 +162,9 @@
         "disabled": "Für dieses Training deaktiviert",
         "nextPuzzle": "Nächste Aufgabe",
         "changeFilters": "Training ändern",
-        "sourceGame": "Quellpartie"
+        "sourceGame": "Quellpartie",
+        "autoNext": "Automatisch weiter",
+        "autoNextHelp": "Nach dem Lösen zum nächsten Puzzle"
     },
     "attribution": {
         "text": "Die Stellungen stammen aus der öffentlichen CC0-Datenbank von Lichess. NexoChess ist nicht mit Lichess verbunden.",

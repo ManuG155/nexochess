@@ -162,7 +162,9 @@
         "disabled": "Desativado nesta sessão",
         "nextPuzzle": "Puzzle seguinte",
         "changeFilters": "Mudar sessão",
-        "sourceGame": "Partida de origem"
+        "sourceGame": "Partida de origem",
+        "autoNext": "Avanço automático",
+        "autoNextHelp": "Passa ao puzzle seguinte ao resolver"
     },
     "attribution": {
         "text": "As posições vêm da base pública CC0 de puzzles do Lichess. A NexoChess não é afiliada ao Lichess.",

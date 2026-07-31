@@ -162,7 +162,9 @@
         "disabled": "इस सत्र में बंद",
         "nextPuzzle": "अगली पहेली",
         "changeFilters": "सत्र बदलें",
-        "sourceGame": "मूल बाज़ी"
+        "sourceGame": "मूल बाज़ी",
+        "autoNext": "अगली पहेली अपने आप",
+        "autoNextHelp": "हल होते ही अगली पहेली खोलें"
     },
     "attribution": {
         "text": "स्थितियाँ Lichess की सार्वजनिक CC0 पहेली डेटाबेस से आती हैं। NexoChess, Lichess से संबद्ध नहीं है।",

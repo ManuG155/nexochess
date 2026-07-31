@@ -162,7 +162,9 @@
         "disabled": "Disabled for this session",
         "nextPuzzle": "Next puzzle",
         "changeFilters": "Change session",
-        "sourceGame": "Source game"
+        "sourceGame": "Source game",
+        "autoNext": "Auto-next",
+        "autoNextHelp": "Open the next puzzle after solving"
     },
     "attribution": {
         "text": "Positions come from the public CC0 Lichess Puzzle Database. NexoChess is not affiliated with Lichess.",

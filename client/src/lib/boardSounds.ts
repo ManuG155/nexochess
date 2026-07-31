@@ -19,6 +19,29 @@ const moveSounds = {
     gameEnd: iconGameend
 };
 
+function safelyPlaySound(source: string) {
+    const audio = new Audio(source);
+    void audio.play().catch(() => {
+        // Browsers can reject audio before the first user interaction.
+    });
+}
+
+export function playBoardMoveSound(san: string) {
+    const parsedMove = parseSanMove(san);
+
+    if (parsedMove.check || parsedMove.checkmate) {
+        safelyPlaySound(moveSounds.check);
+    } else if (parsedMove.castling) {
+        safelyPlaySound(moveSounds.castle);
+    } else if (parsedMove.promotion) {
+        safelyPlaySound(moveSounds.promote);
+    } else if (parsedMove.capture) {
+        safelyPlaySound(moveSounds.capture);
+    } else {
+        safelyPlaySound(moveSounds.move);
+    }
+}
+
 function playBoardSound(node: StateTreeNode) {
     const move = node.state.move;
     if (!move) return;

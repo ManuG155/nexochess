@@ -16,6 +16,7 @@ import useSettingsStore from "@/stores/SettingsStore";
 import {
     createCustomPieces
 } from "@/lib/chessAppearance";
+import { playBoardMoveSound } from "@/lib/boardSounds";
 
 import EvaluationBar from
     "@analysis/components/EvaluationBar";
@@ -160,6 +161,18 @@ const difficulties: PuzzleDifficulty[] = [
     "expert"
 ];
 
+const AUTO_NEXT_STORAGE_KEY = "nexochess-puzzle-auto-next-v1";
+
+function getAutoNextPreference() {
+    if (typeof window == "undefined") return false;
+
+    try {
+        return window.localStorage.getItem(AUTO_NEXT_STORAGE_KEY) == "true";
+    } catch {
+        return false;
+    }
+}
+
 function getMoveSAN(fen: string, uci: string) {
     try {
         const board = new Chess(fen);
@@ -197,6 +210,8 @@ function Puzzles() {
         useState(true);
     const [ solutionEnabled, setSolutionEnabled ] =
         useState(true);
+    const [ autoNext, setAutoNext ] =
+        useState(getAutoNextPreference);
     const [ archivePuzzles, setArchivePuzzles ] =
         useState<TrainingPuzzle[]>([]);
     const [ analysedGameCount, setAnalysedGameCount ] =
@@ -259,6 +274,7 @@ function Puzzles() {
     const replyTimer = useRef<number | undefined>(undefined);
     const wrongMoveTimer = useRef<number | undefined>(undefined);
     const moveFeedbackTimer = useRef<number | undefined>(undefined);
+    const autoNextTimer = useRef<number | undefined>(undefined);
     const liveFen = useRef("");
     const failedAttempt = useRef(false);
     const completedCurrentPuzzle = useRef(false);
@@ -272,6 +288,21 @@ function Puzzles() {
     useEffect(() => {
         profileRef.current = profile;
     }, [profile]);
+
+    useEffect(() => {
+        try {
+            window.localStorage.setItem(
+                AUTO_NEXT_STORAGE_KEY,
+                String(autoNext)
+            );
+        } catch {
+            // The preference remains active for the current tab.
+        }
+
+        if (!autoNext) {
+            window.clearTimeout(autoNextTimer.current);
+        }
+    }, [autoNext]);
 
     useEffect(() => {
         let cancelled = false;
@@ -343,6 +374,7 @@ function Puzzles() {
             window.clearTimeout(replyTimer.current);
             window.clearTimeout(wrongMoveTimer.current);
             window.clearTimeout(moveFeedbackTimer.current);
+            window.clearTimeout(autoNextTimer.current);
         };
     }, []);
 
@@ -350,6 +382,7 @@ function Puzzles() {
         window.clearTimeout(replyTimer.current);
         window.clearTimeout(wrongMoveTimer.current);
         window.clearTimeout(moveFeedbackTimer.current);
+        window.clearTimeout(autoNextTimer.current);
 
         const history = nextPuzzle.previousFen
             ? [nextPuzzle.previousFen, nextPuzzle.startFen]
@@ -414,6 +447,7 @@ function Puzzles() {
     async function startTraining() {
         if (requestingPuzzleRef.current) return;
 
+        window.clearTimeout(autoNextTimer.current);
         requestingPuzzleRef.current = true;
         setRequestingPuzzle(true);
 
@@ -497,6 +531,13 @@ function Puzzles() {
                     ? "coach.solvedClean"
                     : "coach.solvedAfterHelp"
         });
+
+        if (!revealed && autoNext) {
+            window.clearTimeout(autoNextTimer.current);
+            autoNextTimer.current = window.setTimeout(() => {
+                void startTraining();
+            }, 1500);
+        }
     }
 
     async function skipPuzzle() {
@@ -508,6 +549,7 @@ function Puzzles() {
         window.clearTimeout(replyTimer.current);
         window.clearTimeout(wrongMoveTimer.current);
         window.clearTimeout(moveFeedbackTimer.current);
+        window.clearTimeout(autoNextTimer.current);
         setPendingReply(false);
         setWrongMovePreview(undefined);
         setMoveFeedback(undefined);
@@ -555,13 +597,14 @@ function Puzzles() {
             setCoachMessage({ key: "coach.wrong" });
 
             try {
-                attemptBoard.move({
+                const attemptedMove = attemptBoard.move({
                     from: from as Square,
                     to: to as Square,
                     ...(legalMove.promotion
                         ? { promotion: legalMove.promotion }
                         : {})
                 });
+                playBoardMoveSound(attemptedMove.san);
 
                 setWrongMovePreview({
                     fen: attemptBoard.fen(),
@@ -584,7 +627,8 @@ function Puzzles() {
         const board = new Chess(liveFen.current);
 
         try {
-            board.move(expected);
+            const playedMove = board.move(expected);
+            playBoardMoveSound(playedMove.san);
         } catch {
             setPageState("error");
             setCoachExpression("worried");
@@ -629,7 +673,8 @@ function Puzzles() {
             const reply = puzzle.solution[nextIndex];
 
             try {
-                replyBoard.move(reply);
+                const playedReply = replyBoard.move(reply);
+                playBoardMoveSound(playedReply.san);
             } catch {
                 setPendingReply(false);
                 setPageState("error");
@@ -1846,6 +1891,25 @@ function Puzzles() {
                         </div>
                     )}
 
+                    <div className={styles.autoNextControl}>
+                        <span className={styles.autoNextCopy}>
+                            <strong>{t("actions.autoNext")}</strong>
+                            <small>{t("actions.autoNextHelp")}</small>
+                        </span>
+                        <button
+                            type="button"
+                            role="switch"
+                            aria-checked={autoNext}
+                            className={[
+                                styles.autoNextSwitch,
+                                autoNext ? styles.autoNextEnabled : ""
+                            ].filter(Boolean).join(" ")}
+                            onClick={() => setAutoNext(value => !value)}
+                        >
+                            <i aria-hidden="true" />
+                        </button>
+                    </div>
+
                     <button
                         type="button"
                         className={styles.nextPuzzle}
@@ -1865,6 +1929,7 @@ function Puzzles() {
                         <button
                             type="button"
                             onClick={() => {
+                                window.clearTimeout(autoNextTimer.current);
                                 setPuzzle(undefined);
                                 setPageState("setup");
                                 setCoachExpression("idle");

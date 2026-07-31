@@ -162,7 +162,9 @@
         "disabled": "Отключено для этой тренировки",
         "nextPuzzle": "Следующая задача",
         "changeFilters": "Изменить тренировку",
-        "sourceGame": "Исходная партия"
+        "sourceGame": "Исходная партия",
+        "autoNext": "Автопереход",
+        "autoNextHelp": "Открывать следующую задачу после решения"
     },
     "attribution": {
         "text": "Позиции взяты из общедоступной базы задач Lichess под CC0. NexoChess не связан с Lichess.",

@@ -162,7 +162,9 @@
         "disabled": "本次训练已关闭",
         "nextPuzzle": "下一题",
         "changeFilters": "更改训练",
-        "sourceGame": "来源对局"
+        "sourceGame": "来源对局",
+        "autoNext": "自动下一题",
+        "autoNextHelp": "解出后自动进入下一题"
     },
     "attribution": {
         "text": "局面来自 Lichess 的公共 CC0 谜题数据库。NexoChess 与 Lichess 无隶属关系。",
