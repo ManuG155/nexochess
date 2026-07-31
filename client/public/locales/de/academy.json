@@ -1,0 +1,266 @@
+{
+  "hero": {
+    "eyebrow": "NexoChess-Akademie",
+    "title": "Verstehe, was jeder Zug aussagt",
+    "subtitle": "Lerne die Sprache des Schachs in kurzen, visuellen Lektionen. Ohne Vorwissen und ohne Textwüsten.",
+    "start": "Mit der Notation beginnen",
+    "progress": "Akademie-Module"
+  },
+  "modules": {
+    "notation": "Notation",
+    "movement": "Zugweise der Figuren",
+    "values": "Figurenwerte",
+    "practice": "Geführte Übungen",
+    "classifications": "Zugqualität",
+    "evaluation": "Bewertungsbalken",
+    "challenge": "Kurze Aufgabe"
+  },
+  "notation": {
+    "kicker": "Modul 1 · Notation",
+    "title": "Lies eine Partie, ohne sie zu übersetzen",
+    "intro": "Die Notation hält das Geschehen kompakt fest. Die Figurenbuchstaben sind immer Englisch; Bauern haben keinen Buchstaben.",
+    "piecesTitle": "Die sechs Figuren",
+    "piecesHelp": "Der erste Großbuchstabe zeigt, welche Figur gezogen hat.",
+    "pawnRule": "Ein Bauernzug beginnt direkt mit dem Zielfeld: e4 bedeutet, dass ein Bauer nach e4 gezogen ist.",
+    "examplesTitle": "Entschlüssle einen Zug",
+    "examplesHelp": "Tippe auf ein Beispiel und sieh, wie jedes Zeichen die Bedeutung verändert.",
+    "pieces": {
+      "K": {
+        "name": "König"
+      },
+      "Q": {
+        "name": "Dame"
+      },
+      "R": {
+        "name": "Turm"
+      },
+      "B": {
+        "name": "Läufer"
+      },
+      "N": {
+        "name": "Springer"
+      },
+      "P": {
+        "name": "Bauer"
+      }
+    },
+    "examples": {
+      "e4": "Ein Bauer zieht nach e4. Bauern werden ohne Buchstaben notiert.",
+      "Nf3": "Der Springer (N) zieht nach f3.",
+      "Bxf7+": "Der Läufer (B) schlägt (x) auf f7 und gibt Schach (+).",
+      "O-O": "Der König rochiert auf der Königsseite.",
+      "Rae1": "Der Turm (R) von der a-Linie zieht nach e1. Das „a“ unterscheidet ihn vom anderen Turm.",
+      "e8=Q#": "Ein Bauer erreicht e8, wird zur Dame (=Q) und setzt matt (#)."
+    }
+  },
+  "movement": {
+    "kicker": "Modul 2 · Zugweise",
+    "title": "Sieh das Brett, bevor du Regeln auswendig lernst",
+    "intro": "Wähle eine Figur. Das Brett markiert alle Felder, die sie von d4 auf einem sonst leeren Brett erreichen könnte.",
+    "choosePiece": "Figur wählen",
+    "move": "Möglicher Zug",
+    "capture": "Bauernschlag",
+    "boardLabel": "Zugfelder für {{piece}}",
+    "pieces": {
+      "K": "Ein Feld in jede Richtung. Er darf niemals auf ein vom Gegner angegriffenes Feld ziehen.",
+      "Q": "Beliebig viele Felder auf Linien, Reihen oder Diagonalen. Sie kann keine Figuren überspringen.",
+      "R": "Beliebig viele Felder waagerecht oder senkrecht. Er kann keine Figuren überspringen.",
+      "B": "Beliebig viele Felder diagonal. Ein Läufer bleibt während der ganzen Partie auf derselben Feldfarbe.",
+      "N": "In L-Form: zwei Felder in eine Richtung und eines seitwärts. Als einzige Figur kann er andere überspringen.",
+      "P": "Ein Feld vorwärts, geschlagen wird ein Feld diagonal. Vom Startfeld darf er zwei Felder ziehen."
+    }
+  },
+  "values": {
+    "kicker": "Modul 3 · Figurenwerte",
+    "title": "Verstehe die Kosten eines Tauschs",
+    "intro": "Figurenwerte sind eine schnelle Orientierung, kein fester Preis. Sie helfen beim Vergleich von Schlägen und Opfern.",
+    "points": "{{value}} Punkte",
+    "pieces": {
+      "P": "Die Grundeinheit. Ein Freibauer wird nahe der Umwandlung deutlich wertvoller.",
+      "N": "Meist drei Bauern wert. Stark in geschlossenen Stellungen und nahe dem Zentrum.",
+      "B": "Meist drei Bauern wert. Offene Diagonalen und das Läuferpaar erhöhen seinen Wert.",
+      "R": "Meist fünf Bauern wert. Auf offenen Linien wird er besonders stark.",
+      "Q": "Etwa neun Bauern wert. Sie vereint Turm und Läufer, kann aber gefangen werden.",
+      "K": "Kein Tauschwert: Sein Verlust beendet die Partie. Im Endspiel ist er eine aktive Figur."
+    },
+    "note": "Die Stellung entscheidet: Aktivität, Königssicherheit und forcierte Taktik können wichtiger als die Summe sein."
+  },
+  "practice": {
+    "kicker": "Modul 4 · Geführte Übung",
+    "title": "Führe den Zug auf dem Brett aus",
+    "intro": "Wähle zuerst das Startfeld und dann das Zielfeld. Bei einem Fehler erklärt dir die Akademie warum und lässt dich erneut versuchen.",
+    "progress": "Stellung {{current}} von {{total}}",
+    "selectPiece": "Wähle die angegebene Figur",
+    "selectTarget": "Wähle ihr Zielfeld",
+    "correct": "Richtig",
+    "incorrect": "Das ist nicht der gesuchte Zug",
+    "retry": "Stellung wiederholen",
+    "next": "Nächste Stellung",
+    "boardLabel": "Interaktives Übungsbrett",
+    "positions": {
+      "knight": {
+        "tab": "Springerzug",
+        "title": "Finde den Springersprung",
+        "prompt": "Ziehe den Springer von f3 nach e5.",
+        "correct": "Ne5 ist legal: Der Springer zieht zwei Felder in eine Richtung und eines zur Seite.",
+        "wrong": "Beginne mit dem Springer auf f3 und lande auf e5. Ein Springer zieht nie gerade, sondern springt in L-Form."
+      },
+      "rook": {
+        "tab": "Turm schlägt",
+        "title": "Nutze die offene Linie",
+        "prompt": "Schlage den Turm auf a8 mit deinem Turm von a1.",
+        "correct": "Rxa8+ nutzt die freie a-Linie, schlägt den Turm und gibt dem König auf g8 Schach.",
+        "wrong": "Der Turm muss von a1 gerade über die freie a-Linie nach a8 ziehen. Türme ziehen nicht diagonal."
+      },
+      "bishop": {
+        "tab": "Läuferschach",
+        "title": "Gib Schach auf der Diagonale",
+        "prompt": "Ziehe den Läufer von c4 nach b5 und gib Schach.",
+        "correct": "Bb5+ bleibt auf der Diagonale und zielt direkt auf den König auf e8.",
+        "wrong": "Der Läufer muss von c4 nach b5. Läufer ziehen nur diagonal; b5 öffnet die Schachlinie nach e8."
+      }
+    }
+  },
+  "classifications": {
+    "kicker": "Modul 5 · Zugqualität",
+    "title": "Warum ein Zug welche Bewertung erhält",
+    "intro": "NexoChess vergleicht deinen Zug mit der Stellung und den Engine-Alternativen. Tippe auf eine Bewertung für eine einfache Erklärung.",
+    "selected": "Ausgewählte Bewertung",
+    "engineNote": "Derselbe Zug kann in einer anderen Stellung anders bewertet werden: Kontext, Alternativen und die Veränderung der Gewinnchancen zählen.",
+    "descriptions": {
+      "brilliant": "Ein sehr starker, schwieriger Zug, der bewusst Material ungedeckt lässt oder für eine stichhaltige Idee opfert.",
+      "critical": "Ein großartiger Zug in einer anspruchsvollen Stellung, in der die anderen ernsthaften Alternativen deutlich schlechter sind.",
+      "best": "Der erste Zug der Engine, bestätigt ohne nennenswerten Verlust an Gewinnchancen.",
+      "excellent": "Sehr nah an der besten Wahl. Fast der gesamte Wert der Stellung bleibt erhalten.",
+      "okay": "Ein solider Zug, der die Partie auf Kurs hält, obwohl eine präzisere Möglichkeit bestand.",
+      "inaccuracy": "Ein kleiner Ausrutscher. Die Stellung wird etwas schlechter, aber die Partie ist dadurch längst nicht verloren.",
+      "mistake": "Ein deutlicher Fehler, der deine Gewinn- oder Remischancen klar reduziert.",
+      "miss": "Der Gegner hat dir eine wichtige Chance gegeben, die dieser Zug nicht genutzt hat.",
+      "blunder": "Ein grober Fehler mit großem Umschwung, etwa dem Verlust von Material, eines Vorteils oder der Partie.",
+      "forced": "Es gab nur einen legalen Zug, also keine echte Entscheidung.",
+      "theory": "Ein anerkannter Eröffnungszug, der noch zur bekannten Theorie gehört.",
+      "risky": "Eine ältere Bewertung für eine zweifelhafte oder unnötig gefährliche Idee. Sie bleibt aus Kompatibilitätsgründen und erscheint selten."
+    }
+  },
+  "evaluation": {
+    "kicker": "Modul 6 · Bewertungsbalken",
+    "title": "Erkenne den Vorteil auf einen Blick",
+    "intro": "Der Balken macht die Motorbewertung sichtbar. Probiere die Beispiele und beobachte, welche Farbe Raum gewinnt.",
+    "white": "Weiß",
+    "black": "Schwarz",
+    "tryLabel": "Fünf Stellungen testen",
+    "current": "Bedeutung",
+    "presets": {
+      "blackWinning": {
+        "title": "Schwarz gewinnt",
+        "body": "Schwarz hat entscheidenden Vorteil. Weiß braucht einen schweren gegnerischen Fehler."
+      },
+      "blackBetter": {
+        "title": "Schwarz steht besser",
+        "body": "Schwarz hat einen nützlichen Vorteil, muss aber genau weiterspielen."
+      },
+      "equal": {
+        "title": "Ausgeglichen",
+        "body": "Keine Seite hat einen deutlichen Motorvorteil. Die Stellung kann trotzdem schwierig sein."
+      },
+      "whiteBetter": {
+        "title": "Weiß steht besser",
+        "body": "Weiß hat einen nützlichen Vorteil, der nach einer Ungenauigkeit verschwinden kann."
+      },
+      "whiteWinning": {
+        "title": "Weiß gewinnt",
+        "body": "Weiß hat entscheidenden Vorteil und sollte ihn bei korrektem Spiel verwerten."
+      }
+    },
+    "facts": {
+      "scale": {
+        "title": "Der Bauer ist die Einheit",
+        "body": "+1,0 entspricht ungefähr einem Bauern; +3,0 etwa einer Leichtfigur."
+      },
+      "colours": {
+        "title": "Fläche zeigt den Vorteil",
+        "body": "Mehr Weiß bedeutet Vorteil für Weiß, mehr Dunkel Vorteil für Schwarz."
+      },
+      "sign": {
+        "title": "Das Vorzeichen nennt die Seite",
+        "body": "Positive Werte begünstigen Weiß, negative Schwarz."
+      },
+      "mate": {
+        "title": "M bedeutet erzwungenes Matt",
+        "body": "M3 zeigt ein erzwungenes Matt in drei Zügen, keinen Materialwert."
+      }
+    },
+    "note": "Der Balken bewertet die Stellung, nicht ihre menschliche Spielbarkeit. Nutze auch Variante und Trainererklärung."
+  },
+  "challenge": {
+    "kicker": "Modul 7 · Kurztest",
+    "title": "Drei Züge. Keine endlose Prüfung.",
+    "intro": "Wähle die Bedeutung jeder Notation. Die Erklärung erhältst du sofort.",
+    "score": "{{score}} von {{total}} richtig",
+    "correct": "Richtig",
+    "incorrect": "Nicht ganz",
+    "completeTitle": "Du kannst bereits einen nützlichen Teil eines PGN lesen",
+    "completeBody": "Öffne eine analysierte Partie und suche diese Zeichen in echten Zügen.",
+    "reset": "Noch einmal",
+    "questions": {
+      "q1": {
+        "prompt": "Was ist auf f7 passiert?",
+        "options": {
+          "a": {
+            "key": "captureCheck",
+            "label": "Ein Läufer hat geschlagen und Schach gegeben"
+          },
+          "b": {
+            "key": "bishopMove",
+            "label": "Ein Läufer zog ohne zu schlagen"
+          },
+          "c": {
+            "key": "mate",
+            "label": "Der Läufer setzte matt"
+          }
+        },
+        "explanation": "B steht für Läufer, x für Schlagen und + für Schach."
+      },
+      "q2": {
+        "prompt": "Was bedeutet die längere Rochade-Notation?",
+        "options": {
+          "a": {
+            "key": "shortCastle",
+            "label": "Königsrochade"
+          },
+          "b": {
+            "key": "longCastle",
+            "label": "Damenrochade"
+          },
+          "c": {
+            "key": "queenMove",
+            "label": "Die Dame zieht drei Felder"
+          }
+        },
+        "explanation": "O-O-O ist die Damenrochade; O-O ist die Königsrochade."
+      },
+      "q3": {
+        "prompt": "Was ist an diesem Bauernzug besonders?",
+        "options": {
+          "a": {
+            "key": "queenCheck",
+            "label": "Umwandlung zur Dame mit Schach"
+          },
+          "b": {
+            "key": "promotionMate",
+            "label": "Umwandlung zur Dame mit Matt"
+          },
+          "c": {
+            "key": "queenCapture",
+            "label": "Eine Dame schlägt auf e8"
+          }
+        },
+        "explanation": "=Q bedeutet Umwandlung zur Dame und # bedeutet Schachmatt."
+      }
+    }
+  },
+  "actions": {
+    "previous": "Zurück",
+    "next": "Weiter"
+  }
+}

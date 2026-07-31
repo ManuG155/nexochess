@@ -3,91 +3,127 @@
     inset: 0;
     z-index: 9999;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: grid;
+    place-items: center;
 
     padding: 24px;
 
-    background: rgba(8, 8, 8, 0.78);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    background:
+        radial-gradient(
+            circle at 50% 22%,
+            rgba(71, 113, 190, 0.16),
+            transparent 42%
+        ),
+        rgba(7, 9, 13, 0.82);
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
 }
 
 .dialog {
     box-sizing: border-box;
 
-    width: min(560px, 100%);
-    max-height: min(88vh, 760px);
+    width: min(640px, 100%);
+    max-height: calc(100dvh - 32px);
 
-    padding: 20px;
+    padding: 26px;
 
-    border-radius: 16px;
+    border: 1px solid rgba(112, 157, 239, 0.25);
+    border-radius: 20px;
 
-    background: #2B2A27;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    background:
+        linear-gradient(
+            145deg,
+            rgba(31, 38, 51, 0.98),
+            rgba(20, 24, 32, 0.99)
+        );
+    box-shadow:
+        0 28px 80px rgba(0, 0, 0, 0.56),
+        0 0 0 1px rgba(255, 255, 255, 0.025) inset;
 
-    overflow-y: auto;
-}
-
-.dialog::-webkit-scrollbar {
-    width: 8px;
-}
-
-.dialog::-webkit-scrollbar-thumb {
-    border-radius: 999px;
-
-    background: rgba(255, 255, 255, 0.16);
+    overflow: clip;
 }
 
 .header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    gap: 12px;
+    gap: 18px;
 
-    margin-bottom: 18px;
+    margin-bottom: 22px;
+}
+
+.kicker {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #75A2F2;
+
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
 }
 
 .title {
     margin: 0;
 
-    color: #FFFFFF;
+    color: #F4F7FC;
 
-    font-size: 1.8rem;
-    font-weight: 800;
+    font-size: clamp(1.65rem, 3vw, 2rem);
+    font-weight: 850;
+    line-height: 1.08;
 }
 
 .closeButton {
-    width: 34px;
-    height: 34px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
 
-    border: 0;
-    border-radius: 10px;
+    width: 40px;
+    height: 40px;
 
-    background: transparent;
-    color: rgba(255, 255, 255, 0.82);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
 
-    font-size: 2rem;
+    background: rgba(9, 12, 17, 0.34);
+    color: rgba(237, 242, 250, 0.78);
+
+    font: inherit;
+    font-size: 1.7rem;
     line-height: 1;
 
     cursor: pointer;
+    transition:
+        border-color 150ms ease,
+        background-color 150ms ease,
+        color 150ms ease,
+        transform 150ms ease;
+}
+
+.closeButton:hover {
+    border-color: rgba(117, 162, 242, 0.48);
+
+    background: rgba(83, 126, 202, 0.14);
+    color: #FFFFFF;
+
+    transform: translateY(-1px);
 }
 
 .lead {
     display: grid;
-    grid-template-columns: 84px minmax(0, 1fr);
-    gap: 8px;
-    align-items: center;
+    grid-template-columns: 94px minmax(0, 1fr);
+    gap: 14px;
+    align-items: end;
 
-    margin-bottom: 18px;
+    margin-bottom: 22px;
 }
 
 .leadImage {
     justify-self: center;
 
-    width: 76px;
-    height: 76px;
+    width: 92px;
+    height: 92px;
 
     object-fit: contain;
     object-position: center bottom;
@@ -101,39 +137,35 @@
 
     box-sizing: border-box;
 
-    min-height: 76px;
+    min-height: 86px;
 
-    padding: 16px 18px;
+    padding: 17px 20px;
 
-    border-radius: 18px;
+    border: 1px solid rgba(126, 164, 230, 0.22);
+    border-radius: 17px;
 
-    background: #FFFFFF;
-    color: #302E2B;
+    background: #151A23;
+    color: #EEF3FB;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
 
-    font-size: 1rem;
-    font-weight: 700;
-    line-height: 1.35;
+    font-size: 1.06rem;
+    font-weight: 650;
+    line-height: 1.45;
 }
 
-/*
- * Triángulo real unido al borde del bocadillo.
- * Al solaparse un píxel se evita la hendidura oscura
- * que producía el antiguo cuadrado rotado.
- */
 .leadBubble::before {
     content: "";
 
     position: absolute;
     left: -17px;
-    top: 50%;
+    bottom: 18px;
 
     width: 18px;
     height: 28px;
 
-    background: #FFFFFF;
+    background: #151A23;
 
-    clip-path: polygon(100% 0, 100% 100%, 0 50%);
-    transform: translateY(-50%);
+    clip-path: polygon(100% 0, 100% 100%, 0 68%);
 }
 
 .grid {
@@ -143,39 +175,78 @@
 }
 
 .card {
+    position: relative;
+
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 10px;
+    align-items: stretch;
+    gap: 11px;
 
-    padding: 10px 10px 14px;
+    padding: 10px 10px 13px;
 
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.075);
+    border-radius: 15px;
 
-    background: #34322F;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(37, 44, 57, 0.92),
+            rgba(26, 31, 41, 0.94)
+        );
+    color: #F4F7FC;
+
+    font: inherit;
 
     cursor: pointer;
+    transition:
+        border-color 160ms ease,
+        box-shadow 160ms ease,
+        transform 160ms ease,
+        background-color 160ms ease;
+}
+
+.card:hover {
+    border-color: rgba(117, 162, 242, 0.42);
+
+    transform: translateY(-2px);
 }
 
 .cardActive {
-    border-color: #9BCB4F;
-    box-shadow: 0 0 0 1px #9BCB4F inset;
+    border-color: #6798EF;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(51, 70, 103, 0.96),
+            rgba(29, 39, 57, 0.98)
+        );
+    box-shadow:
+        0 0 0 1px rgba(103, 152, 239, 0.7) inset,
+        0 12px 30px rgba(31, 75, 153, 0.18);
 }
 
 .cardImageWrap {
     position: relative;
 
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
 
     width: 100%;
-    height: 142px;
+    height: clamp(132px, 17dvh, 154px);
 
+    border: 1px solid rgba(255, 255, 255, 0.035);
     border-radius: 12px;
 
-    background: rgba(0, 0, 0, 0.18);
+    background:
+        radial-gradient(
+            circle at 50% 32%,
+            rgba(108, 151, 225, 0.12),
+            transparent 58%
+        ),
+        rgba(8, 11, 16, 0.34);
+
+    overflow: hidden;
 }
 
 .cardImage {
@@ -188,55 +259,64 @@
 
 .check {
     position: absolute;
-    top: 8px;
-    right: 8px;
+    top: 10px;
+    right: 10px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: grid;
+    place-items: center;
 
-    width: 24px;
-    height: 24px;
+    width: 27px;
+    height: 27px;
 
+    border: 2px solid rgba(255, 255, 255, 0.78);
     border-radius: 999px;
 
-    background: #9BCB4F;
-    color: #1E1E1E;
+    background: #6093ED;
+    color: #FFFFFF;
+    box-shadow: 0 5px 14px rgba(33, 74, 143, 0.34);
 
-    font-size: 0.95rem;
-    font-weight: 800;
+    font-size: 0.9rem;
+    font-weight: 900;
 }
 
 .cardName {
-    color: #FFFFFF;
+    color: #F6F8FC;
 
-    font-size: 1rem;
-    font-weight: 700;
+    font-size: 1.05rem;
+    font-weight: 760;
+    line-height: 1.25;
+    text-align: center;
 }
 
 .confirmButton {
     width: 100%;
 
-    margin-top: 18px;
-    padding: 14px 18px;
+    margin-top: 20px;
+    padding: 15px 19px;
 
-    border: 0;
-    border-radius: 11px;
+    border: 1px solid rgba(141, 178, 244, 0.35);
+    border-radius: 12px;
 
-    background: #81B64C;
+    background:
+        linear-gradient(180deg, #5F94EE 0%, #477EDC 100%);
     color: #FFFFFF;
+    box-shadow:
+        0 12px 26px rgba(40, 91, 181, 0.26),
+        0 1px 0 rgba(255, 255, 255, 0.14) inset;
 
-    font-family: inherit;
+    font: inherit;
     font-size: 1.08rem;
     font-weight: 800;
 
     cursor: pointer;
-
-    transition: background-color 150ms ease, transform 150ms ease;
+    transition:
+        filter 150ms ease,
+        transform 150ms ease;
 }
 
 .confirmButton:hover {
-    background: #75A743;
+    filter: brightness(1.07);
+    transform: translateY(-1px);
 }
 
 .confirmButton:active {
@@ -245,31 +325,106 @@
 
 @media (max-width: 640px) {
     .overlay {
-        padding: 12px;
+        align-items: end;
+        padding: 10px;
     }
 
     .dialog {
-        padding: 16px;
+        width: 100%;
+        max-height: calc(100dvh - 20px);
+        padding: 19px;
+        border-radius: 18px;
     }
 
     .lead {
-        grid-template-columns: 1fr;
+        grid-template-columns: 78px minmax(0, 1fr);
         gap: 10px;
     }
 
     .leadImage {
-        justify-self: start;
+        width: 76px;
+        height: 76px;
     }
 
-    .leadBubble::before {
-        display: none;
+    .leadBubble {
+        min-height: 74px;
+        padding: 14px 15px;
+        font-size: 0.98rem;
     }
 
     .grid {
-        grid-template-columns: 1fr;
+        gap: 10px;
     }
 
     .cardImageWrap {
-        height: 128px;
+        height: 124px;
     }
+}
+
+@media (max-width: 420px) {
+    .dialog {
+        padding: 15px;
+    }
+
+    .header,
+    .lead {
+        margin-bottom: 14px;
+    }
+
+    .lead {
+        grid-template-columns: 64px minmax(0, 1fr);
+    }
+
+    .leadImage {
+        width: 62px;
+        height: 62px;
+    }
+
+    .leadBubble {
+        min-height: 62px;
+        padding: 11px 12px;
+        font-size: 0.9rem;
+    }
+
+    .card {
+        gap: 7px;
+        padding: 7px 7px 9px;
+    }
+
+    .cardImageWrap {
+        height: clamp(92px, 14dvh, 112px);
+    }
+
+    .confirmButton {
+        margin-top: 14px;
+        padding-block: 13px;
+    }
+}
+
+/* NEXO_PICKER_BUBBLE_OUTLINE */
+.leadBubble {
+    border-color: rgba(112, 160, 246, 0.46);
+}
+
+.leadBubble::before,
+.leadBubble::after {
+    content: "";
+    position: absolute;
+    top: auto;
+    bottom: 18px;
+    clip-path: polygon(100% 0, 100% 100%, 0 68%);
+}
+
+.leadBubble::before {
+    left: -19px;
+    width: 19px;
+    height: 30px;
+    background: rgba(112, 160, 246, 0.66);
+}
+
+.leadBubble::after {
+    left: -17px;
+    width: 18px;
+    height: 28px;
+    background: #151A23;
 }

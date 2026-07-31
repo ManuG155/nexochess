@@ -342,10 +342,20 @@ export function getCoachSummaryLine(
         `summary.${coach.id}.${state}`
     );
 
-    if (translated.length > 0) return pickRandomLine(translated);
-    if (state == "analysing") return pickRandomLine(coach.analysingLines);
-    if (state == "ready") return pickRandomLine(coach.readyLines);
-    return pickRandomLine(coach.idleLines);
+    const line = translated.length > 0
+        ? pickRandomLine(translated)
+        : state == "analysing"
+            ? pickRandomLine(coach.analysingLines)
+            : state == "ready"
+                ? pickRandomLine(coach.readyLines)
+                : pickRandomLine(coach.idleLines);
+
+    return getCoachSpokenLine(
+        coach,
+        line,
+        `summary-${state}-${line}`,
+        t
+    );
 }
 
 export function getCoachPickerLine(
@@ -357,9 +367,16 @@ export function getCoachPickerLine(
         `summary.${coach.id}.picker`
     );
 
-    return translated.length > 0
+    const line = translated.length > 0
         ? pickRandomLine(translated)
         : pickRandomLine(coach.pickerLines);
+
+    return getCoachSpokenLine(
+        coach,
+        line,
+        `picker-${line}`,
+        t
+    );
 }
 
 interface CoachCatchphraseSet {
@@ -540,6 +557,81 @@ function pickStableCoachLine(
     ];
 }
 
+const catchphraseMarkers: Record<CoachId, RegExp> = {
+    fog: /\b(mrrp|meow|miau|prrr)\b/i,
+    foxy: /\b(yip|heh|je)\b|sniff,\s*sniff|olf,\s*olf/i,
+    cybe: /\b(beep|bip|pattern locked|patrón fijado)\b/i,
+    max_rooks: /\b(hm|indeed|en efecto|quite|ciertamente)\b/i
+};
+
+const fallbackCatchphrases: Record<CoachId, {
+    prefixes: string[];
+    suffixes: string[];
+}> = {
+    fog: {
+        prefixes: ["Mrrp...", "Meow.", "Prrr..."],
+        suffixes: ["Prrr."]
+    },
+    foxy: {
+        prefixes: ["Heh...", "Yip.", "Sniff, sniff..."],
+        suffixes: ["Nicely hunted."]
+    },
+    cybe: {
+        prefixes: ["BEEP.", "SEQUENCE CHECKED.", "PATTERN LOCKED."],
+        suffixes: ["Analysis stored."]
+    },
+    max_rooks: {
+        prefixes: ["Hm.", "Indeed.", "Quite."],
+        suffixes: ["Remember the idea."]
+    }
+};
+
+export function getCoachSpokenLine(
+    coach: CoachOption,
+    line: string,
+    seed: string,
+    t?: TFunction
+) {
+    if (!line || catchphraseMarkers[coach.id].test(line)) return line;
+
+    const translatedPrefixes = getTranslatedCoachLines(
+        t,
+        `catchphrases.${coach.id}.prefixes`
+    );
+    const translatedSuffixes = getTranslatedCoachLines(
+        t,
+        `catchphrases.${coach.id}.suffixes`
+    );
+    const fallback = fallbackCatchphrases[coach.id];
+    const prefixes = translatedPrefixes.length > 0
+        ? translatedPrefixes
+        : fallback.prefixes;
+    const suffixes = translatedSuffixes.length > 0
+        ? translatedSuffixes
+        : fallback.suffixes;
+    const prefix = pickStableCoachLine(
+        prefixes,
+        seed,
+        `${coach.id}-spoken-prefix`
+    );
+    const suffix = (
+        suffixes.length > 0
+        && hashCoachText(`${seed}|${coach.id}|spoken-suffix`) % 100 < 24
+    )
+        ? pickStableCoachLine(
+            suffixes,
+            seed,
+            `${coach.id}-spoken-suffix`
+        )
+        : "";
+    const full = [prefix, line, suffix].filter(Boolean).join(" ");
+
+    if (full.length <= 210) return full;
+
+    const withoutSuffix = `${prefix} ${line}`;
+    return withoutSuffix.length <= 210 ? withoutSuffix : line;
+}
+
 
 export function getCoachReaction(
     coach: CoachOption,
@@ -551,23 +643,37 @@ export function getCoachReaction(
     if (!dynamicComment) {
         const lines = coach.reactions[classification];
         if (!lines?.length) return null;
-        return pickRandomLine(lines);
-    }
+        const line = pickRandomLine(lines);
 
-    /* Theory already owns its move-order cue in coachComment.ts. */
-    if (classification == Classification.THEORY) {
-        return dynamicComment;
+        return getCoachSpokenLine(
+            coach,
+            line,
+            `${seed}|fallback-reaction`,
+            t
+        );
     }
 
     const set = catchphraseSets[coach.id][classification];
-    if (!set) return dynamicComment;
+    if (!set) {
+        return getCoachSpokenLine(
+            coach,
+            dynamicComment,
+            `${seed}|generic-reaction`,
+            t
+        );
+    }
 
     const roll = hashCoachText(
         `${seed}|${coach.id}|${classification}|catchphrase-roll`
     ) % 100;
 
     if (roll >= set.probability) {
-        return dynamicComment;
+        return getCoachSpokenLine(
+            coach,
+            dynamicComment,
+            `${seed}|probability-fallback`,
+            t
+        );
     }
 
     const translatedPrefixes = getTranslatedCoachLines(

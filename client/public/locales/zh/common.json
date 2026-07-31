@@ -13,6 +13,12 @@
   "navigationBar": {
     "support": "支持",
     "signIn": "登入",
+    "share": "分享",
+    "academy": "学院",
+    "puzzles": "棋题",
+    "comingSoon": "即将推出",
+    "openMenu": "打开导航菜单",
+    "primaryNavigation": "主导航",
     "tooltips": {
       "support": "支持我们❤",
       "help": "帮助中心"
@@ -50,6 +56,7 @@
     "copyright": "版权所有 © {{year}} NexoChess",
     "tagline": "串联每一步，读懂整盘棋。",
     "license": "代码采用 GPL-3.0 许可证",
+    "freeGameReview": "免费国际象棋对局分析",
     "navigationLabel": "页脚导航",
     "contact": "联系我们"
   },
@@ -58,6 +65,17 @@
     "no": "否"
   },
   "shareGame": {
+    "eyebrow": "NexoChess 分享",
+    "title": "分享对局",
+    "subtitle": "复制当前局面、导出完整对局，或通过你的设备发送。",
+    "fenTitle": "当前局面",
+    "fenDescription": "使用此代码可以准确打开棋盘上显示的局面。",
+    "pgnTitle": "完整对局",
+    "pgnDescription": "包含对局信息、着法和当前分析树。",
+    "characters": "{{count}} 个字符",
+    "closeHint": "点击外部或按 Esc 关闭",
+    "downloadPGN": "下载 PGN",
+    "shareWith": "分享到…",
     "copyFEN": "复制 FEN",
     "copyFENToast": "FEN 已复制！",
     "copyPGN": "复制 PGN",

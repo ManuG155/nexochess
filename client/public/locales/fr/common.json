@@ -13,6 +13,12 @@
   "navigationBar": {
     "support": "Aide",
     "signIn": "Se connecter",
+    "share": "Partager",
+    "academy": "Académie",
+    "puzzles": "Puzzles",
+    "comingSoon": "Bientôt disponible",
+    "openMenu": "Ouvrir le menu de navigation",
+    "primaryNavigation": "Navigation principale",
     "tooltips": {
       "support": "Nous soutenir ❤",
       "help": "Assistance"
@@ -50,6 +56,7 @@
     "copyright": "Droits d’auteur © {{year}} NexoChess",
     "tagline": "Reliez les coups. Comprenez la partie.",
     "license": "Code sous licence GPL-3.0",
+    "freeGameReview": "Analyse gratuite de parties d’échecs",
     "navigationLabel": "Navigation du pied de page",
     "contact": "Contact"
   },
@@ -58,6 +65,17 @@
     "no": "Non"
   },
   "shareGame": {
+    "eyebrow": "Partager avec NexoChess",
+    "title": "Partager la partie",
+    "subtitle": "Copie la position actuelle, exporte la partie complète ou envoie-la depuis ton appareil.",
+    "fenTitle": "Position actuelle",
+    "fenDescription": "Utilise ce code pour ouvrir exactement la position affichée sur l'échiquier.",
+    "pgnTitle": "Partie complète",
+    "pgnDescription": "Comprend les en-têtes, les coups et l'arbre d'analyse actuel.",
+    "characters": "{{count}} caractères",
+    "closeHint": "Clique à l'extérieur ou appuie sur Échap pour fermer",
+    "downloadPGN": "Télécharger le PGN",
+    "shareWith": "Partager via…",
     "copyFEN": "Copier la FEN",
     "copyFENToast": "FEN copiée !",
     "copyPGN": "Copier le PGN",

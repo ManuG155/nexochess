@@ -13,7 +13,9 @@ enum Collection {
 
     // Global
     NEWS_ARTICLES = "news",
-    ANNOUNCEMENT = "announcement"
+    ANNOUNCEMENT = "announcement",
+    PUZZLES = "puzzles",
+    PUZZLE_METADATA = "puzzleMetadata"
 }
 
 export default Collection;

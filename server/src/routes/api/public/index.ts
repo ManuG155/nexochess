@@ -5,6 +5,7 @@ import profileRouter from "./profile";
 import archivedGameRouter from "./archivedGame";
 import newsArticlesRouter from "./news/articles";
 import newsPagesRouter from "./news/pages";
+import puzzlesRouter from "./puzzles";
 
 const router = Router();
 
@@ -13,7 +14,8 @@ router.use("/public",
     profileRouter,
     archivedGameRouter,
     newsArticlesRouter,
-    newsPagesRouter
+    newsPagesRouter,
+    puzzlesRouter
 );
 
 export default router;

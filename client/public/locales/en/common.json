@@ -13,6 +13,12 @@
   "navigationBar": {
     "support": "Support",
     "signIn": "Sign In",
+    "share": "Share",
+    "academy": "Academy",
+    "puzzles": "Puzzles",
+    "comingSoon": "Coming soon",
+    "openMenu": "Open navigation menu",
+    "primaryNavigation": "Main navigation",
     "tooltips": {
       "support": "Support us ❤",
       "help": "Help Center"
@@ -50,6 +56,7 @@
     "copyright": "Copyright © {{year}} NexoChess",
     "tagline": "Connect the moves. Understand the game.",
     "license": "Code licensed under GPL-3.0",
+    "freeGameReview": "Free chess game review",
     "navigationLabel": "Footer navigation",
     "contact": "Contact"
   },
@@ -58,6 +65,17 @@
     "no": "No"
   },
   "shareGame": {
+    "eyebrow": "NexoChess share",
+    "title": "Share game",
+    "subtitle": "Copy the current position, export the full game or send it through your device.",
+    "fenTitle": "Current position",
+    "fenDescription": "Use this code to open exactly the position shown on the board.",
+    "pgnTitle": "Full game",
+    "pgnDescription": "Includes headers, moves and the current analysis tree.",
+    "characters": "{{count}} characters",
+    "closeHint": "Click outside or press Esc to close",
+    "downloadPGN": "Download PGN",
+    "shareWith": "Share with…",
     "copyFEN": "Copy FEN",
     "copyFENToast": "Copied FEN!",
     "copyPGN": "Copy PGN",

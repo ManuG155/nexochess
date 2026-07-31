@@ -18,8 +18,6 @@ import displayToast from "@/lib/toast";
 import GameSearchMenuProps from "./GameSearchMenuProps";
 import * as styles from "./GameSearchMenu.module.css";
 
-import iconInterfaceRightChevron from "@assets/img/interface/right_chevron.svg";
-
 class UserNotFoundError extends Error {}
 
 async function fetchGames(
@@ -103,33 +101,40 @@ function GameSearchMenu({
     return <Dialog
         className={styles.dialog}
         onClose={onClose}
+        closeOnBackdrop
     >
-        <span className={styles.title}>
-            {t("gameSearchMenu.title")}
-        </span>
+        <div className={styles.header}>
+            <span className={styles.eyebrow}>
+                {gameSource.title}
+            </span>
 
-        <span className={styles.sourceTitle}>
-            {gameSource.title}
+            <span className={styles.title}>
+                {t("gameSearchMenu.title")}
+            </span>
 
-            <img src={iconInterfaceRightChevron} />
+            <span className={styles.sourceTitle}>
+                <strong>{username}</strong>
+            </span>
 
-            {username}
-        </span>
+            <div className={styles.periodSelector}>
+                <MonthSelector
+                    onMonthChange={(month, year) => {
+                        // Cancel other queries for games
+                        queryClient.cancelQueries({ queryKey: ["games"] });
 
-        <MonthSelector 
-            onMonthChange={(month, year) => {
-                // Cancel other queries for games
-                queryClient.cancelQueries({ queryKey: ["games"] });
-
-                setMonth(month);
-                setYear(year);
-            }} 
-            locked={status == "error"}
-        />
+                        setMonth(month);
+                        setYear(year);
+                    }}
+                    locked={status == "error"}
+                />
+            </div>
+        </div>
 
         <div className={styles.list}>
             {status == "error" && fetchStatus == "idle"
-                && <LogMessage>{error.message}</LogMessage>
+                && <div className={styles.message}>
+                    <LogMessage>{error.message}</LogMessage>
+                </div>
             }
 
             {fetchStatus == "fetching"
@@ -149,12 +154,16 @@ function GameSearchMenu({
             {status == "success" && fetchStatus == "idle"
                 && (games.length > 0 ?
                     games.slice().map(game => <GameListing
+                        className={styles.gameCard}
                         key={game.pgn}
                         game={game}
                         perspective={getColourPlayed(game, username)}
                         onClick={selectListing}
+                        visualStyle="nexo"
                     />)
-                    : t("gameSearchMenu.noGamesFound")
+                    : <div className={styles.message}>
+                        {t("gameSearchMenu.noGamesFound")}
+                    </div>
                 )
             }
         </div>

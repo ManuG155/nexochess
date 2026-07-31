@@ -1,0 +1,257 @@
+{
+    "hero": {
+        "eyebrow": "Trening taktyczny NexoChess",
+        "title": "Zamień każdy błąd w lekcję",
+        "subtitle": "Ćwicz pozycje z przeanalizowanych partii albo rozwiązuj zadania według motywu i poziomu trudności we własnym tempie."
+    },
+    "stats": {
+        "rating": "Ranking zadań",
+        "calibrating_one": "Jeszcze {{count}} zadanie do kalibracji",
+        "calibrating_other": "Jeszcze {{count}} zadań do kalibracji",
+        "calibrated": "Ranking skalibrowany",
+        "accuracy": "Skuteczność",
+        "attempts_one": "{{count}} oceniana próba",
+        "attempts_other": "{{count}} ocenianych prób",
+        "streak": "Seria",
+        "best_one": "Najlepsza: {{count}}",
+        "best_other": "Najlepsza: {{count}}"
+    },
+    "setup": {
+        "kicker": "Przygotuj sesję",
+        "title": "Co chcesz trenować?",
+        "subtitle": "NexoChess zapamiętuje ukończone pozycje na tym urządzeniu, aby ich nie powtarzać.",
+        "start": "Rozpocznij trening"
+    },
+    "sources": {
+        "archive": {
+            "title": "Ucz się z moich partii",
+            "body": "Zadania tworzone z niedokładności, błędów, niewykorzystanych szans i poważnych błędów.",
+            "emptyTitle": "Brak przeanalizowanych pozycji",
+            "emptyBody": "Najpierw przeanalizuj partię, a NexoChess zamieni jej błędy w ćwiczenia.",
+            "action": "Przeanalizuj partię"
+        },
+        "lichess": {
+            "title": "Trening",
+            "body": "Zadania filtrowane według motywu i trudności."
+        }
+    },
+    "filters": {
+        "theme": "Temat",
+        "themeHelp": "Wybierz kategorię, a następnie opcjonalnie konkretny typ.",
+        "difficulty": "Trudność",
+        "difficultyHelp": "Tryb adaptacyjny podąża za Twoim rankingiem zadań.",
+        "subtheme": "Wybierz: {{theme}}",
+        "subthemeHelp": "Wybierz typ albo ćwicz całą kategorię.",
+        "clearSubtheme": "Wszystkie",
+        "openingSearch": "Szukaj debiutu…",
+        "noSubthemeResults": "Nie znaleziono pasującego debiutu."
+    },
+    "themes": {
+        "all": "Mieszane",
+        "mate": "Mat",
+        "fork": "Widełki",
+        "pin": "Związanie",
+        "endgame": "Końcówka",
+        "opening": "Debiut",
+        "sacrifice": "Ofiara",
+        "defense": "Obrona"
+    },
+    "difficulties": {
+        "adaptive": {
+            "title": "Adaptacyjna",
+            "range": "Twój poziom"
+        },
+        "beginner": {
+            "title": "Początkująca",
+            "range": "< 1200"
+        },
+        "intermediate": {
+            "title": "Średnia",
+            "range": "1200–1799"
+        },
+        "advanced": {
+            "title": "Zaawansowana",
+            "range": "1800–2199"
+        },
+        "expert": {
+            "title": "Ekspercka",
+            "range": "2200+"
+        }
+    },
+    "options": {
+        "rated": {
+            "title": "Oceniana",
+            "body": "Zmieniaj mój ranking zadań"
+        },
+        "hints": {
+            "title": "Podpowiedzi",
+            "body": "Pozwól trenerowi pokazać ruch"
+        },
+        "solution": {
+            "title": "Rozwiązanie",
+            "body": "Pozwól ujawnić cały wariant"
+        }
+    },
+    "coach": {
+        "title": "{{name}}, Twój trener",
+        "loading": "Przygotowuję Twoje pozycje.",
+        "setupArchive": "Twoje przeanalizowane partie zawierają już dobre lekcje. Wybierz sesję i spokojnie je przejrzymy.",
+        "setupLichess": "Wybierz motyw i trudność, aby ćwiczyć różnorodne zadania.",
+        "archiveTurn": "Ruch {{colour}}. Ta pozycja powstała po kosztownym błędzie. Znajdź karę.",
+        "lichessTurn": "Ruch {{colour}}. Najpierw sprawdź szachy, bicia i groźby.",
+        "wrong": "Nie ten ruch. Jest legalny, ale wypuszcza kluczową szansę. Ponownie sprawdź szachy, bicia i groźby.",
+        "correctContinue": "Dobry ruch. Obserwuj odpowiedź; pomysł jeszcze się nie skończył.",
+        "yourTurnAgain": "To była oczekiwana obrona. Kontynuuj kombinację.",
+        "hint": "Podpowiedź: zbadaj {{move}} i zrozum, dlaczego ten ruch jest silniejszy.",
+        "solvedClean": "Świetnie. Cały pomysł został znaleziony bez pomocy.",
+        "solvedAfterHelp": "Rozwiązane. Powtórz jeszcze raz ten motyw w myślach.",
+        "solutionShown": "Oto cały wariant. Użyj sterowania w karcie celu, aby przejrzeć każdą pozycję.",
+        "noArchive": "Do utworzenia zadania potrzebna jest co najmniej jedna przeanalizowana partia w Archiwum.",
+        "noFiltered": "Brak nowych zadań z tymi filtrami. Zmień temat lub trudność.",
+        "loadError": "Nie udało się wczytać pozycji. Odśwież stronę i spróbuj ponownie.",
+        "positionError": "Tego wariantu nie można bezpiecznie odtworzyć, więc został zatrzymany.",
+        "changeFilters": "Zmień sesję w dowolnej chwili; ukończone pozycje pozostaną zapisane.",
+        "archiveChecking": "Sprawdzam przeanalizowane partie w poszukiwaniu pozycji, do których warto wrócić.",
+        "archiveNoGames": "Nie przeanalizowano jeszcze żadnej partii. Przeanalizuj jedną, a zamienię jej kluczowe momenty w zadania.",
+        "archiveNoErrors": "W przeanalizowanych partiach nie ma błędów do przećwiczenia. To dobra wiadomość.",
+        "archiveReady": "Ucz się na błędach z przeanalizowanych partii.",
+        "trainingSetup": "Wybierz motyw i trudność, aby ćwiczyć różnorodne zadania."
+    },
+    "colours": {
+        "white": "białych",
+        "black": "czarnych"
+    },
+    "states": {
+        "loadingTitle": "Przygotowywanie treningu",
+        "loadingBody": "Odczytuję Archiwum i wczytuję zadania szachowe.",
+        "errorTitle": "Nie udało się wczytać treningu",
+        "errorBody": "Nic nie zginęło. Odśwież stronę i spróbuj ponownie.",
+        "noArchiveTitle": "Brak własnych zadań",
+        "noArchiveBody": "Przeanalizuj i zapisz partię, aby tworzyć pozycje z błędów obu graczy.",
+        "noMatchTitle": "Ta kolekcja została ukończona",
+        "noMatchBody": "Zmień temat lub trudność, aby trenować dalej bez powtórek.",
+        "noErrorsTitle": "Brak błędów do przećwiczenia",
+        "noErrorsBody": "Przeanalizowane partie nie zawierają jeszcze pozycji wymagających poprawy."
+    },
+    "puzzle": {
+        "archiveSource": "Z Twojego Archiwum",
+        "lichessSource": "Zadania szachowe",
+        "toMove": "Ruch {{colour}}",
+        "rating": "Ranking {{rating}}",
+        "objective": "Bieżący cel",
+        "findMove": "Znajdź najlepszą kontynuację",
+        "solvedTitle": "Zadanie rozwiązane",
+        "revealedTitle": "Rozwiązanie przejrzane",
+        "archiveContext": "Ruch {{move}}, po {{badMove}}, w {{game}}. Ukarz błąd i utrzymaj przewagę.",
+        "lichessContext": "Każdy ruch rozwiązującego jest jedyny albo wyraźnie najsilniejszy.",
+        "evaluation": "Przewaga w pozycji",
+        "evaluationNote": "Stockfish aktualizuje go lokalnie, zawsze z perspektywy białych."
+    },
+    "controls": {
+        "previous": "Poprzednia pozycja",
+        "next": "Następna pozycja",
+        "beforeMistake": "Pozycja przed błędem",
+        "current": "Aktualna pozycja",
+        "linePosition": "Pozycja {{current}} z {{total}}"
+    },
+    "actions": {
+        "hint": "Podpowiedź",
+        "hintHelp": "Pokaż kluczowy ruch",
+        "solution": "Rozwiązanie",
+        "solutionHelp": "Ujawnij wariant",
+        "disabled": "Wyłączone w tej sesji",
+        "nextPuzzle": "Następne zadanie",
+        "changeFilters": "Zmień sesję",
+        "sourceGame": "Partia źródłowa",
+        "autoNext": "Automatycznie dalej",
+        "autoNextHelp": "Po rozwiązaniu przejdź do następnego"
+    },
+    "attribution": {
+        "text": "Pozycje pochodzą z publicznej bazy zadań Lichess CC0. NexoChess nie jest powiązany z Lichess.",
+        "link": "Otwórz bazę"
+    },
+    "themeCategories": {
+        "all": "Mieszane",
+        "checkmate": "Mat",
+        "tactics": "Taktyka",
+        "attack": "Atak",
+        "defense": "Obrona",
+        "advantage": "Przewaga",
+        "endgame": "Końcówki",
+        "opening": "Debiuty",
+        "phase": "Faza gry",
+        "length": "Długość",
+        "master": "Partie mistrzowskie"
+    },
+    "themeLabels": {
+        "mate": "Dowolny mat",
+        "mateIn1": "Mat w 1",
+        "mateIn2": "Mat w 2",
+        "mateIn3": "Mat w 3",
+        "mateIn4": "Mat w 4",
+        "mateIn5": "Mat w 5 lub więcej",
+        "anastasiaMate": "Mat Anastazji",
+        "arabianMate": "Mat arabski",
+        "backRankMate": "Mat na ostatniej linii",
+        "balestraMate": "Mat Balestry",
+        "blindSwineMate": "Mat dwóch wież",
+        "bodenMate": "Mat Bodena",
+        "cornerMate": "Mat w rogu",
+        "doubleBishopMate": "Mat dwoma gońcami",
+        "dovetailMate": "Mat jaskółczy ogon",
+        "epauletteMate": "Mat epoletowy",
+        "hookMate": "Mat hakowy",
+        "killBoxMate": "Mat w pudełku",
+        "morphysMate": "Mat Morphy’ego",
+        "operaMate": "Mat operowy",
+        "pillsburysMate": "Mat Pillsbury’ego",
+        "smotheredMate": "Mat duszony",
+        "swallowstailMate": "Mat jaskółczy ogon",
+        "triangleMate": "Mat trójkątny",
+        "vukovicMate": "Mat Vukovicia",
+        "advancedPawn": "Zaawansowany pion",
+        "attraction": "Przyciągnięcie",
+        "capturingDefender": "Usunięcie obrońcy",
+        "castling": "Roszada",
+        "clearance": "Oczyszczenie",
+        "collinearMove": "Ruch współliniowy",
+        "deflection": "Odciągnięcie",
+        "discoveredAttack": "Atak z odsłony",
+        "discoveredCheck": "Szach z odsłony",
+        "doubleCheck": "Podwójny szach",
+        "enPassant": "Bicie w przelocie",
+        "fork": "Widełki",
+        "hangingPiece": "Niebroniona figura",
+        "interference": "Przesłona",
+        "intermezzo": "Ruch pośredni",
+        "pin": "Związanie",
+        "promotion": "Promocja",
+        "quietMove": "Cichy ruch",
+        "sacrifice": "Ofiara",
+        "skewer": "Szpila",
+        "trappedPiece": "Uwięziona figura",
+        "underPromotion": "Słaba promocja",
+        "xRayAttack": "Atak rentgenowski",
+        "zugzwang": "Zugzwang",
+        "attackingF2F7": "Atak na f2 lub f7",
+        "exposedKing": "Odsłonięty król",
+        "kingsideAttack": "Atak na skrzydle królewskim",
+        "queensideAttack": "Atak na skrzydle hetmańskim",
+        "defensiveMove": "Ruch obronny",
+        "equality": "Odzyskanie równowagi",
+        "crushing": "Miażdżąca przewaga",
+        "bishopEndgame": "Końcówka gońcowa",
+        "knightEndgame": "Końcówka skoczkowa",
+        "pawnEndgame": "Końcówka pionowa",
+        "queenEndgame": "Końcówka hetmańska",
+        "queenRookEndgame": "Końcówka hetmańsko-wieżowa",
+        "rookEndgame": "Końcówka wieżowa",
+        "middlegame": "Gra środkowa",
+        "oneMove": "Zadanie na jeden ruch",
+        "short": "Zadanie na dwa ruchy",
+        "long": "Zadanie na trzy ruchy",
+        "veryLong": "Cztery ruchy lub więcej",
+        "masterVsMaster": "Mistrz kontra mistrz",
+        "superGM": "Partia superarcymistrzów"
+    }
+}

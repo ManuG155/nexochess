@@ -157,6 +157,10 @@
             "inside": "Dentro",
             "outside": "Fora"
         },
+        "legalMoves": {
+            "title": "Destinos legais",
+            "description": "Mostra pontos em todas as casas legais ao selecionar uma peça nos Puzzles."
+        },
         "preview": {
             "title": "Pré-visualização",
             "description": "O tabuleiro e as peças selecionados são apresentados em conjunto abaixo."

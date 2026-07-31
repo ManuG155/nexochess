@@ -1,0 +1,13 @@
+.content {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+
+    background:
+        radial-gradient(
+            circle at 18% 0%,
+            rgba(70, 125, 232, 0.1),
+            transparent 32rem
+        ),
+        var(--ui-shade-1);
+}

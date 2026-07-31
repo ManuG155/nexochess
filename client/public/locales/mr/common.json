@@ -13,6 +13,12 @@
   "navigationBar": {
     "support": "मदत",
     "signIn": "साइन इन",
+    "share": "शेअर करा",
+    "academy": "अकादमी",
+    "puzzles": "कोडी",
+    "comingSoon": "लवकरच",
+    "openMenu": "नेव्हिगेशन मेनू उघडा",
+    "primaryNavigation": "मुख्य नेव्हिगेशन",
     "tooltips": {
       "support": "आमचं समर्थन करा",
       "help": "मदत केंद्र"
@@ -50,6 +56,7 @@
     "copyright": "कॉपीराइट © {{year}} NexoChess",
     "tagline": "चाली जोडा. खेळ समजा.",
     "license": "कोड GPL-3.0 परवान्याअंतर्गत",
+    "freeGameReview": "बुद्धिबळातील डावांचे मोफत विश्लेषण",
     "navigationLabel": "तळटीप नेव्हिगेशन",
     "contact": "संपर्क"
   },
@@ -58,6 +65,17 @@
     "no": "नाही"
   },
   "shareGame": {
+    "eyebrow": "NexoChess मधून शेअर करा",
+    "title": "डाव शेअर करा",
+    "subtitle": "सध्याची स्थिती कॉपी करा, पूर्ण डाव निर्यात करा किंवा तुमच्या उपकरणातून पाठवा.",
+    "fenTitle": "सध्याची स्थिती",
+    "fenDescription": "पटावर दिसणारी नेमकी स्थिती उघडण्यासाठी हा कोड वापरा.",
+    "pgnTitle": "पूर्ण डाव",
+    "pgnDescription": "यामध्ये शीर्षके, चाली आणि सध्याचे विश्लेषण वृक्ष समाविष्ट आहेत.",
+    "characters": "{{count}} अक्षरे",
+    "closeHint": "बंद करण्यासाठी बाहेर क्लिक करा किंवा Esc दाबा",
+    "downloadPGN": "PGN डाउनलोड करा",
+    "shareWith": "याद्वारे शेअर करा…",
     "copyFEN": "FEN कॉपी करा",
     "copyFENToast": "FEN कॉपी झाले!",
     "copyPGN": "PGN कॉपी करा",

@@ -13,6 +13,12 @@
   "navigationBar": {
     "support": "सहायता/मदद",
     "signIn": "साइन इन",
+    "share": "साझा करें",
+    "academy": "अकादमी",
+    "puzzles": "पहेलियाँ",
+    "comingSoon": "जल्द आ रहा है",
+    "openMenu": "नेविगेशन मेनू खोलें",
+    "primaryNavigation": "मुख्य नेविगेशन",
     "tooltips": {
       "support": "हमारा समर्थन करें!",
       "help": "सहायता केंद्र"
@@ -50,6 +56,7 @@
     "copyright": "कॉपीराइट © {{year}} NexoChess",
     "tagline": "चालों को जोड़ें। बाज़ी को समझें।",
     "license": "कोड GPL-3.0 लाइसेंस के अंतर्गत",
+    "freeGameReview": "शतरंज की बाज़ियों का मुफ़्त विश्लेषण",
     "navigationLabel": "फ़ुटर नेविगेशन",
     "contact": "संपर्क"
   },
@@ -58,6 +65,17 @@
     "no": "नहीं"
   },
   "shareGame": {
+    "eyebrow": "NexoChess से साझा करें",
+    "title": "बाज़ी साझा करें",
+    "subtitle": "मौजूदा स्थिति कॉपी करें, पूरी बाज़ी निर्यात करें या अपने डिवाइस से भेजें।",
+    "fenTitle": "मौजूदा स्थिति",
+    "fenDescription": "बोर्ड पर दिख रही ठीक यही स्थिति खोलने के लिए इस कोड का उपयोग करें।",
+    "pgnTitle": "पूरी बाज़ी",
+    "pgnDescription": "इसमें हेडर, चालें और मौजूदा विश्लेषण वृक्ष शामिल हैं।",
+    "characters": "{{count}} अक्षर",
+    "closeHint": "बंद करने के लिए बाहर क्लिक करें या Esc दबाएँ",
+    "downloadPGN": "PGN डाउनलोड करें",
+    "shareWith": "इसके साथ साझा करें…",
     "copyFEN": "FEN कॉपी करें",
     "copyFENToast": "FEN कॉपी हुई!",
     "copyPGN": "PGN कॉपी करें",

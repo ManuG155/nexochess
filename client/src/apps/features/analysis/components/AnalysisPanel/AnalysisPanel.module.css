@@ -15,6 +15,17 @@
         hidden;
 }
 
+.wrapper.gameSelectionMode {
+    height: auto;
+    min-height: 100%;
+
+    overflow: visible;
+}
+
+.gameSelectionMode .components {
+    overflow: visible;
+}
+
 
 /*
  * CONTENIDO PRINCIPAL

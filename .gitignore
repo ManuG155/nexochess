@@ -51,3 +51,11 @@ Thumbs.db
 # Local test artefacts
 playwright-report/
 test-results/
+
+# Full puzzle database (kept in local/server storage, never in Git)
+lichess_db_puzzle.csv
+lichess_db_puzzle.csv.zst
+*.puzzle-db.csv
+*.puzzle-db.csv.zst
+/puzzle-data/
+/mongo-backups/

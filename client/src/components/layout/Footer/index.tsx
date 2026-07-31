@@ -70,9 +70,15 @@ function Footer({ className, style }: FooterProps) {
             </div>
         </nav>
 
-        <span className={styles.licenseNotice}>
-            {t("footer.license")}
-        </span>
+        <div className={styles.footerMeta}>
+            <span>
+                {t("footer.license")}
+            </span>
+
+            <span className={styles.freeGameReview}>
+                {t("footer.freeGameReview")}
+            </span>
+        </div>
 
         {languagesOpen && <LanguagesDialog
             onClose={() => setLanguagesOpen(false)}

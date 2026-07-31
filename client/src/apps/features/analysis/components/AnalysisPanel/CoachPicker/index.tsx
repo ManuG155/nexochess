@@ -1,8 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import useSettingsStore from
-    "@/stores/SettingsStore";
+import useSettingsStore from "@/stores/SettingsStore";
 
 import {
     CoachId,
@@ -16,27 +15,27 @@ import CoachPortrait from "../CoachPortrait";
 
 import * as styles from "./CoachPicker.module.css";
 
-
 interface CoachPickerProps {
     selectedCoach: CoachOption;
     onClose: () => void;
     onConfirm: (coachId: CoachId) => void;
 }
 
-
 function CoachPicker({
     selectedCoach,
     onClose,
     onConfirm
 }: CoachPickerProps) {
-    const { t, i18n } = useTranslation("coach", { useSuspense: false });
+    const { t, i18n } = useTranslation("coach", {
+        useSuspense: false
+    });
 
-    const [pendingCoachId, setPendingCoachId] = useState<CoachId>(
+    const [ pendingCoachId, setPendingCoachId ] = useState<CoachId>(
         selectedCoach.id
     );
 
-    const animationsEnabled = useSettingsStore(
-        state => state.settings.coach.animations
+    const coachSettings = useSettingsStore(
+        state => state.settings.coach
     );
 
     const pickerLines = useMemo<Record<CoachId, string>>(() => (
@@ -47,6 +46,8 @@ function CoachPicker({
             ])
         ) as Record<CoachId, string>
     ), [i18n.resolvedLanguage, t]);
+
+    if (!coachSettings.enabled) return null;
 
     const pendingCoach = getCoachById(pendingCoachId);
     const pickerLine = pickerLines[pendingCoachId];
@@ -64,12 +65,17 @@ function CoachPicker({
                 aria-labelledby="coach-picker-title"
             >
                 <div className={styles.header}>
-                    <h3
-                        id="coach-picker-title"
-                        className={styles.title}
-                    >
-                        {t("picker.title")}
-                    </h3>
+                    <div>
+                        <span className={styles.kicker}>
+                            NexoChess
+                        </span>
+                        <h3
+                            id="coach-picker-title"
+                            className={styles.title}
+                        >
+                            {t("picker.title")}
+                        </h3>
+                    </div>
 
                     <button
                         type="button"
@@ -85,8 +91,12 @@ function CoachPicker({
                     <CoachPortrait
                         className={styles.leadImage}
                         coach={pendingCoach}
-                        speechText={animationsEnabled ? pickerLine : ""}
-                        animationsEnabled={animationsEnabled}
+                        speechText={
+                            coachSettings.animations
+                                ? pickerLine
+                                : ""
+                        }
+                        animationsEnabled={coachSettings.animations}
                     />
 
                     <div className={styles.leadBubble}>
@@ -107,6 +117,7 @@ function CoachPicker({
                                     isActive ? styles.cardActive : ""
                                 ].filter(Boolean).join(" ")}
                                 onClick={() => setPendingCoachId(coach.id)}
+                                aria-pressed={isActive}
                             >
                                 <div className={styles.cardImageWrap}>
                                     <img
@@ -141,6 +152,5 @@ function CoachPicker({
         </div>
     );
 }
-
 
 export default CoachPicker;

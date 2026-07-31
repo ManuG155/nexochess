@@ -22,6 +22,12 @@
   "navigationBar": {
     "support": "Apoyar",
     "signIn": "Iniciar sesión",
+    "share": "Compartir",
+    "academy": "Academia",
+    "puzzles": "Puzzles",
+    "comingSoon": "Próximamente",
+    "openMenu": "Abrir menú de navegación",
+    "primaryNavigation": "Navegación principal",
     "openAnalysis": "Abrir el análisis de NexoChess",
     "tooltips": {
       "support": "Apoya NexoChess",
@@ -59,6 +65,7 @@
     "copyright": "Derechos de autor © {{year}} NexoChess",
     "tagline": "Conecta las jugadas. Entiende la partida.",
     "license": "Código bajo licencia GPL-3.0",
+    "freeGameReview": "Revisión de partidas de ajedrez gratuita",
     "navigationLabel": "Navegación del pie de página",
     "contact": "Contacto"
   },
@@ -67,6 +74,17 @@
     "no": "No"
   },
   "shareGame": {
+    "eyebrow": "Compartir en NexoChess",
+    "title": "Compartir partida",
+    "subtitle": "Copia la posición actual, exporta la partida completa o envíala desde tu dispositivo.",
+    "fenTitle": "Posición actual",
+    "fenDescription": "Usa este código para abrir exactamente la posición que aparece en el tablero.",
+    "pgnTitle": "Partida completa",
+    "pgnDescription": "Incluye cabeceras, jugadas y el árbol de análisis actual.",
+    "characters": "{{count}} caracteres",
+    "closeHint": "Pulsa fuera o presiona Esc para cerrar",
+    "downloadPGN": "Descargar PGN",
+    "shareWith": "Compartir con…",
     "copyFEN": "Copiar FEN",
     "copyFENToast": "¡FEN copiado!",
     "copyPGN": "Copiar PGN",

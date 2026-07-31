@@ -6,7 +6,7 @@
     box-sizing: border-box;
     width: 100%;
     min-height: 0;
-    overflow-y: auto;
+    overflow: visible;
     overscroll-behavior: contain;
 
     padding: 20px;

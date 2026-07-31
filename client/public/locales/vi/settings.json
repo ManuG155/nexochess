@@ -157,6 +157,10 @@
             "inside": "Bên trong",
             "outside": "Bên ngoài"
         },
+        "legalMoves": {
+            "title": "Ô đi hợp lệ",
+            "description": "Hiển thị dấu chấm trên mọi ô đích hợp lệ khi bạn chọn một quân trong Puzzles."
+        },
         "preview": {
             "title": "Xem trước",
             "description": "Bàn cờ và bộ quân đã chọn được xem trước cùng nhau bên dưới."

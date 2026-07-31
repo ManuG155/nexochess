@@ -1,0 +1,266 @@
+{
+  "hero": {
+    "eyebrow": "Akademia NexoChess",
+    "title": "Zrozum, co mówi każdy ruch",
+    "subtitle": "Poznaj język szachów w krótkich, wizualnych lekcjach. Bez wcześniejszej wiedzy i bez ścian tekstu.",
+    "start": "Zacznij od notacji",
+    "progress": "Moduły Akademii"
+  },
+  "modules": {
+    "notation": "Notacja",
+    "movement": "Ruchy figur",
+    "values": "Wartość bierek",
+    "practice": "Ćwiczenia z pomocą",
+    "classifications": "Jakość ruchu",
+    "evaluation": "Pasek oceny",
+    "challenge": "Szybkie wyzwanie"
+  },
+  "notation": {
+    "kicker": "Moduł 1 · Notacja",
+    "title": "Czytaj partię bez tłumaczenia",
+    "intro": "Notacja zwięźle zapisuje wydarzenia partii. Litery figur są zawsze angielskie, a piony nie mają litery.",
+    "piecesTitle": "Sześć figur",
+    "piecesHelp": "Pierwsza wielka litera mówi, która figura wykonała ruch.",
+    "pawnRule": "Ruch piona zaczyna się od razu od pola docelowego: e4 oznacza, że pion przeszedł na e4.",
+    "examplesTitle": "Rozszyfruj ruch",
+    "examplesHelp": "Wybierz przykład i zobacz, jak każdy symbol zmienia znaczenie.",
+    "pieces": {
+      "K": {
+        "name": "Król"
+      },
+      "Q": {
+        "name": "Hetman"
+      },
+      "R": {
+        "name": "Wieża"
+      },
+      "B": {
+        "name": "Goniec"
+      },
+      "N": {
+        "name": "Skoczek"
+      },
+      "P": {
+        "name": "Pion"
+      }
+    },
+    "examples": {
+      "e4": "Pion przechodzi na e4. Przy ruchu piona nie zapisuje się litery.",
+      "Nf3": "Skoczek (N) przechodzi na f3.",
+      "Bxf7+": "Goniec (B) bije (x) na f7 i daje szacha (+).",
+      "O-O": "Król wykonuje krótką roszadę.",
+      "Rae1": "Wieża (R) z linii a przechodzi na e1. „a” odróżnia ją od drugiej wieży.",
+      "e8=Q#": "Pion dociera na e8, promuje na hetmana (=Q) i daje mata (#)."
+    }
+  },
+  "movement": {
+    "kicker": "Moduł 2 · Ruchy",
+    "title": "Zobacz szachownicę, zanim zaczniesz zapamiętywać",
+    "intro": "Wybierz figurę. Szachownica pokaże wszystkie pola, na które mogłaby przejść z d4 na pustej planszy.",
+    "choosePiece": "Wybierz figurę",
+    "move": "Dostępny ruch",
+    "capture": "Bicie pionem",
+    "boardLabel": "Pola ruchu dla figury: {{piece}}",
+    "pieces": {
+      "K": "Jedno pole w dowolnym kierunku. Nie może wejść na pole atakowane przez przeciwnika.",
+      "Q": "Dowolna liczba pól wzdłuż linii, kolumn lub przekątnych. Nie może przeskakiwać figur.",
+      "R": "Dowolna liczba pól poziomo lub pionowo. Nie może przeskakiwać figur.",
+      "B": "Dowolna liczba pól po przekątnej. Goniec przez całą partię pozostaje na polach tego samego koloru.",
+      "N": "W kształcie litery L: dwa pola w jednym kierunku i jedno w bok. Jako jedyny może przeskakiwać figury.",
+      "P": "Jedno pole do przodu, ale bije o jedno pole po skosie. Z pola startowego może ruszyć o dwa."
+    }
+  },
+  "values": {
+    "kicker": "Moduł 3 · Wartość bierek",
+    "title": "Poznaj koszt wymiany",
+    "intro": "Wartość bierek to szybka miara, a nie stała cena. Pomaga porównywać bicia i poświęcenia.",
+    "points": "{{value}} pkt",
+    "pieces": {
+      "P": "Podstawowa jednostka. Wolny pion staje się cenniejszy blisko promocji.",
+      "N": "Zwykle wart trzy piony. Silny w zamkniętych pozycjach i blisko centrum.",
+      "B": "Zwykle wart trzy piony. Otwarte przekątne i para gońców zwiększają jego wartość.",
+      "R": "Zwykle warta pięć pionów. Szczególnie silna na otwartej linii.",
+      "Q": "Warta około dziewięciu pionów. Łączy ruch wieży i gońca, ale może zostać uwięziona.",
+      "K": "Nie ma wartości wymiennej: jego utrata kończy partię. W końcówce jest aktywną bierką."
+    },
+    "note": "Pozycja jest najważniejsza: aktywność, bezpieczeństwo króla i wymuszona taktyka mogą znaczyć więcej niż suma."
+  },
+  "practice": {
+    "kicker": "Moduł 4 · Ćwiczenie prowadzone",
+    "title": "Wykonaj ruch na szachownicy",
+    "intro": "Wybierz pole początkowe, a potem docelowe. Jeśli się pomylisz, Akademia wyjaśni dlaczego i pozwoli spróbować ponownie.",
+    "progress": "Pozycja {{current}} z {{total}}",
+    "selectPiece": "Wybierz wskazaną figurę",
+    "selectTarget": "Wybierz jej pole docelowe",
+    "correct": "Dobrze",
+    "incorrect": "To nie jest szukany ruch",
+    "retry": "Powtórz pozycję",
+    "next": "Następna pozycja",
+    "boardLabel": "Interaktywna szachownica treningowa",
+    "positions": {
+      "knight": {
+        "tab": "Skok skoczka",
+        "title": "Znajdź ruch skoczka",
+        "prompt": "Przesuń skoczka z f3 na e5.",
+        "correct": "Ne5 jest prawidłowe: skoczek idzie o dwa pola w jednym kierunku i o jedno w bok.",
+        "wrong": "Zacznij skoczkiem na f3 i zakończ na e5. Skoczek nie porusza się po linii prostej, lecz skacze w kształcie litery L."
+      },
+      "rook": {
+        "tab": "Bicie wieżą",
+        "title": "Wykorzystaj otwartą linię",
+        "prompt": "Zbij wieżę na a8 swoją wieżą z a1.",
+        "correct": "Rxa8+ przechodzi po wolnej linii a, zbija wieżę i daje szacha królowi na g8.",
+        "wrong": "Wieża musi ruszyć z a1 prosto po wolnej linii a na a8. Wieże nie poruszają się po przekątnej."
+      },
+      "bishop": {
+        "tab": "Szach gońcem",
+        "title": "Daj szacha po przekątnej",
+        "prompt": "Przesuń gońca z c4 na b5 i daj szacha.",
+        "correct": "Bb5+ utrzymuje gońca na przekątnej i kieruje go prosto na króla na e8.",
+        "wrong": "Goniec musi przejść z c4 na b5. Gońce chodzą tylko po przekątnej, a b5 otwiera linię szacha na e8."
+      }
+    }
+  },
+  "classifications": {
+    "kicker": "Moduł 5 · Jakość ruchu",
+    "title": "Dlaczego ruch otrzymuje daną etykietę",
+    "intro": "NexoChess porównuje twój ruch z pozycją i wariantami silnika. Wybierz etykietę, aby zobaczyć proste wyjaśnienie.",
+    "selected": "Wybrana klasyfikacja",
+    "engineNote": "Ten sam ruch może dostać inną etykietę w innej pozycji: liczą się kontekst, alternatywy i zmiana szans na wygraną.",
+    "descriptions": {
+      "brilliant": "Bardzo silny i trudny ruch, który celowo wystawia materiał lub poświęca go dla poprawnej idei.",
+      "critical": "Świetny ruch w wymagającej pozycji, w której inne poważne możliwości są wyraźnie gorsze.",
+      "best": "Pierwszy wybór silnika, potwierdzony bez istotnej utraty szans na wygraną.",
+      "excellent": "Bardzo blisko najlepszego wyboru. Zachowuje niemal całą wartość pozycji.",
+      "okay": "Solidny ruch, który utrzymuje partię na właściwym torze, choć istniała dokładniejsza opcja.",
+      "inaccuracy": "Małe potknięcie. Pozycja nieco się pogarsza, ale partia wciąż jest daleka od przegranej.",
+      "mistake": "Znaczący błąd, który wyraźnie zmniejsza szanse na wygraną lub remis.",
+      "miss": "Przeciwnik dał ważną okazję, której ten ruch nie wykorzystał.",
+      "blunder": "Poważny błąd powodujący duży zwrot, np. utratę materiału, przewagi lub partii.",
+      "forced": "Istniał tylko jeden legalny ruch, więc nie było prawdziwej decyzji.",
+      "theory": "Znany ruch debiutowy, który nadal należy do teorii.",
+      "risky": "Starsza etykieta wątpliwego lub niepotrzebnie ryzykownego pomysłu. Zachowana dla zgodności i pojawia się rzadko."
+    }
+  },
+  "evaluation": {
+    "kicker": "Moduł 6 · Pasek oceny",
+    "title": "Zobacz od razu, kto stoi lepiej",
+    "intro": "Pasek zamienia ocenę silnika w wizualną równowagę. Zmień przykład i obserwuj, który kolor zyskuje przestrzeń.",
+    "white": "Białe",
+    "black": "Czarne",
+    "tryLabel": "Wypróbuj pięć pozycji",
+    "current": "Co to znaczy",
+    "presets": {
+      "blackWinning": {
+        "title": "Czarne wygrywają",
+        "body": "Czarne mają decydującą przewagę. Białe potrzebują poważnego błędu rywala."
+      },
+      "blackBetter": {
+        "title": "Czarne stoją lepiej",
+        "body": "Czarne mają użyteczną przewagę, ale nadal muszą grać dokładnie."
+      },
+      "equal": {
+        "title": "Równowaga",
+        "body": "Żadna strona nie ma istotnej przewagi według silnika. Pozycja nadal może być trudna."
+      },
+      "whiteBetter": {
+        "title": "Białe stoją lepiej",
+        "body": "Białe mają użyteczną przewagę, która może zniknąć po niedokładności."
+      },
+      "whiteWinning": {
+        "title": "Białe wygrywają",
+        "body": "Białe mają decydującą przewagę i powinny ją wykorzystać poprawną grą."
+      }
+    },
+    "facts": {
+      "scale": {
+        "title": "Pion jest jednostką",
+        "body": "+1,0 to około pion; +3,0 to mniej więcej lekka figura."
+      },
+      "colours": {
+        "title": "Przestrzeń pokazuje przewagę",
+        "body": "Więcej bieli sprzyja Białym, więcej ciemnego Czarnym."
+      },
+      "sign": {
+        "title": "Znak wskazuje stronę",
+        "body": "Wartość dodatnia sprzyja Białym, ujemna Czarnym."
+      },
+      "mate": {
+        "title": "M oznacza wymuszony mat",
+        "body": "M3 to wymuszony mat w trzech ruchach, nie ocena materiału."
+      }
+    },
+    "note": "Pasek ocenia pozycję, nie łatwość gry dla człowieka. Sprawdź też wariant silnika i wyjaśnienie trenera."
+  },
+  "challenge": {
+    "kicker": "Moduł 7 · Szybkie wyzwanie",
+    "title": "Trzy ruchy. Bez długiego egzaminu.",
+    "intro": "Wybierz znaczenie każdego zapisu. Od razu dostaniesz wyjaśnienie.",
+    "score": "{{score}} z {{total}} poprawnych",
+    "correct": "Dobrze",
+    "incorrect": "Niezupełnie",
+    "completeTitle": "Potrafisz już przeczytać użyteczną część PGN",
+    "completeBody": "Otwórz dowolną przeanalizowaną partię i spróbuj znaleźć te symbole w prawdziwych ruchach.",
+    "reset": "Spróbuj ponownie",
+    "questions": {
+      "q1": {
+        "prompt": "Co wydarzyło się na f7?",
+        "options": {
+          "a": {
+            "key": "captureCheck",
+            "label": "Goniec zbił figurę i dał szacha"
+          },
+          "b": {
+            "key": "bishopMove",
+            "label": "Goniec przeszedł tam bez bicia"
+          },
+          "c": {
+            "key": "mate",
+            "label": "Goniec dał mata"
+          }
+        },
+        "explanation": "B oznacza gońca, x bicie, a + szacha."
+      },
+      "q2": {
+        "prompt": "Co oznacza dłuższy zapis roszady?",
+        "options": {
+          "a": {
+            "key": "shortCastle",
+            "label": "Krótka roszada"
+          },
+          "b": {
+            "key": "longCastle",
+            "label": "Długa roszada"
+          },
+          "c": {
+            "key": "queenMove",
+            "label": "Hetman przesunął się o trzy pola"
+          }
+        },
+        "explanation": "O-O-O to długa roszada; O-O to krótka roszada."
+      },
+      "q3": {
+        "prompt": "Co jest szczególnego w tym ruchu piona?",
+        "options": {
+          "a": {
+            "key": "queenCheck",
+            "label": "Promuje na hetmana i daje szacha"
+          },
+          "b": {
+            "key": "promotionMate",
+            "label": "Promuje na hetmana i daje mata"
+          },
+          "c": {
+            "key": "queenCapture",
+            "label": "Hetman bije na e8"
+          }
+        },
+        "explanation": "=Q oznacza promocję na hetmana, a # mata."
+      }
+    }
+  },
+  "actions": {
+    "previous": "Wstecz",
+    "next": "Dalej"
+  }
+}

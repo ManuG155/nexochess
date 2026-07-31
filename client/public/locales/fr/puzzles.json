@@ -1,0 +1,257 @@
+{
+    "hero": {
+        "eyebrow": "Entraînement tactique NexoChess",
+        "title": "Transformez chaque erreur en leçon",
+        "subtitle": "Entraînez les positions de vos parties analysées ou résolvez des problèmes par thème et difficulté à votre rythme."
+    },
+    "stats": {
+        "rating": "Classement puzzles",
+        "calibrating_one": "{{count}} puzzle avant calibration",
+        "calibrating_other": "{{count}} puzzles avant calibration",
+        "calibrated": "Classement calibré",
+        "accuracy": "Réussite",
+        "attempts_one": "{{count}} tentative classée",
+        "attempts_other": "{{count}} tentatives classées",
+        "streak": "Série",
+        "best_one": "Record : {{count}}",
+        "best_other": "Record : {{count}}"
+    },
+    "setup": {
+        "kicker": "Préparez la séance",
+        "title": "Que voulez-vous travailler ?",
+        "subtitle": "NexoChess mémorise sur cet appareil les positions terminées pour ne pas les répéter.",
+        "start": "Commencer"
+    },
+    "sources": {
+        "archive": {
+            "title": "Apprendre de mes parties",
+            "body": "Puzzles créés à partir d'imprécisions, erreurs, occasions manquées et gaffes.",
+            "emptyTitle": "Aucune position analysée",
+            "emptyBody": "Analysez d'abord une partie et NexoChess transformera ses erreurs en exercices.",
+            "action": "Analyser une partie"
+        },
+        "lichess": {
+            "title": "Entraînement",
+            "body": "Problèmes filtrables par thème et difficulté."
+        }
+    },
+    "filters": {
+        "theme": "Thème",
+        "themeHelp": "Choisissez une catégorie puis, si vous le souhaitez, un type précis.",
+        "difficulty": "Difficulté",
+        "difficultyHelp": "Le mode adaptatif suit votre classement puzzles.",
+        "subtheme": "Choisir : {{theme}}",
+        "subthemeHelp": "Choisissez un type précis ou entraînez toute la catégorie.",
+        "clearSubtheme": "Tous",
+        "openingSearch": "Rechercher une ouverture…",
+        "noSubthemeResults": "Aucune ouverture correspondante."
+    },
+    "themes": {
+        "all": "Varié",
+        "mate": "Échec et mat",
+        "fork": "Fourchette",
+        "pin": "Clouage",
+        "endgame": "Finale",
+        "opening": "Ouverture",
+        "sacrifice": "Sacrifice",
+        "defense": "Défense"
+    },
+    "difficulties": {
+        "adaptive": {
+            "title": "Adaptatif",
+            "range": "Votre niveau"
+        },
+        "beginner": {
+            "title": "Débutant",
+            "range": "< 1200"
+        },
+        "intermediate": {
+            "title": "Intermédiaire",
+            "range": "1200–1799"
+        },
+        "advanced": {
+            "title": "Avancé",
+            "range": "1800–2199"
+        },
+        "expert": {
+            "title": "Expert",
+            "range": "2200+"
+        }
+    },
+    "options": {
+        "rated": {
+            "title": "Classée",
+            "body": "Ajuster mon classement puzzles"
+        },
+        "hints": {
+            "title": "Indices",
+            "body": "Autoriser l'entraîneur à montrer un coup"
+        },
+        "solution": {
+            "title": "Solution",
+            "body": "Autoriser l'affichage de toute la variante"
+        }
+    },
+    "coach": {
+        "title": "{{name}}, votre entraîneur",
+        "loading": "Je prépare vos positions.",
+        "setupArchive": "Vos parties analysées contiennent déjà de bonnes leçons. Choisissez une séance et revoyons-les calmement.",
+        "setupLichess": "Choisissez un thème et une difficulté pour résoudre des problèmes variés.",
+        "archiveTurn": "Aux {{colour}}. Cette position suit un coup coûteux. Trouvez comment le punir.",
+        "lichessTurn": "Aux {{colour}}. Cherchez d'abord les échecs, prises et menaces.",
+        "wrong": "Pas ce coup. Il est légal, mais laisse passer l'occasion clé. Revérifiez échecs, prises et menaces.",
+        "correctContinue": "Bon coup. Regardez la réponse : l'idée n'est pas terminée.",
+        "yourTurnAgain": "C'était la défense attendue. Continuez la combinaison.",
+        "hint": "Un indice : étudiez {{move}} et comprenez pourquoi ce coup est plus fort.",
+        "solvedClean": "Excellent. Vous avez trouvé toute l'idée sans aide.",
+        "solvedAfterHelp": "Résolu. Répétez encore le motif mentalement pour le retenir.",
+        "solutionShown": "Voici la variante complète. Utilisez les commandes de l’objectif pour revoir chaque position.",
+        "noArchive": "Il me faut au moins une partie analysée dans vos Archives pour créer un puzzle.",
+        "noFiltered": "Aucun puzzle inédit avec ces filtres. Essayez un autre thème ou niveau.",
+        "loadError": "Impossible de charger les positions. Actualisez la page pour réessayer.",
+        "positionError": "Cette variante contient une position que je ne peux pas reproduire sûrement ; je l'ai arrêtée.",
+        "changeFilters": "Modifiez la séance quand vous voulez ; les positions terminées restent enregistrées.",
+        "archiveChecking": "Je vérifie vos parties analysées pour trouver des positions utiles à revoir.",
+        "archiveNoGames": "Vous n’avez encore analysé aucune partie. Analysez-en une et j’en transformerai les moments clés en problèmes.",
+        "archiveNoErrors": "Il n’y a aucune erreur à travailler dans vos parties analysées. C’est une bonne nouvelle.",
+        "archiveReady": "Apprenez des erreurs apparues dans vos parties analysées.",
+        "trainingSetup": "Choisissez un thème et une difficulté pour résoudre des problèmes variés."
+    },
+    "colours": {
+        "white": "Blancs",
+        "black": "Noirs"
+    },
+    "states": {
+        "loadingTitle": "Préparation de l'entraînement",
+        "loadingBody": "Lecture de vos Archives et chargement des problèmes d’échecs.",
+        "errorTitle": "Impossible de charger l'entraînement",
+        "errorBody": "Rien n'est perdu. Actualisez la page pour réessayer.",
+        "noArchiveTitle": "Aucun puzzle personnel",
+        "noArchiveBody": "Analysez et enregistrez une partie pour créer des positions à partir des erreurs des deux joueurs.",
+        "noMatchTitle": "Cette sélection est terminée",
+        "noMatchBody": "Changez le thème ou la difficulté pour continuer sans répétition.",
+        "noErrorsTitle": "Aucune erreur à travailler",
+        "noErrorsBody": "Vos parties analysées ne contiennent encore aucune position améliorable."
+    },
+    "puzzle": {
+        "archiveSource": "Depuis vos Archives",
+        "lichessSource": "Problèmes d’échecs",
+        "toMove": "Aux {{colour}}",
+        "rating": "Classement {{rating}}",
+        "objective": "Objectif actuel",
+        "findMove": "Trouvez la meilleure suite",
+        "solvedTitle": "Puzzle résolu",
+        "revealedTitle": "Solution étudiée",
+        "archiveContext": "Coup {{move}}, après {{badMove}}, dans {{game}}. Punissez l'erreur et gardez l'avantage.",
+        "lichessContext": "Chaque coup du joueur est unique ou nettement meilleur que les alternatives.",
+        "evaluation": "Avantage de la position",
+        "evaluationNote": "Stockfish la met à jour localement, toujours du point de vue des Blancs."
+    },
+    "controls": {
+        "previous": "Position précédente",
+        "next": "Position suivante",
+        "beforeMistake": "Position avant l'erreur",
+        "current": "Position actuelle",
+        "linePosition": "Position {{current}} sur {{total}}"
+    },
+    "actions": {
+        "hint": "Indice",
+        "hintHelp": "Montrer le coup clé",
+        "solution": "Solution",
+        "solutionHelp": "Révéler la variante",
+        "disabled": "Désactivé pour cette séance",
+        "nextPuzzle": "Puzzle suivant",
+        "changeFilters": "Changer de séance",
+        "sourceGame": "Partie source",
+        "autoNext": "Passage automatique",
+        "autoNextHelp": "Passe au puzzle suivant après résolution"
+    },
+    "attribution": {
+        "text": "Les positions proviennent de la base publique CC0 de Lichess. NexoChess n’est pas affilié à Lichess.",
+        "link": "Ouvrir la base"
+    },
+    "themeCategories": {
+        "all": "Varié",
+        "checkmate": "Échec et mat",
+        "tactics": "Tactiques",
+        "attack": "Attaque",
+        "defense": "Défense",
+        "advantage": "Avantage",
+        "endgame": "Finales",
+        "opening": "Ouvertures",
+        "phase": "Phase de jeu",
+        "length": "Longueur",
+        "master": "Parties de maîtres"
+    },
+    "themeLabels": {
+        "mate": "Tous les mats",
+        "mateIn1": "Mat en 1",
+        "mateIn2": "Mat en 2",
+        "mateIn3": "Mat en 3",
+        "mateIn4": "Mat en 4",
+        "mateIn5": "Mat en 5 ou plus",
+        "anastasiaMate": "Mat d’Anastasie",
+        "arabianMate": "Mat des Arabes",
+        "backRankMate": "Mat du couloir",
+        "balestraMate": "Mat de l’arbalète",
+        "blindSwineMate": "Mat des deux tours",
+        "bodenMate": "Mat de Boden",
+        "cornerMate": "Mat en coin",
+        "doubleBishopMate": "Mat des deux fous",
+        "dovetailMate": "Mat en queue d’aronde",
+        "epauletteMate": "Mat des épaulettes",
+        "hookMate": "Mat du hameçon",
+        "killBoxMate": "Mat par mise en boîte",
+        "morphysMate": "Mat de Morphy",
+        "operaMate": "Mat de l’Opéra",
+        "pillsburysMate": "Mat de Pillsbury",
+        "smotheredMate": "Mat à l’étouffée",
+        "swallowstailMate": "Mat en queue d’hirondelle",
+        "triangleMate": "Mat triangulaire",
+        "vukovicMate": "Mat de Vuković",
+        "advancedPawn": "Pion avancé",
+        "attraction": "Attraction",
+        "capturingDefender": "Capturer le défenseur",
+        "castling": "Roque",
+        "clearance": "Dégagement",
+        "collinearMove": "Coup colinéaire",
+        "deflection": "Déviation",
+        "discoveredAttack": "Attaque à la découverte",
+        "discoveredCheck": "Échec à la découverte",
+        "doubleCheck": "Échec double",
+        "enPassant": "Prise en passant",
+        "fork": "Fourchette",
+        "hangingPiece": "Pièce en prise",
+        "interference": "Interception",
+        "intermezzo": "Coup intermédiaire",
+        "pin": "Clouage",
+        "promotion": "Promotion",
+        "quietMove": "Coup calme",
+        "sacrifice": "Sacrifice",
+        "skewer": "Enfilade",
+        "trappedPiece": "Pièce piégée",
+        "underPromotion": "Sous-promotion",
+        "xRayAttack": "Attaque à rayons X",
+        "zugzwang": "Zugzwang",
+        "attackingF2F7": "Attaque sur f2 ou f7",
+        "exposedKing": "Roi exposé",
+        "kingsideAttack": "Attaque sur l’aile roi",
+        "queensideAttack": "Attaque sur l’aile dame",
+        "defensiveMove": "Coup défensif",
+        "equality": "Rétablir l’égalité",
+        "crushing": "Avantage écrasant",
+        "bishopEndgame": "Finale de fous",
+        "knightEndgame": "Finale de cavaliers",
+        "pawnEndgame": "Finale de pions",
+        "queenEndgame": "Finale de dames",
+        "queenRookEndgame": "Finale dames et tours",
+        "rookEndgame": "Finale de tours",
+        "middlegame": "Milieu de partie",
+        "oneMove": "Problème en un coup",
+        "short": "Problème en deux coups",
+        "long": "Problème en trois coups",
+        "veryLong": "Quatre coups ou plus",
+        "masterVsMaster": "Maître contre maître",
+        "superGM": "Partie de super-GM"
+    }
+}

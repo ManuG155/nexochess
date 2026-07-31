@@ -13,6 +13,12 @@
   "navigationBar": {
     "support": "Hỗ trợ",
     "signIn": "Đăng nhập",
+    "share": "Chia sẻ",
+    "academy": "Học viện",
+    "puzzles": "Câu đố",
+    "comingSoon": "Sắp ra mắt",
+    "openMenu": "Mở menu điều hướng",
+    "primaryNavigation": "Điều hướng chính",
     "tooltips": {
       "support": "Hỗ trợ chúng tôi ❤",
       "help": "Trung tâm Trợ giúp"
@@ -50,6 +56,7 @@
     "copyright": "Bản quyền © {{year}} NexoChess",
     "tagline": "Kết nối các nước đi. Hiểu ván cờ.",
     "license": "Mã nguồn theo giấy phép GPL-3.0",
+    "freeGameReview": "Phân tích ván cờ miễn phí",
     "navigationLabel": "Điều hướng chân trang",
     "contact": "Liên hệ"
   },
@@ -58,6 +65,17 @@
     "no": "Không"
   },
   "shareGame": {
+    "eyebrow": "Chia sẻ NexoChess",
+    "title": "Chia sẻ ván đấu",
+    "subtitle": "Sao chép thế cờ hiện tại, xuất toàn bộ ván đấu hoặc gửi qua thiết bị của bạn.",
+    "fenTitle": "Thế cờ hiện tại",
+    "fenDescription": "Dùng mã này để mở chính xác thế cờ đang hiển thị trên bàn.",
+    "pgnTitle": "Toàn bộ ván đấu",
+    "pgnDescription": "Bao gồm thông tin đầu, các nước đi và cây phân tích hiện tại.",
+    "characters": "{{count}} ký tự",
+    "closeHint": "Nhấp bên ngoài hoặc nhấn Esc để đóng",
+    "downloadPGN": "Tải PGN",
+    "shareWith": "Chia sẻ qua…",
     "copyFEN": "Sao chép FEN",
     "copyFENToast": "Đã sao chép FEN!",
     "copyPGN": "Sao chép PGN",

@@ -119,3 +119,31 @@
         font-size: 1rem;
     }
 }
+
+/* NEXO_COACH_BUBBLE_OUTLINE */
+.bubble {
+    border: 1px solid rgba(112, 160, 246, 0.52);
+}
+
+.bubble::before,
+.bubble::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    clip-path: polygon(100% 0, 100% 100%, 0 50%);
+    transform: translateY(-50%);
+}
+
+.bubble::before {
+    left: -22px;
+    width: 22px;
+    height: 32px;
+    background: rgba(112, 160, 246, 0.72);
+}
+
+.bubble::after {
+    left: -20px;
+    width: 20px;
+    height: 30px;
+    background: #FFFFFF;
+}

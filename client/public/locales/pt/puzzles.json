@@ -1,0 +1,257 @@
+{
+    "hero": {
+        "eyebrow": "Treino tático NexoChess",
+        "title": "Transforme cada erro numa lição",
+        "subtitle": "Treine posições das suas partidas analisadas ou pratique problemas por tema e dificuldade ao seu ritmo."
+    },
+    "stats": {
+        "rating": "Rating de puzzles",
+        "calibrating_one": "Falta {{count}} puzzle para calibrar",
+        "calibrating_other": "Faltam {{count}} puzzles para calibrar",
+        "calibrated": "Rating calibrado",
+        "accuracy": "Acertos",
+        "attempts_one": "{{count}} tentativa avaliada",
+        "attempts_other": "{{count}} tentativas avaliadas",
+        "streak": "Sequência",
+        "best_one": "Melhor: {{count}}",
+        "best_other": "Melhor: {{count}}"
+    },
+    "setup": {
+        "kicker": "Prepare a sessão",
+        "title": "O que quer treinar?",
+        "subtitle": "O NexoChess guarda neste dispositivo as posições concluídas para não as repetir.",
+        "start": "Começar o treino"
+    },
+    "sources": {
+        "archive": {
+            "title": "Aprender com as minhas partidas",
+            "body": "Puzzles criados a partir de imprecisões, erros, oportunidades perdidas e erros graves.",
+            "emptyTitle": "Ainda não há posições analisadas",
+            "emptyBody": "Analise primeiro uma partida e o NexoChess transformará os erros em treino.",
+            "action": "Analisar uma partida"
+        },
+        "lichess": {
+            "title": "Treino",
+            "body": "Problemas filtráveis por tema e dificuldade."
+        }
+    },
+    "filters": {
+        "theme": "Tema",
+        "themeHelp": "Escolha uma categoria e, se quiser, um tipo específico.",
+        "difficulty": "Dificuldade",
+        "difficultyHelp": "O modo adaptativo segue o seu rating de puzzles.",
+        "subtheme": "Escolher {{theme}}",
+        "subthemeHelp": "Escolha um tipo ou treine a categoria inteira.",
+        "clearSubtheme": "Todos",
+        "openingSearch": "Procurar abertura…",
+        "noSubthemeResults": "Nenhuma abertura correspondente foi encontrada."
+    },
+    "themes": {
+        "all": "Variado",
+        "mate": "Xeque-mate",
+        "fork": "Garfo",
+        "pin": "Cravada",
+        "endgame": "Final",
+        "opening": "Abertura",
+        "sacrifice": "Sacrifício",
+        "defense": "Defesa"
+    },
+    "difficulties": {
+        "adaptive": {
+            "title": "Adaptativa",
+            "range": "O seu nível"
+        },
+        "beginner": {
+            "title": "Iniciante",
+            "range": "< 1200"
+        },
+        "intermediate": {
+            "title": "Intermédia",
+            "range": "1200–1799"
+        },
+        "advanced": {
+            "title": "Avançada",
+            "range": "1800–2199"
+        },
+        "expert": {
+            "title": "Especialista",
+            "range": "2200+"
+        }
+    },
+    "options": {
+        "rated": {
+            "title": "Avaliada",
+            "body": "Ajustar o meu rating de puzzles"
+        },
+        "hints": {
+            "title": "Dicas",
+            "body": "Permitir ao treinador mostrar uma jogada"
+        },
+        "solution": {
+            "title": "Solução",
+            "body": "Permitir revelar a variante completa"
+        }
+    },
+    "coach": {
+        "title": "{{name}}, o seu treinador",
+        "loading": "Estou a preparar as suas posições.",
+        "setupArchive": "As suas partidas analisadas já contêm boas lições. Escolha uma sessão e vamos revê-las com calma.",
+        "setupLichess": "Escolha um tema e uma dificuldade para praticar problemas variados.",
+        "archiveTurn": "Jogam as {{colour}}. Esta posição surgiu após uma jogada cara. Encontre o castigo.",
+        "lichessTurn": "Jogam as {{colour}}. Procure primeiro xeques, capturas e ameaças.",
+        "wrong": "Não é esta. A jogada é legal, mas deixa escapar a oportunidade principal. Reveja xeques, capturas e ameaças.",
+        "correctContinue": "Boa jogada. Observe a resposta; a ideia ainda não terminou.",
+        "yourTurnAgain": "Essa era a defesa esperada. Continue a combinação.",
+        "hint": "Uma dica: estude {{move}} e descubra por que é mais forte.",
+        "solvedClean": "Excelente. Encontrou toda a ideia sem ajuda.",
+        "solvedAfterHelp": "Resolvido. Repita o padrão mentalmente mais uma vez.",
+        "solutionShown": "Aqui está a variante completa. Use os controlos no cartão do objetivo para rever cada posição.",
+        "noArchive": "Preciso de pelo menos uma partida analisada no Arquivo para criar um puzzle.",
+        "noFiltered": "Não há puzzles novos com estes filtros. Experimente outro tema ou dificuldade.",
+        "loadError": "Não consegui carregar as posições. Atualize a página para tentar novamente.",
+        "positionError": "Esta variante contém uma posição que não consigo reproduzir com segurança; parei-a.",
+        "changeFilters": "Ajuste a sessão quando quiser; as posições concluídas continuam guardadas.",
+        "archiveChecking": "Estou a verificar as suas partidas analisadas à procura de posições que vale a pena rever.",
+        "archiveNoGames": "Ainda não analisou nenhuma partida. Analise uma e transformarei os momentos-chave em problemas.",
+        "archiveNoErrors": "Não há erros para praticar nas suas partidas analisadas. É uma boa notícia.",
+        "archiveReady": "Aprenda com os erros que surgiram nas suas partidas analisadas.",
+        "trainingSetup": "Escolha um tema e uma dificuldade para praticar problemas variados."
+    },
+    "colours": {
+        "white": "Brancas",
+        "black": "Pretas"
+    },
+    "states": {
+        "loadingTitle": "A preparar o treino",
+        "loadingBody": "A ler o seu Arquivo e a carregar os problemas de xadrez.",
+        "errorTitle": "Não foi possível carregar o treino",
+        "errorBody": "Nada foi perdido. Atualize a página e tente novamente.",
+        "noArchiveTitle": "Não há puzzles próprios",
+        "noArchiveBody": "Analise e guarde uma partida para criar posições com os erros dos dois jogadores.",
+        "noMatchTitle": "Concluiu esta seleção",
+        "noMatchBody": "Mude o tema ou a dificuldade para continuar sem repetir posições.",
+        "noErrorsTitle": "Não há erros para praticar",
+        "noErrorsBody": "As suas partidas analisadas ainda não contêm posições que possam ser melhoradas."
+    },
+    "puzzle": {
+        "archiveSource": "Do seu Arquivo",
+        "lichessSource": "Problemas de xadrez",
+        "toMove": "Jogam as {{colour}}",
+        "rating": "Rating {{rating}}",
+        "objective": "Objetivo atual",
+        "findMove": "Encontre a melhor continuação",
+        "solvedTitle": "Puzzle resolvido",
+        "revealedTitle": "Solução revista",
+        "archiveContext": "Lance {{move}}, depois de {{badMove}}, em {{game}}. Castigue o erro e mantenha a vantagem.",
+        "lichessContext": "Cada jogada do jogador é única ou claramente superior às alternativas.",
+        "evaluation": "Vantagem da posição",
+        "evaluationNote": "O Stockfish atualiza-a localmente, sempre do ponto de vista das brancas."
+    },
+    "controls": {
+        "previous": "Posição anterior",
+        "next": "Posição seguinte",
+        "beforeMistake": "Posição antes do erro",
+        "current": "Posição atual",
+        "linePosition": "Posição {{current}} de {{total}}"
+    },
+    "actions": {
+        "hint": "Dica",
+        "hintHelp": "Mostrar a jogada-chave",
+        "solution": "Solução",
+        "solutionHelp": "Revelar a variante",
+        "disabled": "Desativado nesta sessão",
+        "nextPuzzle": "Puzzle seguinte",
+        "changeFilters": "Mudar sessão",
+        "sourceGame": "Partida de origem",
+        "autoNext": "Avanço automático",
+        "autoNextHelp": "Passa ao puzzle seguinte ao resolver"
+    },
+    "attribution": {
+        "text": "As posições vêm da base pública CC0 de puzzles do Lichess. A NexoChess não é afiliada ao Lichess.",
+        "link": "Abrir a base de dados"
+    },
+    "themeCategories": {
+        "all": "Variado",
+        "checkmate": "Xeque-mate",
+        "tactics": "Táticas",
+        "attack": "Ataque",
+        "defense": "Defesa",
+        "advantage": "Vantagem",
+        "endgame": "Finais",
+        "opening": "Aberturas",
+        "phase": "Fase do jogo",
+        "length": "Duração",
+        "master": "Partidas de mestres"
+    },
+    "themeLabels": {
+        "mate": "Qualquer xeque-mate",
+        "mateIn1": "Mate em 1",
+        "mateIn2": "Mate em 2",
+        "mateIn3": "Mate em 3",
+        "mateIn4": "Mate em 4",
+        "mateIn5": "Mate em 5 ou mais",
+        "anastasiaMate": "Mate de Anastasia",
+        "arabianMate": "Mate árabe",
+        "backRankMate": "Mate de corredor",
+        "balestraMate": "Mate de Balestra",
+        "blindSwineMate": "Mate do porco cego",
+        "bodenMate": "Mate de Boden",
+        "cornerMate": "Mate no canto",
+        "doubleBishopMate": "Mate com dois bispos",
+        "dovetailMate": "Mate cauda-de-andorinha",
+        "epauletteMate": "Mate das dragonas",
+        "hookMate": "Mate do gancho",
+        "killBoxMate": "Mate da caixa",
+        "morphysMate": "Mate de Morphy",
+        "operaMate": "Mate da Ópera",
+        "pillsburysMate": "Mate de Pillsbury",
+        "smotheredMate": "Mate sufocado",
+        "swallowstailMate": "Mate de cauda de andorinha",
+        "triangleMate": "Mate do triângulo",
+        "vukovicMate": "Mate de Vuković",
+        "advancedPawn": "Peão avançado",
+        "attraction": "Atração",
+        "capturingDefender": "Capturar o defensor",
+        "castling": "Roque",
+        "clearance": "Libertação",
+        "collinearMove": "Jogada colinear",
+        "deflection": "Desvio",
+        "discoveredAttack": "Ataque descoberto",
+        "discoveredCheck": "Xeque descoberto",
+        "doubleCheck": "Xeque duplo",
+        "enPassant": "Captura en passant",
+        "fork": "Garfo",
+        "hangingPiece": "Peça desprotegida",
+        "interference": "Interferência",
+        "intermezzo": "Jogada intermédia",
+        "pin": "Cravada",
+        "promotion": "Promoção",
+        "quietMove": "Jogada subtil",
+        "sacrifice": "Sacrifício",
+        "skewer": "Espeto",
+        "trappedPiece": "Peça encurralada",
+        "underPromotion": "Subpromoção",
+        "xRayAttack": "Ataque de raio X",
+        "zugzwang": "Zugzwang",
+        "attackingF2F7": "Ataque a f2 ou f7",
+        "exposedKing": "Rei exposto",
+        "kingsideAttack": "Ataque no flanco do rei",
+        "queensideAttack": "Ataque no flanco da dama",
+        "defensiveMove": "Jogada defensiva",
+        "equality": "Recuperar a igualdade",
+        "crushing": "Vantagem esmagadora",
+        "bishopEndgame": "Final de bispos",
+        "knightEndgame": "Final de cavalos",
+        "pawnEndgame": "Final de peões",
+        "queenEndgame": "Final de damas",
+        "queenRookEndgame": "Final de damas e torres",
+        "rookEndgame": "Final de torres",
+        "middlegame": "Meio-jogo",
+        "oneMove": "Problema de uma jogada",
+        "short": "Problema de duas jogadas",
+        "long": "Problema de três jogadas",
+        "veryLong": "Quatro jogadas ou mais",
+        "masterVsMaster": "Mestre contra mestre",
+        "superGM": "Partida de super-GM"
+    }
+}

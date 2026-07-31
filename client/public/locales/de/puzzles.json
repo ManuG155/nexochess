@@ -1,0 +1,257 @@
+{
+    "hero": {
+        "eyebrow": "NexoChess-Taktiktraining",
+        "title": "Mach aus jedem Fehler eine Lektion",
+        "subtitle": "Trainiere Stellungen aus deinen analysierten Partien oder löse Aufgaben nach Thema und Schwierigkeit in deinem Tempo."
+    },
+    "stats": {
+        "rating": "Aufgabenwertung",
+        "calibrating_one": "Noch {{count}} Aufgabe zur Kalibrierung",
+        "calibrating_other": "Noch {{count}} Aufgaben zur Kalibrierung",
+        "calibrated": "Wertung kalibriert",
+        "accuracy": "Trefferquote",
+        "attempts_one": "{{count}} gewerteter Versuch",
+        "attempts_other": "{{count}} gewertete Versuche",
+        "streak": "Serie",
+        "best_one": "Bestwert: {{count}}",
+        "best_other": "Bestwert: {{count}}"
+    },
+    "setup": {
+        "kicker": "Training vorbereiten",
+        "title": "Was möchtest du trainieren?",
+        "subtitle": "NexoChess merkt sich gelöste Stellungen auf diesem Gerät und zeigt sie nicht erneut.",
+        "start": "Training starten"
+    },
+    "sources": {
+        "archive": {
+            "title": "Aus meinen Partien lernen",
+            "body": "Aufgaben aus Ungenauigkeiten, Fehlern, verpassten Chancen und Patzern.",
+            "emptyTitle": "Noch keine analysierten Stellungen",
+            "emptyBody": "Analysiere zuerst eine Partie; NexoChess macht aus ihren Fehlern Übungen.",
+            "action": "Partie analysieren"
+        },
+        "lichess": {
+            "title": "Training",
+            "body": "Aufgaben nach Thema und Schwierigkeit filterbar."
+        }
+    },
+    "filters": {
+        "theme": "Thema",
+        "themeHelp": "Wähle eine Kategorie und bei Bedarf eine konkrete Unterart.",
+        "difficulty": "Schwierigkeit",
+        "difficultyHelp": "Adaptiv folgt deiner Aufgabenwertung.",
+        "subtheme": "{{theme}} auswählen",
+        "subthemeHelp": "Wähle eine Unterart oder trainiere die ganze Kategorie.",
+        "clearSubtheme": "Alle",
+        "openingSearch": "Eröffnung suchen…",
+        "noSubthemeResults": "Keine passende Eröffnung gefunden."
+    },
+    "themes": {
+        "all": "Gemischt",
+        "mate": "Schachmatt",
+        "fork": "Gabel",
+        "pin": "Fesselung",
+        "endgame": "Endspiel",
+        "opening": "Eröffnung",
+        "sacrifice": "Opfer",
+        "defense": "Verteidigung"
+    },
+    "difficulties": {
+        "adaptive": {
+            "title": "Adaptiv",
+            "range": "Dein Niveau"
+        },
+        "beginner": {
+            "title": "Anfänger",
+            "range": "< 1200"
+        },
+        "intermediate": {
+            "title": "Mittel",
+            "range": "1200–1799"
+        },
+        "advanced": {
+            "title": "Fortgeschritten",
+            "range": "1800–2199"
+        },
+        "expert": {
+            "title": "Experte",
+            "range": "2200+"
+        }
+    },
+    "options": {
+        "rated": {
+            "title": "Gewertet",
+            "body": "Meine Aufgabenwertung anpassen"
+        },
+        "hints": {
+            "title": "Hinweise",
+            "body": "Trainer darf einen Zug zeigen"
+        },
+        "solution": {
+            "title": "Lösung",
+            "body": "Vollständige Variante darf gezeigt werden"
+        }
+    },
+    "coach": {
+        "title": "{{name}}, dein Trainer",
+        "loading": "Ich bereite deine Stellungen vor.",
+        "setupArchive": "Deine analysierten Partien enthalten schon wertvolle Lektionen. Wähle ein Training und wir gehen sie ruhig durch.",
+        "setupLichess": "Wähle ein Thema und einen Schwierigkeitsgrad für abwechslungsreiche Aufgaben.",
+        "archiveTurn": "{{colour}} am Zug. Diese Stellung entstand nach einem teuren Fehler. Finde die Bestrafung.",
+        "lichessTurn": "{{colour}} am Zug. Prüfe zuerst Schachs, Schlagzüge und Drohungen.",
+        "wrong": "Nicht dieser Zug. Er ist legal, lässt aber die entscheidende Chance aus. Prüfe erneut Schachs, Schlagzüge und Drohungen.",
+        "correctContinue": "Guter Zug. Beachte die Antwort; die Idee ist noch nicht beendet.",
+        "yourTurnAgain": "Das war die erwartete Verteidigung. Setze die Kombination fort.",
+        "hint": "Ein Hinweis: Untersuche {{move}} und finde heraus, warum er stärker ist.",
+        "solvedClean": "Ausgezeichnet. Du hast die ganze Idee ohne Hilfe gefunden.",
+        "solvedAfterHelp": "Gelöst. Wiederhole das Muster noch einmal im Kopf.",
+        "solutionShown": "Hier ist die vollständige Variante. Mit den Steuerelementen im Zielbereich kannst du jede Stellung prüfen.",
+        "noArchive": "Ich brauche mindestens eine analysierte Partie im Archiv, um eine Aufgabe zu erstellen.",
+        "noFiltered": "Mit diesen Filtern gibt es keine ungesehenen Aufgaben. Ändere Thema oder Schwierigkeit.",
+        "loadError": "Die Stellungen konnten nicht geladen werden. Aktualisiere die Seite.",
+        "positionError": "Diese Variante enthält eine Stellung, die ich nicht sicher nachstellen kann; ich habe sie angehalten.",
+        "changeFilters": "Du kannst das Training jederzeit ändern; gelöste Stellungen bleiben gespeichert.",
+        "archiveChecking": "Ich prüfe deine analysierten Partien auf Stellungen, die sich zum Wiederholen eignen.",
+        "archiveNoGames": "Du hast noch keine Partie analysiert. Analysiere eine, dann mache ich aus ihren Schlüsselmomenten Aufgaben.",
+        "archiveNoErrors": "In deinen analysierten Partien gibt es keine Fehler zum Trainieren. Das ist eine gute Nachricht.",
+        "archiveReady": "Lerne aus den Fehlern deiner analysierten Partien.",
+        "trainingSetup": "Wähle ein Thema und einen Schwierigkeitsgrad für abwechslungsreiche Aufgaben."
+    },
+    "colours": {
+        "white": "Weiß",
+        "black": "Schwarz"
+    },
+    "states": {
+        "loadingTitle": "Training wird vorbereitet",
+        "loadingBody": "Dein Archiv wird gelesen und die Schachaufgaben werden geladen.",
+        "errorTitle": "Training konnte nicht geladen werden",
+        "errorBody": "Nichts ging verloren. Aktualisiere die Seite und versuche es erneut.",
+        "noArchiveTitle": "Keine eigenen Aufgaben verfügbar",
+        "noArchiveBody": "Analysiere und speichere eine Partie, um Aufgaben aus den Fehlern beider Spieler zu erstellen.",
+        "noMatchTitle": "Diese Auswahl ist abgeschlossen",
+        "noMatchBody": "Ändere Thema oder Schwierigkeit, um ohne Wiederholungen weiterzutrainieren.",
+        "noErrorsTitle": "Keine Fehler zum Trainieren",
+        "noErrorsBody": "Deine analysierten Partien enthalten noch keine verbesserungswürdigen Stellungen."
+    },
+    "puzzle": {
+        "archiveSource": "Aus deinem Archiv",
+        "lichessSource": "Schachaufgaben",
+        "toMove": "{{colour}} am Zug",
+        "rating": "Wertung {{rating}}",
+        "objective": "Aktuelles Ziel",
+        "findMove": "Finde die beste Fortsetzung",
+        "solvedTitle": "Aufgabe gelöst",
+        "revealedTitle": "Lösung geprüft",
+        "archiveContext": "Zug {{move}}, nach {{badMove}}, in {{game}}. Bestrafe den Fehler und behalte den Vorteil.",
+        "lichessContext": "Jeder Lösungszug ist der einzige oder klar stärkste Zug.",
+        "evaluation": "Stellungsvorteil",
+        "evaluationNote": "Stockfish aktualisiert sie lokal, immer aus der Sicht von Weiß."
+    },
+    "controls": {
+        "previous": "Vorherige Stellung",
+        "next": "Nächste Stellung",
+        "beforeMistake": "Stellung vor dem Fehler",
+        "current": "Aktuelle Stellung",
+        "linePosition": "Stellung {{current}} von {{total}}"
+    },
+    "actions": {
+        "hint": "Hinweis",
+        "hintHelp": "Schlüsselzug zeigen",
+        "solution": "Lösung",
+        "solutionHelp": "Variante aufdecken",
+        "disabled": "Für dieses Training deaktiviert",
+        "nextPuzzle": "Nächste Aufgabe",
+        "changeFilters": "Training ändern",
+        "sourceGame": "Quellpartie",
+        "autoNext": "Automatisch weiter",
+        "autoNextHelp": "Nach dem Lösen zum nächsten Puzzle"
+    },
+    "attribution": {
+        "text": "Die Stellungen stammen aus der öffentlichen CC0-Datenbank von Lichess. NexoChess ist nicht mit Lichess verbunden.",
+        "link": "Datenbank öffnen"
+    },
+    "themeCategories": {
+        "all": "Gemischt",
+        "checkmate": "Schachmatt",
+        "tactics": "Taktik",
+        "attack": "Angriff",
+        "defense": "Verteidigung",
+        "advantage": "Vorteil",
+        "endgame": "Endspiele",
+        "opening": "Eröffnungen",
+        "phase": "Spielphase",
+        "length": "Länge",
+        "master": "Meisterpartien"
+    },
+    "themeLabels": {
+        "mate": "Beliebiges Matt",
+        "mateIn1": "Matt in 1",
+        "mateIn2": "Matt in 2",
+        "mateIn3": "Matt in 3",
+        "mateIn4": "Matt in 4",
+        "mateIn5": "Matt in 5 oder mehr",
+        "anastasiaMate": "Anastasia-Matt",
+        "arabianMate": "Arabisches Matt",
+        "backRankMate": "Grundreihenmatt",
+        "balestraMate": "Balestra-Matt",
+        "blindSwineMate": "Blinde-Säue-Matt",
+        "bodenMate": "Boden-Matt",
+        "cornerMate": "Eck-Matt",
+        "doubleBishopMate": "Läuferpaarmatt",
+        "dovetailMate": "Sternmatt",
+        "epauletteMate": "Epaulettenmatt",
+        "hookMate": "Hakenmatt",
+        "killBoxMate": "Killbox-Matt",
+        "morphysMate": "Morphys Matt",
+        "operaMate": "Opern-Matt",
+        "pillsburysMate": "Pillsburys Matt",
+        "smotheredMate": "Ersticktes Matt",
+        "swallowstailMate": "Schwalbenschwanz-Matt",
+        "triangleMate": "Dreiecks-Matt",
+        "vukovicMate": "Vuković-Matt",
+        "advancedPawn": "Vorgerückter Bauer",
+        "attraction": "Hinlenkung",
+        "capturingDefender": "Verteidiger schlagen",
+        "castling": "Rochade",
+        "clearance": "Räumung",
+        "collinearMove": "Kollinearer Zug",
+        "deflection": "Ablenkung",
+        "discoveredAttack": "Abzugsangriff",
+        "discoveredCheck": "Abzugsschach",
+        "doubleCheck": "Doppelschach",
+        "enPassant": "En passant",
+        "fork": "Gabel",
+        "hangingPiece": "Hängende Figur",
+        "interference": "Unterbrechung",
+        "intermezzo": "Zwischenzug",
+        "pin": "Fesselung",
+        "promotion": "Bauernumwandlung",
+        "quietMove": "Stiller Zug",
+        "sacrifice": "Opfer",
+        "skewer": "Spieß",
+        "trappedPiece": "Gefangene Figur",
+        "underPromotion": "Unterverwandlung",
+        "xRayAttack": "Röntgenangriff",
+        "zugzwang": "Zugzwang",
+        "attackingF2F7": "Angriff auf f2 oder f7",
+        "exposedKing": "Exponierter König",
+        "kingsideAttack": "Angriff am Königsflügel",
+        "queensideAttack": "Angriff am Damenflügel",
+        "defensiveMove": "Verteidigungszug",
+        "equality": "Ausgleich herstellen",
+        "crushing": "Vernichtender Vorteil",
+        "bishopEndgame": "Läuferendspiel",
+        "knightEndgame": "Springerendspiel",
+        "pawnEndgame": "Bauernendspiel",
+        "queenEndgame": "Damenendspiel",
+        "queenRookEndgame": "Damen- und Turmendspiel",
+        "rookEndgame": "Turmendspiel",
+        "middlegame": "Mittelspiel",
+        "oneMove": "Einzügige Aufgabe",
+        "short": "Zweizügige Aufgabe",
+        "long": "Dreizügige Aufgabe",
+        "veryLong": "Vier Züge oder mehr",
+        "masterVsMaster": "Meister gegen Meister",
+        "superGM": "Super-Großmeister-Partie"
+    }
+}

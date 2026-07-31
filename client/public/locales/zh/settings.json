@@ -157,6 +157,10 @@
             "inside": "棋盘内",
             "outside": "棋盘外"
         },
+        "legalMoves": {
+            "title": "合法落点",
+            "description": "在 Puzzles 中选择棋子时，在所有合法目标格上显示圆点。"
+        },
         "preview": {
             "title": "预览",
             "description": "下方会同时预览您选择的棋盘和棋子。"

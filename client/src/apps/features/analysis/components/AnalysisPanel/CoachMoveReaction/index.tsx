@@ -12,7 +12,8 @@ import useAnalysisBoardStore from
 
 import {
     getCoachById,
-    getCoachReaction
+    getCoachReaction,
+    getCoachSpokenLine
 } from "@analysis/lib/coach";
 
 import {
@@ -66,7 +67,14 @@ function CoachMoveReaction() {
             t
         );
 
-        if (!classification) return statusLine;
+        if (!classification) {
+            return getCoachSpokenLine(
+                coach,
+                statusLine,
+                `${currentNode.state.fen}|${moveSan || "start"}`,
+                t
+            );
+        }
 
         return getCoachReaction(
             coach,

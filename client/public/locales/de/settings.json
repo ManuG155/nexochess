@@ -157,6 +157,10 @@
             "inside": "Innen",
             "outside": "Außen"
         },
+        "legalMoves": {
+            "title": "Legale Zugziele",
+            "description": "Zeigt in Puzzles Punkte auf den legalen Zielfeldern an, wenn du eine Figur auswählst."
+        },
         "preview": {
             "title": "Vorschau",
             "description": "Das ausgewählte Brett und die Figuren werden unten gemeinsam angezeigt."

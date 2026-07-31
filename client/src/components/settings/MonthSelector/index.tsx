@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-
-import { monthNames } from "shared/lib/utils/date";
+import { useTranslation } from "react-i18next";
 import Button from "../../common/Button";
 
 import MonthSelectorProps from "./MonthSelectorProps";
@@ -14,8 +13,15 @@ function MonthSelector({
     allowFuture, 
     locked
 }: MonthSelectorProps) {
+    const { i18n } = useTranslation();
+
     const [ year, setYear ] = useState(new Date().getFullYear());
     const [ month, setMonth ] = useState(new Date().getMonth());
+
+    const monthName = new Intl.DateTimeFormat(
+        i18n.resolvedLanguage || i18n.language,
+        { month: "long" }
+    ).format(new Date(year, month, 1));
 
     function incrementMonth(offset: number) {
         if (locked) return;
@@ -52,7 +58,11 @@ function MonthSelector({
             onClick={() => incrementMonth(-1)}
         />
 
-        <span>{monthNames[month]} {year}</span>
+        <span>
+            {monthName.charAt(0).toLocaleUpperCase(
+                i18n.resolvedLanguage || i18n.language
+            ) + monthName.slice(1)} {year}
+        </span>
 
         <Button
             className={styles.selectorButton}

@@ -1,0 +1,266 @@
+{
+  "hero": {
+    "eyebrow": "Académie NexoChess",
+    "title": "Comprenez ce que dit chaque coup",
+    "subtitle": "Apprenez le langage des échecs avec des leçons courtes et visuelles. Aucun prérequis, aucun pavé de texte.",
+    "start": "Commencer par la notation",
+    "progress": "Modules de l'Académie"
+  },
+  "modules": {
+    "notation": "Notation",
+    "movement": "Déplacement des pièces",
+    "values": "Valeur des pièces",
+    "practice": "Exercices guidés",
+    "classifications": "Qualité du coup",
+    "evaluation": "Barre d’évaluation",
+    "challenge": "Défi rapide"
+  },
+  "notation": {
+    "kicker": "Module 1 · Notation",
+    "title": "Lisez une partie sans la traduire",
+    "intro": "La notation consigne les événements de façon compacte. Les lettres des pièces sont toujours en anglais et les pions n'en utilisent aucune.",
+    "piecesTitle": "Les six pièces",
+    "piecesHelp": "La première majuscule indique quelle pièce a joué.",
+    "pawnRule": "Un coup de pion commence directement par sa case d'arrivée : e4 signifie qu'un pion est allé en e4.",
+    "examplesTitle": "Décodez un coup",
+    "examplesHelp": "Touchez un exemple pour voir comment chaque symbole change le sens.",
+    "pieces": {
+      "K": {
+        "name": "Roi"
+      },
+      "Q": {
+        "name": "Dame"
+      },
+      "R": {
+        "name": "Tour"
+      },
+      "B": {
+        "name": "Fou"
+      },
+      "N": {
+        "name": "Cavalier"
+      },
+      "P": {
+        "name": "Pion"
+      }
+    },
+    "examples": {
+      "e4": "Un pion avance en e4. Les pions ne portent aucune lettre.",
+      "Nf3": "Le cavalier (N) se déplace en f3.",
+      "Bxf7+": "Le fou (B) capture (x) en f7 et donne échec (+).",
+      "O-O": "Le roi effectue le petit roque.",
+      "Rae1": "La tour (R) de la colonne a va en e1. Le « a » la distingue de l'autre tour.",
+      "e8=Q#": "Un pion atteint e8, est promu en dame (=Q) et donne échec et mat (#)."
+    }
+  },
+  "movement": {
+    "kicker": "Module 2 · Déplacement",
+    "title": "Regardez l'échiquier avant de mémoriser",
+    "intro": "Choisissez une pièce. L'échiquier montre toutes les cases qu'elle pourrait atteindre depuis d4 sur un plateau vide.",
+    "choosePiece": "Choisissez une pièce",
+    "move": "Coup possible",
+    "capture": "Prise du pion",
+    "boardLabel": "Cases accessibles au {{piece}}",
+    "pieces": {
+      "K": "Une case dans n'importe quelle direction. Il ne peut jamais aller sur une case attaquée par l'adversaire.",
+      "Q": "Autant de cases que voulu sur une rangée, une colonne ou une diagonale. Elle ne peut pas sauter de pièce.",
+      "R": "Autant de cases que voulu horizontalement ou verticalement. Elle ne peut pas sauter de pièce.",
+      "B": "Autant de cases que voulu en diagonale. Un fou reste toujours sur des cases de la même couleur.",
+      "N": "En L : deux cases dans une direction puis une de côté. C'est la seule pièce qui peut sauter par-dessus les autres.",
+      "P": "Une case vers l'avant, mais il capture d'une case en diagonale. Depuis sa case initiale, il peut avancer de deux."
+    }
+  },
+  "values": {
+    "kicker": "Module 3 · Valeur des pièces",
+    "title": "Comprendre le coût d’un échange",
+    "intro": "La valeur des pièces est un repère rapide, pas un prix fixe. Elle aide à comparer prises et sacrifices.",
+    "points": "{{value}} points",
+    "pieces": {
+      "P": "L’unité de base. Un pion passé vaut davantage lorsqu’il approche de la promotion.",
+      "N": "Environ trois pions. Très fort dans les positions fermées et près du centre.",
+      "B": "Environ trois pions. Les diagonales ouvertes et la paire de fous augmentent sa valeur.",
+      "R": "Environ cinq pions. Elle devient très puissante sur une colonne ouverte.",
+      "Q": "Environ neuf pions. Elle combine tour et fou, mais peut aussi se faire piéger.",
+      "K": "Aucune valeur d’échange : le perdre termine la partie. En finale, il devient actif."
+    },
+    "note": "La position prime : activité, sécurité du roi et tactiques forcées comptent parfois plus que l’addition."
+  },
+  "practice": {
+    "kicker": "Module 4 · Pratique guidée",
+    "title": "Joue le coup sur l'échiquier",
+    "intro": "Sélectionne la case de départ puis la destination. En cas d'erreur, l'Académie t'explique pourquoi et te laisse recommencer.",
+    "progress": "Position {{current}} sur {{total}}",
+    "selectPiece": "Sélectionne la pièce indiquée",
+    "selectTarget": "Choisis sa case d'arrivée",
+    "correct": "Correct",
+    "incorrect": "Ce n'est pas le coup demandé",
+    "retry": "Recommencer la position",
+    "next": "Position suivante",
+    "boardLabel": "Échiquier d'entraînement interactif",
+    "positions": {
+      "knight": {
+        "tab": "Saut du cavalier",
+        "title": "Trouve le saut du cavalier",
+        "prompt": "Déplace le cavalier de f3 vers e5.",
+        "correct": "Ne5 est légal : le cavalier avance de deux cases dans une direction et d'une case sur le côté.",
+        "wrong": "Pars avec le cavalier en f3 et arrive en e5. Le cavalier ne va jamais en ligne droite : il saute en L."
+      },
+      "rook": {
+        "tab": "Prise de la tour",
+        "title": "Utilise la colonne ouverte",
+        "prompt": "Capture la tour en a8 avec ta tour depuis a1.",
+        "correct": "Rxa8+ remonte la colonne a dégagée, capture la tour et met le roi en g8 en échec.",
+        "wrong": "La tour doit partir de a1 et monter tout droit sur la colonne a jusqu'en a8. Une tour ne se déplace pas en diagonale."
+      },
+      "bishop": {
+        "tab": "Échec du fou",
+        "title": "Donne échec sur la diagonale",
+        "prompt": "Déplace le fou de c4 vers b5 et donne échec.",
+        "correct": "Bb5+ conserve la diagonale du fou et vise directement le roi en e8.",
+        "wrong": "Le fou doit aller de c4 à b5. Il se déplace uniquement en diagonale, et b5 ouvre la ligne d'échec vers e8."
+      }
+    }
+  },
+  "classifications": {
+    "kicker": "Module 5 · Qualité du coup",
+    "title": "Pourquoi un coup reçoit chaque étiquette",
+    "intro": "NexoChess compare votre coup à la position et aux variantes du moteur. Touchez une étiquette pour une explication simple.",
+    "selected": "Classement sélectionné",
+    "engineNote": "Un même coup peut recevoir une autre étiquette dans une position différente : le contexte, les variantes et l'évolution des chances de gain comptent.",
+    "descriptions": {
+      "brilliant": "Un coup très fort et difficile qui laisse volontairement du matériel en prise ou le sacrifie pour une idée correcte.",
+      "critical": "Un excellent coup dans une position exigeante où les autres variantes sérieuses sont nettement moins bonnes.",
+      "best": "Le premier choix du moteur, confirmé sans perte significative des chances de gain.",
+      "excellent": "Très proche du meilleur choix. Il conserve presque toute la valeur de la position.",
+      "okay": "Un coup solide qui maintient la partie, même s'il existait une option plus précise.",
+      "inaccuracy": "Une petite imprécision. La position se dégrade un peu, mais la partie est loin d'être perdue.",
+      "mistake": "Une erreur importante qui réduit clairement vos chances de gagner ou de faire nulle.",
+      "miss": "L'adversaire vous a offert une occasion importante et ce coup ne l'a pas exploitée.",
+      "blunder": "Une faute grave qui provoque un grand basculement, par exemple la perte de matériel, d'un avantage ou de la partie.",
+      "forced": "Il n'existait qu'un seul coup légal : aucun véritable choix n'était possible.",
+      "theory": "Un coup d'ouverture reconnu qui appartient encore à la théorie connue.",
+      "risky": "Une ancienne étiquette pour une idée douteuse ou inutilement dangereuse. Conservée pour compatibilité, elle apparaît rarement."
+    }
+  },
+  "evaluation": {
+    "kicker": "Module 6 · Barre d’évaluation",
+    "title": "Voir immédiatement qui est mieux",
+    "intro": "La barre transforme l’évaluation du moteur en équilibre visuel. Testez les exemples et regardez la couleur gagner de l’espace.",
+    "white": "Blancs",
+    "black": "Noirs",
+    "tryLabel": "Tester cinq positions",
+    "current": "Ce que cela signifie",
+    "presets": {
+      "blackWinning": {
+        "title": "Les Noirs gagnent",
+        "body": "Les Noirs ont un avantage décisif. Les Blancs ont besoin d’une grosse erreur adverse."
+      },
+      "blackBetter": {
+        "title": "Les Noirs sont mieux",
+        "body": "Les Noirs ont un avantage utile, mais doivent encore jouer précisément."
+      },
+      "equal": {
+        "title": "Position équilibrée",
+        "body": "Aucun camp n’a d’avantage moteur notable. Cela ne signifie pas que la position est simple."
+      },
+      "whiteBetter": {
+        "title": "Les Blancs sont mieux",
+        "body": "Les Blancs ont un avantage utile qui peut disparaître après une imprécision."
+      },
+      "whiteWinning": {
+        "title": "Les Blancs gagnent",
+        "body": "Les Blancs ont un avantage décisif et devraient le convertir correctement."
+      }
+    },
+    "facts": {
+      "scale": {
+        "title": "Le pion est l’unité",
+        "body": "+1,0 vaut environ un pion ; +3,0 correspond à une pièce mineure."
+      },
+      "colours": {
+        "title": "L’espace montre l’avantage",
+        "body": "Plus de blanc favorise les Blancs ; plus de sombre favorise les Noirs."
+      },
+      "sign": {
+        "title": "Le signe indique le camp",
+        "body": "Une valeur positive favorise les Blancs, une négative les Noirs."
+      },
+      "mate": {
+        "title": "M indique un mat forcé",
+        "body": "M3 signifie un mat forcé en trois coups, pas un score matériel."
+      }
+    },
+    "note": "La barre juge la position, pas sa facilité pour un humain. Consultez aussi la variante et l’explication de l’entraîneur."
+  },
+  "challenge": {
+    "kicker": "Module 7 · Défi rapide",
+    "title": "Trois coups. Pas d'examen interminable.",
+    "intro": "Choisissez la signification de chaque notation. L'explication apparaît immédiatement.",
+    "score": "{{score}} sur {{total}} correctes",
+    "correct": "Correct",
+    "incorrect": "Pas tout à fait",
+    "completeTitle": "Vous pouvez déjà lire une partie utile d'un PGN",
+    "completeBody": "Ouvrez une partie analysée et essayez de reconnaître ces symboles dans de vrais coups.",
+    "reset": "Recommencer",
+    "questions": {
+      "q1": {
+        "prompt": "Que s'est-il passé en f7 ?",
+        "options": {
+          "a": {
+            "key": "captureCheck",
+            "label": "Un fou a capturé et donné échec"
+          },
+          "b": {
+            "key": "bishopMove",
+            "label": "Un fou s'est déplacé sans capturer"
+          },
+          "c": {
+            "key": "mate",
+            "label": "Le fou a donné échec et mat"
+          }
+        },
+        "explanation": "B signifie fou, x indique une prise et + signifie échec."
+      },
+      "q2": {
+        "prompt": "Que signifie la notation du grand roque ?",
+        "options": {
+          "a": {
+            "key": "shortCastle",
+            "label": "Petit roque"
+          },
+          "b": {
+            "key": "longCastle",
+            "label": "Grand roque"
+          },
+          "c": {
+            "key": "queenMove",
+            "label": "La dame se déplace de trois cases"
+          }
+        },
+        "explanation": "O-O-O est le grand roque ; O-O est le petit roque."
+      },
+      "q3": {
+        "prompt": "Quelle est la particularité de ce coup de pion ?",
+        "options": {
+          "a": {
+            "key": "queenCheck",
+            "label": "Promotion en dame avec échec"
+          },
+          "b": {
+            "key": "promotionMate",
+            "label": "Promotion en dame avec échec et mat"
+          },
+          "c": {
+            "key": "queenCapture",
+            "label": "Une dame capture en e8"
+          }
+        },
+        "explanation": "=Q indique une promotion en dame et # signifie échec et mat."
+      }
+    }
+  },
+  "actions": {
+    "previous": "Précédent",
+    "next": "Suivant"
+  }
+}

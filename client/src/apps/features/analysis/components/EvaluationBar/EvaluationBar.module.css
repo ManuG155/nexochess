@@ -154,3 +154,9 @@
         200ms
         ease;
 }
+
+/* NEXO_EVALUATION_LABEL_POLISH */
+.evaluationText {
+    font-weight: 650;
+    letter-spacing: -0.025em;
+}

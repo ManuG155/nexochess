@@ -13,6 +13,12 @@
   "navigationBar": {
     "support": "Hilfe",
     "signIn": "Anmelden",
+    "share": "Teilen",
+    "academy": "Akademie",
+    "puzzles": "Aufgaben",
+    "comingSoon": "Demnächst",
+    "openMenu": "Navigationsmenü öffnen",
+    "primaryNavigation": "Hauptnavigation",
     "tooltips": {
       "support": "Unterstütze uns ❤️",
       "help": "Hilfezentrum"
@@ -50,6 +56,7 @@
     "copyright": "Urheberrecht © {{year}} NexoChess",
     "tagline": "Verbinde die Züge. Verstehe die Partie.",
     "license": "Code unter GPL-3.0-Lizenz",
+    "freeGameReview": "Kostenlose Analyse von Schachpartien",
     "navigationLabel": "Fußzeilennavigation",
     "contact": "Kontakt"
   },
@@ -58,6 +65,17 @@
     "no": "Nein"
   },
   "shareGame": {
+    "eyebrow": "Mit NexoChess teilen",
+    "title": "Partie teilen",
+    "subtitle": "Kopiere die aktuelle Stellung, exportiere die ganze Partie oder sende sie über dein Gerät.",
+    "fenTitle": "Aktuelle Stellung",
+    "fenDescription": "Mit diesem Code lässt sich genau die auf dem Brett gezeigte Stellung öffnen.",
+    "pgnTitle": "Vollständige Partie",
+    "pgnDescription": "Enthält Kopfdaten, Züge und den aktuellen Analysebaum.",
+    "characters": "{{count}} Zeichen",
+    "closeHint": "Zum Schließen außerhalb klicken oder Esc drücken",
+    "downloadPGN": "PGN herunterladen",
+    "shareWith": "Teilen über…",
     "copyFEN": "FEN kopieren",
     "copyFENToast": "FEN kopiert!",
     "copyPGN": "PGN kopieren",
