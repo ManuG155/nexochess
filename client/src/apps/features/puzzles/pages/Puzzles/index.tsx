@@ -93,6 +93,12 @@ interface MoveFeedback {
     kind: "correct" | "brilliant";
 }
 
+interface PuzzleRatingEvent {
+    id: string;
+    delta: number;
+    ratingAfter: number;
+}
+
 interface PuzzleBoardSquareProps {
     children: React.ReactNode;
     square: Square;
@@ -224,6 +230,8 @@ function Puzzles() {
         useState<WrongMovePreview>();
     const [ moveFeedback, setMoveFeedback ] =
         useState<MoveFeedback>();
+    const [ ratingHistory, setRatingHistory ] =
+        useState<PuzzleRatingEvent[]>([]);
     const [ hintArrow, setHintArrow ] =
         useState<NonNullable<
             React.ComponentProps<typeof Chessboard>["customArrows"]
@@ -460,14 +468,24 @@ function Puzzles() {
             && ratedSession
             && puzzle.rating
         ) {
+            const previousProfile = profileRef.current;
             const updated = recordRatedAttempt(
-                profileRef.current,
+                previousProfile,
                 puzzle.rating,
                 solvedWithoutHelp
             );
+            const delta = updated.rating - previousProfile.rating;
 
             profileRef.current = updated;
             setProfile(updated);
+            setRatingHistory(previous => [
+                ...previous,
+                {
+                    id: puzzle.id,
+                    delta,
+                    ratingAfter: updated.rating
+                }
+            ].slice(-8));
         }
 
         setPageState(revealed ? "revealed" : "solved");
@@ -595,7 +613,7 @@ function Puzzles() {
         window.clearTimeout(moveFeedbackTimer.current);
         moveFeedbackTimer.current = window.setTimeout(() => {
             setMoveFeedback(undefined);
-        }, 820);
+        }, feedbackKind == "brilliant" ? 1350 : 820);
 
         if (nextIndex >= puzzle.solution.length) {
             void finishPuzzle(false);
@@ -1071,6 +1089,42 @@ function Puzzles() {
                         count: profile.bestStreak
                     })}
                 </small>
+            </div>
+        </div>
+    ) : null;
+
+    const sessionRatingTrail = showRatedProfile ? (
+        <div className={styles.ratingTrail}>
+            <span className={styles.ratingTrailLabel}>
+                {t("stats.rating")}
+            </span>
+            <div className={styles.ratingTrailItems}>
+                {ratingHistory.map((event, index) => (
+                    <span
+                        key={`${event.id}-${index}`}
+                        className={[
+                            styles.ratingResult,
+                            event.delta > 0
+                                ? styles.ratingGain
+                                : event.delta < 0
+                                    ? styles.ratingLoss
+                                    : styles.ratingNeutral
+                        ].join(" ")}
+                        title={String(event.ratingAfter)}
+                    >
+                        {event.delta > 0 ? "+" : ""}{event.delta}
+                    </span>
+                ))}
+                {puzzle?.source == "lichess"
+                    && ratedSession
+                    && pageState == "playing"
+                    && (
+                        <span
+                            className={styles.ratingPending}
+                            aria-hidden="true"
+                        />
+                    )
+                }
             </div>
         </div>
     ) : null;
@@ -1584,8 +1638,6 @@ function Puzzles() {
                             </div>
                         </div>
                     </div>
-
-                    {profileStats}
                 </header>
 
                 <div className={styles.boardColumn}>
@@ -1753,6 +1805,13 @@ function Puzzles() {
                             </div>
                         )}
                     </div>
+
+                    {showRatedProfile && (
+                        <div className={styles.performancePanel}>
+                            {profileStats}
+                            {sessionRatingTrail}
+                        </div>
+                    )}
 
                     {pageState == "playing" && (
                         <div className={styles.puzzleActions}>
