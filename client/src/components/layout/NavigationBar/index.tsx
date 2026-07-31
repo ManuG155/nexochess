@@ -27,6 +27,8 @@ import HoverDropdown from "./HoverDropdown";
 
 import * as styles from "./NavigationBar.module.css";
 
+const PUZZLES_FLIP_EVENT = "nexochess:puzzles:flip-board"; // NEXO_PUZZLES_NAV_FLIP
+
 
 type IconName =
     | "academy"
@@ -224,10 +226,10 @@ function NavigationBar() {
             "/puzzles"
         );
 
-    const showGameActions =
-        !onSettingsPage
-        && !onAcademyPage
-        && !onPuzzlesPage;
+    const showFlipAction =
+        onAnalysisPage || onPuzzlesPage;
+
+    const showShareAction = onAnalysisPage;
 
     const analysisGame = useAnalysisGameStore(
         state => state.analysisGame
@@ -248,6 +250,17 @@ function NavigationBar() {
         useAnalysisBoardStore(
             state => state.setBoardFlipped
         );
+
+    function flipVisibleBoard() {
+        if (onPuzzlesPage) {
+            window.dispatchEvent(
+                new Event(PUZZLES_FLIP_EVENT)
+            );
+            return;
+        }
+
+        setBoardFlipped(!boardFlipped);
+    }
 
     async function signOut() {
         await authClient.signOut();
@@ -309,14 +322,10 @@ function NavigationBar() {
                     {t("sidebar.archive", { ns: "common" })}
                 </NavigationItem>
 
-                {showGameActions && (
+                {showFlipAction && (
                     <NavigationAction
                         icon="flip"
-                        onClick={() => (
-                            setBoardFlipped(
-                                !boardFlipped
-                            )
-                        )}
+                        onClick={flipVisibleBoard}
                     >
                         {t(
                             "optionsToolbar.flipBoard",
@@ -341,7 +350,7 @@ function NavigationBar() {
                     {t("navigationBar.puzzles", { ns: "common" })}
                 </NavigationItem>
 
-                {showGameActions && (
+                {showShareAction && (
                     <NavigationAction
                         icon="share"
                         onClick={() => setShareOpen(true)}
@@ -355,31 +364,31 @@ function NavigationBar() {
             </nav>
 
             <div className={styles.rightArea}>
-                {showGameActions && (
+                {(showFlipAction || showShareAction) && (
                     <div className={styles.analysisActions}>
-                        <NavigationAction
-                            icon="flip"
-                            onClick={() => (
-                                setBoardFlipped(
-                                    !boardFlipped
-                                )
-                            )}
-                        >
-                            {t(
-                                "optionsToolbar.flipBoard",
-                                { ns: "analysis" }
-                            )}
-                        </NavigationAction>
+                        {showFlipAction && (
+                            <NavigationAction
+                                icon="flip"
+                                onClick={flipVisibleBoard}
+                            >
+                                {t(
+                                    "optionsToolbar.flipBoard",
+                                    { ns: "analysis" }
+                                )}
+                            </NavigationAction>
+                        )}
 
-                        <NavigationAction
-                            icon="share"
-                            onClick={() => setShareOpen(true)}
-                        >
-                            {t(
-                                "navigationBar.share",
-                                { ns: "common" }
-                            )}
-                        </NavigationAction>
+                        {showShareAction && (
+                            <NavigationAction
+                                icon="share"
+                                onClick={() => setShareOpen(true)}
+                            >
+                                {t(
+                                    "navigationBar.share",
+                                    { ns: "common" }
+                                )}
+                            </NavigationAction>
+                        )}
                     </div>
                 )}
 

@@ -162,6 +162,7 @@ const difficulties: PuzzleDifficulty[] = [
 ];
 
 const AUTO_NEXT_STORAGE_KEY = "nexochess-puzzle-auto-next-v1";
+const PUZZLES_FLIP_EVENT = "nexochess:puzzles:flip-board"; // NEXO_PUZZLES_NAV_FLIP
 
 function getAutoNextPreference() {
     if (typeof window == "undefined") return false;
@@ -264,6 +265,8 @@ function Puzzles() {
         useState(true);
     const [ autoNext, setAutoNext ] =
         useState(getAutoNextPreference);
+    const [ boardFlipped, setBoardFlipped ] =
+        useState(false);
     const [ archivePuzzles, setArchivePuzzles ] =
         useState<TrainingPuzzle[]>([]);
     const [ analysedGameCount, setAnalysedGameCount ] =
@@ -336,6 +339,24 @@ function Puzzles() {
     const evaluationRequestRef = useRef(0);
     const setupRevealedRef = useRef(false);
     const requestingPuzzleRef = useRef(false);
+
+    useEffect(() => {
+        const flipBoard = () => {
+            setBoardFlipped(flipped => !flipped);
+        };
+
+        window.addEventListener(
+            PUZZLES_FLIP_EVENT,
+            flipBoard
+        );
+
+        return () => {
+            window.removeEventListener(
+                PUZZLES_FLIP_EVENT,
+                flipBoard
+            );
+        };
+    }, []);
 
     useEffect(() => {
         profileRef.current = profile;
@@ -989,6 +1010,13 @@ function Puzzles() {
         puzzle?.source
         || source
     ) == "lichess";
+    const puzzleBoardOrientation = puzzle
+        ? boardFlipped
+            ? puzzle.solver == "white"
+                ? "black"
+                : "white"
+            : puzzle.solver
+        : "white";
 
     useEffect(() => {
         if (!coachEnabled && coachPickerOpen) {
@@ -1740,13 +1768,13 @@ function Puzzles() {
                                     ? PieceColour.WHITE
                                     : PieceColour.BLACK
                             }
-                            flipped={puzzle.solver == "black"}
+                            flipped={puzzleBoardOrientation == "black"}
                         />
 
                         <div className={styles.boardShell}>
                             <Chessboard
                                 position={currentFen}
-                                boardOrientation={puzzle.solver}
+                                boardOrientation={puzzleBoardOrientation}
                                 showBoardNotation={
                                     settings.themes.board.coordinates
                                     == "inside"
@@ -1790,7 +1818,9 @@ function Puzzles() {
 
                             {settings.themes.board.coordinates == "outside" && (
                                 <OutsideCoordinates
-                                    flipped={puzzle.solver == "black"}
+                                    flipped={
+                                        puzzleBoardOrientation == "black"
+                                    }
                                 />
                             )}
                         </div>
