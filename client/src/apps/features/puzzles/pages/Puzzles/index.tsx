@@ -1040,6 +1040,41 @@ function Puzzles() {
         settings.analysis.engine.version
     ]);
 
+    const profileStats = showRatedProfile ? (
+        <div className={styles.profileStats}>
+            <div>
+                <span>{t("stats.rating")}</span>
+                <strong>{profile.rating}</strong>
+                <small>
+                    {calibrationRemaining > 0
+                        ? t("stats.calibrating", {
+                            count: calibrationRemaining
+                        })
+                        : t("stats.calibrated")
+                    }
+                </small>
+            </div>
+            <div>
+                <span>{t("stats.accuracy")}</span>
+                <strong>{accuracy}%</strong>
+                <small>
+                    {t("stats.attempts", {
+                        count: profile.attempts
+                    })}
+                </small>
+            </div>
+            <div>
+                <span>{t("stats.streak")}</span>
+                <strong>{profile.streak}</strong>
+                <small>
+                    {t("stats.best", {
+                        count: profile.bestStreak
+                    })}
+                </small>
+            </div>
+        </div>
+    ) : null;
+
     return <main
         className={[
             styles.page,
@@ -1047,46 +1082,15 @@ function Puzzles() {
             trainingActive ? styles.trainingPage : ""
         ].filter(Boolean).join(" ")}
     >
-        <section className={styles.hero}>
+        {!trainingActive && <section className={styles.hero}>
             <div>
                 <span className={styles.eyebrow}>{t("hero.eyebrow")}</span>
                 <h1>{t("hero.title")}</h1>
                 <p>{pageCopy.heroSubtitle}</p>
             </div>
 
-            {showRatedProfile && <div className={styles.profileStats}>
-                <div>
-                    <span>{t("stats.rating")}</span>
-                    <strong>{profile.rating}</strong>
-                    <small>
-                        {calibrationRemaining > 0
-                            ? t("stats.calibrating", {
-                                count: calibrationRemaining
-                            })
-                            : t("stats.calibrated")
-                        }
-                    </small>
-                </div>
-                <div>
-                    <span>{t("stats.accuracy")}</span>
-                    <strong>{accuracy}%</strong>
-                    <small>
-                        {t("stats.attempts", {
-                            count: profile.attempts
-                        })}
-                    </small>
-                </div>
-                <div>
-                    <span>{t("stats.streak")}</span>
-                    <strong>{profile.streak}</strong>
-                    <small>
-                        {t("stats.best", {
-                            count: profile.bestStreak
-                        })}
-                    </small>
-                </div>
-            </div>}
-        </section>
+            {profileStats}
+        </section>}
 
         {(pageState == "loading" || pageState == "error") && (
             <section className={styles.stateCard}>
@@ -1537,49 +1541,54 @@ function Puzzles() {
             || pageState == "revealed"
         ) && (
             <section className={styles.trainingGrid}>
-                <div className={styles.boardColumn}>
-                    <header className={styles.puzzleMeta}>
-                        <div>
-                            <span>
-                                {puzzle.source == "archive"
-                                    ? t("puzzle.archiveSource")
-                                    : pageCopy.thematicSource
-                                }
-                            </span>
+                <header className={styles.workspaceHeader}>
+                    <div className={styles.workspaceIdentity}>
+                        <span className={styles.workspaceSource}>
+                            {puzzle.source == "archive"
+                                ? t("puzzle.archiveSource")
+                                : pageCopy.thematicSource
+                            }
+                        </span>
+
+                        <div className={styles.workspaceTitleRow}>
                             <h2>
                                 {t("puzzle.toMove", {
                                     colour: t(`colours.${puzzle.solver}`)
                                 })}
                             </h2>
-                        </div>
 
-                        <div className={styles.puzzleBadges}>
-                            {puzzle.rating && (
-                                <span>
-                                    {t("puzzle.rating", {
-                                        rating: puzzle.rating
-                                    })}
-                                </span>
-                            )}
-                            {puzzle.classification && (
-                                <span className={styles.errorBadge}>
-                                    {t(
-                                        `classifications.${puzzle.classification}`,
-                                        { ns: "analysis" }
-                                    )}
-                                </span>
-                            )}
-                            {visibleThemes.map(value => (
-                                <span key={value}>
-                                    {formatPuzzleTheme(
-                                        value,
-                                        i18n.resolvedLanguage || "en"
-                                    )}
-                                </span>
-                            ))}
+                            <div className={styles.puzzleBadges}>
+                                {puzzle.rating && (
+                                    <span>
+                                        {t("puzzle.rating", {
+                                            rating: puzzle.rating
+                                        })}
+                                    </span>
+                                )}
+                                {puzzle.classification && (
+                                    <span className={styles.errorBadge}>
+                                        {t(
+                                            `classifications.${puzzle.classification}`,
+                                            { ns: "analysis" }
+                                        )}
+                                    </span>
+                                )}
+                                {visibleThemes.map(value => (
+                                    <span key={value}>
+                                        {formatPuzzleTheme(
+                                            value,
+                                            i18n.resolvedLanguage || "en"
+                                        )}
+                                    </span>
+                                ))}
+                            </div>
                         </div>
-                    </header>
+                    </div>
 
+                    {profileStats}
+                </header>
+
+                <div className={styles.boardColumn}>
                     <div className={[
                         styles.boardStage,
                         settings.themes.board.coordinates == "outside"
@@ -1815,7 +1824,8 @@ function Puzzles() {
                                 {pageCopy.sourceGame} ↗
                             </a>
                         )}
-                    </div>                </aside>
+                    </div>
+                </aside>
             </section>
         )}
 
