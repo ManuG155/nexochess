@@ -2,60 +2,53 @@
     position: relative;
 
     display: grid;
-
     grid-template-columns:
-        46px
-        minmax(
-            0,
-            1fr
-        )
-        minmax(
-            0,
-            1fr
-        );
+        48px
+        minmax(0, 1fr)
+        minmax(0, 1fr);
 
     align-items: center;
 
-    width: 100%;
-    min-height: 44px;
-
     box-sizing: border-box;
 
-    padding-top: 2px;
-    padding-right: 10px;
-    padding-bottom: 2px;
+    width: 100%;
+    min-height: 46px;
 
-    column-gap: 18px;
+    padding-top: 3px;
+    padding-right: 12px;
+    padding-bottom: 3px;
+
+    column-gap: 12px;
+
+    border-bottom: 1px solid rgba(111, 154, 232, 0.055);
+
+    transition: background-color 140ms ease;
 }
 
-
-/*
- * Contraste alternado solicitado.
- */
 .wrapper:nth-child(odd) {
-    background-color: #262422;
+    background: rgba(18, 27, 40, 0.48);
 }
-
 
 .wrapper:nth-child(even) {
-    background-color: #2A2926;
+    background: rgba(22, 32, 47, 0.34);
 }
 
+.wrapper:hover {
+    background: rgba(48, 69, 100, 0.26);
+}
 
 .moveNumber {
-    color: #a8a8a8;
+    color: rgba(214, 224, 238, 0.48);
 
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     line-height: 1;
 
     text-align: right;
 }
 
-
 .moveCell {
     display: flex;
-
     align-items: center;
     justify-content: flex-start;
 
