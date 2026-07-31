@@ -97,7 +97,7 @@
 
 .coachSection {
     display: grid;
-    grid-template-columns: 122px minmax(0, 1fr);
+    grid-template-columns: 126px minmax(0, 1fr);
     gap: 14px;
     align-items: end;
 
@@ -112,9 +112,10 @@
     align-items: flex-end;
     justify-content: center;
 
-    width: 122px;
-    min-width: 122px;
+    width: 126px;
+    min-width: 126px;
     height: 126px;
+    aspect-ratio: 1 / 1;
 
     padding: 0;
 
@@ -257,23 +258,31 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 22px;
+    align-items: stretch;
 }
 
 .playerColumn {
     display: grid;
-    grid-template-columns: 54px minmax(0, 1fr);
+    grid-template-columns: 52px minmax(0, 180px);
     grid-template-areas:
         "avatar name"
         "avatar accuracy";
-    gap: 5px 11px;
+    gap: 5px 12px;
     align-items: center;
+    align-content: center;
+    justify-content: center;
 
+    box-sizing: border-box;
+
+    width: 100%;
     min-width: 0;
     padding: 4px 6px;
 }
 
 .playerName {
     grid-area: name;
+    align-self: end;
+    justify-self: stretch;
 
     max-width: 100%;
 
@@ -282,6 +291,8 @@
     font-size: 0.98rem;
     font-weight: 730;
     line-height: 1.2;
+
+    text-align: center;
 
     overflow: hidden;
     text-overflow: ellipsis;
@@ -304,7 +315,8 @@
 
 .accuracyBox {
     grid-area: accuracy;
-    justify-self: start;
+    align-self: start;
+    justify-self: center;
 
     min-width: 52px;
 
@@ -534,7 +546,7 @@
     .coachPortraitButton {
         width: 88px;
         min-width: 88px;
-        height: 92px;
+        height: 88px;
     }
 
     .coachBubble {
@@ -557,8 +569,9 @@
     }
 
     .playerColumn {
-        grid-template-columns: 44px minmax(0, 1fr);
+        grid-template-columns: 42px minmax(0, 120px);
         gap: 4px 8px;
+        justify-content: center;
 
         padding-inline: 2px;
     }

@@ -1,8 +1,40 @@
+.page {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    min-height: 100vh;
+
+    background: var(--ui-page-background);
+    color: #eef3fa;
+
+    isolation: isolate;
+}
+
+.page::before {
+    content: "";
+
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+
+    background: var(--ui-page-background);
+
+    pointer-events: none;
+}
+
 .announcementMarkdown * {
     margin: 0;
     color: white;
 }
 
 .content {
+    position: relative;
+
+    flex: 1 0 auto;
+
     min-height: calc(100vh - 65px);
+
+    background: transparent;
 }

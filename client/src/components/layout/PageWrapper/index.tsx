@@ -33,7 +33,13 @@ function PageWrapper({
     const [ announcementOpen, setAnnouncementOpen ] = useState(true);
 
     return <QueryClientProvider client={queryClient}>
-        <div className={className} style={style}>
+        <div
+            className={[
+                styles.page,
+                className
+            ].filter(Boolean).join(" ")}
+            style={style}
+        >
             {announcementOpen && announcementStatus == "success"
                 && <Announcement
                     style={{ zIndex: 99 }}
@@ -49,7 +55,10 @@ function PageWrapper({
             <NavigationBar/>
 
             <div
-                className={`${styles.content} ${contentClassName}`}
+                className={[
+                    styles.content,
+                    contentClassName
+                ].filter(Boolean).join(" ")}
                 style={contentStyle}
             >
                 {children}
