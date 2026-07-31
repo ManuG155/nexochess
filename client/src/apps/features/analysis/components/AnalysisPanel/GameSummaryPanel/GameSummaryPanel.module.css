@@ -1,4 +1,14 @@
 .wrapper {
+    --summary-bg: #0D131D;
+    --summary-card: #121A26;
+    --summary-card-soft: #151F2E;
+    --summary-border: rgba(111, 154, 232, 0.19);
+    --summary-border-strong: rgba(111, 160, 247, 0.42);
+    --summary-blue: #75A2F2;
+    --summary-blue-strong: #4F88EA;
+    --summary-text: #F3F6FB;
+    --summary-muted: rgba(222, 229, 240, 0.68);
+
     position: relative;
 
     display: flex;
@@ -11,9 +21,19 @@
     height: 100%;
     min-height: 0;
 
-    border-radius: 12px;
+    border: 1px solid var(--summary-border);
+    border-radius: 18px;
 
-    background-color: #292620;
+    background:
+        radial-gradient(
+            circle at 92% 0%,
+            rgba(76, 128, 218, 0.13),
+            transparent 31%
+        ),
+        linear-gradient(155deg, #111925, var(--summary-bg) 72%);
+    box-shadow:
+        0 22px 54px rgba(0, 0, 0, 0.32),
+        0 0 0 1px rgba(255, 255, 255, 0.018) inset;
 
     overflow: hidden;
 }
@@ -23,15 +43,16 @@
 
     width: 100%;
 
-    padding: 18px 18px 28px;
+    padding: 20px 20px 28px;
 
     overflow-y: auto;
+    overscroll-behavior: contain;
     scrollbar-width: thin;
-    scrollbar-color: #141312 transparent;
+    scrollbar-color: rgba(112, 156, 232, 0.34) transparent;
 }
 
 .scrollArea::-webkit-scrollbar {
-    width: 6px;
+    width: 7px;
 }
 
 .scrollArea::-webkit-scrollbar-track {
@@ -39,12 +60,16 @@
 }
 
 .scrollArea::-webkit-scrollbar-thumb {
-    background: #141312;
+    border: 2px solid transparent;
     border-radius: 999px;
+
+    background: rgba(112, 156, 232, 0.34);
+    background-clip: padding-box;
 }
 
 .scrollArea::-webkit-scrollbar-thumb:hover {
-    background: #141312;
+    background: rgba(112, 156, 232, 0.52);
+    background-clip: padding-box;
 }
 
 .scrollArea::-webkit-scrollbar-corner {
@@ -52,13 +77,30 @@
 }
 
 .title {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
     margin: 0 0 18px;
 
-    color: #FFFFFF;
+    color: var(--summary-text);
 
-    font-size: 1.5rem;
-    font-weight: 700;
-    line-height: 1.2;
+    font-size: clamp(1.42rem, 2vw, 1.68rem);
+    font-weight: 840;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+}
+
+.title::before {
+    content: "";
+
+    width: 4px;
+    height: 27px;
+
+    border-radius: 999px;
+
+    background: linear-gradient(180deg, #8AB2FA, #4D83E1);
+    box-shadow: 0 0 18px rgba(89, 142, 233, 0.34);
 }
 
 .analysisProgressBridge {
@@ -66,22 +108,41 @@
 }
 
 .coachSection {
-    display: flex;
-    gap: 14px;
-    align-items: flex-start;
+    position: relative;
 
-    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: 136px minmax(0, 1fr);
+    gap: 13px;
+    align-items: end;
+
+    margin-bottom: 15px;
+    padding: 12px 13px 0;
+
+    border: 1px solid var(--summary-border);
+    border-radius: 16px;
+
+    background:
+        radial-gradient(
+            circle at 15% 25%,
+            rgba(93, 145, 235, 0.13),
+            transparent 48%
+        ),
+        linear-gradient(145deg, rgba(27, 39, 58, 0.93), rgba(16, 23, 34, 0.96));
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.2);
+
+    overflow: hidden;
 }
 
 .coachPortraitButton {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
 
-    width: 150px;
-    min-width: 150px;
-    height: 150px;
+    width: 136px;
+    min-width: 136px;
+    height: 138px;
 
+    margin-bottom: -1px;
     padding: 0;
 
     border: 0;
@@ -90,71 +151,95 @@
     cursor: pointer;
 }
 
+.coachPortraitButton:focus-visible {
+    border-radius: 12px;
+    outline: 2px solid rgba(120, 169, 255, 0.74);
+    outline-offset: -2px;
+}
+
 .coachPortrait {
     width: 100%;
     height: 100%;
 
     object-fit: contain;
     object-position: center bottom;
+
+    filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.26));
 }
 
 .coachBubble {
     position: relative;
 
-    display: inline-flex;
-    flex: 0 1 auto;
+    display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 11px;
 
-    width: fit-content;
-    max-width: calc(100% - 164px);
+    box-sizing: border-box;
 
-    padding: 18px 20px 16px;
+    width: 100%;
+    max-width: none;
+    min-height: 92px;
 
-    border: 1px solid rgba(0, 0, 0, 0.18);
-    border-radius: 18px;
+    margin-bottom: 14px;
+    padding: 16px 18px;
 
-    background: #FFFFFF;
+    border: 1px solid var(--summary-border-strong);
+    border-radius: 15px;
 
-    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.12);
+    background: rgba(12, 18, 27, 0.88);
+    box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.23),
+        0 0 0 1px rgba(255, 255, 255, 0.015) inset;
 }
 
-.coachBubble::before {
+.coachBubble::before,
+.coachBubble::after {
     content: "";
 
     position: absolute;
-    left: -20px;
-    top: 30px;
+    left: -17px;
+    bottom: 20px;
 
-    width: 22px;
-    height: 30px;
+    width: 18px;
+    height: 27px;
 
-    background: #FFFFFF;
+    clip-path: polygon(100% 0, 100% 100%, 0 68%);
+}
 
-    clip-path: polygon(100% 0, 100% 100%, 0 50%);
+.coachBubble::before {
+    background: rgba(112, 160, 246, 0.68);
+}
+
+.coachBubble::after {
+    left: -15px;
+    bottom: 21px;
+
+    width: 16px;
+    height: 25px;
+
+    background: #101722;
 }
 
 .coachMessage {
     margin: 0;
 
-    color: #302E2B;
+    color: #EEF3FB;
 
-    font-size: 1.05rem;
-    font-weight: 800;
-    line-height: 1.3;
+    font-size: 1.02rem;
+    font-weight: 650;
+    line-height: 1.43;
 }
 
 .coachProgressTrack {
     position: relative;
 
     width: 100%;
-    height: 14px;
+    height: 8px;
 
+    border: 1px solid rgba(116, 160, 237, 0.17);
     border-radius: 999px;
 
-    background: #FFFFFF;
-    outline: 1px solid #111111;
-    outline-offset: 1px;
+    background: rgba(4, 8, 13, 0.52);
 
     overflow: hidden;
 }
@@ -162,63 +247,118 @@
 .coachProgressFill {
     height: 100%;
 
-    border-radius: 0;
+    border-radius: inherit;
 
-    background: #111111;
+    background: linear-gradient(90deg, #4C82DF, #86AEF7);
+    box-shadow: 0 0 14px rgba(105, 157, 246, 0.42);
 
     transition: width 180ms ease;
 }
 
 .coachProgressPercentage {
-    color: #302E2B;
+    color: var(--summary-blue);
 
-    font-size: 0.96rem;
+    font-size: 0.82rem;
     font-weight: 800;
     line-height: 1;
 
-    text-align: center;
+    text-align: right;
 }
 
 .graphCard {
-    margin-bottom: 22px;
+    margin-bottom: 15px;
+    padding: 10px;
 
-    border-radius: 8px;
+    border: 1px solid var(--summary-border);
+    border-radius: 15px;
+
+    background:
+        linear-gradient(145deg, rgba(22, 31, 45, 0.94), rgba(13, 19, 29, 0.97));
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
 
     overflow: hidden;
 }
 
-.playersSection {
-    padding: 6px 10px 22px;
+.graphCard > * {
+    width: 100%;
+}
 
-    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+.playersSection {
+    margin-bottom: 15px;
+    padding: 13px;
+
+    border: 1px solid var(--summary-border);
+    border-radius: 15px;
+
+    background: rgba(18, 27, 40, 0.78);
 }
 
 .playersGrid {
+    position: relative;
+
     display: grid;
-
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 11px;
+}
 
-    gap: 34px;
+.playersGrid::after {
+    content: "";
+
+    position: absolute;
+    top: 13px;
+    bottom: 13px;
+    left: 50%;
+
+    width: 1px;
+
+    background: linear-gradient(
+        180deg,
+        transparent,
+        rgba(113, 157, 234, 0.2) 25%,
+        rgba(113, 157, 234, 0.2) 75%,
+        transparent
+    );
+
+    transform: translateX(-50%);
+    pointer-events: none;
 }
 
 .playerColumn {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 58px minmax(0, 1fr);
+    grid-template-areas:
+        "avatar name"
+        "avatar accuracy";
+    gap: 5px 10px;
     align-items: center;
-    gap: 8px;
 
     min-width: 0;
+    padding: 11px;
+
+    border: 1px solid rgba(255, 255, 255, 0.055);
+    border-radius: 12px;
+
+    background: linear-gradient(145deg, rgba(32, 43, 60, 0.74), rgba(19, 27, 40, 0.8));
+}
+
+.playerColumn:first-child {
+    box-shadow: inset 3px 0 0 rgba(227, 235, 247, 0.74);
+}
+
+.playerColumn:last-child {
+    box-shadow: inset -3px 0 0 rgba(90, 137, 220, 0.75);
 }
 
 .playerName {
+    grid-area: name;
+
     max-width: 100%;
 
-    color: #FFFFFF;
+    color: var(--summary-text);
 
     font-size: 0.96rem;
-    font-weight: 700;
-
-    text-align: center;
+    font-weight: 760;
+    line-height: 1.18;
 
     overflow: hidden;
     text-overflow: ellipsis;
@@ -226,61 +366,96 @@
 }
 
 .playerAvatar {
-    width: 70px;
-    height: 70px;
+    grid-area: avatar;
 
-    border-radius: 5px;
+    width: 56px;
+    height: 56px;
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
 
     object-fit: cover;
 
-    background-color: #E7E7E7;
+    background-color: #E7EBF1;
+    box-shadow: 0 9px 18px rgba(0, 0, 0, 0.24);
 }
 
 .accuracyBox {
-    min-width: 70px;
+    grid-area: accuracy;
+    justify-self: start;
 
-    padding: 7px 8px;
+    min-width: 56px;
 
-    border-radius: 5px;
+    padding: 5px 9px;
 
-    background-color: #F5F5F5;
+    border: 1px solid rgba(113, 160, 242, 0.24);
+    border-radius: 999px;
 
-    color: #302E2B;
+    background: rgba(68, 113, 193, 0.13);
+    color: #DCE9FF;
 
-    font-size: 1.15rem;
-    font-weight: 800;
+    font-size: 1.08rem;
+    font-weight: 840;
+    line-height: 1.1;
 
     text-align: center;
+}
+
+.moveTableSection,
+.phaseSection {
+    border: 1px solid var(--summary-border);
+    border-radius: 15px;
+
+    background: rgba(17, 25, 37, 0.78);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
 }
 
 .moveTableSection {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 5px;
 
-    padding: 22px 20px;
+    margin-bottom: 15px;
+    padding: 11px;
 }
 
 .moveRow {
     display: grid;
-
-    grid-template-columns: minmax(110px, 1fr) 48px 40px 48px;
-
+    grid-template-columns: minmax(100px, 1fr) 42px 38px 42px;
     align-items: center;
 
-    min-height: 42px;
+    min-height: 39px;
+    padding: 3px 9px;
+
+    border: 1px solid transparent;
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.023);
+
+    transition:
+        border-color 140ms ease,
+        background-color 140ms ease;
+}
+
+.moveRow:nth-child(odd) {
+    background: rgba(84, 118, 177, 0.035);
+}
+
+.moveRow:hover {
+    border-color: rgba(112, 156, 232, 0.12);
+    background: rgba(90, 132, 207, 0.065);
 }
 
 .moveLabel {
-    color: #FFFFFF;
+    color: rgba(239, 243, 250, 0.86);
 
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 0.94rem;
+    font-weight: 620;
 }
 
 .moveCount {
     font-size: 1rem;
-    font-weight: 800;
+    font-weight: 840;
 
     text-align: center;
 }
@@ -292,10 +467,11 @@
 }
 
 .moveIcon {
-    width: 32px;
-    height: 32px;
+    width: 29px;
+    height: 29px;
 
     object-fit: contain;
+    filter: drop-shadow(0 4px 7px rgba(0, 0, 0, 0.22));
 }
 
 .missIcon {
@@ -303,41 +479,54 @@
     justify-content: center;
     align-items: center;
 
-    width: 31px;
-    height: 31px;
+    width: 27px;
+    height: 27px;
 
-    border-radius: 50%;
+    border-radius: 999px;
 
-    background-color: #F87171;
+    background: rgba(231, 92, 82, 0.9);
     color: #FFFFFF;
+    box-shadow: 0 5px 12px rgba(202, 65, 57, 0.22);
 
-    font-size: 1.35rem;
-    font-weight: 800;
+    font-size: 1.08rem;
+    font-weight: 840;
     line-height: 1;
 }
 
 .phaseSection {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 5px;
 
-    padding: 22px 20px 10px;
-
-    border-top: 1px solid rgba(255, 255, 255, 0.10);
+    padding: 11px;
 }
 
 .phaseRow {
     display: grid;
-    grid-template-columns: minmax(120px, 1fr) 82px 82px;
+    grid-template-columns: minmax(120px, 1fr) 74px 74px;
     align-items: center;
+
     min-height: 42px;
+    padding: 3px 9px;
+
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.023);
+}
+
+.phaseRow:first-child {
+    min-height: 48px;
+
+    border: 1px solid rgba(111, 159, 240, 0.12);
+
+    background: linear-gradient(90deg, rgba(68, 112, 192, 0.1), rgba(68, 112, 192, 0.035));
 }
 
 .phaseLabel {
-    color: #FFFFFF;
+    color: rgba(239, 243, 250, 0.86);
 
-    font-size: 0.98rem;
-    font-weight: 600;
+    font-size: 0.94rem;
+    font-weight: 650;
 }
 
 .phaseValue {
@@ -347,14 +536,15 @@
 }
 
 .phaseIcon {
-    width: 32px;
-    height: 32px;
+    width: 29px;
+    height: 29px;
 
     object-fit: contain;
+    filter: drop-shadow(0 4px 7px rgba(0, 0, 0, 0.22));
 }
 
 .noPhase {
-    color: rgba(255, 255, 255, 0.55);
+    color: rgba(228, 234, 244, 0.44);
 
     font-size: 1.05rem;
 }
@@ -362,18 +552,19 @@
 .gameRating {
     justify-self: center;
 
-    min-width: 64px;
+    min-width: 58px;
 
-    padding: 7px 5px;
+    padding: 6px 7px;
 
-    border-radius: 5px;
+    border: 1px solid rgba(112, 159, 240, 0.19);
+    border-radius: 9px;
 
-    background-color: rgba(255, 255, 255, 0.10);
+    background: rgba(67, 112, 193, 0.12);
+    color: #DFEAFF;
 
-    color: #FFFFFF;
-
-    font-size: 1.05rem;
-    font-weight: 800;
+    font-size: 1.02rem;
+    font-weight: 840;
+    line-height: 1.1;
 
     text-align: center;
 }
@@ -381,11 +572,12 @@
 .footer {
     flex-shrink: 0;
 
-    padding: 16px 18px 18px;
+    padding: 13px 18px 17px;
 
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(111, 154, 232, 0.14);
 
-    background-color: #292620;
+    background: rgba(11, 16, 24, 0.95);
+    box-shadow: 0 -12px 30px rgba(0, 0, 0, 0.16);
 }
 
 .startReviewButton {
@@ -393,350 +585,152 @@
 
     padding: 14px 18px;
 
-    border: 0;
-    border-radius: 9px;
+    border: 1px solid rgba(143, 181, 248, 0.34);
+    border-radius: 12px;
 
-    background-color: #81B64C;
+    background: linear-gradient(180deg, #588FEF, #3F74D0);
     color: #FFFFFF;
+    box-shadow:
+        0 12px 24px rgba(35, 82, 163, 0.28),
+        0 1px 0 rgba(255, 255, 255, 0.12) inset;
 
     font-family: inherit;
-    font-size: 1.05rem;
-    font-weight: 800;
+    font-size: 1.03rem;
+    font-weight: 780;
 
     cursor: pointer;
 
-    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
-
-    transition: background-color 150ms ease, transform 150ms ease;
+    transition:
+        border-color 150ms ease,
+        box-shadow 150ms ease,
+        filter 150ms ease,
+        transform 150ms ease;
 }
 
 .startReviewButton:hover {
-    background-color: #75A743;
+    border-color: rgba(166, 196, 249, 0.54);
+
+    box-shadow:
+        0 15px 28px rgba(35, 82, 163, 0.34),
+        0 1px 0 rgba(255, 255, 255, 0.14) inset;
+
+    filter: brightness(1.05);
+    transform: translateY(-1px);
 }
 
 .startReviewButton:active {
-    transform: translateY(1px);
+    transform: translateY(0);
 }
 
-.coachPickerOverlay {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 24px;
-
-    background: rgba(8, 8, 8, 0.78);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+.startReviewButton:focus-visible {
+    outline: 2px solid rgba(138, 181, 255, 0.82);
+    outline-offset: 3px;
 }
 
-.coachPickerDialog {
-    width: min(560px, 100%);
-    max-height: min(88vh, 760px);
-
-    padding: 20px;
-
-    border-radius: 16px;
-
-    background: #2B2A27;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-
-    overflow-y: auto;
-}
-
-.coachPickerDialog::-webkit-scrollbar {
-    width: 8px;
-}
-
-.coachPickerDialog::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.16);
-    border-radius: 999px;
-}
-
-.coachPickerHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-
-    margin-bottom: 18px;
-}
-
-.coachPickerTitle {
-    margin: 0;
-
-    color: #FFFFFF;
-
-    font-size: 1.8rem;
-    font-weight: 800;
-}
-
-.coachPickerCloseButton {
-    width: 34px;
-    height: 34px;
-
-    border: 0;
-    border-radius: 10px;
-
-    background: transparent;
-    color: rgba(255, 255, 255, 0.82);
-
-    font-size: 2rem;
-    line-height: 1;
-
-    cursor: pointer;
-}
-
-.coachPickerLead {
-    display: grid;
-    grid-template-columns: 86px minmax(0, 1fr);
-    gap: 14px;
-    align-items: center;
-
-    margin-bottom: 18px;
-}
-
-.coachPickerLeadImage {
-    width: 86px;
-    height: 86px;
-
-    object-fit: contain;
-    object-position: center bottom;
-}
-
-.coachPickerLeadBubble {
-    position: relative;
-
-    padding: 18px;
-
-    border-radius: 18px;
-
-    background: #FFFFFF;
-    color: #302E2B;
-
-    font-size: 1rem;
-    font-weight: 700;
-    line-height: 1.35;
-}
-
-.coachPickerLeadBubble::before {
-    content: "";
-
-    position: absolute;
-    left: -9px;
-    top: 28px;
-
-    width: 16px;
-    height: 16px;
-
-    background: #FFFFFF;
-
-    transform: rotate(45deg);
-}
-
-.coachPickerGrid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-}
-
-.coachPickerCard {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-
-    padding: 10px 10px 14px;
-
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 14px;
-
-    background: #34322F;
-
-    cursor: pointer;
-}
-
-.coachPickerCardActive {
-    border-color: #9BCB4F;
-    box-shadow: 0 0 0 1px #9BCB4F inset;
-}
-
-.coachPickerCardImageWrap {
-    position: relative;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 100%;
-    height: 110px;
-
-    border-radius: 12px;
-
-    background: rgba(0, 0, 0, 0.18);
-}
-
-.coachPickerCardImage {
-    width: 100%;
-    height: 100%;
-
-    object-fit: contain;
-    object-position: center bottom;
-}
-
-.coachPickerCheck {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 24px;
-    height: 24px;
-
-    border-radius: 999px;
-
-    background: #9BCB4F;
-    color: #1E1E1E;
-
-    font-size: 0.95rem;
-    font-weight: 800;
-}
-
-.coachPickerCardName {
-    color: #FFFFFF;
-
-    font-size: 1rem;
-    font-weight: 700;
-}
-
-
-.coachPickerConfirmButton {
-    width: 100%;
-
-    margin-top: 18px;
-    padding: 14px 18px;
-
-    border: 0;
-    border-radius: 11px;
-
-    background: #81B64C;
-    color: #FFFFFF;
-
-    font-family: inherit;
-    font-size: 1.08rem;
-    font-weight: 800;
-
-    cursor: pointer;
-
-    transition: background-color 150ms ease, transform 150ms ease;
-}
-
-.coachPickerConfirmButton:hover {
-    background: #75A743;
-}
-
-.coachPickerConfirmButton:active {
-    transform: translateY(1px);
-}
-
-@media (max-width: 900px) {
-    .coachPickerGrid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-@media (max-width: 640px) {
-    .coachSection {
-        flex-direction: column;
-    }
-
-    .coachPortraitButton {
-        width: 118px;
-        min-width: 118px;
-        height: 118px;
-    }
-
-    .coachBubble {
-        max-width: 100%;
-    }
-
-    .coachBubble::before {
-        display: none;
-    }
-
-    .coachPickerOverlay {
-        padding: 12px;
-    }
-
-    .coachPickerDialog {
-        padding: 16px;
-    }
-
-    .coachPickerLead {
-        grid-template-columns: 1fr;
-    }
-
-    .coachPickerLeadImage {
-        justify-self: start;
-    }
-
-    .coachPickerLeadBubble::before {
-        display: none;
-    }
-
-    .coachPickerGrid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/*
- * The summary becomes a denser report when the coach is disabled. There is no
- * reserved portrait area: the graph, accuracy and move classifications move
- * up and use the full card width.
- */
 .scrollAreaWithoutCoach {
-    padding-top: 16px;
+    padding-top: 18px;
 }
 
 .graphCardWithoutCoach {
-    margin-top: 2px;
-    margin-bottom: 26px;
+    margin-top: 0;
+    margin-bottom: 15px;
 }
 
 .graphCardWithoutCoach > * {
     width: 100%;
 }
 
-/* NEXO_SUMMARY_BUBBLE_OUTLINE */
-.coachBubble {
-    border-color: rgba(112, 160, 246, 0.52);
+@media (max-width: 620px) {
+    .scrollArea {
+        padding: 16px 14px 24px;
+    }
+
+    .coachSection {
+        grid-template-columns: 108px minmax(0, 1fr);
+        padding-inline: 10px;
+    }
+
+    .coachPortraitButton {
+        width: 108px;
+        min-width: 108px;
+        height: 118px;
+    }
+
+    .coachBubble {
+        margin-bottom: 11px;
+        padding: 13px 14px;
+    }
+
+    .coachMessage {
+        font-size: 0.95rem;
+    }
+
+    .playerColumn {
+        grid-template-columns: 48px minmax(0, 1fr);
+        padding: 9px;
+    }
+
+    .playerAvatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+    }
+
+    .moveRow {
+        grid-template-columns: minmax(82px, 1fr) 34px 32px 34px;
+        padding-inline: 6px;
+    }
+
+    .phaseRow {
+        grid-template-columns: minmax(98px, 1fr) 62px 62px;
+        padding-inline: 6px;
+    }
 }
 
-.coachBubble::before,
-.coachBubble::after {
-    content: "";
-    position: absolute;
-    top: 30px;
-    clip-path: polygon(100% 0, 100% 100%, 0 50%);
-}
+@media (max-width: 430px) {
+    .title {
+        font-size: 1.34rem;
+    }
 
-.coachBubble::before {
-    left: -22px;
-    width: 22px;
-    height: 32px;
-    background: rgba(112, 160, 246, 0.72);
-}
+    .coachSection {
+        grid-template-columns: 1fr;
+        padding-top: 8px;
+    }
 
-.coachBubble::after {
-    left: -20px;
-    width: 20px;
-    height: 30px;
-    background: #FFFFFF;
+    .coachPortraitButton {
+        justify-self: center;
+
+        width: 118px;
+        height: 112px;
+    }
+
+    .coachBubble {
+        margin-top: -4px;
+    }
+
+    .coachBubble::before,
+    .coachBubble::after {
+        display: none;
+    }
+
+    .playersGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .playersGrid::after {
+        display: none;
+    }
+
+    .playerColumn:last-child {
+        box-shadow: inset 3px 0 0 rgba(90, 137, 220, 0.75);
+    }
+
+    .moveLabel,
+    .phaseLabel {
+        font-size: 0.88rem;
+    }
+
+    .footer {
+        padding-inline: 14px;
+    }
 }
