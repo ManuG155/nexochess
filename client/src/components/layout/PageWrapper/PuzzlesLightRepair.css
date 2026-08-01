@@ -1,0 +1,135 @@
+/* Reparación estructural y exclusiva de Puzzles en modo claro. */
+
+/* Preparación: el contenedor principal no es otra tarjeta. */
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content]
+> main > section > div:has(> header) {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Opciones, filtros y dificultades sí son controles individuales. */
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content]
+> main > section > div:has(> header) div:has(> button) > button {
+    border-color: rgba(39, 72, 109, 0.14) !important;
+    background: rgba(255, 255, 255, 0.76) !important;
+    color: #172334 !important;
+    box-shadow: none !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content]
+> main > section > div:has(> header) div:has(> button) > button:hover {
+    border-color: rgba(53, 111, 196, 0.3) !important;
+    background: #ffffff !important;
+}
+
+/* Botones auxiliares como “limpiar” no se convierten en tarjetas. */
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content]
+> main > section > div:has(> header) div:has(> div > strong) > button {
+    border: 0 !important;
+    background: transparent !important;
+    color: #356fc4 !important;
+}
+
+/* CTA de comienzo. */
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content]
+> main > section > div:has(> header) > button {
+    border-color: rgba(72, 126, 220, 0.42) !important;
+    background: linear-gradient(180deg, #568aec, #3f76d5) !important;
+    color: #ffffff !important;
+}
+
+/* Zona de juego: ni el workspace ni el panel lateral son un “suelo”. */
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content]
+> main > section:has(> header + div + aside),
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content]
+> main > section:has(> header + div + aside) > aside {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content]
+> main > section:has(> header + div + aside) > header {
+    border-color: rgba(39, 72, 109, 0.12) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Solo los controles funcionales del lateral conservan una superficie suave. */
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content]
+> main > section:has(> header + div + aside) > aside > div:not(:has(> div + button[title][aria-label])) {
+    border: 1px solid rgba(39, 72, 109, 0.12) !important;
+    border-radius: 13px !important;
+    background: rgba(255, 255, 255, 0.66) !important;
+    color: #172334 !important;
+    box-shadow: none !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content]
+> main > section:has(> header + div + aside) > aside > div:has(> button) > button:not([role="switch"]) {
+    border-color: rgba(39, 72, 109, 0.13) !important;
+    background: #f5f8fc !important;
+    color: #172334 !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content]
+> main > section:has(> header + div + aside) > aside > button {
+    border-color: rgba(72, 126, 220, 0.42) !important;
+    background: linear-gradient(180deg, #568aec, #3f76d5) !important;
+    color: #ffffff !important;
+}
+
+/* Entrenador: sin marco de foto, sin tarjeta exterior y con bocadillo común. */
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content]
+> main div:has(> div + button[title][aria-label]) {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content]
+> main div:has(> div + button[title][aria-label]) > button[title][aria-label] {
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content]
+> main div:has(> div + button[title][aria-label]) > div:first-child {
+    border: 1px solid rgba(55, 108, 183, 0.3) !important;
+    border-radius: 14px !important;
+    background: #f7f9fc !important;
+    color: #172334 !important;
+    box-shadow: none !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content]
+> main div:has(> div + button[title][aria-label]) > div:first-child::before {
+    background: rgba(55, 108, 183, 0.52) !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content]
+> main div:has(> div + button[title][aria-label]) > div:first-child::after {
+    background: #f7f9fc !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content]
+> main div:has(> div + button[title][aria-label]) > div:first-child > span {
+    color: #356fc4 !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content]
+> main div:has(> div + button[title][aria-label]) > div:first-child > p {
+    color: #53677f !important;
+}
+
+/* Coordenadas exteriores legibles. */
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content]
+> main div[aria-hidden="true"]:has(> span:nth-child(8)) {
+    color: #4f637b !important;
+}

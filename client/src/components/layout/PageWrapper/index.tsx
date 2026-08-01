@@ -16,6 +16,7 @@ import "./GlobalTheme.css";
 import "./GlobalThemePolish.css";
 import "./LightThemeContrast.css";
 import "./LightThemeComponentFixes.css";
+import "./PuzzlesLightRepair.css";
 
 const queryClient = new QueryClient();
 
