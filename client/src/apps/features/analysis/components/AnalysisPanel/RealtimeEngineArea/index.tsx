@@ -45,6 +45,13 @@ function RealtimeEngineArea() {
             .map(node => node.state.move!.uci)
     ), [currentStateTreeNode]);
 
+    if (
+        activeTab == AnalysisTab.REPORT
+        || !settings.analysis.engine.enabled
+    ) {
+        return null;
+    }
+
     return <RealtimeEngine
         initialPosition={initialPosition}
         playedUciMoves={playedUciMoves}
@@ -63,12 +70,6 @@ function RealtimeEngineArea() {
             );
 
             considerRealtimeAnalyse();
-        }}
-        style={{
-            display: (
-                activeTab == AnalysisTab.REPORT
-                || !settings.analysis.engine.enabled
-            ) ? "none" : undefined
         }}
     />;
 }

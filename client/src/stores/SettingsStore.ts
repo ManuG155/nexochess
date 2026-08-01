@@ -38,6 +38,7 @@ const settingsSchema = z.object({
         showTimer: z.boolean()
     }),
     appearance: z.object({
+        colourMode: z.enum(["dark", "light"]),
         selectedCoach: z.enum([
             "fog",
             "foxy",
@@ -95,6 +96,7 @@ export const defaultSettings: Settings = {
         showTimer: true
     },
     appearance: {
+        colourMode: "dark",
         selectedCoach: "fog"
     },
     coach: {
@@ -137,6 +139,15 @@ function fetchSettings() {
         } else {
             delete storedSettings.coach.voice;
         }
+
+        if (storedSettings.appearance == null) {
+            storedSettings.appearance = {};
+        }
+
+        storedSettings.appearance.colourMode =
+            storedSettings.appearance.colourMode == "light"
+                ? "light"
+                : "dark";
 
         return merge(defaultSettingsCopy, storedSettings);
     } catch {
