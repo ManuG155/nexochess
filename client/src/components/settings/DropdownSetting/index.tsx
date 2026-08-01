@@ -10,21 +10,30 @@ import * as styles from "./DropdownSetting.module.css";
 const defaultStyles = {
     dropdown: {
         width: "200px",
-        backgroundColor: "var(--ui-shade-5)",
-        border: "none",
+        minHeight: "42px",
+        backgroundColor: "var(--nexo-surface-raised, var(--ui-shade-5))",
+        border: "1px solid var(--nexo-line, transparent)",
         borderRadius: "10px",
+        boxShadow: "none",
         cursor: "pointer",
-        transitionDuration: "0.3s"
+        transitionDuration: "0.2s"
     },
     menu: {
         width: "200px",
         zIndex: 100000,
-        backgroundColor: "var(--ui-shade-4)",
-        color: "white"
+        overflow: "hidden",
+        border: "1px solid var(--nexo-line, transparent)",
+        borderRadius: "10px",
+        backgroundColor: "var(--nexo-surface, var(--ui-shade-4))",
+        color: "var(--nexo-text, white)",
+        boxShadow: "0 16px 36px var(--nexo-shadow, rgba(0, 0, 0, 0.25))"
     },
     option: {
-        backgroundColor: "rgba(0, 0, 0, 0)",
-        transitionDuration: "0.3s"
+        minHeight: "38px",
+        display: "flex",
+        alignItems: "center",
+        padding: "8px 12px",
+        transitionDuration: "0.15s"
     }
 };
 
@@ -59,21 +68,40 @@ function DropdownSetting<Option extends BaseDropdownOption>(
         onChange={value => props.onSelect?.(value ?? undefined)}
         isSearchable={props.searchable || false}
         styles={{
-            control: baseStyles => ({
+            control: (baseStyles, state) => ({
                 ...baseStyles,
                 ...defaultStyles.dropdown,
+                borderColor: state.isFocused
+                    ? "var(--nexo-line-strong, var(--ui-blue))"
+                    : "var(--nexo-line, transparent)",
+                boxShadow: state.isFocused
+                    ? "0 0 0 2px rgba(70, 125, 232, 0.12)"
+                    : "none",
                 ...props.dropdownStyle
+            }),
+            valueContainer: baseStyles => ({
+                ...baseStyles,
+                padding: "2px 12px"
             }),
             dropdownIndicator: baseStyles => ({
                 ...baseStyles,
+                color: "var(--nexo-text-muted, rgba(255, 255, 255, 0.65))",
                 ...props.dropdownArrowStyle
+            }),
+            indicatorSeparator: baseStyles => ({
+                ...baseStyles,
+                backgroundColor: "var(--nexo-line, rgba(255, 255, 255, 0.12))"
             }),
             singleValue: baseStyles => ({
                 ...baseStyles,
                 display: "flex",
                 alignItems: "center",
-                color: "white",
+                color: "var(--nexo-text, white)",
                 ...props.dropdownLabelStyle
+            }),
+            placeholder: baseStyles => ({
+                ...baseStyles,
+                color: "var(--nexo-text-muted, rgba(255, 255, 255, 0.55))"
             }),
             menu: baseStyles => ({
                 ...baseStyles,
@@ -81,9 +109,21 @@ function DropdownSetting<Option extends BaseDropdownOption>(
                 left: getMenuOffset(),
                 ...props.menuStyle
             }),
-            option: (baseStyles) => ({
+            menuList: baseStyles => ({
+                ...baseStyles,
+                padding: "6px",
+                backgroundColor: "transparent"
+            }),
+            option: (baseStyles, state) => ({
                 ...baseStyles,
                 ...defaultStyles.option,
+                backgroundColor: state.isSelected
+                    ? "rgba(70, 125, 232, 0.18)"
+                    : state.isFocused
+                        ? "var(--nexo-surface-soft, rgba(255, 255, 255, 0.06))"
+                        : "transparent",
+                color: "var(--nexo-text, white)",
+                cursor: "pointer",
                 ...props.optionStyle
             })
         }}
@@ -115,10 +155,11 @@ function DropdownSetting<Option extends BaseDropdownOption>(
             />,
             Option: optionProps => <components.Option
                 {...optionProps}
-                className={`${styles.optionDefault} ${props.optionClassName}`}
+                className={`${styles.optionDefault} ${props.optionClassName || ""}`}
             />
         }}
-        maxMenuHeight={400}
+        maxMenuHeight={360}
+        menuPlacement="auto"
         menuPosition={props.menuPositionStrategy}
     />;
 }
