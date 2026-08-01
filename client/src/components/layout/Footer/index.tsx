@@ -7,6 +7,10 @@ import LanguagesDialog from "@/components/settings/LanguagesDialog";
 import FooterProps from "./FooterProps";
 import * as styles from "./Footer.module.css";
 
+const CONTACT_EMAIL = "contact@nexochess.com";
+const CONTACT_MAILTO =
+    "mailto:contact@nexochess.com?subject=Contacto%20NexoChess";
+
 function Footer({ className, style }: FooterProps) {
     const { t } = useTranslation(["common", "helpCenter"]);
     const [languagesOpen, setLanguagesOpen] = useState(false);
@@ -50,7 +54,11 @@ function Footer({ className, style }: FooterProps) {
                     {t("footer.language")}
                 </button>
 
-                <a href="mailto:contact@nexochess.com">
+                <a
+                    href={CONTACT_MAILTO}
+                    title={CONTACT_EMAIL}
+                    aria-label={`${t("footer.contact")}: ${CONTACT_EMAIL}`}
+                >
                     {t("footer.contact")}
                 </a>
             </div>
