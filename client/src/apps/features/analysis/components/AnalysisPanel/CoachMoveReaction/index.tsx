@@ -11,14 +11,16 @@ import useAnalysisBoardStore from
     "@analysis/stores/AnalysisBoardStore";
 
 import {
-    getCoachById,
-    getCoachReaction,
-    getCoachSpokenLine
+    getCoachById
 } from "@analysis/lib/coach";
 
 import {
-    getDynamicCoachComment
-} from "@analysis/lib/coachComment";
+    getDetailedCoachComment
+} from "@analysis/lib/coachCommentDetailed";
+
+import {
+    addOccasionalCoachCatchphrase
+} from "@analysis/lib/coachSpeech";
 
 import CoachPicker from
     "../CoachPicker";
@@ -60,29 +62,21 @@ function CoachMoveReaction() {
     );
 
     const message = useMemo(() => {
-        const statusLine = getDynamicCoachComment(
+        const statusLine = getDetailedCoachComment(
             currentNode,
             classification,
             coach.id,
+            t,
+            i18n.resolvedLanguage
+        );
+        const seed = `${currentNode.state.fen}|${moveSan || "start"}`;
+
+        return addOccasionalCoachCatchphrase(
+            coach,
+            statusLine,
+            seed,
             t
         );
-
-        if (!classification) {
-            return getCoachSpokenLine(
-                coach,
-                statusLine,
-                `${currentNode.state.fen}|${moveSan || "start"}`,
-                t
-            );
-        }
-
-        return getCoachReaction(
-            coach,
-            classification,
-            statusLine,
-            `${currentNode.state.fen}|${moveSan || "start"}`,
-            t
-        ) || statusLine;
     }, [
         currentNode.state.fen,
         currentNodeUpdate,
