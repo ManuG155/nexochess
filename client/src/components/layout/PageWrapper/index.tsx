@@ -15,6 +15,7 @@ import * as styles from "./PageWrapper.module.css";
 import "./GlobalTheme.css";
 import "./GlobalThemePolish.css";
 import "./LightThemeContrast.css";
+import "./LightThemeComponentFixes.css";
 
 const queryClient = new QueryClient();
 
