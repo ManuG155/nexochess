@@ -98,7 +98,9 @@ function SignIn() {
                     className={`${styles.actionButton} ${styles.googleButton}`}
                     onClick={googleLogin}
                 >
-                    {t("signIn.loginButtonGoogle")}
+                    <span className={styles.googleButtonLabel}>
+                        {t("signIn.loginButtonGoogle")}
+                    </span>
                 </Button>
 
                 <Separator className={styles.divider}>
