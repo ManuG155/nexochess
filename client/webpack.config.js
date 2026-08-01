@@ -59,7 +59,13 @@ module.exports = {
                     {
                         loader: "css-loader",
                         options: {
-                            modules: true
+                            // Component styles use *.module.css. Files such as
+                            // index.css and NexoReview.css are deliberately
+                            // global and must keep the class names written in
+                            // the markup.
+                            modules: {
+                                auto: /\.module\.css$/i
+                            }
                         }
                     }
                 ]
