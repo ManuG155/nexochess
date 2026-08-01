@@ -105,6 +105,39 @@
     text-decoration: none;
 }
 
+:global(html[data-theme="light"]) .wrapper {
+    border: 1px solid rgba(37, 72, 111, 0.14);
+    background:
+        radial-gradient(circle at 12% 0%, rgba(70, 125, 232, 0.08), transparent 28rem),
+        rgba(255, 255, 255, 0.76);
+    box-shadow: 0 18px 46px rgba(31, 55, 82, 0.12);
+}
+
+:global(html[data-theme="light"]) .toolbar {
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(37, 72, 111, 0.16);
+}
+
+:global(html[data-theme="light"]) .title,
+:global(html[data-theme="light"]) .selection,
+:global(html[data-theme="light"]) .emptyState b {
+    color: #172334 !important;
+}
+
+:global(html[data-theme="light"]) .count {
+    background: rgba(53, 111, 196, 0.1) !important;
+    color: #315f9f !important;
+}
+
+:global(html[data-theme="light"]) .description,
+:global(html[data-theme="light"]) .emptyState {
+    color: rgba(35, 55, 79, 0.68) !important;
+}
+
+:global(html[data-theme="light"]) .selection button {
+    color: #356fc4 !important;
+}
+
 @media (max-width: 650px) {
     .wrapper {
         width: calc(100% - 16px);
