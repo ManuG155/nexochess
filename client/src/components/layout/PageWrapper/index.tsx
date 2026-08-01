@@ -13,6 +13,7 @@ import BugReportingWidget from "@/components/BugReportingWidget";
 import PageWrapperProps from "./PageWrapperProps";
 import * as styles from "./PageWrapper.module.css";
 import "./GlobalTheme.css";
+import "./GlobalThemePolish.css";
 
 const queryClient = new QueryClient();
 
