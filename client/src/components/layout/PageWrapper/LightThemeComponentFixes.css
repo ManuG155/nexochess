@@ -1,14 +1,10 @@
 /*
- * Ajustes finales y deliberadamente específicos del modo claro.
- *
- * Esta hoja se carga después del tema global. Evita pintar etiquetas HTML
- * genéricas (section, nav, article...) fuera del componente al que pertenecen.
- * El tablero, las piezas, la gráfica de evaluación y sus colores quedan fuera.
+ * Ajustes específicos del modo claro.
+ * Esta hoja se carga al final y evita convertir contenedores de layout,
+ * tableros, retratos o muestras de color en tarjetas blancas genéricas.
  */
 
-/* -------------------------------------------------------------------------
- * Footer
- * ---------------------------------------------------------------------- */
+/* Footer */
 [data-nexo-shell][data-theme="light"] > footer nav,
 [data-nexo-shell][data-theme="light"] > footer nav > div {
     border: 0 !important;
@@ -25,10 +21,7 @@
     color: #172334 !important;
 }
 
-/* -------------------------------------------------------------------------
- * Academia
- * Estructura estable: main > hero + course; course > nav + lesson.
- * ---------------------------------------------------------------------- */
+/* Academia */
 [data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] > main {
     color: #172334 !important;
 }
@@ -70,7 +63,6 @@
     border-radius: 18px !important;
 }
 
-/* El módulo activo no crea otra tarjeta dentro de la tarjeta de la lección. */
 [data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] > main > section:nth-child(2) > div > section {
     border: 0 !important;
     border-radius: 0 !important;
@@ -86,7 +78,6 @@
     color: #53677f !important;
 }
 
-/* Tarjetas internas: una sola superficie suave, sin esquinas dobles. */
 [data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] > main > section:nth-child(2) > div article {
     border-color: rgba(39, 72, 109, 0.12) !important;
     background: #f7f9fc !important;
@@ -94,11 +85,8 @@
     box-shadow: none !important;
 }
 
-[data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] > main > section:nth-child(2) > div article :is(p, span, small) {
-    color: #53677f;
-}
-
-/* Las notas informativas heredaban un blanco casi invisible. */
+/* Notas informativas de las lecciones. */
+[data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] > main > section:nth-child(2) > div article :is(p, span, small),
 [data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] > main > section:nth-child(2) > div article > div:last-child,
 [data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] > main > section:nth-child(2) > div > section > div:last-child {
     color: #4d627b !important;
@@ -121,17 +109,13 @@
     background: #f7f9fc !important;
 }
 
-/* El CTA principal conserva la identidad azul. */
 [data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] > main > section:first-child button {
     border-color: rgba(72, 126, 220, 0.42) !important;
     background: linear-gradient(180deg, #568aec, #3f76d5) !important;
     color: #ffffff !important;
 }
 
-/* -------------------------------------------------------------------------
- * Puzzles
- * La cabecera y la rejilla son layout; solo los paneles reales son tarjetas.
- * ---------------------------------------------------------------------- */
+/* Puzzles: los contenedores de layout no son tarjetas. */
 [data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main {
     color: #172334 !important;
 }
@@ -143,7 +127,6 @@
     box-shadow: none !important;
 }
 
-/* Cabecera sin sábana blanca alrededor. */
 [data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main > section:has(> div > h1) {
     padding-inline: 0 !important;
     color: #172334 !important;
@@ -153,37 +136,64 @@
     color: inherit !important;
 }
 
-/* Configurador de sesión. */
-[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main > section > div:has(> header):has(> button) {
-    border: 1px solid rgba(39, 72, 109, 0.14) !important;
-    border-radius: 18px !important;
-    background: rgba(255, 255, 255, 0.97) !important;
+/* El configurador y el panel de juego se integran en el fondo de la página. */
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main > section > div:has(> header):has(> button),
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main > section:has(> header + div + aside) > aside {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
     color: #172334 !important;
-    box-shadow: 0 18px 44px rgba(41, 67, 96, 0.09) !important;
+    box-shadow: none !important;
 }
 
-/* Tarjeta lateral del entrenador en la preparación. */
-[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main > section > section {
-    border: 1px solid rgba(39, 72, 109, 0.14) !important;
-    border-radius: 18px !important;
-    background: rgba(255, 255, 255, 0.97) !important;
+/* Tarjetas funcionales del configurador. */
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main .sourceSelector > button,
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main .themeCategories > button,
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main .difficultyGrid > button,
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main .sessionOptions > button {
+    border-color: rgba(39, 72, 109, 0.14) !important;
+    background: rgba(255, 255, 255, 0.72) !important;
     color: #172334 !important;
-    box-shadow: 0 18px 44px rgba(41, 67, 96, 0.09) !important;
+    box-shadow: none !important;
 }
 
-/* Panel de juego. */
-[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main > section > aside {
-    border: 1px solid rgba(39, 72, 109, 0.14) !important;
-    border-radius: 18px !important;
-    background: rgba(255, 255, 255, 0.98) !important;
+/* Controles del panel de juego, sin un segundo suelo debajo. */
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main > section:has(> header + div + aside) > aside > div:not(:has(> div + button[title][aria-label])) {
+    border: 1px solid rgba(39, 72, 109, 0.12) !important;
+    border-radius: 13px !important;
+    background: rgba(255, 255, 255, 0.64) !important;
     color: #172334 !important;
-    box-shadow: 0 18px 44px rgba(41, 67, 96, 0.09) !important;
+    box-shadow: none !important;
 }
 
-[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main > section > aside > :is(div, section) {
-    border-color: rgba(39, 72, 109, 0.12) !important;
-    background: #f6f9fc !important;
+/* Entrenador: retrato transparente y un único bocadillo, igual que en análisis. */
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main div:has(> div + button[title][aria-label]) {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main div:has(> div + button[title][aria-label]) > div:first-child {
+    border: 1px solid rgba(55, 108, 183, 0.28) !important;
+    border-radius: 14px !important;
+    background: #f7f9fc !important;
     color: #172334 !important;
+    box-shadow: none !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main div:has(> div + button[title][aria-label]) > div:first-child::before {
+    background: rgba(55, 108, 183, 0.48) !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main div:has(> div + button[title][aria-label]) > div:first-child::after {
+    background: #f7f9fc !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main div:has(> div + button[title][aria-label]) > button[title][aria-label] {
+    border: 0 !important;
+    background: transparent !important;
     box-shadow: none !important;
 }
 
@@ -195,16 +205,21 @@
     color: #53677f !important;
 }
 
-[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main button:not([role="switch"]) {
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main button:not([role="switch"]):not([title][aria-label]) {
     border-color: rgba(39, 72, 109, 0.14) !important;
-    background: #f5f8fc !important;
     color: #172334 !important;
 }
 
-[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main > section > aside > button {
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main > section:has(> header + div + aside) > aside > button,
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main button.startButton {
     border-color: rgba(72, 126, 220, 0.42) !important;
     background: linear-gradient(180deg, #568aec, #3f76d5) !important;
     color: #ffffff !important;
+}
+
+/* Coordenadas externas: oscuras en modo claro, sin tocar las casillas. */
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] div[aria-hidden="true"]:has(> span:nth-child(8)) {
+    color: #52667f !important;
 }
 
 [data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] [data-square],
@@ -212,9 +227,7 @@
     color: revert !important;
 }
 
-/* -------------------------------------------------------------------------
- * Acceso
- * ---------------------------------------------------------------------- */
+/* Acceso */
 [data-nexo-shell][data-theme="light"]:is([data-route="signin"], [data-route="signup"], [data-route="resetPassword"], [data-route="reset-password"]) [data-nexo-content] > div > div {
     border: 1px solid rgba(39, 72, 109, 0.14) !important;
     background: rgba(255, 255, 255, 0.98) !important;
@@ -240,10 +253,6 @@
     color: #8c9bad !important;
 }
 
-[data-nexo-shell][data-theme="light"]:is([data-route="signin"], [data-route="signup"], [data-route="resetPassword"], [data-route="reset-password"]) [data-nexo-content] button:not(:disabled) {
-    color: #172334 !important;
-}
-
 [data-nexo-shell][data-theme="light"]:is([data-route="signin"], [data-route="signup"], [data-route="resetPassword"], [data-route="reset-password"]) [data-nexo-content] button:disabled {
     color: rgba(255, 255, 255, 0.74) !important;
 }
@@ -252,9 +261,7 @@
     color: #356fc4 !important;
 }
 
-/* -------------------------------------------------------------------------
- * Ajustes
- * ---------------------------------------------------------------------- */
+/* Ajustes. Los botones con estilo inline son muestras cromáticas y conservan su color. */
 [data-nexo-shell][data-theme="light"][data-route="settings"] [data-nexo-content] {
     color: #172334 !important;
 }
@@ -277,20 +284,16 @@
     color: #5c6d82 !important;
 }
 
-[data-nexo-shell][data-theme="light"][data-route="settings"] [data-nexo-content] main button:not([role="switch"]) {
+[data-nexo-shell][data-theme="light"][data-route="settings"] [data-nexo-content] main button:not([role="switch"]):not([style]) {
     border-color: rgba(39, 72, 109, 0.14) !important;
     background: #ffffff !important;
     color: #172334 !important;
     box-shadow: 0 5px 14px rgba(41, 67, 96, 0.05) !important;
 }
 
-[data-nexo-shell][data-theme="light"][data-route="settings"] [data-nexo-content] main button:not([role="switch"]):hover {
+[data-nexo-shell][data-theme="light"][data-route="settings"] [data-nexo-content] main button:not([role="switch"]):not([style]):hover {
     border-color: rgba(53, 111, 196, 0.3) !important;
     background: #f2f6fb !important;
-}
-
-[data-nexo-shell][data-theme="light"][data-route="settings"] [data-nexo-content] main button :is(span, b, strong) {
-    color: #172334 !important;
 }
 
 [data-nexo-shell][data-theme="light"][data-route="settings"] [data-nexo-content] :is(input, textarea, select) {
@@ -308,10 +311,7 @@
     color: revert !important;
 }
 
-/* -------------------------------------------------------------------------
- * Resumen de partida
- * Se identifica por su h2 directo dentro del área desplazable y sus secciones.
- * ---------------------------------------------------------------------- */
+/* Resumen de partida */
 [data-nexo-shell][data-theme="light"][data-route="analysis"] [data-nexo-content] section:has(> div > h2):has(> div > section) {
     --summary-bg: #ffffff;
     --summary-surface: rgba(31, 63, 99, 0.045);
@@ -350,23 +350,12 @@
     background: #f7f9fc !important;
 }
 
-[data-nexo-shell][data-theme="light"][data-route="analysis"] [data-nexo-content] section:has(> div > h2):has(> div > section) > div:first-child > div {
-    background: var(--summary-surface) !important;
-    color: var(--summary-text) !important;
-}
-
-[data-nexo-shell][data-theme="light"][data-route="analysis"] [data-nexo-content] section:has(> div > h2):has(> div > section) :is(p, span) {
-    border-color: var(--summary-line);
-}
-
 [data-nexo-shell][data-theme="light"][data-route="analysis"] [data-nexo-content] section:has(> div > h2):has(> div > section) > div:last-child {
     border-color: var(--summary-line) !important;
     background: rgba(240, 245, 250, 0.88) !important;
 }
 
-/* -------------------------------------------------------------------------
- * Revisión jugada a jugada
- * ---------------------------------------------------------------------- */
+/* Revisión jugada a jugada */
 [data-nexo-shell][data-theme="light"] .nexo-review-card {
     --review-bg: #ffffff;
     --review-surface: rgba(31, 63, 99, 0.045);
@@ -393,6 +382,17 @@
 [data-nexo-shell][data-theme="light"] .nexo-review-moves {
     border-color: var(--review-line) !important;
     color: var(--review-text) !important;
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-review-back {
+    border: 1px solid rgba(37, 72, 111, 0.13) !important;
+    background: #edf3f9 !important;
+    color: #26384e !important;
+    opacity: 1 !important;
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-review-header::after {
+    background: linear-gradient(90deg, #5b8fe5, rgba(91, 143, 229, 0.22)) !important;
 }
 
 [data-nexo-shell][data-theme="light"] .nexo-review-coach > section > div {
