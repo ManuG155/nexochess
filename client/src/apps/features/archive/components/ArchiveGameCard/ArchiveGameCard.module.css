@@ -184,6 +184,75 @@
     line-height: 1;
 }
 
+:global(html[data-theme="light"]) .card {
+    border-color: rgba(37, 72, 111, 0.14);
+    background: rgba(255, 255, 255, 0.96);
+    color: #172334;
+    box-shadow: 0 8px 24px rgba(31, 55, 82, 0.08);
+}
+
+:global(html[data-theme="light"]) .card:hover {
+    border-color: rgba(53, 111, 196, 0.3);
+    background: #ffffff;
+    box-shadow: 0 12px 30px rgba(31, 55, 82, 0.12);
+}
+
+:global(html[data-theme="light"]) .selected {
+    border-color: rgba(53, 111, 196, 0.72);
+    background: rgba(70, 125, 232, 0.08);
+}
+
+:global(html[data-theme="light"]) .result,
+:global(html[data-theme="light"]) .playerName {
+    color: #172334 !important;
+}
+
+:global(html[data-theme="light"]) .date,
+:global(html[data-theme="light"]) .rating,
+:global(html[data-theme="light"]) .metadata,
+:global(html[data-theme="light"]) .ratingNeutral,
+:global(html[data-theme="light"]) .openHint {
+    color: rgba(35, 55, 79, 0.62) !important;
+}
+
+:global(html[data-theme="light"]) .localBadge {
+    background: rgba(53, 111, 196, 0.09);
+    color: #315f9f;
+}
+
+:global(html[data-theme="light"]) .playersHeader {
+    color: rgba(35, 55, 79, 0.48) !important;
+}
+
+:global(html[data-theme="light"]) .winner {
+    background: rgba(66, 151, 83, 0.09);
+}
+
+:global(html[data-theme="light"]) .pieceDot {
+    border-color: rgba(35, 55, 79, 0.32);
+}
+
+:global(html[data-theme="light"]) .white {
+    background: #ffffff;
+    box-shadow: inset 0 0 0 1px rgba(35, 55, 79, 0.16);
+}
+
+:global(html[data-theme="light"]) .black {
+    background: #182130;
+}
+
+:global(html[data-theme="light"]) .ratingGain {
+    color: #2e8a45;
+}
+
+:global(html[data-theme="light"]) .ratingLoss {
+    color: #c44848;
+}
+
+:global(html[data-theme="light"]) .accuracy {
+    color: #244e87 !important;
+}
+
 @media (max-width: 650px) {
     .card {
         grid-template-columns: auto 92px minmax(0, 1fr);

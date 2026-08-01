@@ -134,7 +134,6 @@
     font-weight: 800;
 }
 
-
 .empty {
     margin: 2px 0;
     color: rgba(255, 255, 255, 0.48);
@@ -154,6 +153,75 @@
     border: 0;
 }
 
+:global(html[data-theme="light"]) .wrapper {
+    border-color: rgba(37, 72, 111, 0.16);
+    background:
+        radial-gradient(circle at 86% -10%, rgba(70, 125, 232, 0.12), transparent 34%),
+        #ffffff;
+    box-shadow: 0 26px 70px rgba(31, 55, 82, 0.22);
+    color: #172334;
+}
+
+:global(html[data-theme="light"]) .header h2,
+:global(html[data-theme="light"]) .languageCopy strong {
+    color: #172334 !important;
+}
+
+:global(html[data-theme="light"]) .header p {
+    color: rgba(35, 55, 79, 0.68) !important;
+}
+
+:global(html[data-theme="light"]) .eyebrow {
+    color: #356fc4 !important;
+}
+
+:global(html[data-theme="light"]) .searchField input {
+    border-color: rgba(37, 72, 111, 0.18) !important;
+    background: #f4f7fb !important;
+    color: #172334 !important;
+}
+
+:global(html[data-theme="light"]) .searchField input::placeholder {
+    color: rgba(35, 55, 79, 0.48) !important;
+}
+
+:global(html[data-theme="light"]) .searchField input:focus {
+    border-color: rgba(53, 111, 196, 0.68) !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(53, 111, 196, 0.11);
+}
+
+:global(html[data-theme="light"]) .language {
+    border-color: rgba(37, 72, 111, 0.14) !important;
+    background: #f7fafd !important;
+    color: #172334 !important;
+}
+
+:global(html[data-theme="light"]) .language:hover {
+    border-color: rgba(53, 111, 196, 0.32) !important;
+    background: #eef4fb !important;
+}
+
+:global(html[data-theme="light"]) .languageSelected {
+    border-color: rgba(53, 111, 196, 0.62) !important;
+    background: rgba(70, 125, 232, 0.11) !important;
+}
+
+:global(html[data-theme="light"]) .language img {
+    opacity: 1 !important;
+    filter: none !important;
+}
+
+:global(html[data-theme="light"]) .languageCopy small,
+:global(html[data-theme="light"]) .empty {
+    color: rgba(35, 55, 79, 0.58) !important;
+}
+
+:global(html[data-theme="light"]) .currentBadge {
+    background: rgba(53, 111, 196, 0.13) !important;
+    color: #2f65ad !important;
+}
+
 @media (max-width: 620px) {
     .wrapper {
         padding: 19px;
@@ -162,5 +230,4 @@
     .languages {
         grid-template-columns: 1fr;
     }
-
 }
