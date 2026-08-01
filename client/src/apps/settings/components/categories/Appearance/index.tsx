@@ -19,6 +19,7 @@ import {
 
 import * as categoryStyles from "../Category.module.css";
 import * as styles from "./Appearance.module.css";
+import { getColourModeCopy } from "./colourModeCopy";
 
 const INITIAL_FEN =
     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -56,6 +57,24 @@ function Appearance() {
         label: language.label,
         value: language.id
     })), []);
+
+    const colourModeCopy = useMemo(
+        () => getColourModeCopy(
+            i18n.resolvedLanguage || i18n.language
+        ),
+        [i18n.resolvedLanguage, i18n.language]
+    );
+
+    const colourModeOptions = useMemo(() => [
+        {
+            label: colourModeCopy.dark,
+            value: "dark" as const
+        },
+        {
+            label: colourModeCopy.light,
+            value: "light" as const
+        }
+    ], [colourModeCopy]);
 
     const coordinateOptions = useMemo(() => [
         {
@@ -108,6 +127,38 @@ function Appearance() {
                         onSelect={option => {
                             if (!option) return;
                             void i18n.changeLanguage(option.value);
+                        }}
+                        dropdownStyle={{ width: "180px" }}
+                        menuStyle={{ width: "180px" }}
+                    />
+                </div>
+            </section>
+
+            <Separator className={categoryStyles.separator}/>
+
+            <section className={styles.section}>
+                <div className={styles.coordinatesRow}>
+                    <div>
+                        <h2 className={styles.sectionTitle}>
+                            {colourModeCopy.title}
+                        </h2>
+                        <p className={styles.sectionDescription}>
+                            {colourModeCopy.description}
+                        </p>
+                    </div>
+
+                    <DropdownSetting
+                        options={colourModeOptions}
+                        defaultValue={colourModeOptions.find(
+                            option => option.value == settings.appearance.colourMode
+                        )}
+                        onSelect={option => {
+                            if (!option) return;
+
+                            setSettings(draft => {
+                                draft.appearance.colourMode = option.value;
+                                return draft;
+                            });
                         }}
                         dropdownStyle={{ width: "180px" }}
                         menuStyle={{ width: "180px" }}
