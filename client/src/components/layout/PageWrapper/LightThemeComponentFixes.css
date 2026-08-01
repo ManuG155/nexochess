@@ -1,0 +1,215 @@
+/* Correcciones específicas del modo claro para páginas que aún heredaban el tema oscuro. */
+
+/* Academia */
+[data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] main {
+    color: #172334 !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] main > section:first-of-type {
+    border-color: rgba(39, 72, 109, 0.16) !important;
+    background:
+        radial-gradient(circle at 85% 15%, rgba(70, 125, 232, 0.12), transparent 38%),
+        linear-gradient(145deg, #ffffff, #f2f6fb) !important;
+    color: #172334 !important;
+    box-shadow: 0 22px 56px rgba(41, 67, 96, 0.13) !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] main > section:first-of-type :is(h1, p) {
+    color: #172334 !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] main > section:nth-of-type(2) {
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] main > section:nth-of-type(2) > nav,
+[data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] main > section:nth-of-type(2) > div {
+    border-color: rgba(39, 72, 109, 0.16) !important;
+    background: rgba(255, 255, 255, 0.97) !important;
+    color: #172334 !important;
+    box-shadow: 0 18px 46px rgba(41, 67, 96, 0.1) !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] main > section:nth-of-type(2) > div > section {
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] main > section:nth-of-type(2) :is(h2, h3, h4, p, strong, b, span, code, li) {
+    color: #172334 !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] main > section:nth-of-type(2) :is(p, li, small) {
+    color: #5c6d82 !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] main > section:nth-of-type(2) article {
+    border-color: rgba(39, 72, 109, 0.14) !important;
+    background: #f8fafc !important;
+    color: #172334 !important;
+    box-shadow: none !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] main > section:nth-of-type(2) button {
+    border-color: rgba(39, 72, 109, 0.16) !important;
+    background: #f5f8fc !important;
+    color: #253449 !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] main > section:nth-of-type(2) button:hover {
+    border-color: rgba(53, 111, 196, 0.32) !important;
+    background: #edf3fb !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] main > section:nth-of-type(2) button:disabled {
+    color: #8b98a9 !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] [role="img"],
+[data-nexo-shell][data-theme="light"][data-route="academy"] [data-nexo-content] [role="img"] * {
+    color: revert !important;
+}
+
+/* Puzzles */
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] main {
+    color: #172334 !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] main > section {
+    border-color: rgba(39, 72, 109, 0.16) !important;
+    background: rgba(255, 255, 255, 0.97) !important;
+    color: #172334 !important;
+    box-shadow: 0 18px 48px rgba(41, 67, 96, 0.1) !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] main > section > aside {
+    border-color: rgba(39, 72, 109, 0.16) !important;
+    background: #ffffff !important;
+    color: #172334 !important;
+    box-shadow: none !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] main > section > aside > div {
+    border-color: rgba(39, 72, 109, 0.14) !important;
+    background: #f7f9fc !important;
+    color: #172334 !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] main > section > aside :is(h2, h3, h4, p, strong, span, small, label),
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] main > section > header :is(h1, h2, p, span) {
+    color: #172334 !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] main > section > aside :is(p, small) {
+    color: #5c6d82 !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] main > section > aside button:not([role="switch"]) {
+    border-color: rgba(39, 72, 109, 0.16) !important;
+    background: #f5f8fc !important;
+    color: #172334 !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] main > section > aside > button {
+    border-color: rgba(72, 126, 220, 0.45) !important;
+    background: linear-gradient(180deg, #568aec, #3f76d5) !important;
+    color: #ffffff !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] main > section > aside > button * {
+    color: #ffffff !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-square],
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-square] * {
+    color: revert !important;
+}
+
+/* Inicio de sesión, registro y restablecimiento */
+[data-nexo-shell][data-theme="light"]:is([data-route="signin"], [data-route="signup"], [data-route="resetPassword"], [data-route="reset-password"]) [data-nexo-content] > div > div {
+    border-color: rgba(39, 72, 109, 0.16) !important;
+    background: rgba(255, 255, 255, 0.98) !important;
+    color: #172334 !important;
+    box-shadow: 0 22px 60px rgba(41, 67, 96, 0.14) !important;
+}
+
+[data-nexo-shell][data-theme="light"]:is([data-route="signin"], [data-route="signup"], [data-route="resetPassword"], [data-route="reset-password"]) [data-nexo-content] :is(h1, h2, h3, label, span, p, a) {
+    color: #172334 !important;
+}
+
+[data-nexo-shell][data-theme="light"]:is([data-route="signin"], [data-route="signup"], [data-route="resetPassword"], [data-route="reset-password"]) [data-nexo-content] :is(p, small) {
+    color: #607086 !important;
+}
+
+[data-nexo-shell][data-theme="light"]:is([data-route="signin"], [data-route="signup"], [data-route="resetPassword"], [data-route="reset-password"]) [data-nexo-content] input {
+    border-color: rgba(39, 72, 109, 0.18) !important;
+    background: #f4f7fb !important;
+    color: #172334 !important;
+}
+
+[data-nexo-shell][data-theme="light"]:is([data-route="signin"], [data-route="signup"], [data-route="resetPassword"], [data-route="reset-password"]) [data-nexo-content] input::placeholder {
+    color: #93a1b2 !important;
+}
+
+[data-nexo-shell][data-theme="light"]:is([data-route="signin"], [data-route="signup"], [data-route="resetPassword"], [data-route="reset-password"]) [data-nexo-content] button {
+    color: #172334 !important;
+}
+
+[data-nexo-shell][data-theme="light"]:is([data-route="signin"], [data-route="signup"], [data-route="resetPassword"], [data-route="reset-password"]) [data-nexo-content] button:disabled {
+    color: rgba(255, 255, 255, 0.72) !important;
+}
+
+[data-nexo-shell][data-theme="light"]:is([data-route="signin"], [data-route="signup"], [data-route="resetPassword"], [data-route="reset-password"]) [data-nexo-content] :is(a[href="/terms"], a[href="/privacy"]) {
+    color: #356fc4 !important;
+}
+
+/* Ajustes */
+[data-nexo-shell][data-theme="light"][data-route="settings"] [data-nexo-content] {
+    color: #172334 !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="settings"] [data-nexo-content] aside {
+    border-color: rgba(39, 72, 109, 0.16) !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="settings"] [data-nexo-content] :is(h1, h2, h3, h4, b, strong, span, label, p, small) {
+    color: #172334 !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="settings"] [data-nexo-content] :is(p, small) {
+    color: #5c6d82 !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="settings"] [data-nexo-content] section button:not([role="switch"]) {
+    border-color: rgba(39, 72, 109, 0.16) !important;
+    background: #ffffff !important;
+    color: #172334 !important;
+    box-shadow: 0 6px 16px rgba(41, 67, 96, 0.06);
+}
+
+[data-nexo-shell][data-theme="light"][data-route="settings"] [data-nexo-content] section button:not([role="switch"]):hover {
+    border-color: rgba(53, 111, 196, 0.3) !important;
+    background: #f2f6fb !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="settings"] [data-nexo-content] section button span {
+    color: #172334 !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="settings"] [data-nexo-content] :is(input, textarea, select) {
+    border-color: rgba(39, 72, 109, 0.18) !important;
+    background: #f4f7fb !important;
+    color: #172334 !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="settings"] [data-nexo-content] hr {
+    border-color: rgba(39, 72, 109, 0.16) !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="settings"] [data-square],
+[data-nexo-shell][data-theme="light"][data-route="settings"] [data-square] * {
+    color: revert !important;
+}
