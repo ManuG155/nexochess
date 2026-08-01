@@ -86,6 +86,24 @@
     color: rgba(255, 255, 255, 0.92) !important;
 }
 
+.googleButtonLabel {
+    color: inherit;
+    opacity: 1;
+    visibility: visible;
+}
+
+:global(html[data-theme="light"]) .googleButton,
+:global(body[data-theme="light"]) .googleButton {
+    color: #111827 !important;
+}
+
+:global(html[data-theme="light"]) .googleButton .googleButtonLabel,
+:global(body[data-theme="light"]) .googleButton .googleButtonLabel {
+    color: #111827 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
 .primaryButton {
     border: 1px solid rgba(131, 170, 214, 0.5) !important;
     background: linear-gradient(180deg, #547fae, #456d99) !important;
