@@ -1,0 +1,40 @@
+/* Ajustes finales del tema claro que necesitan más especificidad. */
+
+[data-nexo-shell][data-theme="light"][data-route="academy"] > header nav {
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="settings"] [data-nexo-content]
+:is(h1, h2, h3, b, strong, label, span, p, small) {
+    color: var(--nexo-text) !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="settings"] [data-nexo-content]
+:is([role="combobox"], [aria-haspopup="listbox"]) {
+    border-color: var(--nexo-line) !important;
+    background: var(--nexo-surface-raised) !important;
+    color: var(--nexo-text) !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="analysis"] [data-nexo-content]
+section:not(:has([data-square])) {
+    background-color: var(--nexo-surface) !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="analysis"] [data-nexo-content]
+section:not(:has([data-square])) :is(h1, h2, h3, p, span, strong, small) {
+    color: inherit;
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-review-card
+.nexo-review-coach > section {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-review-card
+.nexo-review-moves > div {
+    background: transparent !important;
+}
