@@ -16,11 +16,6 @@
     min-width: 0;
     min-height: 52px;
 
-    /*
-     * Los datos del jugador flotan alrededor del tablero.
-     * Quitamos la antigua caja sólida de WintrChess para que avatar, nombre,
-     * Elo, bandera y material respiren sobre el fondo general de la página.
-     */
     padding-top: 4px;
     padding-right: 4px;
     padding-bottom: 4px;
@@ -38,14 +33,6 @@
     flex-shrink: 0;
 }
 
-/*
- * NÚMEROS 8-1
- *
- * Flotan a la izquierda
- * del tablero.
- *
- * No afectan a su tamaño.
- */
 .rankCoordinates {
     position: absolute;
 
@@ -72,13 +59,6 @@
     user-select: none;
 }
 
-
-/*
- * LETRAS A-H
- *
- * Flotan debajo
- * del tablero.
- */
 .fileCoordinates {
     position: absolute;
 
@@ -105,10 +85,6 @@
     user-select: none;
 }
 
-
-/*
- * Centrado de cada número/letra.
- */
 .coordinate {
     display: flex;
 
@@ -117,4 +93,9 @@
 
     width: 100%;
     height: 100%;
+}
+
+:global(html[data-theme="light"]) .rankCoordinates,
+:global(html[data-theme="light"]) .fileCoordinates {
+    color: rgba(35, 55, 79, 0.72);
 }

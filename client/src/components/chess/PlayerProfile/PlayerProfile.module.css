@@ -161,6 +161,31 @@
     line-height: 1;
 }
 
+:global(html[data-theme="light"]) .wrapper {
+    color: #172334;
+}
+
+:global(html[data-theme="light"]) .username {
+    color: #172334;
+}
+
+:global(html[data-theme="light"]) .rating {
+    color: rgba(35, 55, 79, 0.66);
+}
+
+:global(html[data-theme="light"]) .capturedPieces {
+    color: rgba(35, 55, 79, 0.78);
+}
+
+:global(html[data-theme="light"]) .materialAdvantage {
+    color: #4f7f18;
+}
+
+:global(html[data-theme="light"]) .clockInactive {
+    color: rgba(255, 255, 255, 0.78);
+    background-color: #2b3440;
+}
+
 @media (max-width: 650px) {
     .profileImage {
         width: 38px;
