@@ -115,6 +115,7 @@ function createAuth(env, request) {
                 username: {
                     type: "string",
                     required: true,
+                    unique: true,
                     input: false
                 },
                 roles: {
