@@ -261,18 +261,8 @@ async function migrateSchema(auth, env) {
 
     if (Number(marker?.version) >= SCHEMA_VERSION) return;
 
-    try {
-        const migrations = await getMigrations(auth.options);
-        await migrations.runMigrations();
-    } catch (error) {
-        // A simultaneous first request can finish the same migration first.
-        const retry = await getMigrations(auth.options);
-        const pendingTables = retry.toBeCreated?.length || 0;
-        const pendingColumns = retry.toBeAdded?.length || 0;
-
-        if (pendingTables || pendingColumns) throw error;
-    }
-
+    const migrations = await getMigrations(auth.options);
+    await migrations.runMigrations();
     await createApplicationTables(env.DB);
 
     await env.DB.prepare(`
