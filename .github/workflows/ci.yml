@@ -52,15 +52,20 @@ jobs:
           node --check cloudflare/worker.mjs
           node --check cloudflare/auth.mjs
           node --check cloudflare/api.mjs
+          node --check scripts/build-cloudflare.mjs
           node --check scripts/export-puzzles-static.mjs
           node --check scripts/prepare-cloudflare-production.mjs
           node --check scripts/verify-cloudflare-production.mjs
+          node --check scripts/verify-puzzle-data.mjs
 
-      - name: Prepare Cloudflare static assets
+      - name: Prepare staging Cloudflare assets
         run: node scripts/build-cloudflare.mjs
 
       - name: Bundle staging Cloudflare Worker
         run: npx --yes wrangler@4 deploy --dry-run --outdir .wrangler-dry-run
+
+      - name: Prepare production Cloudflare assets
+        run: node scripts/build-cloudflare.mjs --puzzle-origin https://nexochess-puzzle-data-production.manuel-garcia-villaescusa.workers.dev
 
       - name: Bundle production Cloudflare Worker
         run: |
