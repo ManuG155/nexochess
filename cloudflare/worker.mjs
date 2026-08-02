@@ -5,7 +5,6 @@ import {
 } from "./auth.mjs";
 import { handleCloudflareApi } from "./api.mjs";
 
-// Deployed from the develop branch to the private NexoChess staging Worker.
 const PAGE_ROUTES = new Map([
     ["/analysis", "features/analysis.html"],
     ["/archive", "features/archive.html"],
@@ -73,7 +72,30 @@ function replacePlaceholders(html, replacements) {
     return output;
 }
 
-function withStagingHeaders(headers, contentType) {
+function isProduction(env) {
+    return env.NEXOCHESS_ENV === "production";
+}
+
+function withPageHeaders(headers, contentType, env) {
+    const nextHeaders = new Headers(headers);
+
+    if (contentType) nextHeaders.set("Content-Type", contentType);
+    nextHeaders.set("Cache-Control", "no-cache, must-revalidate");
+
+    if (isProduction(env)) {
+        nextHeaders.delete("Pragma");
+        nextHeaders.delete("Expires");
+        nextHeaders.delete("X-Robots-Tag");
+    } else {
+        nextHeaders.set("Pragma", "no-cache");
+        nextHeaders.set("Expires", "0");
+        nextHeaders.set("X-Robots-Tag", "noindex, nofollow, noarchive");
+    }
+
+    return nextHeaders;
+}
+
+function withApiHeaders(headers, contentType) {
     const nextHeaders = new Headers(headers);
 
     if (contentType) nextHeaders.set("Content-Type", contentType);
@@ -101,9 +123,10 @@ async function renderPage(request, env, filepath, replacements = {}, status = 20
 
     return new Response(request.method === "HEAD" ? null : html, {
         status,
-        headers: withStagingHeaders(
+        headers: withPageHeaders(
             assetResponse.headers,
-            "text/html; charset=utf-8"
+            "text/html; charset=utf-8",
+            env
         )
     });
 }
@@ -111,7 +134,7 @@ async function renderPage(request, env, filepath, replacements = {}, status = 20
 function json(payload, status = 200) {
     return new Response(JSON.stringify(payload), {
         status,
-        headers: withStagingHeaders(
+        headers: withApiHeaders(
             { "Content-Type": "application/json; charset=utf-8" }
         )
     });
@@ -128,9 +151,20 @@ async function getCloudflareBackend(request, env) {
     }
 }
 
+function redirectProductionApex(url, env) {
+    if (!isProduction(env) || url.hostname !== "nexochess.com") return null;
+
+    const canonicalUrl = new URL(url);
+    canonicalUrl.hostname = "www.nexochess.com";
+    return Response.redirect(canonicalUrl, 308);
+}
+
 export default {
     async fetch(request, env) {
         const url = new URL(request.url);
+        const apexRedirect = redirectProductionApex(url, env);
+        if (apexRedirect) return apexRedirect;
+
         const pathname = normalisePathname(url.pathname);
 
         if (pathname === AUTH_PATH || pathname.startsWith(`${AUTH_PATH}/`)) {
