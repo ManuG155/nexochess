@@ -17,7 +17,7 @@
         "check": "npm run check:translations && npm run check:repository && npm run check:puzzles && npm run check -w client && npm run check -w server",
         "verify": "npm run check && npm run build",
         "import:puzzles": "node scripts/import-lichess-puzzles.mjs",
-        "export:puzzles:d1": "node scripts/export-puzzles-d1-sql.mjs"
+        "export:puzzles:static": "node scripts/export-puzzles-static.mjs"
     },
     "devDependencies": {
         "@stylistic/eslint-plugin-ts": "^2.1.0",
