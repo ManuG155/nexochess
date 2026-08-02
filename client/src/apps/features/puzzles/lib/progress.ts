@@ -8,6 +8,7 @@ const DATABASE_VERSION = 1;
 const COMPLETION_STORE = "completions";
 const FALLBACK_COMPLETIONS_KEY = "nexochess-puzzle-completions-v1";
 const PROFILE_KEY = "nexochess-puzzle-profile-v1";
+const CLOUD_PROGRESS_URL = "/api/puzzles/progress";
 
 export const CALIBRATION_ATTEMPTS = 12;
 
@@ -25,6 +26,13 @@ interface PuzzleCompletion {
     completedAt: string;
     solvedWithoutHelp: boolean;
 }
+
+interface CloudPuzzleProgress {
+    profile: PuzzleProfile | null;
+    completions: string[];
+}
+
+let cloudProgressRequest: Promise<CloudPuzzleProgress | undefined> | undefined;
 
 function openProgressDatabase() {
     return new Promise<IDBDatabase>((resolve, reject) => {
@@ -63,19 +71,94 @@ function readFallbackCompletions() {
     }
 }
 
-function saveFallbackCompletion(id: string) {
-    const ids = new Set(readFallbackCompletions());
-    ids.add(id);
+function saveFallbackCompletions(ids: Iterable<string>) {
+    const storedIds = new Set(readFallbackCompletions());
+    for (const id of ids) storedIds.add(id);
 
     localStorage.setItem(
         FALLBACK_COMPLETIONS_KEY,
-        JSON.stringify([...ids])
+        JSON.stringify([...storedIds])
     );
 }
 
-export async function getCompletedPuzzleIds() {
+function saveFallbackCompletion(id: string) {
+    saveFallbackCompletions([id]);
+}
+
+function isPuzzleProfile(value: unknown): value is PuzzleProfile {
+    const profile = value as PuzzleProfile | undefined;
+
+    return Boolean(
+        profile
+        && typeof profile.rating == "number"
+        && typeof profile.attempts == "number"
+        && typeof profile.correct == "number"
+        && typeof profile.streak == "number"
+        && typeof profile.bestStreak == "number"
+    );
+}
+
+function savePuzzleProfile(profile: PuzzleProfile) {
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+}
+
+async function loadCloudProgress() {
+    if (!cloudProgressRequest) {
+        cloudProgressRequest = fetch(CLOUD_PROGRESS_URL, {
+            cache: "no-store"
+        }).then(async response => {
+            if (!response.ok) return;
+
+            const value = await response.json() as Partial<CloudPuzzleProgress>;
+            const completions = Array.isArray(value.completions)
+                ? value.completions.filter(id => typeof id == "string")
+                : [];
+
+            return {
+                profile: isPuzzleProfile(value.profile)
+                    ? value.profile
+                    : null,
+                completions
+            };
+        }).catch(() => undefined);
+    }
+
+    return await cloudProgressRequest;
+}
+
+async function saveCloudCompletions(completions: Array<{
+    id: string;
+    source: PuzzleSource;
+    solvedWithoutHelp: boolean;
+}>) {
+    if (completions.length == 0) return;
+
+    try {
+        await fetch(`${CLOUD_PROGRESS_URL}/completions`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(completions)
+        });
+    } catch {
+        // Local IndexedDB remains the offline source of truth.
+    }
+}
+
+async function saveCloudProfile(profile: PuzzleProfile) {
+    try {
+        await fetch(`${CLOUD_PROGRESS_URL}/profile`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(profile)
+        });
+    } catch {
+        // localStorage remains the offline source of truth.
+    }
+}
+
+async function readIndexedCompletionIds() {
     if (typeof indexedDB == "undefined") {
-        return new Set(readFallbackCompletions());
+        return readFallbackCompletions();
     }
 
     try {
@@ -96,21 +179,16 @@ export async function getCompletedPuzzleIds() {
         });
 
         database.close();
-
-        return new Set(ids.map(String));
+        return ids.map(String);
     } catch {
-        return new Set(readFallbackCompletions());
+        return readFallbackCompletions();
     }
 }
 
-export async function markPuzzleCompleted(
-    id: string,
-    source: PuzzleSource,
-    solvedWithoutHelp: boolean
-) {
-    saveFallbackCompletion(id);
+async function storeLocalCompletions(completions: PuzzleCompletion[]) {
+    saveFallbackCompletions(completions.map(completion => completion.id));
 
-    if (typeof indexedDB == "undefined") return;
+    if (typeof indexedDB == "undefined" || completions.length == 0) return;
 
     try {
         const database = await openProgressDatabase();
@@ -120,26 +198,88 @@ export async function markPuzzleCompleted(
                 COMPLETION_STORE,
                 "readwrite"
             );
+            const store = transaction.objectStore(COMPLETION_STORE);
 
-            const completion: PuzzleCompletion = {
-                id,
-                source,
-                completedAt: new Date().toISOString(),
-                solvedWithoutHelp
-            };
+            for (const completion of completions) store.put(completion);
 
-            const request = transaction
-                .objectStore(COMPLETION_STORE)
-                .put(completion);
-
-            request.onsuccess = () => resolve();
-            request.onerror = () => reject(request.error);
+            transaction.oncomplete = () => resolve();
+            transaction.onerror = () => reject(transaction.error);
         });
 
         database.close();
     } catch {
-        // The localStorage fallback already preserved the identifier.
+        // The localStorage fallback already preserved every identifier.
     }
+}
+
+export async function getCompletedPuzzleIds() {
+    const localIds = new Set(await readIndexedCompletionIds());
+    const cloudProgress = await loadCloudProgress();
+
+    if (!cloudProgress) return localIds;
+
+    const cloudIds = new Set(cloudProgress.completions);
+    const mergedIds = new Set([...localIds, ...cloudIds]);
+    const now = new Date().toISOString();
+
+    await storeLocalCompletions(
+        [...cloudIds]
+            .filter(id => !localIds.has(id))
+            .map(id => ({
+                id,
+                source: id.startsWith("archive:") ? "archive" : "lichess",
+                completedAt: now,
+                solvedWithoutHelp: false
+            }))
+    );
+
+    const localProfile = getPuzzleProfile();
+    if (
+        cloudProgress.profile
+        && cloudProgress.profile.attempts > localProfile.attempts
+    ) {
+        savePuzzleProfile(cloudProgress.profile);
+    } else if (
+        localProfile.attempts > (cloudProgress.profile?.attempts || 0)
+    ) {
+        void saveCloudProfile(localProfile);
+    }
+
+    const localOnly = [...localIds]
+        .filter(id => !cloudIds.has(id))
+        .slice(0, 1_000)
+        .map(id => ({
+            id,
+            source: id.startsWith("archive:")
+                ? "archive" as const
+                : "lichess" as const,
+            solvedWithoutHelp: false
+        }));
+
+    void saveCloudCompletions(localOnly);
+    return mergedIds;
+}
+
+export async function markPuzzleCompleted(
+    id: string,
+    source: PuzzleSource,
+    solvedWithoutHelp: boolean
+) {
+    const completion: PuzzleCompletion = {
+        id,
+        source,
+        completedAt: new Date().toISOString(),
+        solvedWithoutHelp
+    };
+
+    saveFallbackCompletion(id);
+    await storeLocalCompletions([completion]);
+
+    void saveCloudCompletions([{
+        id,
+        source,
+        solvedWithoutHelp
+    }]);
 }
 
 export function getPuzzleProfile(): PuzzleProfile {
@@ -148,15 +288,7 @@ export function getPuzzleProfile(): PuzzleProfile {
             localStorage.getItem(PROFILE_KEY) || "null"
         );
 
-        if (
-            typeof value?.rating == "number"
-            && typeof value?.attempts == "number"
-            && typeof value?.correct == "number"
-            && typeof value?.streak == "number"
-            && typeof value?.bestStreak == "number"
-        ) {
-            return value;
-        }
+        if (isPuzzleProfile(value)) return value;
     } catch {
         // Fall back to a fresh calibration profile.
     }
@@ -197,7 +329,8 @@ export function recordRatedAttempt(
         bestStreak: Math.max(profile.bestStreak, streak)
     };
 
-    localStorage.setItem(PROFILE_KEY, JSON.stringify(updated));
+    savePuzzleProfile(updated);
+    void saveCloudProfile(updated);
 
     return updated;
 }

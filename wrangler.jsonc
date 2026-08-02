@@ -1,0 +1,44 @@
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "nexochess-staging",
+    "main": "cloudflare/worker.mjs",
+    "compatibility_date": "2026-08-02",
+    "compatibility_flags": [
+        "nodejs_compat"
+    ],
+    "workers_dev": true,
+    "assets": {
+        "directory": "./cloudflare-dist",
+        "binding": "ASSETS",
+        "html_handling": "none",
+        "not_found_handling": "none",
+        "run_worker_first": [
+            "/",
+            "/analysis",
+            "/archive",
+            "/academy",
+            "/puzzles",
+            "/settings*",
+            "/signin",
+            "/signup",
+            "/auth/*",
+            "/terms",
+            "/privacy",
+            "/source",
+            "/help",
+            "/news*",
+            "/api/*"
+        ]
+    },
+    "d1_databases": [
+        {
+            "binding": "DB",
+            "database_name": "nexochess-puzzles-staging",
+            "database_id": "4348447e-9d48-4055-b66d-e537a7b91257"
+        }
+    ],
+    "vars": {
+        "NEXOCHESS_ENV": "staging",
+        "NEXOCHESS_ORIGIN": "https://nexochess-staging.manuel-garcia-villaescusa.workers.dev"
+    }
+}

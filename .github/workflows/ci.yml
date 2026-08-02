@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [master, main, staging]
+    branches: [master, main, develop, staging]
   pull_request:
-    branches: [master, main, staging]
+    branches: [master, main, develop, staging]
 
 permissions:
   contents: read
@@ -46,3 +46,27 @@ jobs:
 
       - name: Build production bundles
         run: npm run build
+
+      - name: Validate Cloudflare and export scripts
+        run: |
+          node --check cloudflare/worker.mjs
+          node --check cloudflare/auth.mjs
+          node --check cloudflare/api.mjs
+          node --check scripts/export-puzzles-static.mjs
+          node --check scripts/prepare-cloudflare-production.mjs
+          node --check scripts/verify-cloudflare-production.mjs
+
+      - name: Prepare Cloudflare static assets
+        run: node scripts/build-cloudflare.mjs
+
+      - name: Bundle staging Cloudflare Worker
+        run: npx --yes wrangler@4 deploy --dry-run --outdir .wrangler-dry-run
+
+      - name: Bundle production Cloudflare Worker
+        run: |
+          node scripts/prepare-cloudflare-production.mjs \
+            --database-id 00000000-0000-4000-8000-000000000000
+          npx --yes wrangler@4 deploy \
+            --dry-run \
+            --config wrangler.production.local.jsonc \
+            --outdir .wrangler-production-dry-run

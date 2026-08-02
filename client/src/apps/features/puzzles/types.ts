@@ -63,11 +63,26 @@ export interface PuzzleCatalogueItem {
     count: number;
 }
 
+export interface PuzzleStaticAsset {
+    path: string;
+    count: number;
+    bytes: number;
+}
+
+export interface PuzzleStaticFilter {
+    count: number;
+    shards: PuzzleStaticAsset[];
+}
+
 export interface PuzzleCatalogue {
     count: number;
     themes: PuzzleCatalogueItem[];
     openingTags: PuzzleCatalogueItem[];
-    importedAt: string;
+    importedAt?: string;
+    generatedAt?: string;
+    dataPackSize?: number;
+    dataPacks?: PuzzleStaticAsset[];
+    filters?: Record<string, PuzzleStaticFilter>;
 }
 
 export interface PuzzleProfile {

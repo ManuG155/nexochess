@@ -1,0 +1,9 @@
+services:
+  app:
+    build:
+      context: .
+      target: puzzle-exporter
+    volumes:
+      - type: bind
+        source: ${PUZZLE_STATIC_EXPORT_ROOT}
+        target: /exports

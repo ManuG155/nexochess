@@ -18,6 +18,7 @@ import {
     PuzzleCatalogue,
     PuzzleDifficulty,
     PuzzleProfile,
+    PuzzleStaticFilter,
     PuzzleThemeSelection,
     TrainingPuzzle
 } from "../types";
@@ -33,6 +34,12 @@ const negativeClassifications = new Set<Classification>([
 
 const ARCHIVE_CONCURRENCY = 6;
 const ARCHIVE_REQUEST_TIMEOUT_MS = 20_000;
+const STATIC_PUZZLE_ORIGIN =
+    "https://nexochess-puzzle-data-staging.manuel-garcia-villaescusa.workers.dev";
+const STATIC_PUZZLE_ATTEMPTS = 24;
+
+const staticJsonRequests = new Map<string, Promise<unknown>>();
+let catalogueRequest: Promise<PuzzleCatalogue> | undefined;
 
 export interface ArchivePuzzleLibrary {
     puzzles: TrainingPuzzle[];
@@ -67,6 +74,44 @@ function withTimeout<T>(
             reject(error);
         });
     });
+}
+
+async function loadStaticJson<T>(path: string): Promise<T> {
+    const normalisedPath = path.replace(/^\/+/, "");
+    const cached = staticJsonRequests.get(normalisedPath);
+
+    if (cached) return cached as Promise<T>;
+
+    const request = fetch(
+        `${STATIC_PUZZLE_ORIGIN}/${normalisedPath}`,
+        { cache: "force-cache" }
+    ).then(async response => {
+        if (!response.ok) {
+            throw new Error(
+                `Unable to load static puzzle data (${response.status}).`
+            );
+        }
+
+        return await response.json() as T;
+    });
+
+    staticJsonRequests.set(normalisedPath, request);
+
+    try {
+        return await request;
+    } catch (error) {
+        staticJsonRequests.delete(normalisedPath);
+        throw error;
+    }
+}
+
+function randomIndex(length: number) {
+    if (!Number.isInteger(length) || length <= 0) return 0;
+
+    const randomValues = new Uint32Array(1);
+    crypto.getRandomValues(randomValues);
+
+    return randomValues[0] % length;
 }
 
 function validateSolution(fen: string, moves: string[]) {
@@ -246,26 +291,38 @@ export function normaliseLichessPuzzle(
     }
 }
 
-export async function loadPuzzleCatalogue() {
-    const response = await fetch("/api/public/puzzles/catalogue");
-    if (!response.ok) {
-        throw new Error(
-            `Unable to load the puzzle catalogue (${response.status}).`
-        );
-    }
-
-    const catalogue = await response.json() as PuzzleCatalogue;
-
+function validateCatalogue(catalogue: PuzzleCatalogue) {
     if (
         !Number.isFinite(catalogue.count)
         || catalogue.count <= 0
         || !Array.isArray(catalogue.themes)
         || !Array.isArray(catalogue.openingTags)
+        || !Number.isInteger(catalogue.dataPackSize)
+        || (catalogue.dataPackSize || 0) <= 0
+        || !Array.isArray(catalogue.dataPacks)
+        || catalogue.dataPacks.length == 0
+        || !catalogue.filters
+        || typeof catalogue.filters != "object"
     ) {
-        throw new Error("The puzzle catalogue is empty or malformed.");
+        throw new Error("The static puzzle catalogue is empty or malformed.");
     }
 
     return catalogue;
+}
+
+export async function loadPuzzleCatalogue() {
+    if (!catalogueRequest) {
+        catalogueRequest = loadStaticJson<PuzzleCatalogue>(
+            "catalogue.json"
+        ).then(validateCatalogue);
+    }
+
+    try {
+        return await catalogueRequest;
+    } catch (error) {
+        catalogueRequest = undefined;
+        throw error;
+    }
 }
 
 function matchesDifficulty(
@@ -308,66 +365,162 @@ export function filterPuzzles(
     ));
 }
 
+function staticDifficultyBucket(
+    difficulty: PuzzleDifficulty,
+    profile: PuzzleProfile
+): Exclude<PuzzleDifficulty, "adaptive"> {
+    if (difficulty != "adaptive") return difficulty;
+
+    const rating = Number.isFinite(profile.rating)
+        ? profile.rating
+        : 1500;
+
+    if (rating < 1200) return "beginner";
+    if (rating < 1800) return "intermediate";
+    if (rating < 2200) return "advanced";
+
+    return "expert";
+}
+
+function staticFilterKey(
+    theme: PuzzleThemeSelection,
+    bucket: Exclude<PuzzleDifficulty, "adaptive">
+) {
+    if (theme.kind == "theme" && theme.value) {
+        return `theme:${theme.value}|${bucket}`;
+    }
+
+    if (theme.kind == "opening" && theme.value) {
+        return `opening:${theme.value}|${bucket}`;
+    }
+
+    if (theme.category != "all") {
+        return `category:${theme.category}|${bucket}`;
+    }
+
+    return `all|${bucket}`;
+}
+
+function selectOrdinal(
+    filter: PuzzleStaticFilter,
+    position: number
+) {
+    let offset = position;
+
+    for (const shard of filter.shards) {
+        if (offset < shard.count) {
+            return {
+                shard,
+                offset
+            };
+        }
+
+        offset -= shard.count;
+    }
+}
+
+function unpackStaticPuzzle(value: unknown): LichessPuzzleRecord | undefined {
+    if (!Array.isArray(value) || value.length < 7) return;
+
+    const [
+        id,
+        fen,
+        moves,
+        rating,
+        popularity,
+        themes,
+        openingTags,
+        gameUrl
+    ] = value;
+
+    if (
+        typeof id != "string"
+        || typeof fen != "string"
+        || !Array.isArray(moves)
+        || !moves.every(move => typeof move == "string")
+        || !Number.isFinite(rating)
+        || !Array.isArray(themes)
+        || !themes.every(theme => typeof theme == "string")
+        || !Array.isArray(openingTags)
+        || !openingTags.every(tag => typeof tag == "string")
+    ) return;
+
+    return {
+        id,
+        fen,
+        moves,
+        rating,
+        popularity: Number.isFinite(popularity) ? popularity : 0,
+        themes,
+        openingTags,
+        gameUrl: typeof gameUrl == "string" ? gameUrl : undefined
+    };
+}
+
 export async function loadNextLichessPuzzleRecord(
     completed: Set<string>,
     theme: PuzzleThemeSelection,
     difficulty: PuzzleDifficulty,
     profile: PuzzleProfile
 ) {
-    const parameters = new URLSearchParams({
-        category: theme.category,
-        difficulty,
-        rating: String(profile.rating),
-        attempts: String(profile.attempts)
-    });
+    const catalogue = await loadPuzzleCatalogue();
+    const dataPackSize = catalogue.dataPackSize;
+    const dataPacks = catalogue.dataPacks;
+    const filters = catalogue.filters;
 
-    if (theme.kind) parameters.set("kind", theme.kind);
-    if (theme.value) parameters.set("value", theme.value);
-
-    const excluded = [...completed]
-        .filter(id => id.startsWith("lichess:"))
-        .slice(-120);
-
-    if (excluded.length > 0) {
-        parameters.set("exclude", excluded.join(","));
+    if (!dataPackSize || !dataPacks || !filters) {
+        throw new Error("The static puzzle catalogue is incomplete.");
     }
 
-    const response = await fetch(
-        `/api/public/puzzles/next?${parameters.toString()}`,
-        { cache: "no-store" }
-    );
+    const bucket = staticDifficultyBucket(difficulty, profile);
+    const filter = filters[staticFilterKey(theme, bucket)];
 
-    if (response.status == 404) return;
+    if (!filter || filter.count <= 0 || filter.shards.length == 0) {
+        return;
+    }
 
-    if (!response.ok) {
-        throw new Error(
-            `Unable to load the next puzzle (${response.status}).`
+    for (let attempt = 0; attempt < STATIC_PUZZLE_ATTEMPTS; attempt++) {
+        const selected = selectOrdinal(
+            filter,
+            randomIndex(filter.count)
         );
+
+        if (!selected) continue;
+
+        const shardValues = await loadStaticJson<unknown>(
+            selected.shard.path
+        );
+
+        if (!Array.isArray(shardValues)) {
+            throw new Error("A static puzzle index is malformed.");
+        }
+
+        const ordinal = shardValues[selected.offset];
+
+        if (!Number.isInteger(ordinal) || ordinal < 0) continue;
+
+        const packIndex = Math.floor(ordinal / dataPackSize);
+        const packOffset = ordinal % dataPackSize;
+        const packReference = dataPacks[packIndex];
+
+        if (!packReference) continue;
+
+        const pack = await loadStaticJson<unknown>(packReference.path);
+
+        if (!Array.isArray(pack)) {
+            throw new Error("A static puzzle data pack is malformed.");
+        }
+
+        const puzzle = unpackStaticPuzzle(pack[packOffset]);
+
+        if (!puzzle || completed.has(`lichess:${puzzle.id}`)) continue;
+
+        return puzzle;
     }
-
-    const result = await response.json() as {
-        puzzle?: LichessPuzzleRecord;
-    };
-
-    if (
-        !result.puzzle
-        || typeof result.puzzle.id != "string"
-        || typeof result.puzzle.fen != "string"
-        || !Array.isArray(result.puzzle.moves)
-        || !Array.isArray(result.puzzle.themes)
-        || !Array.isArray(result.puzzle.openingTags)
-    ) {
-        throw new Error("The puzzle response is malformed.");
-    }
-
-    return result.puzzle;
 }
 
 export function pickRandomPuzzle<T>(puzzles: T[]) {
     if (puzzles.length == 0) return;
 
-    const randomValues = new Uint32Array(1);
-    crypto.getRandomValues(randomValues);
-
-    return puzzles[randomValues[0] % puzzles.length];
+    return puzzles[randomIndex(puzzles.length)];
 }

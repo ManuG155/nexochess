@@ -90,10 +90,7 @@ function SignUp() {
                 "x-nexochess-language": i18n.resolvedLanguage
                     || i18n.language
             },
-            onSuccess: () => setStatus({
-                theme: "success",
-                message: t("account.verificationMessage")
-            })
+            onSuccess: () => window.location.assign("/analysis")
         });
 
         if (registerResponse.error) {
