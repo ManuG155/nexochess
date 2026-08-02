@@ -2,5 +2,5 @@ services:
   app:
     volumes:
       - type: bind
-        source: ${PUZZLE_STATIC_OUTPUT_DIRECTORY}
+        source: ${PUZZLE_STATIC_EXPORT_ROOT}
         target: /exports
