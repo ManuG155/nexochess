@@ -1,3 +1,10 @@
+import {
+    AUTH_PATH,
+    ensureCloudflareData,
+    getCloudflareAuth
+} from "./auth.mjs";
+import { handleCloudflareApi } from "./api.mjs";
+
 // Deployed from the develop branch to the private NexoChess staging Worker.
 const PAGE_ROUTES = new Map([
     ["/analysis", "features/analysis.html"],
@@ -110,18 +117,43 @@ function json(payload, status = 200) {
     });
 }
 
+async function getCloudflareBackend(request, env) {
+    try {
+        const auth = getCloudflareAuth(env, request);
+        await ensureCloudflareData(auth, env);
+        return auth;
+    } catch (error) {
+        console.error("Cloudflare backend initialisation failed", error);
+        return null;
+    }
+}
+
 export default {
     async fetch(request, env) {
         const url = new URL(request.url);
         const pathname = normalisePathname(url.pathname);
 
-        if (request.method !== "GET" && request.method !== "HEAD") {
-            if (pathname.startsWith("/api/") || pathname.startsWith("/auth/")) {
-                return json({
-                    error: "This staging endpoint has not been migrated yet."
-                }, 501);
-            }
+        if (pathname === AUTH_PATH || pathname.startsWith(`${AUTH_PATH}/`)) {
+            const auth = await getCloudflareBackend(request, env);
 
+            return auth
+                ? auth.handler(request)
+                : json({
+                    error: "Cloudflare authentication is not configured yet."
+                }, 503);
+        }
+
+        if (pathname.startsWith("/api/")) {
+            const auth = await getCloudflareBackend(request, env);
+
+            return auth
+                ? handleCloudflareApi(request, env, auth)
+                : json({
+                    error: "The Cloudflare data service is not configured yet."
+                }, 503);
+        }
+
+        if (request.method !== "GET" && request.method !== "HEAD") {
             return new Response("Method Not Allowed", {
                 status: 405,
                 headers: { Allow: "GET, HEAD" }
@@ -134,12 +166,6 @@ export default {
 
         if (pathname.startsWith("/news")) {
             return Response.redirect(new URL("/analysis", request.url), 308);
-        }
-
-        if (pathname.startsWith("/api/") || pathname.startsWith("/auth/account/")) {
-            return json({
-                error: "This staging API route is being migrated from MongoDB to Cloudflare."
-            }, 501);
         }
 
         if (pathname.startsWith("/settings")) {
