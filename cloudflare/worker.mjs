@@ -1,3 +1,4 @@
+// Deployed from the develop branch to the private NexoChess staging Worker.
 const PAGE_ROUTES = new Map([
     ["/analysis", "features/analysis.html"],
     ["/archive", "features/archive.html"],
