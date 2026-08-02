@@ -9,6 +9,7 @@ build/
 cloudflare-dist/
 puzzle-static-dist/
 .wrangler/
+wrangler.production.local.jsonc
 coverage/
 .nyc_output/
 *.tsbuildinfo
