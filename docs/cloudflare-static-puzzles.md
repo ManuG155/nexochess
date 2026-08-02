@@ -18,26 +18,41 @@ plan gratuito de Workers Static Assets.
 
 ## Exportar desde el MongoDB de staging
 
-La carpeta de salida debe existir y estar vacía o ser prescindible: el
-exportador la reemplaza completamente.
+La salida se guarda fuera de OneDrive para evitar que intente sincronizar miles
+de archivos. Docker monta la carpeta padre en `/exports`; el exportador solo
+reemplaza `/exports/puzzle-static-dist`, nunca la raíz del volumen.
 
 ```powershell
 $developPath = "C:\Users\manue\OneDrive\Documentos\proyectos\chess\nexochess-develop"
-$outputPath = Join-Path $developPath "puzzle-static-dist"
+$exportRoot = "C:\NexoChessData"
+$outputPath = Join-Path $exportRoot "puzzle-static-dist"
 
 Set-Location $developPath
-New-Item -ItemType Directory -Force $outputPath | Out-Null
-$env:PUZZLE_STATIC_OUTPUT_DIRECTORY = $outputPath
+New-Item -ItemType Directory -Force $exportRoot | Out-Null
+$env:PUZZLE_STATIC_EXPORT_ROOT = $exportRoot
 
 docker compose `
     -f compose.staging.yaml `
     -f compose.puzzles-static-export.yaml `
     run --rm --build app `
-    npm run export:puzzles:static -- /exports
+    npm run export:puzzles:static -- /exports/puzzle-static-dist
 ```
 
 El resultado válido termina con `STATIC PUZZLE EXPORT COMPLETED` y debe indicar
 exactamente 6.057.356 puzzles.
+
+Para que Wrangler vea la salida sin duplicarla dentro de OneDrive, se crea una
+unión de directorio desde el repositorio:
+
+```powershell
+$linkPath = Join-Path $developPath "puzzle-static-dist"
+
+if (Test-Path $linkPath) {
+    throw "Ya existe $linkPath. Revísalo antes de crear la unión."
+}
+
+New-Item -ItemType Junction -Path $linkPath -Target $outputPath | Out-Null
+```
 
 ## Desplegar el almacén estático
 
