@@ -59,7 +59,7 @@ function replacePlaceholders(html, replacements) {
     let output = html;
 
     for (const [key, value] of Object.entries(replacements)) {
-        output = output.replaceAll(`\${${key}}`, value);
+        output = output.replaceAll("${" + key + "}", value);
     }
 
     return output;
