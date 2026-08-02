@@ -56,3 +56,6 @@ jobs:
 
       - name: Prepare Cloudflare static assets
         run: node scripts/build-cloudflare.mjs
+
+      - name: Bundle Cloudflare Worker
+        run: npx --yes wrangler@4 deploy --dry-run --outdir .wrangler-dry-run
