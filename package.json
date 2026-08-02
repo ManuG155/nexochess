@@ -7,6 +7,7 @@
     "scripts": {
         "start": "node server/dist/index.js",
         "build": "npm run build --workspaces --if-present",
+        "build:cloudflare": "npm run build -w shared && npm run build -w client && node scripts/build-cloudflare.mjs",
         "bbuild": "npm run build -w shared && npm run build -w server",
         "dev": "npm run build && npm start",
         "lint": "eslint .",
