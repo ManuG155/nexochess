@@ -5,6 +5,3 @@ services:
         source: ${PUZZLE_DATABASE_FILE}
         target: /imports/lichess_db_puzzle.csv.zst
         read_only: true
-      - type: bind
-        source: ${PUZZLE_EXPORT_DIRECTORY:-.}
-        target: /exports
