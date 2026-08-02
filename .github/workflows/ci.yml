@@ -48,7 +48,10 @@ jobs:
         run: npm run build
 
       - name: Validate Cloudflare Worker syntax
-        run: node --check cloudflare/worker.mjs
+        run: |
+          node --check cloudflare/worker.mjs
+          node --check cloudflare/puzzles.mjs
+          node --check scripts/export-puzzles-d1-sql.mjs
 
       - name: Prepare Cloudflare static assets
         run: node scripts/build-cloudflare.mjs
