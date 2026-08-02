@@ -1,15 +1,11 @@
 import { StatusCodes } from "http-status-codes";
 import { clone } from "lodash-es";
 
+import { getGameAnalysis } from "shared/lib/reporter/report";
 import AnalysisOptions from "shared/lib/reporter/types/AnalysisOptions";
+import { GameAnalysis } from "shared/types/game/GameAnalysis";
 import {
-    GameAnalysis,
-    SerializedGameAnalysis
-} from "shared/types/game/GameAnalysis";
-import {
-    StateTreeNode,
-    serializeNode,
-    deserializeNode
+    StateTreeNode
 } from "shared/types/game/position/StateTreeNode";
 import APIResponse from "@/types/APIResponse";
 
@@ -17,70 +13,20 @@ export async function analyseStateTree(
     rootNode: StateTreeNode,
     options?: AnalysisOptions
 ): APIResponse<{ gameAnalysis: GameAnalysis }> {
-    const reportURL = "/api/analysis/analyse"
-
-    + `?brilliant=${
-        String(
-            options
-                ?.includeBrilliant
-        )
-    }`
-
-    + `&critical=${
-        String(
-            options
-                ?.includeCritical
-        )
-    }`
-
-    + `&theory=${
-        String(
-            options
-                ?.includeTheory
-        )
-    }`
-
-    + `&whiteRating=${
-        String(
-            options
-                ?.whiteRating
-            ?? ""
-        )
-    }`
-
-    + `&blackRating=${
-        String(
-            options
-                ?.blackRating
-            ?? ""
-        )
-    }`;
-
-    const reportResponse = await fetch(reportURL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(
-            serializeNode(rootNode)
-        )
-    });
-
-    if (!reportResponse.ok)
-        return { status: reportResponse.status };
-
-    const serializedAnalysis: SerializedGameAnalysis = (
-        await reportResponse.json()
-    );
-
-    return {
-        status: reportResponse.status,
-        gameAnalysis: {
-            ...serializedAnalysis,
-            stateTree: deserializeNode(
-                serializedAnalysis.stateTree,
-                rootNode
-            )
-        }
-    };
+    try {
+        /*
+         * Stockfish already evaluates every position in the browser. The final
+         * classifications, accuracies and opening labels also live in the
+         * shared package, so generating the report locally avoids the former
+         * CAPTCHA/session/Express round trip entirely.
+         */
+        return {
+            status: StatusCodes.OK,
+            gameAnalysis: getGameAnalysis(rootNode, options)
+        };
+    } catch {
+        return { status: StatusCodes.INTERNAL_SERVER_ERROR };
+    }
 }
 
 export async function analyseNode(

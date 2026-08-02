@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 
 import AnalysisStatus from "@analysis/constants/AnalysisStatus";
 import useAnalysisProgressStore from "@analysis/stores/AnalysisProgressStore";
-import useAnalysisSessionStore from "@analysis/stores/AnalysisSessionStore";
 import LogMessage from "@/components/common/LogMessage";
 
 import useAnalyseGame from "@analysis/hooks/useAnalyseGame";
@@ -21,22 +20,11 @@ function AnalysisProgress() {
     const {
         evaluationProgress,
         analysisStatus,
-        analysisError,
-        setAnalysisError
+        analysisError
     } = useAnalysisProgressStore();
-
-    const {
-        analysisSessionToken,
-        analysisCaptchaError
-    } = useAnalysisSessionStore();
 
     const analyseGame = useAnalyseGame();
 
-    /*
-     * Cuando la evaluación del motor termina, NexoChess pasa
-     * internamente por AWAITING_CAPTCHA antes de generar el informe.
-     * Ese detalle técnico sigue completamente oculto al usuario.
-     */
     useEffect(() => {
         if (analysisStatus != AnalysisStatus.AWAITING_CAPTCHA) return;
 
@@ -55,16 +43,13 @@ function AnalysisProgress() {
     useEffect(() => {
         if (analysisStatus != AnalysisStatus.AWAITING_CAPTCHA) return;
 
-        if (analysisCaptchaError) {
-            return setAnalysisError(analysisCaptchaError);
-        }
-
-        analyseGame();
-    }, [
-        analysisSessionToken,
-        analysisStatus,
-        analysisCaptchaError
-    ]);
+        /*
+         * The engine evaluation and final report now both run in the browser.
+         * AWAITING_CAPTCHA is retained as the existing internal transition
+         * value, but no network CAPTCHA or analysis session is required.
+         */
+        void analyseGame();
+    }, [analysisStatus]);
 
     if (analysisStatus == AnalysisStatus.INACTIVE) {
         return null;
