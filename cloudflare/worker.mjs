@@ -1,5 +1,3 @@
-import { handlePuzzleRequest } from "./puzzles.mjs";
-
 // Deployed from the develop branch to the private NexoChess staging Worker.
 const PAGE_ROUTES = new Map([
     ["/analysis", "features/analysis.html"],
@@ -13,11 +11,6 @@ const PAGE_ROUTES = new Map([
     ["/terms", "footer/legal.html"],
     ["/privacy", "footer/legal.html"],
     ["/source", "footer/legal.html"]
-]);
-
-const PUZZLE_PATHS = new Set([
-    "/api/public/puzzles/catalogue",
-    "/api/public/puzzles/next"
 ]);
 
 const AUTH_METADATA = {
@@ -141,10 +134,6 @@ export default {
 
         if (pathname.startsWith("/news")) {
             return Response.redirect(new URL("/analysis", request.url), 308);
-        }
-
-        if (PUZZLE_PATHS.has(pathname)) {
-            return handlePuzzleRequest(request, env, pathname, json);
         }
 
         if (pathname.startsWith("/api/") || pathname.startsWith("/auth/account/")) {
