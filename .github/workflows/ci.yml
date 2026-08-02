@@ -50,6 +50,8 @@ jobs:
       - name: Validate Cloudflare and export scripts
         run: |
           node --check cloudflare/worker.mjs
+          node --check cloudflare/auth.mjs
+          node --check cloudflare/api.mjs
           node --check scripts/export-puzzles-static.mjs
 
       - name: Prepare Cloudflare static assets
