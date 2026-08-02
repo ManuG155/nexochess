@@ -11,6 +11,9 @@ import {
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+const DEFAULT_STATIC_PUZZLE_ORIGIN =
+    "https://nexochess-puzzle-data-staging.manuel-garcia-villaescusa.workers.dev";
+
 const repositoryRoot = resolve(
     dirname(fileURLToPath(import.meta.url)),
     ".."
@@ -18,6 +21,31 @@ const repositoryRoot = resolve(
 const clientPublic = join(repositoryRoot, "client", "public");
 const clientBundles = join(repositoryRoot, "client", "dist");
 const outputDirectory = join(repositoryRoot, "cloudflare-dist");
+
+function readArgument(name) {
+    const index = process.argv.indexOf(name);
+    return index >= 0 ? process.argv[index + 1] : undefined;
+}
+
+function normaliseOrigin(value) {
+    const url = new URL(value);
+
+    if (url.protocol !== "https:") {
+        throw new Error("The static puzzle origin must use HTTPS.");
+    }
+
+    url.pathname = "";
+    url.search = "";
+    url.hash = "";
+
+    return url.toString().replace(/\/$/, "");
+}
+
+const staticPuzzleOrigin = normaliseOrigin(
+    readArgument("--puzzle-origin")
+    || process.env.NEXOCHESS_PUZZLE_ORIGIN
+    || DEFAULT_STATIC_PUZZLE_ORIGIN
+);
 
 async function assertDirectory(path, description) {
     try {
@@ -42,6 +70,30 @@ async function findHtmlFiles(directory) {
     }
 
     return files;
+}
+
+async function configureStaticPuzzleOrigin() {
+    const bundlePath = join(outputDirectory, "puzzles.bundle.js");
+    const bundle = await readFile(bundlePath, "utf8");
+    const occurrences = bundle.split(DEFAULT_STATIC_PUZZLE_ORIGIN).length - 1;
+
+    if (occurrences == 0) {
+        throw new Error(
+            "The puzzles bundle does not contain the expected staging origin."
+        );
+    }
+
+    if (staticPuzzleOrigin == DEFAULT_STATIC_PUZZLE_ORIGIN) {
+        return occurrences;
+    }
+
+    await writeFile(
+        bundlePath,
+        bundle.replaceAll(DEFAULT_STATIC_PUZZLE_ORIGIN, staticPuzzleOrigin),
+        "utf8"
+    );
+
+    return occurrences;
 }
 
 async function versionEntryBundles(html) {
@@ -81,7 +133,9 @@ await mkdir(outputDirectory, { recursive: true });
 await cp(clientPublic, outputDirectory, { recursive: true });
 await cp(clientBundles, outputDirectory, { recursive: true });
 
+const puzzleOriginReplacements = await configureStaticPuzzleOrigin();
 const htmlFiles = await findHtmlFiles(join(outputDirectory, "apps"));
+
 for (const htmlFile of htmlFiles) {
     const html = await readFile(htmlFile, "utf8");
     await writeFile(htmlFile, await versionEntryBundles(html), "utf8");
@@ -89,6 +143,8 @@ for (const htmlFile of htmlFiles) {
 
 const buildManifest = {
     generatedAt: new Date().toISOString(),
+    puzzleDataOrigin: staticPuzzleOrigin,
+    puzzleOriginReplacements,
     htmlFiles: htmlFiles.map(filepath => (
         relative(outputDirectory, filepath).replaceAll("\\", "/")
     ))
@@ -103,3 +159,4 @@ await writeFile(
 console.log(
     `Prepared ${htmlFiles.length} HTML applications in ${outputDirectory}`
 );
+console.log(`Static puzzle origin: ${staticPuzzleOrigin}`);
