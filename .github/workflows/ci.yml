@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [master, main, staging]
+    branches: [master, main, develop, staging]
   pull_request:
-    branches: [master, main, staging]
+    branches: [master, main, develop, staging]
 
 permissions:
   contents: read
@@ -46,3 +46,9 @@ jobs:
 
       - name: Build production bundles
         run: npm run build
+
+      - name: Validate Cloudflare Worker syntax
+        run: node --check cloudflare/worker.mjs
+
+      - name: Prepare Cloudflare static assets
+        run: node scripts/build-cloudflare.mjs

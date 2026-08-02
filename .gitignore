@@ -6,6 +6,8 @@ node_modules/
 dist/
 */dist/
 build/
+cloudflare-dist/
+.wrangler/
 coverage/
 .nyc_output/
 *.tsbuildinfo
