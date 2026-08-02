@@ -1,6 +1,9 @@
-import { betterAuth } from "better-auth";
-import { APIError, createAuthMiddleware } from "better-auth/api";
-import { getMigrations } from "better-auth/db/migration";
+import {
+    APIError,
+    betterAuth,
+    createAuthMiddleware,
+    getMigrations
+} from "../client/cloudflare/betterAuthRuntime.mjs";
 
 const AUTH_PATH = "/auth/account";
 const SCHEMA_VERSION = 1;
