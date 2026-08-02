@@ -47,11 +47,10 @@ jobs:
       - name: Build production bundles
         run: npm run build
 
-      - name: Validate Cloudflare Worker syntax
+      - name: Validate Cloudflare and export scripts
         run: |
           node --check cloudflare/worker.mjs
-          node --check cloudflare/puzzles.mjs
-          node --check scripts/export-puzzles-d1-sql.mjs
+          node --check scripts/export-puzzles-static.mjs
 
       - name: Prepare Cloudflare static assets
         run: node scripts/build-cloudflare.mjs
