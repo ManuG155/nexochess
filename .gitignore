@@ -7,7 +7,7 @@ dist/
 */dist/
 build/
 cloudflare-dist/
-cloudflare/d1/generated/
+puzzle-static-dist/
 .wrangler/
 coverage/
 .nyc_output/
