@@ -1,0 +1,12 @@
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "nexochess-puzzle-data-production",
+    "compatibility_date": "2026-08-02",
+    "workers_dev": true,
+    "preview_urls": false,
+    "assets": {
+        "directory": "./puzzle-static-dist",
+        "html_handling": "none",
+        "not_found_handling": "none"
+    }
+}
