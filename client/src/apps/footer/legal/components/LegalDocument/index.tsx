@@ -12,13 +12,13 @@ export interface LegalSection {
 }
 
 export interface LegalDocumentCopy {
-    pageTitle: string;
-    title: string;
-    summary: string;
-    plainTitle: string;
-    plainSummary: string;
-    updated: string;
-    sections: Record<string, LegalSection>;
+    pageTitle?: string;
+    title?: string;
+    summary?: string;
+    plainTitle?: string;
+    plainSummary?: string;
+    updated?: string;
+    sections?: Record<string, LegalSection>;
 }
 
 interface LegalDocumentProps {
@@ -42,9 +42,13 @@ function LegalDocument({ documentKey, sectionOrder, copy }: LegalDocumentProps) 
         document.title = pageTitle;
     }, [pageTitle]);
 
-    const sections = copy?.sections || t(`${documentKey}.sections`, {
+    const translatedSections = t(`${documentKey}.sections`, {
         returnObjects: true
     }) as Record<string, LegalSection>;
+    const sections = {
+        ...translatedSections,
+        ...(copy?.sections || {})
+    };
 
     return <main className={styles.wrapper}>
         <div className={styles.shell}>
