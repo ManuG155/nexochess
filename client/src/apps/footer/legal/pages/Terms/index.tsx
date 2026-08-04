@@ -2,10 +2,12 @@ import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import LegalDocument from "../../components/LegalDocument";
+import { getOperatorIdentityCopy } from "./operatorIdentityCopy";
 import { getTermsRevisionCopy } from "./termsRevisionCopy";
 
 const sectionOrder = [
     "scope",
+    "operator",
     "service",
     "eligibility",
     "accounts",
@@ -23,12 +25,18 @@ const sectionOrder = [
 
 function Terms() {
     const { i18n } = useTranslation("legal");
-    const copy = useMemo(
-        () => getTermsRevisionCopy(
-            i18n.resolvedLanguage || i18n.language
-        ),
-        [i18n.resolvedLanguage, i18n.language]
-    );
+    const language = i18n.resolvedLanguage || i18n.language;
+    const copy = useMemo(() => {
+        const revision = getTermsRevisionCopy(language);
+
+        return {
+            ...revision,
+            sections: {
+                ...(revision.sections || {}),
+                operator: getOperatorIdentityCopy(language)
+            }
+        };
+    }, [language]);
 
     return <LegalDocument
         documentKey="terms"
