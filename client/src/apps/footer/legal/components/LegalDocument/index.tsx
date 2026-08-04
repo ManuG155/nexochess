@@ -28,6 +28,11 @@ interface LegalDocumentProps {
 }
 
 const privacyResources = [
+    {
+        key: "cloudflare",
+        label: "Cloudflare",
+        url: "https://www.cloudflare.com/privacypolicy/"
+    },
     { key: "google", url: "https://policies.google.com/privacy" },
     { key: "brevo", url: "https://www.brevo.com/legal/privacypolicy/" },
     { key: "chessCom", url: "https://www.chess.com/legal/privacy" },
@@ -133,7 +138,8 @@ function LegalDocument({ documentKey, sectionOrder, copy }: LegalDocumentProps) 
                                     target="_blank"
                                     rel="noreferrer"
                                 >
-                                    {t(`privacy.resources.${resource.key}`)}
+                                    {resource.label
+                                        || t(`privacy.resources.${resource.key}`)}
                                 </a>
                             ))}
                         </div>
