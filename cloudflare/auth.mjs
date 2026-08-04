@@ -4,6 +4,7 @@ import {
     createAuthMiddleware,
     getMigrations
 } from "../client/cloudflare/betterAuthRuntime.mjs";
+import { queueAccountEmail } from "./emailQueue.mjs";
 
 const AUTH_PATH = "/auth/account";
 const SCHEMA_VERSION = 1;
@@ -70,6 +71,18 @@ function createAuth(env, request) {
 
     const origin = cleanOrigin(env.NEXOCHESS_ORIGIN)
         || new URL(request.url).origin;
+    const fallbackEmailRequest = new Request(origin);
+
+    const sendEmail = ({ type, recipient, url, callbackRequest, newEmail }) => {
+        queueAccountEmail({
+            env,
+            request: callbackRequest || fallbackEmailRequest,
+            type,
+            recipient,
+            url,
+            newEmail
+        });
+    };
 
     const validateRegistration = createAuthMiddleware(async context => {
         if (!context.path.startsWith("/sign-up/email")) return;
@@ -102,7 +115,24 @@ function createAuth(env, request) {
             minPasswordLength: 8,
             maxPasswordLength: 128,
             requireEmailVerification: false,
-            autoSignIn: true
+            autoSignIn: true,
+            revokeSessionsOnPasswordReset: true,
+            sendResetPassword: ({ user, url }, callbackRequest) => sendEmail({
+                type: "resetPassword",
+                recipient: user.email,
+                url,
+                callbackRequest
+            })
+        },
+        emailVerification: {
+            sendOnSignUp: true,
+            autoSignInAfterVerification: false,
+            sendVerificationEmail: ({ user, url }, callbackRequest) => sendEmail({
+                type: "verifyAccount",
+                recipient: user.email,
+                url,
+                callbackRequest
+            })
         },
         socialProviders: googleConfigured
             ? {
@@ -132,6 +162,19 @@ function createAuth(env, request) {
                     required: false,
                     input: false
                 }
+            },
+            changeEmail: {
+                enabled: true,
+                sendChangeEmailConfirmation: (
+                    { user, newEmail, url },
+                    callbackRequest
+                ) => sendEmail({
+                    type: "approveEmailChange",
+                    recipient: user.email,
+                    url,
+                    newEmail,
+                    callbackRequest
+                })
             },
             deleteUser: {
                 enabled: true
