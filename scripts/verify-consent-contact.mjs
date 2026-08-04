@@ -42,6 +42,10 @@ const consentCopy = await readFile(
     join(clientSource, "components", "privacy", "CookieConsent", "copy.ts"),
     "utf8"
 );
+const contactHelpers = await readFile(
+    join(clientSource, "lib", "contact.ts"),
+    "utf8"
+);
 const footer = await readFile(
     join(clientSource, "components", "layout", "Footer", "index.tsx"),
     "utf8"
@@ -75,6 +79,7 @@ assertContains(pageWrapper, "<CookieConsent/>", "Global cookie consent");
 assertContains(consentManager, "nexochess.cookie-consent.v1", "Consent storage");
 assertContains(consentManager, "analytics", "Analytics consent category");
 assertContains(consentManager, "advertising", "Advertising consent category");
+assertContains(contactHelpers, 'fs: "0"', "Compact Gmail composer");
 assertContains(footer, "manageDataConsent", "Persistent footer consent control");
 assertContains(footer, "createGmailComposeUrl", "Footer Gmail contact");
 assertContains(helpCenter, "createGmailComposeUrl", "Help-center Gmail contact");
