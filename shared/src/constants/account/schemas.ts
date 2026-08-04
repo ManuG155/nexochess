@@ -4,7 +4,7 @@ import z from "zod";
 import AccountError from "./errors";
 
 export const additionalUserFields = ({
-    username: { type: "string", required: false, input: false },
+    username: { type: "string", input: false },
     roles: { type: "string[]", input: false }
 } as const) satisfies Record<string, DBFieldAttribute>;
 
