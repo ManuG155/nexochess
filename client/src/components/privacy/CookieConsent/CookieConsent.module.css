@@ -1,0 +1,277 @@
+.bannerLayer,
+.backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    box-sizing: border-box;
+    font-family: "Noto Sans", "Nunito", Arial, sans-serif;
+}
+
+.bannerLayer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 18px;
+    pointer-events: none;
+}
+
+.backdrop {
+    display: grid;
+    place-items: center;
+    padding: 18px;
+    background: rgba(3, 8, 14, 0.72);
+    backdrop-filter: blur(8px);
+}
+
+.banner,
+.dialog {
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 18px;
+    background: #171c24;
+    color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.46);
+    pointer-events: auto;
+}
+
+.banner {
+    width: min(980px, 100%);
+    padding: 22px 24px;
+}
+
+.dialog {
+    width: min(680px, 100%);
+    max-height: min(760px, calc(100vh - 36px));
+    overflow-y: auto;
+    padding: 26px;
+}
+
+.headingRow {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.eyebrow {
+    display: block;
+    margin-bottom: 5px;
+    color: #9bb8ed;
+    font-size: 0.76rem;
+    font-weight: 900;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.headingRow h2 {
+    margin: 0;
+    outline: none;
+    font-family: "Nunito", "Noto Sans", sans-serif;
+    font-size: clamp(1.35rem, 3vw, 1.85rem);
+    line-height: 1.16;
+}
+
+.description {
+    max-width: 78ch;
+    margin: 10px 0 0;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.98rem;
+    line-height: 1.65;
+}
+
+.closeButton {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.045);
+    color: white;
+    font-size: 1.45rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.categories {
+    display: grid;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.category {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 18px;
+    padding: 15px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.category strong {
+    font-family: "Nunito", "Noto Sans", sans-serif;
+    font-size: 1.02rem;
+}
+
+.category p {
+    margin: 4px 0 0;
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 0.88rem;
+    line-height: 1.55;
+}
+
+.category input {
+    width: 22px;
+    height: 22px;
+    accent-color: #638bc5;
+    cursor: pointer;
+}
+
+.alwaysActive {
+    padding: 6px 9px;
+    border-radius: 999px;
+    background: rgba(78, 150, 100, 0.14);
+    color: #a8d6b4;
+    font-size: 0.74rem;
+    font-weight: 850;
+    white-space: nowrap;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 9px;
+    margin-top: 20px;
+}
+
+.actions button {
+    min-height: 43px;
+    padding: 0 16px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 850;
+    cursor: pointer;
+    transition: transform 0.16s ease, filter 0.16s ease, border-color 0.16s ease;
+}
+
+.actions button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.08);
+}
+
+.primaryAction {
+    border: 1px solid rgba(133, 174, 225, 0.55);
+    background: #486f9d;
+    color: white;
+}
+
+.secondaryAction {
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.055);
+    color: rgba(255, 255, 255, 0.92);
+}
+
+.privacyLink {
+    display: inline-flex;
+    margin-top: 13px;
+    color: #a9c6ee;
+    font-size: 0.86rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.privacyLink:hover {
+    text-decoration: underline;
+}
+
+:global(html[data-theme="light"]) .banner,
+:global(html[data-theme="light"]) .dialog,
+:global(body[data-theme="light"]) .banner,
+:global(body[data-theme="light"]) .dialog {
+    border-color: rgba(15, 23, 42, 0.16);
+    background: #f8fafc;
+    color: #111827;
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.2);
+}
+
+:global(html[data-theme="light"]) .description,
+:global(html[data-theme="light"]) .category p,
+:global(body[data-theme="light"]) .description,
+:global(body[data-theme="light"]) .category p {
+    color: #4b5563;
+}
+
+:global(html[data-theme="light"]) .category,
+:global(body[data-theme="light"]) .category {
+    border-color: rgba(15, 23, 42, 0.13);
+    background: rgba(15, 23, 42, 0.025);
+}
+
+:global(html[data-theme="light"]) .secondaryAction,
+:global(html[data-theme="light"]) .closeButton,
+:global(body[data-theme="light"]) .secondaryAction,
+:global(body[data-theme="light"]) .closeButton {
+    border-color: rgba(15, 23, 42, 0.2);
+    background: rgba(15, 23, 42, 0.04);
+    color: #111827;
+}
+
+:global(html[data-theme="light"]) .privacyLink,
+:global(body[data-theme="light"]) .privacyLink {
+    color: #315f8c;
+}
+
+@media (min-width: 760px) {
+    .banner {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: end;
+        column-gap: 28px;
+    }
+
+    .banner .headingRow,
+    .banner .description,
+    .banner .privacyLink {
+        grid-column: 1;
+    }
+
+    .banner .actions {
+        grid-column: 2;
+        grid-row: 1 / span 3;
+        align-self: center;
+        max-width: 420px;
+        margin-top: 0;
+    }
+}
+
+@media (max-width: 620px) {
+    .bannerLayer,
+    .backdrop {
+        padding: 10px;
+    }
+
+    .banner,
+    .dialog {
+        padding: 19px 17px;
+        border-radius: 14px;
+    }
+
+    .actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .actions button {
+        width: 100%;
+    }
+
+    .category {
+        align-items: start;
+    }
+}
