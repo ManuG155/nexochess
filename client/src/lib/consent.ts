@@ -1,20 +1,94 @@
-export function removeDefaultConsentLink() {
-    const observer = new MutationObserver(() => (
-        document.querySelector(
-            "div[style^=\"color-scheme: initial\"]"
-            + "[style$=\"z-index: initial !important;\"]"
-        )?.remove()
-    ));
+export type OptionalConsentCategory = "analytics" | "advertising";
 
-    observer.observe(document.body, { childList: true });
+export interface ConsentPreferences {
+    version: 1;
+    essential: true;
+    analytics: boolean;
+    advertising: boolean;
+    updatedAt: string;
+}
+
+const CONSENT_VERSION = 1 as const;
+const CONSENT_STORAGE_KEY = "nexochess.cookie-consent.v1";
+const CONSENT_OPEN_EVENT = "nexochess:open-consent-settings";
+const CONSENT_CHANGE_EVENT = "nexochess:consent-changed";
+
+function isConsentPreferences(value: unknown): value is ConsentPreferences {
+    if (!value || typeof value != "object") return false;
+
+    const candidate = value as Partial<ConsentPreferences>;
+
+    return candidate.version === CONSENT_VERSION
+        && candidate.essential === true
+        && typeof candidate.analytics == "boolean"
+        && typeof candidate.advertising == "boolean"
+        && typeof candidate.updatedAt == "string";
+}
+
+export function readConsentPreferences(): ConsentPreferences | null {
+    if (typeof window == "undefined") return null;
+
+    try {
+        const stored = window.localStorage.getItem(CONSENT_STORAGE_KEY);
+        if (!stored) return null;
+
+        const parsed: unknown = JSON.parse(stored);
+        return isConsentPreferences(parsed) ? parsed : null;
+    } catch {
+        return null;
+    }
+}
+
+export function saveConsentPreferences(
+    preferences: Pick<ConsentPreferences, "analytics" | "advertising">
+) {
+    const next: ConsentPreferences = {
+        version: CONSENT_VERSION,
+        essential: true,
+        analytics: preferences.analytics,
+        advertising: preferences.advertising,
+        updatedAt: new Date().toISOString()
+    };
+
+    if (typeof window != "undefined") {
+        window.localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify(next));
+        window.dispatchEvent(new CustomEvent<ConsentPreferences>(
+            CONSENT_CHANGE_EVENT,
+            { detail: next }
+        ));
+    }
+
+    return next;
+}
+
+export function hasConsent(category: OptionalConsentCategory) {
+    return readConsentPreferences()?.[category] === true;
 }
 
 export function manageDataConsent() {
-    try {
-        window.googlefc.callbackQueue.push(
-            window.googlefc.showRevocationMessage
-        );
-    } catch {
-        console.warn("failed to display consent management dialog.");
-    }
+    if (typeof window == "undefined") return;
+    window.dispatchEvent(new Event(CONSENT_OPEN_EVENT));
+}
+
+export function onConsentSettingsRequested(listener: () => void) {
+    if (typeof window == "undefined") return () => undefined;
+
+    window.addEventListener(CONSENT_OPEN_EVENT, listener);
+    return () => window.removeEventListener(CONSENT_OPEN_EVENT, listener);
+}
+
+export function removeDefaultConsentLink() {
+    if (typeof document == "undefined") return;
+
+    const removeLegacyControl = () => document.querySelector(
+        "div[style^=\"color-scheme: initial\"]"
+        + "[style$=\"z-index: initial !important;\"]"
+    )?.remove();
+
+    removeLegacyControl();
+
+    const observer = new MutationObserver(removeLegacyControl);
+    observer.observe(document.body, { childList: true });
+
+    window.setTimeout(() => observer.disconnect(), 5000);
 }

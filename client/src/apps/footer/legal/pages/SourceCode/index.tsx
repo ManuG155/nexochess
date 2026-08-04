@@ -2,6 +2,11 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import iconLogo from "@assets/img/nexochess-icon-white.png";
+import {
+    CONTACT_EMAIL,
+    createGmailComposeUrl,
+    openContactEmail
+} from "@/lib/contact";
 
 import { getLichessAttributionCopy } from "./lichessAttributionCopy";
 import * as styles from "../../index.module.css";
@@ -21,13 +26,12 @@ function SourceCode() {
         document.title = t("source.pageTitle");
     }, [t]);
 
-    const sourceRequestMailto = useMemo(() => {
-        const subject = t("source.nexochess.requestSubject");
-        const body = t("source.nexochess.requestBody");
-
-        return `mailto:contact@nexochess.com?subject=${encodeURIComponent(subject)}`
-            + `&body=${encodeURIComponent(body)}`;
-    }, [t]);
+    const sourceRequestSubject = String(t("source.nexochess.requestSubject"));
+    const sourceRequestBody = String(t("source.nexochess.requestBody"));
+    const sourceRequestUrl = useMemo(() => createGmailComposeUrl({
+        subject: sourceRequestSubject,
+        body: sourceRequestBody
+    }), [sourceRequestSubject, sourceRequestBody]);
 
     const lichessCopy = useMemo(
         () => getLichessAttributionCopy(
@@ -38,11 +42,14 @@ function SourceCode() {
 
     async function copyContactEmail() {
         try {
-            await navigator.clipboard.writeText("contact@nexochess.com");
+            await navigator.clipboard.writeText(CONTACT_EMAIL);
             setEmailCopied(true);
             window.setTimeout(() => setEmailCopied(false), 2200);
         } catch {
-            window.location.href = sourceRequestMailto;
+            openContactEmail({
+                subject: sourceRequestSubject,
+                body: sourceRequestBody
+            });
         }
     }
 
@@ -85,7 +92,11 @@ function SourceCode() {
                                         ? t("source.nexochess.copied")
                                         : t("source.nexochess.copyEmail")}
                                 </button>
-                                <a href={sourceRequestMailto}>
+                                <a
+                                    href={sourceRequestUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
                                     {t("source.nexochess.openEmail")}
                                 </a>
                             </div>

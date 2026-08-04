@@ -3,22 +3,35 @@ import { useTranslation } from "react-i18next";
 
 import Typography from "@/components/Typography";
 import LanguagesDialog from "@/components/settings/LanguagesDialog";
+import { getConsentCopy } from "@/components/privacy/CookieConsent/copy";
+import {
+    CONTACT_EMAIL,
+    createContactBody,
+    createGmailComposeUrl
+} from "@/lib/contact";
+import { manageDataConsent } from "@/lib/consent";
 
 import FooterProps from "./FooterProps";
 import * as styles from "./Footer.module.css";
 
-const CONTACT_EMAIL = "contact@nexochess.com";
-const CONTACT_MAILTO =
-    "mailto:contact@nexochess.com?subject=Contacto%20NexoChess";
-
 function Footer({ className, style }: FooterProps) {
-    const { t } = useTranslation(["common", "helpCenter"]);
+    const { t, i18n } = useTranslation(["common", "helpCenter"]);
     const [languagesOpen, setLanguagesOpen] = useState(false);
 
     const copyrightYear = useMemo(
         () => new Date().getFullYear(),
         []
     );
+
+    const consentCopy = useMemo(
+        () => getConsentCopy(i18n.resolvedLanguage || i18n.language),
+        [i18n.resolvedLanguage, i18n.language]
+    );
+
+    const contactUrl = useMemo(() => createGmailComposeUrl({
+        subject: `${t("footer.contact")} — NexoChess`,
+        body: createContactBody(t("footer.contact"))
+    }), [t, i18n.resolvedLanguage]);
 
     return <footer
         className={`${styles.wrapper} ${className || ""}`}
@@ -55,12 +68,22 @@ function Footer({ className, style }: FooterProps) {
                 </button>
 
                 <a
-                    href={CONTACT_MAILTO}
+                    href={contactUrl}
+                    target="_blank"
+                    rel="noreferrer"
                     title={CONTACT_EMAIL}
                     aria-label={`${t("footer.contact")}: ${CONTACT_EMAIL}`}
                 >
                     {t("footer.contact")}
                 </a>
+
+                <button
+                    type="button"
+                    className={styles.linkButton}
+                    onClick={manageDataConsent}
+                >
+                    {consentCopy.footerAction}
+                </button>
             </div>
 
             <div className={styles.linkGroup}>
