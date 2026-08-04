@@ -1,0 +1,79 @@
+# Stockfish.js corresponding-source record for NexoChess
+
+Last verified: 4 August 2026
+
+## Distributed component
+
+NexoChess distributes Stockfish.js 17 under GNU GPL v3.
+
+The engine files identify their upstream project as:
+
+- Stockfish.js: https://github.com/nmrugg/stockfish.js
+- Stockfish: https://github.com/official-stockfish/Stockfish
+- Licence: GNU General Public License v3.0
+
+## Exact corresponding source
+
+The exact upstream Stockfish.js commit matching the engine files distributed by NexoChess is:
+
+https://github.com/nmrugg/stockfish.js/tree/fe65b8845c65fd389a56887e004fa0a3436159e2
+
+That tree contains the engine source, build system, generated wrappers and WebAssembly files used for this release.
+
+## Verified file mapping
+
+Each pair below has the same Git blob identifier in NexoChess and in the exact upstream commit.
+
+Full engine:
+
+- `client/public/engines/stockfish-17-single.js`
+  -> `src/stockfish-17-single.js`
+  -> blob `87237c5543c468a279790a6549697e50e332285e`
+
+- `client/public/engines/stockfish-17-single-part-0.wasm`
+  -> `src/stockfish-17-single-part-0.wasm`
+  -> blob `91049fa8d06f4c03fe538d1a63a98513b8d0fb2e`
+
+- `client/public/engines/stockfish-17-single-part-1.wasm`
+  -> `src/stockfish-17-single-part-1.wasm`
+  -> blob `95c494628393c48ceb7372f75f3faf695882b56b`
+
+- `client/public/engines/stockfish-17-single-part-2.wasm`
+  -> `src/stockfish-17-single-part-2.wasm`
+  -> blob `e8874d6d15419acf71390e5658b4db347459ae82`
+
+- `client/public/engines/stockfish-17-single-part-3.wasm`
+  -> `src/stockfish-17-single-part-3.wasm`
+  -> blob `8902f5bc29ea0b5465a3bc6f33ad7e0da5b3ee11`
+
+- `client/public/engines/stockfish-17-single-part-4.wasm`
+  -> `src/stockfish-17-single-part-4.wasm`
+  -> blob `9c0a4be8473c71412564493dfa687fcd3126816b`
+
+- `client/public/engines/stockfish-17-single-part-5.wasm`
+  -> `src/stockfish-17-single-part-5.wasm`
+  -> blob `1de9f03d92314718d4294a674bc9b5a1036d58df`
+
+Light engine:
+
+- `client/public/engines/stockfish-17-lite-single.js`
+  -> `src/stockfish-17-lite-single.js`
+  -> blob `0664f88ba15dfcbaf67cbdaf56b74de7d79cab9f`
+
+- `client/public/engines/stockfish-17-lite-single.wasm`
+  -> `src/stockfish-17-lite-single.wasm`
+  -> blob `3fd0ad6079ddc23d7c4028c5d0ff35f6c1c614b1`
+
+`client/public/engines/stockfish-17-asm.js` is currently an empty compatibility placeholder and contains no engine implementation.
+
+## Modification status
+
+NexoChess does not modify the verified Stockfish.js engine files listed above. Their original licence and copyright headers are retained.
+
+If any listed engine asset is changed or replaced, this record and the public source link must be updated to identify the new corresponding source before that build is published.
+
+## Licence text
+
+The GPL-3.0 text distributed with NexoChess is available at:
+
+https://github.com/ManuG155/nexochess/blob/master/LICENSE
