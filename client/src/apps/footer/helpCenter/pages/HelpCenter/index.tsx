@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import * as styles from "./HelpCenter.module.css";
@@ -6,11 +6,16 @@ import * as styles from "./HelpCenter.module.css";
 import iconInterfaceHelp from "@assets/img/interface/help.svg";
 import iconInterfaceAnalysis from "@assets/img/interface/analysis.svg";
 import iconInterfaceUpload from "@assets/img/interface/upload.svg";
-import iconInterfaceAccount from "@assets/img/interface/account.svg";
 import iconInterfaceSettings from "@assets/img/interface/settings.svg";
 import iconInterfaceCopy from "@assets/img/interface/copy.svg";
 import iconInterfaceMail from "@assets/img/helpCenter/mail.png";
 import iconArchive from "@assets/img/icons/archive.png";
+import {
+    CONTACT_EMAIL,
+    createContactBody,
+    createGmailComposeUrl,
+    openContactEmail
+} from "@/lib/contact";
 
 interface TopicCardProps {
     icon: string;
@@ -42,20 +47,29 @@ function TopicCard({
 }
 
 function HelpCenter() {
-    const { t } = useTranslation("helpCenter");
+    const { t, i18n } = useTranslation("helpCenter");
     const [copied, setCopied] = useState(false);
 
     useEffect(() => {
         document.title = t("pageTitle");
     }, [t]);
 
+    const contactSubject = String(t("contact.title"));
+    const contactBody = useMemo(() => createContactBody(
+        String(t("contact.message"))
+    ), [t, i18n.resolvedLanguage]);
+    const contactUrl = useMemo(() => createGmailComposeUrl({
+        subject: contactSubject,
+        body: contactBody
+    }), [contactSubject, contactBody]);
+
     async function copyEmail() {
         try {
-            await navigator.clipboard.writeText("contact@nexochess.com");
+            await navigator.clipboard.writeText(CONTACT_EMAIL);
             setCopied(true);
             window.setTimeout(() => setCopied(false), 2200);
         } catch {
-            window.location.href = "mailto:contact@nexochess.com";
+            openContactEmail({ subject: contactSubject, body: contactBody });
         }
     }
 
@@ -76,7 +90,12 @@ function HelpCenter() {
                         {t("actions.openAnalysis")}
                     </a>
 
-                    <a className={styles.secondaryAction} href="#contact">
+                    <a
+                        className={styles.secondaryAction}
+                        href={contactUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                    >
                         {t("actions.contact")}
                     </a>
                 </div>
@@ -215,8 +234,13 @@ function HelpCenter() {
             </div>
 
             <div className={styles.contactActions}>
-                <a href="mailto:contact@nexochess.com">
-                    contact@nexochess.com
+                <a
+                    href={contactUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    title={CONTACT_EMAIL}
+                >
+                    {CONTACT_EMAIL}
                 </a>
 
                 <button type="button" onClick={copyEmail}>
