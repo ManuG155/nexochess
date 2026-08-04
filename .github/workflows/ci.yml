@@ -41,6 +41,9 @@ jobs:
       - name: Verify account email templates
         run: npm run verify:account-email
 
+      - name: Verify consent and contact
+        run: npm run verify:consent-contact
+
       - name: Type-check client
         run: npm run check -w client
 
@@ -63,6 +66,7 @@ jobs:
           node --check scripts/verify-cloudflare-production.mjs
           node --check scripts/verify-puzzle-data.mjs
           node --check scripts/verify-account-email.mjs
+          node --check scripts/verify-consent-contact.mjs
 
       - name: Prepare staging Cloudflare assets
         run: node scripts/build-cloudflare.mjs
