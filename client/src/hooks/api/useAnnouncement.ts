@@ -10,7 +10,23 @@ function useAnnouncement() {
         queryKey: ["announcement"],
         queryFn: async () => {
             const announcementResponse = await fetch("/api/public/announcement");
-            return await announcementResponse.json();
+
+            if (!announcementResponse.ok) {
+                throw new Error(
+                    `Announcement request returned HTTP ${announcementResponse.status}.`
+                );
+            }
+
+            const value = await announcementResponse.json() as Partial<Announcement>;
+
+            if (
+                typeof value?.content !== "string"
+                || value.content.trim().length === 0
+            ) {
+                throw new Error("No active announcement.");
+            }
+
+            return value as Announcement;
         },
         retry: false,
         refetchOnWindowFocus: false

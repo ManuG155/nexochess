@@ -32,10 +32,30 @@ async function assertPage(path) {
     console.log(`OK ${path}: HTTP 200, indexable HTML`);
 }
 
+async function assertJavaScript(path) {
+    const response = await request(path);
+    const contentType = response.headers.get("content-type") || "";
+    const source = await response.text();
+
+    assert(response.status === 200, `${path} returned HTTP ${response.status}.`);
+    assert(
+        contentType.includes("javascript"),
+        `${path} returned ${contentType || "no content type"} instead of JavaScript.`
+    );
+    assert(
+        !source.trimStart().startsWith("<!DOCTYPE html"),
+        `${path} returned an HTML page instead of the application bundle.`
+    );
+
+    console.log(`OK ${path}: JavaScript bundle available`);
+}
+
 await assertPage("/analysis");
 await assertPage("/archive");
 await assertPage("/puzzles");
+await assertPage("/settings");
 await assertPage("/signin");
+await assertJavaScript("/settings.bundle.js");
 
 const sessionResponse = await request("/auth/account/get-session");
 const sessionBody = await sessionResponse.text();
