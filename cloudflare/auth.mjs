@@ -4,11 +4,11 @@ import {
     createAuthMiddleware,
     getMigrations
 } from "../client/cloudflare/betterAuthRuntime.mjs";
-import { queueAccountEmail } from "./email.mjs";
 
 const AUTH_PATH = "/auth/account";
 const SCHEMA_VERSION = 1;
 
+let authInstance;
 let schemaPromise;
 
 function cleanOrigin(value) {
@@ -64,23 +64,12 @@ async function availableSocialUsername(database, name) {
     return `player_${crypto.randomUUID().replaceAll("-", "").slice(0, 8)}`;
 }
 
-function createAuth(env, request, executionContext) {
+function createAuth(env, request) {
     if (!env.DB) throw new Error("The NexoChess D1 binding is missing.");
     if (!env.AUTH_SECRET) throw new Error("AUTH_SECRET is not configured.");
 
     const origin = cleanOrigin(env.NEXOCHESS_ORIGIN)
         || new URL(request.url).origin;
-
-    const sendEmail = ({ type, recipient, url, callbackRequest, newEmail }) => (
-        queueAccountEmail(executionContext, {
-            env,
-            request: callbackRequest || request,
-            type,
-            recipient,
-            url,
-            newEmail
-        })
-    );
 
     const validateRegistration = createAuthMiddleware(async context => {
         if (!context.path.startsWith("/sign-up/email")) return;
@@ -113,24 +102,7 @@ function createAuth(env, request, executionContext) {
             minPasswordLength: 8,
             maxPasswordLength: 128,
             requireEmailVerification: false,
-            autoSignIn: true,
-            revokeSessionsOnPasswordReset: true,
-            sendResetPassword: ({ user, url }, callbackRequest) => sendEmail({
-                type: "resetPassword",
-                recipient: user.email,
-                url,
-                callbackRequest
-            })
-        },
-        emailVerification: {
-            sendOnSignUp: true,
-            autoSignInAfterVerification: true,
-            sendVerificationEmail: ({ user, url }, callbackRequest) => sendEmail({
-                type: "verifyAccount",
-                recipient: user.email,
-                url,
-                callbackRequest
-            })
+            autoSignIn: true
         },
         socialProviders: googleConfigured
             ? {
@@ -160,19 +132,6 @@ function createAuth(env, request, executionContext) {
                     required: false,
                     input: false
                 }
-            },
-            changeEmail: {
-                enabled: true,
-                sendChangeEmailConfirmation: (
-                    { user, newEmail, url },
-                    callbackRequest
-                ) => sendEmail({
-                    type: "approveEmailChange",
-                    recipient: user.email,
-                    url,
-                    newEmail,
-                    callbackRequest
-                })
             },
             deleteUser: {
                 enabled: true
@@ -318,8 +277,9 @@ async function migrateSchema(auth, env) {
     `).bind("cloudflare-core", SCHEMA_VERSION, Date.now()).run();
 }
 
-export function getCloudflareAuth(env, request, executionContext) {
-    return createAuth(env, request, executionContext);
+export function getCloudflareAuth(env, request) {
+    authInstance ||= createAuth(env, request);
+    return authInstance;
 }
 
 export async function ensureCloudflareData(auth, env) {
