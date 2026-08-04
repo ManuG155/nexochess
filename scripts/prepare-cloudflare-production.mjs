@@ -95,7 +95,10 @@ const configuration = {
     ],
     vars: {
         NEXOCHESS_ENV: "production",
-        NEXOCHESS_ORIGIN: origin
+        NEXOCHESS_ORIGIN: origin,
+        EMAIL_FROM_NAME: "NexoChess",
+        EMAIL_FROM_ADDRESS: "contact@nexochess.com",
+        EMAIL_REPLY_TO: "contact@nexochess.com"
     },
     ...(attachDomains
         ? {

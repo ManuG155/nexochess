@@ -160,6 +160,40 @@
     outline: 2px solid rgba(91, 139, 190, 0.22) !important;
 }
 
+.passwordResetButton {
+    align-self: flex-end;
+    margin-top: -4px;
+    padding: 1px 0;
+    border: 0;
+    background: transparent;
+    color: #9ec1e5;
+    font-family: "Nunito";
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.passwordResetButton:hover:not(:disabled) {
+    color: #c0d8ef;
+    text-decoration: underline;
+}
+
+.passwordResetButton:focus-visible {
+    border-radius: 4px;
+    outline: 2px solid rgba(122, 164, 210, 0.65);
+    outline-offset: 3px;
+}
+
+.passwordResetButton:disabled {
+    cursor: wait;
+    opacity: 0.58;
+}
+
+:global(html[data-theme="light"]) .passwordResetButton,
+:global(body[data-theme="light"]) .passwordResetButton {
+    color: #315f8c;
+}
+
 .switchFlow {
     display: flex;
     justify-content: center;
