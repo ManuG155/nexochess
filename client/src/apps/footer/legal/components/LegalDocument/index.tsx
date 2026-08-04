@@ -5,34 +5,55 @@ import iconLogo from "@assets/img/nexochess-icon-white.png";
 
 import * as styles from "../../index.module.css";
 
-interface LegalSection {
+export interface LegalSection {
     title: string;
     paragraphs?: string[];
     bullets?: string[];
 }
 
+export interface LegalDocumentCopy {
+    pageTitle?: string;
+    title?: string;
+    summary?: string;
+    plainTitle?: string;
+    plainSummary?: string;
+    updated?: string;
+    sections?: Record<string, LegalSection>;
+}
+
 interface LegalDocumentProps {
     documentKey: "terms" | "privacy";
     sectionOrder: string[];
+    copy?: LegalDocumentCopy;
 }
 
 const privacyResources = [
+    {
+        key: "cloudflare",
+        label: "Cloudflare",
+        url: "https://www.cloudflare.com/privacypolicy/"
+    },
     { key: "google", url: "https://policies.google.com/privacy" },
     { key: "brevo", url: "https://www.brevo.com/legal/privacypolicy/" },
     { key: "chessCom", url: "https://www.chess.com/legal/privacy" },
     { key: "lichess", url: "https://lichess.org/privacy" }
 ];
 
-function LegalDocument({ documentKey, sectionOrder }: LegalDocumentProps) {
+function LegalDocument({ documentKey, sectionOrder, copy }: LegalDocumentProps) {
     const { t } = useTranslation("legal");
+    const pageTitle = copy?.pageTitle || t(`${documentKey}.pageTitle`);
 
     useEffect(() => {
-        document.title = t(`${documentKey}.pageTitle`);
-    }, [documentKey, t]);
+        document.title = pageTitle;
+    }, [pageTitle]);
 
-    const sections = t(`${documentKey}.sections`, {
+    const translatedSections = t(`${documentKey}.sections`, {
         returnObjects: true
     }) as Record<string, LegalSection>;
+    const sections = {
+        ...translatedSections,
+        ...(copy?.sections || {})
+    };
 
     return <main className={styles.wrapper}>
         <div className={styles.shell}>
@@ -42,11 +63,11 @@ function LegalDocument({ documentKey, sectionOrder }: LegalDocumentProps) {
                     <span>{t("common.legalLabel")}</span>
                 </div>
 
-                <h1>{t(`${documentKey}.title`)}</h1>
-                <p>{t(`${documentKey}.summary`)}</p>
+                <h1>{copy?.title || t(`${documentKey}.title`)}</h1>
+                <p>{copy?.summary || t(`${documentKey}.summary`)}</p>
 
                 <div className={styles.metaRow}>
-                    <span>{t("common.updated")}</span>
+                    <span>{copy?.updated || t("common.updated")}</span>
                     <a href="mailto:contact@nexochess.com">
                         contact@nexochess.com
                     </a>
@@ -70,8 +91,8 @@ function LegalDocument({ documentKey, sectionOrder }: LegalDocumentProps) {
 
                 <article className={styles.document}>
                     <section className={styles.summaryCard}>
-                        <strong>{t(`${documentKey}.plainTitle`)}</strong>
-                        <p>{t(`${documentKey}.plainSummary`)}</p>
+                        <strong>{copy?.plainTitle || t(`${documentKey}.plainTitle`)}</strong>
+                        <p>{copy?.plainSummary || t(`${documentKey}.plainSummary`)}</p>
                     </section>
 
                     {sectionOrder.map((sectionKey, index) => {
@@ -117,7 +138,8 @@ function LegalDocument({ documentKey, sectionOrder }: LegalDocumentProps) {
                                     target="_blank"
                                     rel="noreferrer"
                                 >
-                                    {t(`privacy.resources.${resource.key}`)}
+                                    {resource.label
+                                        || t(`privacy.resources.${resource.key}`)}
                                 </a>
                             ))}
                         </div>

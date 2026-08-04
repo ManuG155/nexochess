@@ -39,6 +39,9 @@
     ],
     "vars": {
         "NEXOCHESS_ENV": "staging",
-        "NEXOCHESS_ORIGIN": "https://nexochess-staging.manuel-garcia-villaescusa.workers.dev"
+        "NEXOCHESS_ORIGIN": "https://nexochess-staging.manuel-garcia-villaescusa.workers.dev",
+        "EMAIL_FROM_NAME": "NexoChess",
+        "EMAIL_FROM_ADDRESS": "contact@nexochess.com",
+        "EMAIL_REPLY_TO": "contact@nexochess.com"
     }
 }

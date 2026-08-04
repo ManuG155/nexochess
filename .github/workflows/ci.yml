@@ -38,6 +38,9 @@ jobs:
       - name: Audit repository contents
         run: npm run check:repository
 
+      - name: Verify account email templates
+        run: npm run verify:account-email
+
       - name: Type-check client
         run: npm run check -w client
 
@@ -52,11 +55,14 @@ jobs:
           node --check cloudflare/worker.mjs
           node --check cloudflare/auth.mjs
           node --check cloudflare/api.mjs
+          node --check cloudflare/email.mjs
+          node --check cloudflare/emailQueue.mjs
           node --check scripts/build-cloudflare.mjs
           node --check scripts/export-puzzles-static.mjs
           node --check scripts/prepare-cloudflare-production.mjs
           node --check scripts/verify-cloudflare-production.mjs
           node --check scripts/verify-puzzle-data.mjs
+          node --check scripts/verify-account-email.mjs
 
       - name: Prepare staging Cloudflare assets
         run: node scripts/build-cloudflare.mjs
