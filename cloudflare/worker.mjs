@@ -202,7 +202,10 @@ export default {
             return Response.redirect(new URL("/analysis", request.url), 308);
         }
 
-        if (pathname.startsWith("/settings")) {
+        if (
+            pathname === "/settings"
+            || pathname.startsWith("/settings/")
+        ) {
             return renderPage(request, env, "settings.html");
         }
 
