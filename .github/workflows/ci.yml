@@ -56,6 +56,7 @@ jobs:
           node --check cloudflare/auth.mjs
           node --check cloudflare/api.mjs
           node --check cloudflare/email.mjs
+          node --check cloudflare/emailQueue.mjs
           node --check scripts/build-cloudflare.mjs
           node --check scripts/export-puzzles-static.mjs
           node --check scripts/prepare-cloudflare-production.mjs
