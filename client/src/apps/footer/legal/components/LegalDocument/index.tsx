@@ -1,7 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import iconLogo from "@assets/img/nexochess-icon-white.png";
+import { getConsentCopy } from "@/components/privacy/CookieConsent/copy";
+import {
+    CONTACT_EMAIL,
+    createContactBody,
+    createGmailComposeUrl
+} from "@/lib/contact";
+import { manageDataConsent } from "@/lib/consent";
 
 import * as styles from "../../index.module.css";
 
@@ -40,8 +47,16 @@ const privacyResources = [
 ];
 
 function LegalDocument({ documentKey, sectionOrder, copy }: LegalDocumentProps) {
-    const { t } = useTranslation("legal");
+    const { t, i18n } = useTranslation("legal");
     const pageTitle = copy?.pageTitle || t(`${documentKey}.pageTitle`);
+    const consentCopy = useMemo(
+        () => getConsentCopy(i18n.resolvedLanguage || i18n.language),
+        [i18n.resolvedLanguage, i18n.language]
+    );
+    const contactUrl = useMemo(() => createGmailComposeUrl({
+        subject: String(t("common.contactTitle")),
+        body: createContactBody(String(t("common.contactDescription")))
+    }), [t, i18n.resolvedLanguage]);
 
     useEffect(() => {
         document.title = pageTitle;
@@ -68,8 +83,13 @@ function LegalDocument({ documentKey, sectionOrder, copy }: LegalDocumentProps) 
 
                 <div className={styles.metaRow}>
                     <span>{copy?.updated || t("common.updated")}</span>
-                    <a href="mailto:contact@nexochess.com">
-                        contact@nexochess.com
+                    <a
+                        href={contactUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        title={CONTACT_EMAIL}
+                    >
+                        {CONTACT_EMAIL}
                     </a>
                 </div>
             </header>
@@ -125,32 +145,48 @@ function LegalDocument({ documentKey, sectionOrder, copy }: LegalDocumentProps) 
                         </section>;
                     })}
 
-                    {documentKey == "privacy" && <section className={styles.resourcesCard}>
-                        <div>
-                            <strong>{t("privacy.resources.title")}</strong>
-                            <p>{t("privacy.resources.description")}</p>
-                        </div>
-                        <div className={styles.resourceLinks}>
-                            {privacyResources.map(resource => (
-                                <a
-                                    key={resource.key}
-                                    href={resource.url}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                >
-                                    {resource.label
-                                        || t(`privacy.resources.${resource.key}`)}
-                                </a>
-                            ))}
-                        </div>
-                    </section>}
+                    {documentKey == "privacy" && <>
+                        <section className={styles.resourcesCard}>
+                            <div>
+                                <strong>{t("privacy.resources.title")}</strong>
+                                <p>{t("privacy.resources.description")}</p>
+                            </div>
+                            <div className={styles.resourceLinks}>
+                                {privacyResources.map(resource => (
+                                    <a
+                                        key={resource.key}
+                                        href={resource.url}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
+                                        {resource.label
+                                            || t(`privacy.resources.${resource.key}`)}
+                                    </a>
+                                ))}
+                            </div>
+                        </section>
+
+                        <section className={styles.consentCard}>
+                            <div>
+                                <strong>{consentCopy.settingsTitle}</strong>
+                                <p>{consentCopy.settingsDescription}</p>
+                            </div>
+                            <button type="button" onClick={manageDataConsent}>
+                                {consentCopy.footerAction}
+                            </button>
+                        </section>
+                    </>}
 
                     <section className={styles.contactCard}>
                         <div>
                             <strong>{t("common.contactTitle")}</strong>
                             <p>{t("common.contactDescription")}</p>
                         </div>
-                        <a href="mailto:contact@nexochess.com">
+                        <a
+                            href={contactUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
                             {t("common.contactButton")}
                         </a>
                     </section>
