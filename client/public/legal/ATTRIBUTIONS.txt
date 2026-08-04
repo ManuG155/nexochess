@@ -1,89 +1,108 @@
 # NexoChess third-party notices and attribution
 
-This document records the known upstream projects and third-party resources used by NexoChess. It is not a substitute for the license text included with each dependency or asset.
+Last reviewed: 4 August 2026
+
+This document records the upstream projects, datasets and third-party resources used by the public NexoChess 1.0 service. It supplements, but does not replace, the licence text and copyright notices distributed with each component.
 
 ## NexoChess and WintrChess
 
 NexoChess is a modified version of **WintrChess**, originally created by **WintrCat**.
 
+- NexoChess source: https://github.com/ManuG155/nexochess
 - Upstream source: https://github.com/WintrCat/wintrchess
-- Upstream license: GNU General Public License v3.0
-- NexoChess license: GNU General Public License v3.0
+- Upstream licence: GNU General Public License v3.0
+- NexoChess licence: GNU General Public License v3.0
+- Full GPL-3.0 text: https://github.com/ManuG155/nexochess/blob/master/LICENSE
 
-NexoChess includes substantial interface, product and branding changes. It remains a derivative work of the upstream GPL-licensed codebase. The original copyright notices and repository history must not be misrepresented or removed from distributed source code.
+NexoChess includes substantial interface, infrastructure, product and branding changes. It remains a derivative work of the upstream GPL-licensed codebase. Original copyright notices and repository history must not be misrepresented or removed from distributed source code.
 
 NexoChess is independent from WintrCat and is not the official WintrChess service.
 
+## NexoChess-specific branding and illustrations
+
+The custom NexoChess logo and the current NexoChess coach and profile illustrations were created specifically for this project under the direction of the project maintainer, using generative-AI tools where applicable. They are not official assets of WintrChess, Chess.com, Lichess, Stockfish or any other chess platform.
+
+Their presence does not imply sponsorship, affiliation or endorsement by any third party.
+
 ## Stockfish and Stockfish.js
 
-The browser engine files in `client/public/engines/` identify themselves as **Stockfish.js 17** and are licensed under GPL v3.
+NexoChess distributes **Stockfish.js 17**, a WebAssembly/JavaScript build of Stockfish, under GNU GPL v3.
 
 - Stockfish source: https://github.com/official-stockfish/Stockfish
 - Stockfish.js source: https://github.com/nmrugg/stockfish.js
-- License: GNU General Public License v3.0
+- Exact Stockfish.js source/build commit used by NexoChess: https://github.com/nmrugg/stockfish.js/tree/fe65b8845c65fd389a56887e004fa0a3436159e2
+- Licence: GNU General Public License v3.0
+- Detailed corresponding-source record: /legal/STOCKFISH-SOURCE.txt
 
-The JavaScript header credits Chess.com, LLC for the Stockfish.js build and credits the Stockfish contributors and neural-network authors.
+The following files distributed by NexoChess were verified against that exact upstream commit through matching Git blob identifiers:
 
-### Release requirement
+- `stockfish-17-single.js`;
+- `stockfish-17-single-part-0.wasm` through `stockfish-17-single-part-5.wasm`;
+- `stockfish-17-lite-single.js`;
+- `stockfish-17-lite-single.wasm`.
 
-Before the public launch, NexoChess must provide users with the corresponding source code and build information for the exact Stockfish/Stockfish.js binaries distributed by the website. Merely shipping minified JavaScript and WebAssembly files is not sufficient documentation of the corresponding source.
+NexoChess does not claim authorship of those engine files. Their embedded headers credit Chess.com, LLC for the Stockfish.js build and credit the Stockfish contributors and neural-network authors.
 
 ## Chess opening data
 
 The generated opening database uses data from `lichess-org/chess-openings`.
 
 - Source: https://github.com/lichess-org/chess-openings
-- License/dedication: CC0 1.0 / public domain dedication
+- Licence/dedication: Creative Commons CC0 1.0 Universal / public-domain dedication
 
-The dataset is an aggregated collection of chess opening names. Its upstream project asks users to recognise the curation effort even though the data is released into the public domain.
+The dataset is an aggregated collection of chess-opening names. Its upstream project asks users to recognise the curation effort even though the data is released into the public domain.
 
 ## Lichess puzzle data
 
-The tactics training pack uses positions from the Lichess Puzzle Database.
+NexoChess incorporates positions from the open lichess.org puzzle database, published under CC0 1.0.
 
 - Source: https://database.lichess.org/#puzzles
-- License/dedication: Creative Commons CC0 1.0 Universal / public domain
-- Format documentation: PuzzleId, FEN, UCI moves, rating, popularity, themes and source game URL
+- Licence/dedication: Creative Commons CC0 1.0 Universal / public domain
+- Upstream format: PuzzleId, FEN, UCI moves, rating, popularity, themes and source-game URL
 
-The first move in each database row is the opponent's setup move. NexoChess
-applies it before showing the position and treats the following move as the
-first move of the solution. NexoChess is not affiliated with or endorsed by
-Lichess.
+The first move in each database row is the opponent's setup move. NexoChess applies it before showing the position and treats the following move as the first move of the solution.
+
+NexoChess is an independent project and is not affiliated with, sponsored by or endorsed by lichess.org.
+
+This attribution is presented on the legal Source code and licences page. It is deliberately not repeated inside every puzzle, the main navigation or coach speech bubbles.
 
 ## Package dependencies
 
-JavaScript and TypeScript dependencies are declared in the root and workspace `package.json` files and resolved in `package-lock.json`. Each package remains subject to its own license terms. A production release should generate and review a dependency-license report rather than assuming every npm package uses the same license as NexoChess.
+JavaScript and TypeScript dependencies are declared in the root and workspace `package.json` files and resolved in `package-lock.json`. Each package remains subject to its own licence terms. The package lockfile identifies the exact dependency versions used by a build.
+
+NexoChess does not relicense independent third-party packages merely by including them in the application. Copyright and licence notices supplied by those packages remain applicable.
 
 ## Fonts
 
-The repository currently includes local copies of the following font families:
+The repository includes local copies of the following font families:
 
-- JetBrains Mono
-- Noto Sans
-- Nunito
-- Roboto Slab
+- JetBrains Mono;
+- Noto Sans;
+- Nunito;
+- Roboto Slab.
 
-Before launch, the relevant font license files and copyright notices should be added alongside the distributed font files or to a dedicated third-party license directory.
+The applicable upstream font licences and copyright notices remain in force. Font files must not be presented as original NexoChess creations.
 
 ## Provider and platform marks
 
 The repository contains images or references associated with services such as Google, GitHub, Chess.com, Lichess, Instagram and YouTube. Their names and logos are trademarks of their respective owners. Their inclusion does not imply endorsement, partnership or affiliation with NexoChess.
 
-Provider logos must be used according to each provider's current branding requirements. Open-source licensing of the surrounding application does not grant ownership of third-party trademarks.
+Provider logos must be used according to each provider's branding requirements. Open-source licensing of the surrounding application does not grant ownership of third-party trademarks.
 
-## Asset provenance review required before launch
+## Asset provenance register
 
-The following asset groups require a recorded source, author and license before the public release unless they were created entirely for NexoChess by the project owner:
+NexoChess-specific branding and current coach/profile illustrations are described above. Other visual and audio resources may originate from the GPL-licensed WintrChess codebase, their named upstream packages or separately identified third-party sources.
 
-- coach illustrations and animations;
+The following groups must retain their original notices and should be checked whenever they are replaced or newly added:
+
 - classification and result icons;
 - board-piece artwork and interface icons;
 - flags and time-control images;
 - notification and move audio;
 - help-centre images and animated media;
-- legacy social, donation and promotional graphics.
+- social, donation and promotional graphics.
 
-Assets without a confirmed redistribution right should be replaced, removed or separately licensed before launch.
+An asset without a confirmed redistribution right must not be newly introduced into NexoChess. It must be replaced, removed or separately licensed.
 
 ## No affiliation
 

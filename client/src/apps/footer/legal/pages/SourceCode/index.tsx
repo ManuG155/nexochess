@@ -3,11 +3,17 @@ import { useTranslation } from "react-i18next";
 
 import iconLogo from "@assets/img/nexochess-icon-white.png";
 
+import { getLichessAttributionCopy } from "./lichessAttributionCopy";
 import * as styles from "../../index.module.css";
 
+const NEXOCHESS_SOURCE_URL = "https://github.com/ManuG155/nexochess";
+const STOCKFISH_SOURCE_URL =
+    "https://github.com/nmrugg/stockfish.js/tree/fe65b8845c65fd389a56887e004fa0a3436159e2";
+
 function SourceCode() {
-    const { t } = useTranslation("legal");
-    const sourceCodeUrl = process.env.SOURCE_CODE_URL?.trim();
+    const { t, i18n } = useTranslation("legal");
+    const sourceCodeUrl = process.env.SOURCE_CODE_URL?.trim()
+        || NEXOCHESS_SOURCE_URL;
     const [showSourceRequest, setShowSourceRequest] = useState(false);
     const [emailCopied, setEmailCopied] = useState(false);
 
@@ -22,6 +28,13 @@ function SourceCode() {
         return `mailto:contact@nexochess.com?subject=${encodeURIComponent(subject)}`
             + `&body=${encodeURIComponent(body)}`;
     }, [t]);
+
+    const lichessCopy = useMemo(
+        () => getLichessAttributionCopy(
+            i18n.resolvedLanguage || i18n.language
+        ),
+        [i18n.resolvedLanguage, i18n.language]
+    );
 
     async function copyContactEmail() {
         try {
@@ -94,15 +107,28 @@ function SourceCode() {
                 </section>
 
                 <section className={styles.sourceCard}>
-                    <span className={styles.sourceBadge}>Stockfish 17</span>
+                    <span className={styles.sourceBadge}>Stockfish.js 17</span>
                     <h2>{t("source.stockfish.title")}</h2>
                     <p>{t("source.stockfish.description")}</p>
                     <a
-                        href="https://github.com/official-stockfish/Stockfish"
+                        href={STOCKFISH_SOURCE_URL}
                         target="_blank"
                         rel="noreferrer"
                     >
                         {t("source.stockfish.open")}
+                    </a>
+                </section>
+
+                <section className={styles.sourceCard}>
+                    <span className={styles.sourceBadge}>CC0 1.0</span>
+                    <h2>{lichessCopy.title}</h2>
+                    <p>{lichessCopy.description}</p>
+                    <a
+                        href="https://database.lichess.org/#puzzles"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        {lichessCopy.open}
                     </a>
                 </section>
 
