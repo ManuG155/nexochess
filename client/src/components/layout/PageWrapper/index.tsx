@@ -9,6 +9,7 @@ import Announcement from "@/components/layout/Announcement";
 import NavigationBar from "@/components/layout/NavigationBar";
 import Footer from "@/components/layout/Footer";
 import BugReportingWidget from "@/components/BugReportingWidget";
+import CookieConsent from "@/components/privacy/CookieConsent";
 
 import PageWrapperProps from "./PageWrapperProps";
 import * as styles from "./PageWrapper.module.css";
@@ -104,6 +105,7 @@ function PageWrapper({
 
             {bugReportingMode && <BugReportingWidget/>}
 
+            <CookieConsent/>
             <ToastContainer/>
         </div>
     </QueryClientProvider>;
