@@ -10,6 +10,7 @@ import Terms from "./pages/Terms";
 
 import "@/i18n";
 import "@/index.css";
+import "./readability.css";
 
 const root = ReactDOM.createRoot(
     document.querySelector(".root")!
