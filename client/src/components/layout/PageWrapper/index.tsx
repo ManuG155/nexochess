@@ -79,7 +79,7 @@ function PageWrapper({
                 && <Announcement
                     style={{ zIndex: 99 }}
                     setOpen={setAnnouncementOpen}
-                    colour={announcement.colour}
+                    colour={announcement?.colour}
                 >
                     <ReactMarkdown className={styles.announcementMarkdown}>
                         {announcementContent}
