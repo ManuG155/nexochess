@@ -140,9 +140,9 @@ function json(payload, status = 200) {
     });
 }
 
-async function getCloudflareBackend(request, env, executionContext) {
+async function getCloudflareBackend(request, env) {
     try {
-        const auth = getCloudflareAuth(env, request, executionContext);
+        const auth = getCloudflareAuth(env, request);
         await ensureCloudflareData(auth, env);
         return auth;
     } catch (error) {
@@ -160,7 +160,7 @@ function redirectProductionApex(url, env) {
 }
 
 export default {
-    async fetch(request, env, executionContext) {
+    async fetch(request, env) {
         const url = new URL(request.url);
         const apexRedirect = redirectProductionApex(url, env);
         if (apexRedirect) return apexRedirect;
@@ -168,11 +168,7 @@ export default {
         const pathname = normalisePathname(url.pathname);
 
         if (pathname === AUTH_PATH || pathname.startsWith(`${AUTH_PATH}/`)) {
-            const auth = await getCloudflareBackend(
-                request,
-                env,
-                executionContext
-            );
+            const auth = await getCloudflareBackend(request, env);
 
             return auth
                 ? auth.handler(request)
@@ -182,11 +178,7 @@ export default {
         }
 
         if (pathname.startsWith("/api/")) {
-            const auth = await getCloudflareBackend(
-                request,
-                env,
-                executionContext
-            );
+            const auth = await getCloudflareBackend(request, env);
 
             return auth
                 ? handleCloudflareApi(request, env, auth)
