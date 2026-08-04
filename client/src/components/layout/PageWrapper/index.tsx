@@ -42,6 +42,13 @@ function PageWrapper({
 
     const [ announcementOpen, setAnnouncementOpen ] = useState(true);
 
+    const announcementContent = (
+        announcementStatus == "success"
+        && typeof announcement?.content == "string"
+    )
+        ? announcement.content.trim()
+        : "";
+
     const routeName = typeof window == "undefined"
         ? "analysis"
         : window.location.pathname.split("/").filter(Boolean).at(0)
@@ -68,14 +75,14 @@ function PageWrapper({
             data-theme={colourMode}
             data-route={routeName}
         >
-            {announcementOpen && announcementStatus == "success"
+            {announcementOpen && announcementContent.length > 0
                 && <Announcement
                     style={{ zIndex: 99 }}
                     setOpen={setAnnouncementOpen}
                     colour={announcement.colour}
                 >
                     <ReactMarkdown className={styles.announcementMarkdown}>
-                        {announcement.content}
+                        {announcementContent}
                     </ReactMarkdown>
                 </Announcement>
             }
