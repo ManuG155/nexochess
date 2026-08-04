@@ -1,0 +1,52 @@
+[data-route="help"] main {
+    font-size: 16px;
+}
+
+[data-route="help"] main section p,
+[data-route="help"] main article p,
+[data-route="help"] main details p {
+    font-size: clamp(0.96rem, 1.35vw, 1.04rem) !important;
+    line-height: 1.72 !important;
+}
+
+[data-route="help"] main section h2 {
+    font-size: clamp(1.7rem, 3.3vw, 2.45rem) !important;
+    line-height: 1.16 !important;
+}
+
+[data-route="help"] main article h3,
+[data-route="help"] main strong {
+    font-size: 1.05rem !important;
+    line-height: 1.4 !important;
+}
+
+[data-route="help"] main details summary {
+    min-height: 24px;
+    font-size: 0.98rem !important;
+    line-height: 1.5 !important;
+}
+
+[data-route="help"] main a,
+[data-route="help"] main button {
+    font-size: 0.92rem !important;
+}
+
+[data-route="help"] main section > div > span,
+[data-route="help"] main section > span {
+    font-size: 0.8rem !important;
+}
+
+[data-route="help"] main [id="contact"] a,
+[data-route="help"] main [id="contact"] button {
+    min-height: 44px !important;
+    padding-right: 16px !important;
+    padding-left: 16px !important;
+}
+
+@media (max-width: 680px) {
+    [data-route="help"] main section p,
+    [data-route="help"] main article p,
+    [data-route="help"] main details p {
+        font-size: 0.98rem !important;
+    }
+}
