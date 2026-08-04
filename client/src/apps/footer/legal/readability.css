@@ -1,0 +1,109 @@
+[data-route="terms"] main,
+[data-route="privacy"] main,
+[data-route="source"] main {
+    font-size: 16px;
+}
+
+[data-route="terms"] main header p,
+[data-route="privacy"] main header p,
+[data-route="source"] main header p {
+    font-size: clamp(1rem, 1.7vw, 1.14rem) !important;
+    line-height: 1.72 !important;
+}
+
+[data-route="terms"] main aside a,
+[data-route="privacy"] main aside a {
+    min-height: 34px;
+    font-size: 0.9rem !important;
+    line-height: 1.5 !important;
+}
+
+[data-route="terms"] main article h2,
+[data-route="privacy"] main article h2,
+[data-route="source"] main section h2 {
+    font-size: clamp(1.28rem, 2.6vw, 1.62rem) !important;
+    line-height: 1.25 !important;
+}
+
+[data-route="terms"] main article p,
+[data-route="terms"] main article li,
+[data-route="privacy"] main article p,
+[data-route="privacy"] main article li,
+[data-route="source"] main section p {
+    font-size: clamp(0.98rem, 1.45vw, 1.06rem) !important;
+    line-height: 1.78 !important;
+}
+
+[data-route="terms"] main article strong,
+[data-route="privacy"] main article strong,
+[data-route="source"] main section strong {
+    font-size: 1.08rem !important;
+    line-height: 1.35 !important;
+}
+
+[data-route="terms"] main article a,
+[data-route="terms"] main article button,
+[data-route="privacy"] main article a,
+[data-route="privacy"] main article button,
+[data-route="source"] main section a,
+[data-route="source"] main section button {
+    min-height: 42px !important;
+    font-size: 0.88rem !important;
+}
+
+[data-route="source"] main section > span {
+    font-size: 0.74rem !important;
+}
+
+[data-consent-settings] {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px;
+    border: 1px solid rgba(70, 125, 232, 0.2);
+    border-radius: 15px;
+    background: rgba(70, 125, 232, 0.07);
+}
+
+[data-consent-settings] button {
+    flex: 0 0 auto;
+    min-height: 42px;
+    padding: 0 14px;
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.055);
+    color: inherit;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+[data-consent-settings] button:hover {
+    border-color: rgba(106, 150, 232, 0.55);
+    background: rgba(70, 125, 232, 0.12);
+}
+
+html[data-theme="light"] [data-consent-settings],
+body[data-theme="light"] [data-consent-settings] {
+    border-color: rgba(49, 95, 140, 0.24);
+    background: rgba(49, 95, 140, 0.07);
+}
+
+html[data-theme="light"] [data-consent-settings] button,
+body[data-theme="light"] [data-consent-settings] button {
+    border-color: rgba(15, 23, 42, 0.18);
+    background: rgba(15, 23, 42, 0.04);
+}
+
+@media (max-width: 620px) {
+    [data-consent-settings] {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    [data-consent-settings] button {
+        width: 100%;
+    }
+}
