@@ -117,7 +117,7 @@ function createAuth(env, request) {
             additionalFields: {
                 username: {
                     type: "string",
-                    required: true,
+                    required: false,
                     unique: true,
                     input: false
                 },
