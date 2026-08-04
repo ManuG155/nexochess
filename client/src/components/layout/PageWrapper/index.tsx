@@ -1,11 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import ReactMarkdown from "react-markdown";
 import { ToastContainer } from "react-toastify";
 
 import useSettingsStore from "@/stores/SettingsStore";
-import useAnnouncement from "@/hooks/api/useAnnouncement";
-import Announcement from "@/components/layout/Announcement";
 import NavigationBar from "@/components/layout/NavigationBar";
 import Footer from "@/components/layout/Footer";
 import BugReportingWidget from "@/components/BugReportingWidget";
@@ -39,17 +36,6 @@ function PageWrapper({
         state => state.settings.appearance.colourMode
     );
 
-    const { announcement, status: announcementStatus } = useAnnouncement();
-
-    const [ announcementOpen, setAnnouncementOpen ] = useState(true);
-
-    const announcementContent = (
-        announcementStatus == "success"
-        && typeof announcement?.content == "string"
-    )
-        ? announcement.content.trim()
-        : "";
-
     const routeName = typeof window == "undefined"
         ? "analysis"
         : window.location.pathname.split("/").filter(Boolean).at(0)
@@ -76,18 +62,6 @@ function PageWrapper({
             data-theme={colourMode}
             data-route={routeName}
         >
-            {announcementOpen && announcementContent.length > 0
-                && <Announcement
-                    style={{ zIndex: 99 }}
-                    setOpen={setAnnouncementOpen}
-                    colour={announcement?.colour}
-                >
-                    <ReactMarkdown className={styles.announcementMarkdown}>
-                        {announcementContent}
-                    </ReactMarkdown>
-                </Announcement>
-            }
-
             <NavigationBar/>
 
             <div
