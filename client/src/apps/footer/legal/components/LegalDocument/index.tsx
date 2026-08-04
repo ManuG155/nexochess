@@ -5,15 +5,26 @@ import iconLogo from "@assets/img/nexochess-icon-white.png";
 
 import * as styles from "../../index.module.css";
 
-interface LegalSection {
+export interface LegalSection {
     title: string;
     paragraphs?: string[];
     bullets?: string[];
 }
 
+export interface LegalDocumentCopy {
+    pageTitle: string;
+    title: string;
+    summary: string;
+    plainTitle: string;
+    plainSummary: string;
+    updated: string;
+    sections: Record<string, LegalSection>;
+}
+
 interface LegalDocumentProps {
     documentKey: "terms" | "privacy";
     sectionOrder: string[];
+    copy?: LegalDocumentCopy;
 }
 
 const privacyResources = [
@@ -23,14 +34,15 @@ const privacyResources = [
     { key: "lichess", url: "https://lichess.org/privacy" }
 ];
 
-function LegalDocument({ documentKey, sectionOrder }: LegalDocumentProps) {
+function LegalDocument({ documentKey, sectionOrder, copy }: LegalDocumentProps) {
     const { t } = useTranslation("legal");
+    const pageTitle = copy?.pageTitle || t(`${documentKey}.pageTitle`);
 
     useEffect(() => {
-        document.title = t(`${documentKey}.pageTitle`);
-    }, [documentKey, t]);
+        document.title = pageTitle;
+    }, [pageTitle]);
 
-    const sections = t(`${documentKey}.sections`, {
+    const sections = copy?.sections || t(`${documentKey}.sections`, {
         returnObjects: true
     }) as Record<string, LegalSection>;
 
@@ -42,11 +54,11 @@ function LegalDocument({ documentKey, sectionOrder }: LegalDocumentProps) {
                     <span>{t("common.legalLabel")}</span>
                 </div>
 
-                <h1>{t(`${documentKey}.title`)}</h1>
-                <p>{t(`${documentKey}.summary`)}</p>
+                <h1>{copy?.title || t(`${documentKey}.title`)}</h1>
+                <p>{copy?.summary || t(`${documentKey}.summary`)}</p>
 
                 <div className={styles.metaRow}>
-                    <span>{t("common.updated")}</span>
+                    <span>{copy?.updated || t("common.updated")}</span>
                     <a href="mailto:contact@nexochess.com">
                         contact@nexochess.com
                     </a>
@@ -70,8 +82,8 @@ function LegalDocument({ documentKey, sectionOrder }: LegalDocumentProps) {
 
                 <article className={styles.document}>
                     <section className={styles.summaryCard}>
-                        <strong>{t(`${documentKey}.plainTitle`)}</strong>
-                        <p>{t(`${documentKey}.plainSummary`)}</p>
+                        <strong>{copy?.plainTitle || t(`${documentKey}.plainTitle`)}</strong>
+                        <p>{copy?.plainSummary || t(`${documentKey}.plainSummary`)}</p>
                     </section>
 
                     {sectionOrder.map((sectionKey, index) => {
