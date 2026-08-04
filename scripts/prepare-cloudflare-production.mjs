@@ -3,8 +3,7 @@ import { resolve } from "node:path";
 
 const DEFAULT_WORKER_NAME = "nexochess-production";
 const DEFAULT_DATABASE_NAME = "nexochess-production";
-const DEFAULT_PREVIEW_ORIGIN =
-    "https://nexochess-production.manuel-garcia-villaescusa.workers.dev";
+const DEFAULT_PRODUCTION_ORIGIN = "https://www.nexochess.com";
 const OUTPUT_FILE = resolve("wrangler.production.local.jsonc");
 
 function readArgument(name) {
@@ -41,7 +40,7 @@ const workerName = readArgument("--worker-name")
 const origin = normaliseOrigin(
     readArgument("--origin")
     || process.env.NEXOCHESS_PRODUCTION_ORIGIN
-    || DEFAULT_PREVIEW_ORIGIN
+    || DEFAULT_PRODUCTION_ORIGIN
 );
 const attachDomains = hasFlag("--attach-domains")
     || process.env.NEXOCHESS_ATTACH_PRODUCTION_DOMAINS === "1";
