@@ -166,12 +166,19 @@ function LegalDocument({ documentKey, sectionOrder, copy }: LegalDocumentProps) 
                             </div>
                         </section>
 
-                        <section className={styles.consentCard}>
+                        <section
+                            className={styles.contactCard}
+                            data-consent-settings
+                        >
                             <div>
                                 <strong>{consentCopy.settingsTitle}</strong>
                                 <p>{consentCopy.settingsDescription}</p>
                             </div>
-                            <button type="button" onClick={manageDataConsent}>
+                            <button
+                                type="button"
+                                className={styles.sourceAction}
+                                onClick={manageDataConsent}
+                            >
                                 {consentCopy.footerAction}
                             </button>
                         </section>
