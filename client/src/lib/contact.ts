@@ -41,7 +41,7 @@ export function createGmailComposeUrl({
 }: ContactMessageOptions = {}) {
     const query = new URLSearchParams({
         view: "cm",
-        fs: "1",
+        fs: "0",
         to: CONTACT_EMAIL,
         su: subject,
         body
