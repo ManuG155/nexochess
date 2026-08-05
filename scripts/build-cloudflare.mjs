@@ -11,6 +11,11 @@ import {
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import {
+    renderRobotsTxt,
+    renderSitemapXml
+} from "../config/search-indexing.mjs";
+
 const DEFAULT_STATIC_PUZZLE_ORIGIN =
     "https://nexochess-puzzle-data-staging.manuel-garcia-villaescusa.workers.dev";
 
@@ -133,6 +138,17 @@ await mkdir(outputDirectory, { recursive: true });
 await cp(clientPublic, outputDirectory, { recursive: true });
 await cp(clientBundles, outputDirectory, { recursive: true });
 
+await writeFile(
+    join(outputDirectory, "robots.txt"),
+    renderRobotsTxt(),
+    "utf8"
+);
+await writeFile(
+    join(outputDirectory, "sitemap.xml"),
+    renderSitemapXml(),
+    "utf8"
+);
+
 const puzzleOriginReplacements = await configureStaticPuzzleOrigin();
 const htmlFiles = await findHtmlFiles(join(outputDirectory, "apps"));
 
@@ -145,6 +161,7 @@ const buildManifest = {
     generatedAt: new Date().toISOString(),
     puzzleDataOrigin: staticPuzzleOrigin,
     puzzleOriginReplacements,
+    searchIndexingFiles: ["robots.txt", "sitemap.xml"],
     htmlFiles: htmlFiles.map(filepath => (
         relative(outputDirectory, filepath).replaceAll("\\", "/")
     ))

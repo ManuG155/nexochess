@@ -59,6 +59,9 @@ jobs:
       - name: Verify canonical domain
         run: npm run verify:canonical
 
+      - name: Verify search indexing
+        run: npm run verify:indexing
+
       - name: Type-check client
         run: npm run check -w client
 
@@ -71,6 +74,7 @@ jobs:
       - name: Validate Cloudflare and export scripts
         run: |
           node --check config/site.mjs
+          node --check config/search-indexing.mjs
           node --check cloudflare/worker.mjs
           node --check cloudflare/auth.mjs
           node --check cloudflare/api.mjs
@@ -89,6 +93,7 @@ jobs:
           node --check scripts/verify-consent-contact.mjs
           node --check scripts/verify-security-hardening.mjs
           node --check scripts/verify-public-api-security.mjs
+          node --check scripts/verify-search-indexing.mjs
 
       - name: Prepare staging Cloudflare assets
         run: node scripts/build-cloudflare.mjs
