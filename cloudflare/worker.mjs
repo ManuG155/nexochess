@@ -1,4 +1,10 @@
 import {
+    PERMANENT_CANONICAL_REDIRECT_STATUS,
+    PRODUCTION_ENVIRONMENT,
+    getProductionCanonicalRedirect,
+    productionUrl
+} from "../config/site.mjs";
+import {
     AUTH_PATH,
     ensureCloudflareData,
     getCloudflareAuth
@@ -23,12 +29,12 @@ const AUTH_METADATA = {
     "/signin": {
         AUTH_TITLE: "Sign In",
         AUTH_DESCRIPTION: "Sign in to your NexoChess account.",
-        AUTH_CANONICAL: "https://www.nexochess.com/signin"
+        AUTH_CANONICAL: productionUrl("/signin")
     },
     "/signup": {
         AUTH_TITLE: "Create Account",
         AUTH_DESCRIPTION: "Create a NexoChess account to sync your Archive across devices.",
-        AUTH_CANONICAL: "https://www.nexochess.com/signup"
+        AUTH_CANONICAL: productionUrl("/signup")
     }
 };
 
@@ -36,17 +42,17 @@ const LEGAL_METADATA = {
     "/terms": {
         LEGAL_TITLE: "Terms of Service",
         LEGAL_DESCRIPTION: "Read the terms that govern the use of NexoChess.",
-        LEGAL_CANONICAL: "https://www.nexochess.com/terms"
+        LEGAL_CANONICAL: productionUrl("/terms")
     },
     "/privacy": {
         LEGAL_TITLE: "Privacy Policy",
         LEGAL_DESCRIPTION: "Learn how NexoChess handles account, Archive and browser data.",
-        LEGAL_CANONICAL: "https://www.nexochess.com/privacy"
+        LEGAL_CANONICAL: productionUrl("/privacy")
     },
     "/source": {
         LEGAL_TITLE: "Source code and licences",
         LEGAL_DESCRIPTION: "View NexoChess source-code and licence information.",
-        LEGAL_CANONICAL: "https://www.nexochess.com/source"
+        LEGAL_CANONICAL: productionUrl("/source")
     }
 };
 
@@ -79,7 +85,7 @@ function replacePlaceholders(html, replacements) {
 }
 
 function isProduction(env) {
-    return env.NEXOCHESS_ENV === "production";
+    return env.NEXOCHESS_ENV === PRODUCTION_ENVIRONMENT;
 }
 
 function withSecurityHeaders(headers, env) {
@@ -192,19 +198,19 @@ async function getCloudflareBackend(request, env) {
     }
 }
 
-function redirectProductionApex(url, env) {
-    if (!isProduction(env) || url.hostname !== "nexochess.com") return null;
+function redirectToCanonicalProductionOrigin(request, env) {
+    const target = getProductionCanonicalRedirect(request.url, env);
 
-    const canonicalUrl = new URL(url);
-    canonicalUrl.hostname = "www.nexochess.com";
-    return Response.redirect(canonicalUrl, 308);
+    return target
+        ? Response.redirect(target, PERMANENT_CANONICAL_REDIRECT_STATUS)
+        : null;
 }
 
 async function handleRequest(request, env) {
-    const url = new URL(request.url);
-    const apexRedirect = redirectProductionApex(url, env);
-    if (apexRedirect) return apexRedirect;
+    const canonicalRedirect = redirectToCanonicalProductionOrigin(request, env);
+    if (canonicalRedirect) return canonicalRedirect;
 
+    const url = new URL(request.url);
     const pathname = normalisePathname(url.pathname);
 
     if (pathname === AUTH_PATH || pathname.startsWith(`${AUTH_PATH}/`)) {
