@@ -2,6 +2,8 @@ const MAX_ARCHIVE_BODY_BYTES = 500_000;
 const MAXIMUM_ARCHIVE_SIZE = 50;
 const MAX_DELETE_IDS = 50;
 const MAX_PROGRESS_COMPLETIONS = 20_000;
+const USERNAME_PATTERN = /^[a-z0-9_]{3,20}$/i;
+const PUBLIC_ARCHIVE_ID_PATTERN = /^[a-z0-9_-]{1,100}$/i;
 
 function apiHeaders(contentType) {
     const headers = new Headers();
@@ -11,11 +13,13 @@ function apiHeaders(contentType) {
     return headers;
 }
 
-function json(payload, status = 200) {
-    return new Response(JSON.stringify(payload), {
-        status,
-        headers: apiHeaders("application/json; charset=utf-8")
-    });
+function json(payload, status = 200, additionalHeaders = {}) {
+    const headers = apiHeaders("application/json; charset=utf-8");
+    for (const [name, value] of Object.entries(additionalHeaders)) {
+        headers.set(name, value);
+    }
+
+    return new Response(JSON.stringify(payload), { status, headers });
 }
 
 function text(payload, status = 200) {
@@ -27,6 +31,14 @@ function text(payload, status = 200) {
 
 function empty(status = 204) {
     return new Response(null, { status, headers: apiHeaders() });
+}
+
+function methodNotAllowed(methods) {
+    return json(
+        { error: "Method Not Allowed" },
+        405,
+        { Allow: methods.join(", ") }
+    );
 }
 
 function normaliseRoles(value) {
@@ -53,6 +65,30 @@ function toIsoDate(value) {
     return Number.isNaN(date.getTime())
         ? new Date().toISOString()
         : date.toISOString();
+}
+
+function isRecord(value) {
+    return Boolean(value && typeof value === "object" && !Array.isArray(value));
+}
+
+function decodePublicUsername(pathname) {
+    const prefix = "/api/public/profile/";
+    const encodedUsername = pathname.slice(prefix.length);
+
+    try {
+        const username = decodeURIComponent(encodedUsername);
+        return USERNAME_PATTERN.test(username) ? username : null;
+    } catch {
+        return null;
+    }
+}
+
+function publicArchiveId(url) {
+    const ids = url.searchParams.getAll("id");
+    if (ids.length !== 1) return null;
+
+    const id = ids[0];
+    return PUBLIC_ARCHIVE_ID_PATTERN.test(id) ? id : null;
 }
 
 async function getSession(auth, request) {
@@ -98,13 +134,10 @@ function archiveMetadata(game) {
 
 function validArchivedGame(game) {
     return Boolean(
-        game
-        && typeof game === "object"
+        isRecord(game)
         && typeof game.initialPosition === "string"
-        && game.players
-        && typeof game.players === "object"
-        && game.stateTree
-        && typeof game.stateTree === "object"
+        && isRecord(game.players)
+        && isRecord(game.stateTree)
     );
 }
 
@@ -127,8 +160,7 @@ async function accountProfile(request, env, auth) {
 }
 
 async function publicProfile(pathname, env) {
-    const prefix = "/api/public/profile/";
-    const username = decodeURIComponent(pathname.slice(prefix.length));
+    const username = decodePublicUsername(pathname);
     if (!username) return empty(404);
 
     const user = await env.DB.prepare(`
@@ -164,9 +196,12 @@ async function updateDateOfBirth(request, env, auth) {
         const earliest = new Date("1900-01-01T00:00:00.000Z");
         const today = new Date();
 
-        if (Number.isNaN(date.getTime()) || date < earliest || date > today) {
-            return empty(400);
-        }
+        if (
+            Number.isNaN(date.getTime())
+            || date.toISOString().slice(0, 10) !== value
+            || date < earliest
+            || date > today
+        ) return empty(400);
     }
 
     await env.DB.prepare(`
@@ -302,7 +337,7 @@ async function deleteArchiveGames(request, env, auth) {
 }
 
 async function getArchivedGame(url, env) {
-    const id = url.searchParams.get("id");
+    const id = publicArchiveId(url);
     if (!id) return empty(404);
 
     const row = await env.DB.prepare(`
@@ -311,10 +346,14 @@ async function getArchivedGame(url, env) {
 
     if (!row?.game_json) return empty(404);
 
-    return new Response(row.game_json, {
-        status: 200,
-        headers: apiHeaders("application/json; charset=utf-8")
-    });
+    let game;
+    try {
+        game = JSON.parse(row.game_json);
+    } catch {
+        return empty(404);
+    }
+
+    return validArchivedGame(game) ? json(game) : empty(404);
 }
 
 function validPuzzleProfile(value) {
@@ -443,68 +482,86 @@ async function savePuzzleCompletions(request, env, auth) {
     return empty(200);
 }
 
+function allowedMethods(pathname) {
+    if (pathname === "/api/account/profile") return ["GET"];
+    if (pathname.startsWith("/api/public/profile/")) return ["GET"];
+    if (pathname === "/api/account/date-of-birth") return ["POST"];
+    if (pathname === "/api/analysis/archive") return ["GET"];
+    if (pathname === "/api/analysis/archive/add") return ["POST"];
+    if (pathname === "/api/analysis/archive/delete") return ["POST"];
+    if (pathname === "/api/public/archived-game") return ["GET"];
+    if (pathname === "/api/puzzles/progress") return ["GET"];
+    if (pathname === "/api/puzzles/progress/profile") return ["POST"];
+    if (pathname === "/api/puzzles/progress/completions") return ["POST"];
+    return null;
+}
+
+async function routeApiRequest(request, url, pathname, env, auth) {
+    if (pathname === "/api/account/profile") {
+        return accountProfile(request, env, auth);
+    }
+
+    if (pathname.startsWith("/api/public/profile/")) {
+        return publicProfile(pathname, env);
+    }
+
+    if (pathname === "/api/account/date-of-birth") {
+        return updateDateOfBirth(request, env, auth);
+    }
+
+    if (pathname === "/api/analysis/archive") {
+        return listArchive(request, env, auth);
+    }
+
+    if (pathname === "/api/analysis/archive/add") {
+        return addArchiveGame(request, url, env, auth);
+    }
+
+    if (pathname === "/api/analysis/archive/delete") {
+        return deleteArchiveGames(request, env, auth);
+    }
+
+    if (pathname === "/api/public/archived-game") {
+        return getArchivedGame(url, env);
+    }
+
+    if (pathname === "/api/puzzles/progress") {
+        return getPuzzleProgress(request, env, auth);
+    }
+
+    if (pathname === "/api/puzzles/progress/profile") {
+        return savePuzzleProfile(request, env, auth);
+    }
+
+    return savePuzzleCompletions(request, env, auth);
+}
+
 export async function handleCloudflareApi(request, env, auth) {
     const url = new URL(request.url);
     const pathname = url.pathname.length > 1 && url.pathname.endsWith("/")
         ? url.pathname.slice(0, -1)
         : url.pathname;
+    const methods = allowedMethods(pathname);
+
+    if (!methods) return empty(404);
+    if (!methods.includes(request.method)) return methodNotAllowed(methods);
 
     try {
-        if (request.method === "GET" && pathname === "/api/account/profile") {
-            return await accountProfile(request, env, auth);
-        }
-
-        if (
-            request.method === "GET"
-            && pathname.startsWith("/api/public/profile/")
-        ) return await publicProfile(pathname, env);
-
-        if (
-            request.method === "POST"
-            && pathname === "/api/account/date-of-birth"
-        ) return await updateDateOfBirth(request, env, auth);
-
-        if (
-            request.method === "GET"
-            && pathname === "/api/analysis/archive"
-        ) return await listArchive(request, env, auth);
-
-        if (
-            request.method === "POST"
-            && pathname === "/api/analysis/archive/add"
-        ) return await addArchiveGame(request, url, env, auth);
-
-        if (
-            request.method === "POST"
-            && pathname === "/api/analysis/archive/delete"
-        ) return await deleteArchiveGames(request, env, auth);
-
-        if (
-            request.method === "GET"
-            && pathname === "/api/public/archived-game"
-        ) return await getArchivedGame(url, env);
-
-        if (
-            request.method === "GET"
-            && pathname === "/api/puzzles/progress"
-        ) return await getPuzzleProgress(request, env, auth);
-
-        if (
-            request.method === "POST"
-            && pathname === "/api/puzzles/progress/profile"
-        ) return await savePuzzleProfile(request, env, auth);
-
-        if (
-            request.method === "POST"
-            && pathname === "/api/puzzles/progress/completions"
-        ) return await savePuzzleCompletions(request, env, auth);
+        return await routeApiRequest(request, url, pathname, env, auth);
     } catch (error) {
         if (error instanceof Response) return error;
-        console.error("Cloudflare API failure", error);
-        return json({ error: "The Cloudflare API request failed." }, 500);
-    }
 
-    return json({
-        error: "This API endpoint has not been migrated to Cloudflare."
-    }, 501);
+        const requestId = crypto.randomUUID();
+        console.error("Cloudflare API failure", {
+            requestId,
+            method: request.method,
+            pathname,
+            error
+        });
+
+        return json({
+            error: "The Cloudflare API request failed.",
+            requestId
+        }, 500);
+    }
 }
