@@ -1,0 +1,96 @@
+name: Cleanup merged branches
+
+on:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: cleanup-merged-branches
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    name: Remove obsolete remote branches
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - name: Delete merged and explicitly obsolete branches
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          owner="${GITHUB_REPOSITORY%%/*}"
+          deleted=0
+          kept=0
+
+          is_explicitly_obsolete() {
+            case "$1" in
+              checkpoint/pre-final-ui-redesign|\
+              design/final-ui-redesign|\
+              hotfix/production-account-emails|\
+              hotfix/production-account-email-v2|\
+              dependabot/npm_and_yarn/brace-expansion-1.1.16|\
+              dependabot/npm_and_yarn/fast-uri-3.1.5|\
+              dependabot/npm_and_yarn/js-yaml-4.3.0|\
+              dependabot/npm_and_yarn/postcss-8.5.25)
+                return 0
+                ;;
+              *)
+                return 1
+                ;;
+            esac
+          }
+
+          mapfile -t branches < <(
+            gh api --paginate \
+              "repos/${GITHUB_REPOSITORY}/branches?per_page=100" \
+              --jq '.[].name'
+          )
+
+          for branch in "${branches[@]}"; do
+            if [[ "$branch" == "master" || "$branch" == "develop" ]]; then
+              echo "KEEP protected branch: $branch"
+              ((kept += 1))
+              continue
+            fi
+
+            pull_requests="$({
+              gh api -X GET \
+                "repos/${GITHUB_REPOSITORY}/pulls" \
+                -f state=all \
+                -f head="${owner}:${branch}" \
+                -f per_page=100
+            })"
+
+            open_count="$(jq '[.[] | select(.state == "open")] | length' <<<"$pull_requests")"
+            merged_count="$(jq '[.[] | select(.merged_at != null)] | length' <<<"$pull_requests")"
+
+            if (( open_count > 0 )); then
+              echo "KEEP branch with open PR: $branch"
+              ((kept += 1))
+              continue
+            fi
+
+            if (( merged_count == 0 )) && ! is_explicitly_obsolete "$branch"; then
+              echo "KEEP unreviewed branch without merged PR: $branch"
+              ((kept += 1))
+              continue
+            fi
+
+            encoded_branch="$(python -c 'import sys, urllib.parse; print(urllib.parse.quote(sys.argv[1], safe=""))' "$branch")"
+            gh api -X DELETE \
+              "repos/${GITHUB_REPOSITORY}/git/refs/heads/${encoded_branch}"
+            echo "DELETE obsolete branch: $branch"
+            ((deleted += 1))
+          done
+
+          echo "Deleted branches: $deleted"
+          echo "Kept branches: $kept"
