@@ -16,10 +16,21 @@ const runbook = await readFile(
     resolve("docs", "operations", "DEPLOYMENT_AND_RECOVERY.md"),
     "utf8"
 );
-const workflow = await readFile(
+const deployWorkflow = await readFile(
     resolve(".github", "workflows", "deploy-staging.yml"),
     "utf8"
 );
+const monitorWorkflow = await readFile(
+    resolve(".github", "workflows", "monitor-staging.yml"),
+    "utf8"
+);
+
+function functionSource(name) {
+    const start = operations.indexOf(`async function ${name}(`);
+    assert.notEqual(start, -1, `Missing function ${name}.`);
+    const next = operations.indexOf("\nasync function ", start + 1);
+    return operations.slice(start, next === -1 ? operations.length : next);
+}
 
 for (const fragment of [
     "ensureCleanRepository",
@@ -42,11 +53,30 @@ for (const fragment of [
     );
 }
 
+const deploySource = functionSource("deploy");
 assert.ok(
-    operations.indexOf("captureRecoveryPoint(")
-        < operations.indexOf('"wrangler",\n        "deploy"'),
+    deploySource.indexOf("captureRecoveryPoint(")
+        < deploySource.indexOf('"wrangler",\n        "deploy"'),
     "A D1 recovery point must be captured before Worker deployment."
 );
+assert.ok(
+    deploySource.indexOf('run(npmCommand, ["run", "check"])')
+        < deploySource.indexOf('"wrangler",\n        "deploy"'),
+    "Repository checks must run before Worker deployment."
+);
+assert.ok(
+    deploySource.indexOf("await verifyDeployment()")
+        > deploySource.indexOf('"wrangler",\n        "deploy"'),
+    "Remote verification must run after Worker deployment."
+);
+
+const restoreSource = functionSource("restoreDatabase");
+assert.ok(restoreSource.includes("Undo point before restoring"));
+assert.ok(restoreSource.includes("await verifyDeployment()"));
+
+const rollbackSource = functionSource("rollbackWorker");
+assert.ok(rollbackSource.includes("await captureRecoveryPoint("));
+assert.ok(rollbackSource.includes("await verifyDeployment()"));
 assert.ok(
     operations.includes("Worker rollback completed and verified. D1 was not modified."),
     "The Worker/D1 rollback distinction must remain explicit."
@@ -112,11 +142,16 @@ assert.ok(runbook.includes("Time Travel"));
 assert.ok(runbook.includes("password manager"));
 assert.ok(runbook.includes("never commit"));
 
-assert.ok(workflow.includes("branches: [develop]"));
-assert.ok(workflow.includes("ENABLE_STAGING_DEPLOY"));
-assert.ok(workflow.includes("CLOUDFLARE_API_TOKEN"));
-assert.ok(workflow.includes("CLOUDFLARE_ACCOUNT_ID"));
-assert.ok(workflow.includes("deploy --environment staging --ci"));
-assert.ok(!workflow.includes("production"));
+assert.ok(deployWorkflow.includes("branches: [develop]"));
+assert.ok(deployWorkflow.includes("ENABLE_STAGING_DEPLOY"));
+assert.ok(deployWorkflow.includes("CLOUDFLARE_API_TOKEN"));
+assert.ok(deployWorkflow.includes("CLOUDFLARE_ACCOUNT_ID"));
+assert.ok(deployWorkflow.includes("deploy --environment staging --ci"));
+assert.ok(!deployWorkflow.includes("production"));
+
+assert.ok(monitorWorkflow.includes('cron: "17 */6 * * *"'));
+assert.ok(monitorWorkflow.includes("--environment staging"));
+assert.ok(!monitorWorkflow.includes("CLOUDFLARE_API_TOKEN"));
+assert.ok(!monitorWorkflow.includes("production"));
 
 console.log("Cloudflare deployment and recovery verification passed.");
