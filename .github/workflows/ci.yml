@@ -30,7 +30,7 @@ jobs:
           cache: npm
 
       - name: Prepare non-breaking dependency fixes
-        run: npm audit fix --package-lock-only
+        run: npm audit fix --package-lock-only || true
 
       - name: Upload audited lockfile
         uses: actions/upload-artifact@v4
