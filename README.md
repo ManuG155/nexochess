@@ -155,6 +155,7 @@ Rules:
 - Do not mix staging and production credentials or databases.
 - Do not commit `.env`, Wrangler secrets, database exports or generated puzzle packages.
 - Delete temporary branches after their pull request is merged or discarded.
+- GitHub Actions removes merged and explicitly obsolete remote branches while preserving `master`, `develop` and every branch with an open pull request.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution requirements.
 
