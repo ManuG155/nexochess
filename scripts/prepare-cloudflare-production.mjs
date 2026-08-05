@@ -1,9 +1,15 @@
 import { writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
+import {
+    PRODUCTION_APEX_HOST,
+    PRODUCTION_CANONICAL_HOST,
+    PRODUCTION_CANONICAL_ORIGIN,
+    normaliseOrigin
+} from "../config/site.mjs";
+
 const DEFAULT_WORKER_NAME = "nexochess-production";
 const DEFAULT_DATABASE_NAME = "nexochess-production";
-const DEFAULT_PRODUCTION_ORIGIN = "https://www.nexochess.com";
 const OUTPUT_FILE = resolve("wrangler.production.local.jsonc");
 
 function readArgument(name) {
@@ -13,20 +19,6 @@ function readArgument(name) {
 
 function hasFlag(name) {
     return process.argv.includes(name);
-}
-
-function normaliseOrigin(value) {
-    const url = new URL(value);
-
-    if (url.protocol !== "https:") {
-        throw new Error("The production origin must use HTTPS.");
-    }
-
-    url.pathname = "";
-    url.search = "";
-    url.hash = "";
-
-    return url.toString().replace(/\/$/, "");
 }
 
 const databaseId = readArgument("--database-id")
@@ -40,7 +32,7 @@ const workerName = readArgument("--worker-name")
 const origin = normaliseOrigin(
     readArgument("--origin")
     || process.env.NEXOCHESS_PRODUCTION_ORIGIN
-    || DEFAULT_PRODUCTION_ORIGIN
+    || PRODUCTION_CANONICAL_ORIGIN
 );
 const attachDomains = hasFlag("--attach-domains")
     || process.env.NEXOCHESS_ATTACH_PRODUCTION_DOMAINS === "1";
@@ -55,13 +47,20 @@ if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
     throw new Error("The production D1 database ID is not a valid UUID.");
 }
 
+if (origin !== PRODUCTION_CANONICAL_ORIGIN) {
+    throw new Error(
+        `Production origin is fixed to ${PRODUCTION_CANONICAL_ORIGIN}.`
+    );
+}
+
 const configuration = {
     $schema: "node_modules/wrangler/config-schema.json",
     name: workerName,
     main: "cloudflare/worker.mjs",
     compatibility_date: "2026-08-02",
     compatibility_flags: ["nodejs_compat"],
-    workers_dev: true,
+    workers_dev: false,
+    preview_urls: false,
     assets: {
         directory: "./cloudflare-dist",
         binding: "ASSETS",
@@ -103,11 +102,11 @@ const configuration = {
         ? {
             routes: [
                 {
-                    pattern: "www.nexochess.com",
+                    pattern: PRODUCTION_CANONICAL_HOST,
                     custom_domain: true
                 },
                 {
-                    pattern: "nexochess.com",
+                    pattern: PRODUCTION_APEX_HOST,
                     custom_domain: true
                 }
             ]
@@ -125,4 +124,6 @@ console.log(`Prepared ${OUTPUT_FILE}`);
 console.log(`Worker: ${workerName}`);
 console.log(`D1: ${databaseName} (${databaseId})`);
 console.log(`Origin: ${origin}`);
+console.log("workers.dev: disabled");
+console.log("Preview URLs: disabled");
 console.log(`Custom domains: ${attachDomains ? "enabled" : "disabled"}`);
