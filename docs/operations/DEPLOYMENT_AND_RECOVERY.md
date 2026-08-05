@@ -1,16 +1,14 @@
 # NexoChess deployment and recovery runbook
 
 This is the single operational procedure for the Cloudflare deployment of NexoChess.
-Do not deploy with ad-hoc Wrangler commands when the commands below are available.
-
-The current release flow is:
+Do not deploy with ad-hoc Wrangler commands when the repository commands below are available.
 
 ```text
 feature branch -> develop -> staging -> explicit approval -> master -> production
 ```
 
-Production must never be deployed from `develop`, and staging must never be deployed
-from `master`.
+Production must never be deployed from `develop`, and staging must never be deployed from
+`master`.
 
 ## Operating principles
 
@@ -22,6 +20,9 @@ from `master`.
 - Worker rollback and D1 restore are separate operations.
 - Operational records and SQL exports live in `.nexochess-backup/` and must never commit to Git.
 - Secret values must never appear in the repository, deployment records, screenshots or chat.
+- On Windows, operations must be launched through the npm scripts. They preload the portable
+  command shim that runs npm and Wrangler through Node instead of invoking `.cmd` files
+  directly.
 
 ## Prerequisites
 
@@ -41,8 +42,8 @@ GOOGLE_OAUTH_CLIENT_ID
 GOOGLE_OAUTH_CLIENT_SECRET
 ```
 
-The operations command validates only their names. Cloudflare does not expose the secret
-values after creation.
+The operations command validates only their names. Cloudflare does not expose their values
+after creation.
 
 ## Staging deployment
 
@@ -63,7 +64,7 @@ configuration is inconsistent, or a required Worker secret is missing. It then:
 2. Builds the staging assets.
 3. Saves the current D1 Time Travel bookmark and non-secret configuration inventory.
 4. Deploys the Worker with the Git commit as its message and tag.
-5. Verifies pages, security headers, authentication, protected API behaviour and puzzle data.
+5. Verifies pages, security headers, authentication, API behaviour and puzzle data.
 6. Saves the Worker version and recovery-point path locally.
 
 Local records are stored under:
@@ -75,27 +76,21 @@ Local records are stored under:
 
 ## Automated staging deployment
 
-`.github/workflows/deploy-staging.yml` can deploy every accepted push to `develop` without
-using the developer computer. It is disabled by default.
+`.github/workflows/deploy-staging.yml` can deploy an accepted push to `develop` without the
+developer computer. It remains disabled until the repository variable below is enabled:
 
-Create these GitHub Actions secrets:
+```text
+ENABLE_STAGING_DEPLOY=true
+```
+
+The `staging` GitHub environment must contain scoped values for:
 
 ```text
 CLOUDFLARE_API_TOKEN
 CLOUDFLARE_ACCOUNT_ID
 ```
 
-The API token should have only the permissions required to deploy the staging Worker, read
-its secrets and read the staging D1 Time Travel bookmark. Do not use the Global API Key.
-
-Then create this repository variable:
-
-```text
-ENABLE_STAGING_DEPLOY=true
-```
-
-Until that variable is enabled, pushes to `develop` do not deploy. The workflow can also be
-started manually with `workflow_dispatch`.
+Use a limited API token, never the Cloudflare Global API Key.
 
 ## Production release
 
@@ -110,148 +105,115 @@ git status
 npm run deploy:production -- --confirm-production DEPLOY-NEXOCHESS-PRODUCTION
 ```
 
-The command refuses to run from any branch other than `master`. It also refuses production
+The command refuses to run from any branch other than `master` and refuses production
 without the exact confirmation phrase.
 
-If `wrangler.production.local.jsonc` does not exist, provide the production D1 identifier in
-the local environment before running the command:
+If `wrangler.production.local.jsonc` does not exist, expose the production D1 identifier only
+in the local process environment before running the command:
 
 ```powershell
 $env:NEXOCHESS_PRODUCTION_D1_ID="<production-d1-id>"
 ```
 
-The generated file is local-only and is ignored by Git.
+The generated file is local-only and ignored by Git.
 
 ## D1 automatic protection
 
-Cloudflare D1 Time Travel is the primary short-term backup and point-in-time recovery
-mechanism. It is always enabled on supported production D1 databases. It allows restoring
-the database to a timestamp or bookmark within the retention period supplied by the
+Cloudflare D1 Time Travel is the primary short-term point-in-time recovery mechanism. It can
+restore a database to a timestamp or bookmark within the retention period available on the
 Cloudflare plan.
 
-Capture an additional named local recovery point without deploying:
+Capture a recovery point without deploying:
 
 ```powershell
 npm run recovery:staging
-```
-
-For production:
-
-```powershell
 npm run recovery:production -- --confirm-production BACKUP-NEXOCHESS-PRODUCTION
 ```
 
-A recovery-point record contains:
-
-- the D1 bookmark;
-- the timestamp;
-- the Git branch and commit;
-- the Worker and D1 names;
-- the configuration hash;
-- required secret names, never values.
+A recovery-point record contains the bookmark, timestamp, Git branch and commit, Worker and
+D1 names, configuration hash and required secret names. It never contains secret values.
 
 ## Full D1 export
 
-A full SQL export is useful for offline custody or testing beyond the Time Travel retention
-window. Export can temporarily block requests to D1, so run it during low traffic and do not
-make it part of every deployment.
-
-Staging:
+A full SQL export is useful for encrypted offline custody beyond the Time Travel retention
+window. Export can temporarily block D1 requests, so run it during low traffic.
 
 ```powershell
 npm run backup:d1:staging
-```
-
-Production:
-
-```powershell
 npm run backup:d1:production -- --confirm-production BACKUP-NEXOCHESS-PRODUCTION
 ```
 
-The export and a SHA-256 metadata file are written to:
+Exports and SHA-256 metadata are written under:
 
 ```text
 .nexochess-backup/d1/<environment>/
 ```
 
-SQL exports can contain account and Archive data. Move long-term copies to an encrypted
-volume or encrypted backup service. Never commit, email or attach an unencrypted export.
+SQL exports can contain accounts, Archive data and other personal data. Store long-term
+copies on encrypted storage. Never commit, email or attach an unencrypted export.
 
 ## D1 recovery
 
-A restore overwrites the selected D1 database in place. Review the target timestamp or
-bookmark before execution.
+A restore overwrites the selected D1 database in place. Review the bookmark or timestamp
+before execution. Omitting `--execute` intentionally fails safely.
 
-Previewing the command without `--execute` intentionally fails safely. To restore staging by
-bookmark:
+Restore staging by bookmark:
 
 ```powershell
-node scripts/cloudflare-operations.mjs restore `
-  --environment staging `
+npm run restore:d1:staging -- --bookmark <bookmark> --execute
+```
+
+Restore staging by RFC3339 timestamp:
+
+```powershell
+npm run restore:d1:staging -- --timestamp 2026-08-05T08:30:00Z --execute
+```
+
+Production additionally requires the explicit phrase:
+
+```powershell
+npm run restore:d1:production -- `
   --bookmark <bookmark> `
-  --execute
+  --execute `
+  --confirm-production RESTORE-NEXOCHESS-PRODUCTION
 ```
 
-To restore by RFC3339 timestamp:
-
-```powershell
-node scripts/cloudflare-operations.mjs restore `
-  --environment staging `
-  --timestamp 2026-08-05T08:30:00Z `
-  --execute
-```
-
-Production additionally requires:
-
-```text
---confirm-production RESTORE-NEXOCHESS-PRODUCTION
-```
-
-Before restoring, the command captures the current bookmark as an undo point. Wrangler then
-asks for its own destructive-operation confirmation. After restoration, the remote smoke test
-must pass. Keep the undo bookmark printed by both NexoChess and Wrangler.
+Before restoring, the command captures the current bookmark as an undo point. After the
+restore, the remote smoke test must pass.
 
 ## Worker rollback
 
-A Worker rollback changes code and bindings but does not restore D1 data. Review recent
-versions first:
+A Worker rollback changes code and bindings but does not restore D1 data. Review the recent
+versions, choose the exact version ID and then run:
 
 ```powershell
-npx wrangler versions list --config .\wrangler.jsonc
-```
-
-Rollback staging:
-
-```powershell
-node scripts/cloudflare-operations.mjs rollback `
-  --environment staging `
-  --version <version-id> `
-  --execute
+npm run rollback:staging -- --version <version-id> --execute
 ```
 
 Production additionally requires:
 
-```text
---confirm-production ROLLBACK-NEXOCHESS-PRODUCTION
+```powershell
+npm run rollback:production -- `
+  --version <version-id> `
+  --execute `
+  --confirm-production ROLLBACK-NEXOCHESS-PRODUCTION
 ```
 
-The command records the current D1 bookmark, performs the Worker rollback and runs the remote
-smoke test. If the old Worker expects a different database schema, coordinate the Worker
-rollback with a separately reviewed D1 restore.
+The command records the current D1 bookmark, rolls the Worker back and runs the remote smoke
+test. When an old Worker expects a different database schema, coordinate the code rollback
+with a separately reviewed D1 restore.
 
 ## Configuration custody
 
-Create a non-secret configuration snapshot:
+Create a non-secret configuration snapshot with:
 
 ```powershell
 npm run config:staging
+npm run config:production
 ```
 
-The snapshot stores configuration names, hashes, Git information and the current D1
-bookmark. It never stores secret values.
-
-Keep the actual secret values in a password manager under separate staging and production
-entries. The secure inventory should contain:
+Keep actual credentials in a password manager under separate staging and production entries.
+The secure inventory should contain:
 
 ```text
 Cloudflare account ID
@@ -263,30 +225,21 @@ Production D1 database ID
 Recovery contact and ownership details
 ```
 
-At least two independent encrypted copies should exist. Repository files, GitHub issues,
-terminal screenshots and chat are not a password manager.
+Maintain at least two independent encrypted copies. Repository files, GitHub issues, terminal
+screenshots and chat are not a password manager.
 
 ## Monitoring
 
-Run the full remote smoke test at any time:
+Run the complete remote smoke test at any time:
 
 ```powershell
 npm run monitor:staging
 npm run monitor:production
 ```
 
-The monitor checks:
-
-- the main HTML applications;
-- JavaScript delivery;
-- defensive HTTP headers;
-- anonymous Better Auth behaviour;
-- protected API isolation;
-- malformed and unknown public API routes;
-- the complete puzzle catalogue.
-
-The staging deployment workflow executes the same monitor after publishing. A deployment is
-not considered successful until this smoke test passes.
+The monitor checks the main HTML applications, JavaScript delivery, defensive headers,
+anonymous Better Auth behaviour, protected API isolation, malformed public API routes and the
+complete puzzle catalogue. A deployment is not successful until this test passes.
 
 ## Incident sequence
 
@@ -296,7 +249,7 @@ When a deployment fails:
 2. Record the failing Worker version, Git commit and D1 bookmark.
 3. Determine whether the fault is code, configuration or data.
 4. Roll back only the Worker when data is healthy.
-5. Restore D1 only when data itself is damaged or incompatible.
+5. Restore D1 only when the data itself is damaged or incompatible.
 6. Run the remote monitor.
 7. Document the incident and the exact recovery point used.
 
@@ -309,3 +262,5 @@ strategy.
 - D1 import and export: https://developers.cloudflare.com/d1/best-practices/import-export-data/
 - Worker versions and deployments: https://developers.cloudflare.com/workers/versions-and-deployments/
 - Worker rollbacks: https://developers.cloudflare.com/workers/versions-and-deployments/rollbacks/
+- Node.js child processes on Windows: https://nodejs.org/api/child_process.html
+- npm exec and npx: https://docs.npmjs.com/cli/commands/npx/

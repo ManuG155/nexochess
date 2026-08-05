@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
+import { preparePortableSpawn } from "./portable-command-shim.mjs";
+
 const operations = await readFile(
     resolve("scripts", "cloudflare-operations.mjs"),
     "utf8"
@@ -101,25 +103,87 @@ for (const fragment of [
     );
 }
 
-for (const script of [
+const operationalScripts = [
     "deploy:staging",
     "deploy:production",
     "backup:d1:staging",
     "backup:d1:production",
     "recovery:staging",
     "recovery:production",
+    "restore:d1:staging",
+    "restore:d1:production",
+    "rollback:staging",
+    "rollback:production",
     "config:staging",
     "config:production",
     "monitor:staging",
-    "monitor:production",
-    "verify:operations"
-]) {
+    "monitor:production"
+];
+
+for (const script of [...operationalScripts, "verify:operations"]) {
     assert.equal(
         typeof packageJson.scripts?.[script],
         "string",
         `Missing package script: ${script}`
     );
 }
+
+for (const script of operationalScripts) {
+    assert.ok(
+        packageJson.scripts[script].includes(
+            "node --import ./scripts/portable-command-shim.mjs scripts/cloudflare-operations.mjs"
+        ),
+        `${script} must preload the portable Windows command shim.`
+    );
+}
+
+const windowsNpx = preparePortableSpawn(
+    "npx.cmd",
+    ["wrangler", "secret", "list"],
+    {
+        platform: "win32",
+        npmExecPath: "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        nodeExecutable: "C:\\Program Files\\nodejs\\node.exe"
+    }
+);
+assert.deepEqual(windowsNpx, {
+    executable: "C:\\Program Files\\nodejs\\node.exe",
+    args: [
+        "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "exec",
+        "--",
+        "wrangler",
+        "secret",
+        "list"
+    ]
+});
+
+const windowsNpm = preparePortableSpawn(
+    "npm.cmd",
+    ["run", "check"],
+    {
+        platform: "win32",
+        npmExecPath: "C:\\npm\\npm-cli.js",
+        nodeExecutable: "C:\\node.exe"
+    }
+);
+assert.deepEqual(windowsNpm, {
+    executable: "C:\\node.exe",
+    args: ["C:\\npm\\npm-cli.js", "run", "check"]
+});
+
+assert.deepEqual(
+    preparePortableSpawn("npx", ["wrangler"], { platform: "linux" }),
+    { executable: "npx", args: ["wrangler"] }
+);
+assert.throws(
+    () => preparePortableSpawn(
+        "npx.cmd",
+        ["wrangler"],
+        { platform: "win32", npmExecPath: "" }
+    ),
+    /Run Cloudflare operations through the repository npm scripts/
+);
 
 assert.ok(
     packageJson.scripts.check.includes("verify:operations"),
@@ -141,6 +205,8 @@ for (const heading of [
 assert.ok(runbook.includes("Time Travel"));
 assert.ok(runbook.includes("password manager"));
 assert.ok(runbook.includes("never commit"));
+assert.ok(runbook.includes("npm run restore:d1:staging"));
+assert.ok(runbook.includes("npm run rollback:staging"));
 
 assert.ok(deployWorkflow.includes("branches: [develop]"));
 assert.ok(deployWorkflow.includes("ENABLE_STAGING_DEPLOY"));

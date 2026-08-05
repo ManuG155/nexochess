@@ -82,6 +82,7 @@ jobs:
           node --check cloudflare/emailQueue.mjs
           node --check scripts/build-cloudflare.mjs
           node --check scripts/cloudflare-operations.mjs
+          node --check scripts/portable-command-shim.mjs
           node --check scripts/export-puzzles-static.mjs
           node --check scripts/prepare-cloudflare-production.mjs
           node --check scripts/verify-canonical-domain.mjs
