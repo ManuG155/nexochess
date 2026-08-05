@@ -1,0 +1,245 @@
+# NexoChess
+
+[![CI](https://github.com/ManuG155/nexochess/actions/workflows/ci.yml/badge.svg)](https://github.com/ManuG155/nexochess/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/ManuG155/nexochess/actions/workflows/codeql.yml/badge.svg)](https://github.com/ManuG155/nexochess/actions/workflows/codeql.yml)
+[![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
+
+**NexoChess** is a free web application for analysing chess games, reviewing mistakes with Stockfish, training with puzzles and tracking progress.
+
+- Public website: **https://www.nexochess.com**
+- Source code: **https://github.com/ManuG155/nexochess**
+- Contact: **contact@nexochess.com**
+
+NexoChess is an independent project. It is not affiliated with, sponsored by or endorsed by Chess.com or lichess.org.
+
+## Project status
+
+NexoChess is publicly available while the next release is prepared through a separate development environment.
+
+| Environment | Branch | Address | Purpose |
+| --- | --- | --- | --- |
+| Production | `master` | https://www.nexochess.com | Public, explicitly approved releases |
+| Staging | `develop` | https://nexochess-staging.manuel-garcia-villaescusa.workers.dev | Integration and validation before production |
+
+`master` and `develop` are deliberately separated. A change merged into `develop` does not modify the public website until it is reviewed, promoted to `master` and deployed as an authorised production release.
+
+The project no longer depends on a persistent application running on `localhost` or on the developer's computer. Local commands are used for installation, checks and builds; functional validation is performed against the hosted staging environment.
+
+## Main features
+
+- PGN import and Chess.com game import.
+- In-browser analysis using Stockfish.
+- Evaluation, move classification, accuracy and estimated playing strength.
+- Game summary and move-by-move review.
+- Four selectable coaches with translated feedback.
+- Local Archive without an account and cloud synchronisation for signed-in users.
+- Google OAuth and email/password accounts.
+- Verification, password recovery and account email flows.
+- Public profiles and shareable analysed games.
+- Puzzles generated from analysed mistakes.
+- Thematic and difficulty-filtered puzzle training.
+- Progress, streaks and puzzle rating.
+- Light and dark appearance.
+- Interface support for 11 languages.
+- Legal, privacy, licence, help and contact pages.
+
+The open puzzle catalogue currently contains **6,057,356 positions** and is distributed separately from the main application bundle.
+
+## Current architecture
+
+NexoChess is deployed primarily on Cloudflare:
+
+```text
+Browser
+├── React + TypeScript interface
+├── Stockfish.js + WebAssembly analysis
+└── Relative application and API requests
+
+Cloudflare
+├── Worker routing and security headers
+├── Workers Static Assets
+├── Better Auth
+├── D1: accounts, sessions, Archive and puzzle progress
+└── Separate static puzzle-data Workers
+```
+
+### Application
+
+- React
+- TypeScript
+- CSS Modules and global CSS
+- Webpack
+- i18next
+- chess.js
+- Stockfish.js 17
+
+### Cloud services
+
+- Cloudflare Workers
+- Cloudflare Workers Static Assets
+- Cloudflare D1
+- Better Auth
+- Google OAuth
+- Brevo transactional email
+
+The legacy Node/Express workspace remains in the repository for compatibility and shared tooling, but the hosted NexoChess application does not require the old local server to remain online.
+
+## Repository layout
+
+```text
+client/                 React application, public assets and browser integrations
+cloudflare/             Worker, authentication, API and email integration
+config/                 Shared environment and canonical-domain configuration
+server/                 Legacy/server workspace and supporting tooling
+shared/                 Shared chess analysis and reporting logic
+scripts/                Build, verification, import and operational scripts
+puzzle-data-worker/     Static puzzle catalogue Worker configuration
+docs/operations/        Deployment, recovery and canonical-domain runbooks
+legal/                  Corresponding-source and licence notices
+```
+
+The complete puzzle database, generated static puzzle packages, D1 exports, local production configuration and secret files are intentionally excluded from Git.
+
+## Requirements
+
+- Node.js 22
+- npm
+- Git
+- Wrangler authentication for Cloudflare operations
+
+Install dependencies:
+
+```bash
+npm ci
+```
+
+Run the complete repository verification:
+
+```bash
+npm run check
+```
+
+Build every workspace:
+
+```bash
+npm run build
+```
+
+Prepare the Cloudflare staging bundle without deploying it:
+
+```bash
+npm run build:cloudflare
+```
+
+The normal development target is hosted staging; the repository does not define `localhost` as an official NexoChess environment.
+
+## Development workflow
+
+All normal work follows this sequence:
+
+```text
+work branch
+→ pull request to develop
+→ CI and CodeQL
+→ merge into develop
+→ staging validation
+→ explicit release approval
+→ promotion to master
+→ production deployment
+```
+
+Rules:
+
+- Do not push feature work directly to `master`.
+- Do not deploy production from `develop`.
+- Do not mix staging and production credentials or databases.
+- Do not commit `.env`, Wrangler secrets, database exports or generated puzzle packages.
+- Delete temporary branches after their pull request is merged or discarded.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution requirements.
+
+## Staging operations
+
+After authenticating Wrangler and configuring the required staging secrets, the controlled deployment command is:
+
+```bash
+npm run deploy:staging
+```
+
+This command verifies the branch and repository state, runs checks, builds the application, records a D1 recovery point, deploys staging and performs a remote smoke test.
+
+Useful non-deployment checks:
+
+```bash
+npm run monitor:staging
+npm run recovery:staging
+npm run verify:canonical
+npm run verify:security
+npm run verify:public-api
+```
+
+Production deployment is intentionally separate, restricted to `master` and protected by an explicit confirmation phrase. See [the deployment and recovery runbook](docs/operations/DEPLOYMENT_AND_RECOVERY.md).
+
+## Configuration and secrets
+
+Worker secrets are stored in Cloudflare and must never be committed. Expected secret names are:
+
+```text
+AUTH_SECRET
+BREVO_API_KEY
+GOOGLE_OAUTH_CLIENT_ID
+GOOGLE_OAUTH_CLIENT_SECRET
+```
+
+Only the names belong in documentation. Secret values must remain in the appropriate password manager and platform secret stores.
+
+Environment templates and generated local configuration:
+
+- `.env.example` documents supported local variables without real credentials.
+- `wrangler.jsonc` configures staging.
+- `wrangler.production.local.jsonc` is generated locally for production and is ignored by Git.
+
+## Security and recovery
+
+The repository includes:
+
+- CI and CodeQL checks.
+- Dependency auditing.
+- Detection of committed credential patterns.
+- Defensive HTTP headers.
+- Same-origin and content-type validation for API mutations.
+- Better Auth rate limiting.
+- Public API and D1 user-isolation tests.
+- D1 Time Travel recovery-point handling.
+- Worker rollback and remote smoke-test tooling.
+
+Security reports should follow [SECURITY.md](SECURITY.md), not public issues containing sensitive details.
+
+Operational documentation:
+
+- [Deployment and recovery](docs/operations/DEPLOYMENT_AND_RECOVERY.md)
+- [Canonical domain](docs/operations/CANONICAL_DOMAIN.md)
+
+## Puzzle data
+
+NexoChess uses the open lichess.org puzzle database under **CC0 1.0**. The data is exported into compact static packages and indexes so the browser loads only the catalogue, the required filter index and the selected puzzle package.
+
+The generated multi-million-position dataset is not stored in this Git repository.
+
+## Licensing and attribution
+
+NexoChess is distributed under the **GNU General Public License v3.0**.
+
+Important notices:
+
+- [GPL-3.0 licence](LICENSE)
+- [Attributions](ATTRIBUTIONS.md)
+- [Stockfish corresponding-source notice](legal/STOCKFISH-SOURCE.txt)
+
+NexoChess is based on and substantially modifies the GPL-licensed WintrChess project. Stockfish remains licensed under GPL-3.0. Third-party resources and puzzle-data terms are documented in the attribution files and in the application's source/licence page.
+
+## Contact
+
+For support, privacy requests, legal questions or responsible security contact:
+
+**contact@nexochess.com**
