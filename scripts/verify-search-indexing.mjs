@@ -62,6 +62,13 @@ const sourceRobots = await readRepositoryFile("client", "public", "robots.txt");
 const sourceSitemap = await readRepositoryFile("client", "public", "sitemap.xml");
 const worker = await readRepositoryFile("cloudflare", "worker.mjs");
 const buildScript = await readRepositoryFile("scripts", "build-cloudflare.mjs");
+const stagingConfiguration = JSON.parse(
+    await readRepositoryFile("wrangler.jsonc")
+);
+const productionConfigurationGenerator = await readRepositoryFile(
+    "scripts",
+    "prepare-cloudflare-production.mjs"
+);
 
 assert.equal(
     sourceRobots,
@@ -183,6 +190,18 @@ assert.ok(
         && buildScript.includes('join(outputDirectory, "sitemap.xml")'),
     "The Cloudflare build must regenerate robots.txt and sitemap.xml."
 );
+
+const workerFirstSeoPaths = ["/robots.txt", "/sitemap.xml"];
+for (const pathname of workerFirstSeoPaths) {
+    assert.ok(
+        stagingConfiguration.assets?.run_worker_first?.includes(pathname),
+        `${pathname} must run through the staging Worker before Static Assets.`
+    );
+    assert.ok(
+        productionConfigurationGenerator.includes(`"${pathname}"`),
+        `${pathname} must run through the generated production Worker before Static Assets.`
+    );
+}
 
 const productionAnalysis = getSearchIndexingPolicy(
     productionUrl("/analysis"),
