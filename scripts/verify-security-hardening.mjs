@@ -30,7 +30,9 @@ for (const [fragment, description] of [
     ["Referrer-Policy", "Referrer policy"],
     ["Permissions-Policy", "Browser capability policy"],
     ["Strict-Transport-Security", "Production HSTS"],
-    ["secureResponse(await handleRequest", "Global response hardening"]
+    ["function secureResponse(response, env, request)", "Global response hardening wrapper"],
+    ["withSecurityHeaders(response.headers, env)", "Global security-header application"],
+    ["await handleRequest(request, env)", "Global response hardening execution"]
 ]) {
     assertContains(worker, fragment, description);
 }
