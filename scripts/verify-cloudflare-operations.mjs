@@ -94,6 +94,11 @@ for (const fragment of [
     "/auth/account/get-session",
     "/api/account/profile",
     "/api/public/profile/%E0%A4%A",
+    "/robots.txt",
+    "/sitemap.xml",
+    "renderRobotsTxt",
+    "renderSitemapXml",
+    "analysis?game=deployment-smoke-test",
     "EXPECTED_PUZZLES",
     "AbortSignal.timeout"
 ]) {
