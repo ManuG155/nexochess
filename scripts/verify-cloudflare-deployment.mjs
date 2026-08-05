@@ -1,4 +1,10 @@
 import {
+    getSearchIndexingPolicy,
+    isCanonicalProductionSearchRequest,
+    renderRobotsTxt,
+    renderSitemapXml
+} from "../config/search-indexing.mjs";
+import {
     PRODUCTION_CANONICAL_ORIGIN,
     PRODUCTION_PUZZLE_ORIGIN,
     STAGING_ORIGIN,
@@ -8,13 +14,11 @@ import {
 const ENVIRONMENTS = {
     staging: {
         origin: STAGING_ORIGIN,
-        puzzleOrigin: STAGING_PUZZLE_ORIGIN,
-        shouldBeIndexable: false
+        puzzleOrigin: STAGING_PUZZLE_ORIGIN
     },
     production: {
         origin: PRODUCTION_CANONICAL_ORIGIN,
-        puzzleOrigin: PRODUCTION_PUZZLE_ORIGIN,
-        shouldBeIndexable: true
+        puzzleOrigin: PRODUCTION_PUZZLE_ORIGIN
     }
 };
 const EXPECTED_PUZZLES = 6_057_356;
@@ -68,6 +72,14 @@ function assertSecurityHeaders(response, path) {
     assert(permissions.includes("camera=()"), `${path} lacks Permissions-Policy.`);
 }
 
+function expectedRobotsDirective(path, response) {
+    return getSearchIndexingPolicy(`${origin}${path}`, {
+        environment: environmentName,
+        responseStatus: response.status,
+        contentType: response.headers.get("content-type")
+    }).directive || "";
+}
+
 async function assertPage(path) {
     const response = await request(path);
     const contentType = response.headers.get("content-type") || "";
@@ -76,14 +88,12 @@ async function assertPage(path) {
     assert(response.status === 200, `${path} returned HTTP ${response.status}.`);
     assert(contentType.includes("text/html"), `${path} is not HTML.`);
     assertSecurityHeaders(response, path);
+    assert(
+        robots === expectedRobotsDirective(path, response),
+        `${path} returned X-Robots-Tag "${robots}" instead of "${expectedRobotsDirective(path, response)}".`
+    );
 
-    if (environment.shouldBeIndexable) {
-        assert(!robots, `${path} is unexpectedly blocked by X-Robots-Tag: ${robots}.`);
-    } else {
-        assert(robots.includes("noindex"), `${path} is not protected from indexing.`);
-    }
-
-    console.log(`OK ${path}: HTTP 200 and security headers present`);
+    console.log(`OK ${path}: HTTP 200, security and indexing headers`);
 }
 
 async function assertJavaScript(path) {
@@ -101,6 +111,58 @@ async function assertJavaScript(path) {
     console.log(`OK ${path}: JavaScript bundle available`);
 }
 
+async function assertSearchFiles() {
+    const nonce = Date.now();
+    const indexingEnabled = isCanonicalProductionSearchRequest(
+        new URL(origin),
+        environmentName
+    );
+
+    const robotsPath = `/robots.txt?verify=${nonce}`;
+    const robotsResponse = await request(robotsPath);
+    const robotsBody = await robotsResponse.text();
+    const expectedRobots = renderRobotsTxt({ indexingEnabled });
+
+    assert(robotsResponse.status === 200, "robots.txt did not return HTTP 200.");
+    assert(
+        (robotsResponse.headers.get("content-type") || "").includes("text/plain"),
+        "robots.txt has an unexpected Content-Type."
+    );
+    assertSecurityHeaders(robotsResponse, "/robots.txt");
+    assert(
+        robotsBody === expectedRobots,
+        `robots.txt does not match the ${environmentName} indexing policy.`
+    );
+
+    const sitemapPath = `/sitemap.xml?verify=${nonce}`;
+    const sitemapResponse = await request(sitemapPath);
+    const sitemapBody = await sitemapResponse.text();
+    assertSecurityHeaders(sitemapResponse, "/sitemap.xml");
+
+    if (indexingEnabled) {
+        assert(sitemapResponse.status === 200, "Production sitemap did not return HTTP 200.");
+        assert(
+            (sitemapResponse.headers.get("content-type") || "").includes("application/xml"),
+            "Production sitemap has an unexpected Content-Type."
+        );
+        assert(
+            sitemapBody === renderSitemapXml(),
+            "Production sitemap does not match the central indexing policy."
+        );
+    } else {
+        assert(
+            sitemapResponse.status === 404,
+            `Non-production sitemap returned HTTP ${sitemapResponse.status} instead of 404.`
+        );
+        assert(
+            sitemapBody === "Not Found\n",
+            "Non-production sitemap returned unexpected content."
+        );
+    }
+
+    console.log(`OK search files: ${environmentName} robots and sitemap policy`);
+}
+
 for (const path of [
     "/analysis",
     "/archive",
@@ -114,7 +176,9 @@ for (const path of [
 ]) {
     await assertPage(path);
 }
+await assertPage("/analysis?game=deployment-smoke-test");
 await assertJavaScript("/settings.bundle.js");
+await assertSearchFiles();
 
 const sessionResponse = await request("/auth/account/get-session");
 const sessionBody = await sessionResponse.text();
