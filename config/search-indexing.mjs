@@ -1,7 +1,6 @@
 import {
-    CANONICAL_CONFIG,
+    PRODUCTION_CANONICAL_HOST,
     PRODUCTION_ENVIRONMENT,
-    normaliseHostname,
     productionUrl
 } from "./site.mjs";
 
@@ -12,6 +11,13 @@ const NOINDEX_NOFOLLOW_DIRECTIVE = "noindex, nofollow, noarchive";
 
 function freezeRoute(route) {
     return Object.freeze(route);
+}
+
+function normaliseHostname(hostname) {
+    return String(hostname || "")
+        .trim()
+        .toLowerCase()
+        .replace(/\.$/, "");
 }
 
 export const INDEXABLE_PAGE_ROUTES = Object.freeze([
@@ -149,8 +155,7 @@ export function isCanonicalProductionSearchRequest(input, environment) {
     const url = input instanceof URL ? input : new URL(input);
 
     return environment === PRODUCTION_ENVIRONMENT
-        && normaliseHostname(url.hostname)
-            === CANONICAL_CONFIG.productionHost;
+        && normaliseHostname(url.hostname) === PRODUCTION_CANONICAL_HOST;
 }
 
 function isTechnicalPath(pathname) {
