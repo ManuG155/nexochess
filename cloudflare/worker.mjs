@@ -50,6 +50,13 @@ const LEGAL_METADATA = {
     }
 };
 
+const MUTATING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
+const MINIMAL_CSP = [
+    "base-uri 'self'",
+    "frame-ancestors 'none'",
+    "object-src 'none'"
+].join("; ");
+
 function normalisePathname(pathname) {
     if (pathname.length > 1 && pathname.endsWith("/")) {
         return pathname.slice(0, -1);
@@ -74,6 +81,49 @@ function replacePlaceholders(html, replacements) {
 
 function isProduction(env) {
     return env.NEXOCHESS_ENV === "production";
+}
+
+function configuredOrigin(request, env) {
+    try {
+        return new URL(env.NEXOCHESS_ORIGIN || request.url).origin;
+    } catch {
+        return new URL(request.url).origin;
+    }
+}
+
+function withSecurityHeaders(headers, env) {
+    const nextHeaders = new Headers(headers);
+
+    nextHeaders.set("Content-Security-Policy", MINIMAL_CSP);
+    nextHeaders.set(
+        "Permissions-Policy",
+        "camera=(), geolocation=(), microphone=(), payment=(), usb=(), browsing-topics=()"
+    );
+    nextHeaders.set("Referrer-Policy", "strict-origin-when-cross-origin");
+    nextHeaders.set("X-Content-Type-Options", "nosniff");
+    nextHeaders.set("X-Frame-Options", "DENY");
+    nextHeaders.set("X-XSS-Protection", "0");
+    nextHeaders.delete("Server");
+    nextHeaders.delete("X-Powered-By");
+
+    if (isProduction(env)) {
+        nextHeaders.set(
+            "Strict-Transport-Security",
+            "max-age=31536000; includeSubDomains"
+        );
+    } else {
+        nextHeaders.delete("Strict-Transport-Security");
+    }
+
+    return nextHeaders;
+}
+
+function secureResponse(response, env) {
+    return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: withSecurityHeaders(response.headers, env)
+    });
 }
 
 function withPageHeaders(headers, contentType, env) {
@@ -140,6 +190,41 @@ function json(payload, status = 200) {
     });
 }
 
+function validMutationOrigin(request, env) {
+    const expectedOrigin = configuredOrigin(request, env);
+    const suppliedOrigin = request.headers.get("Origin");
+
+    if (suppliedOrigin) {
+        try {
+            if (new URL(suppliedOrigin).origin !== expectedOrigin) return false;
+        } catch {
+            return false;
+        }
+    }
+
+    return request.headers.get("Sec-Fetch-Site") !== "cross-site";
+}
+
+function validJsonContentType(request) {
+    const contentType = request.headers.get("Content-Type") || "";
+    return contentType.split(";", 1)[0].trim().toLowerCase()
+        === "application/json";
+}
+
+function guardApiMutation(request, env) {
+    if (!MUTATING_METHODS.has(request.method.toUpperCase())) return null;
+
+    if (!validMutationOrigin(request, env)) {
+        return json({ error: "Untrusted request origin." }, 403);
+    }
+
+    if (!validJsonContentType(request)) {
+        return json({ error: "Expected an application/json request body." }, 415);
+    }
+
+    return null;
+}
+
 async function getCloudflareBackend(request, env) {
     try {
         const auth = getCloudflareAuth(env, request);
@@ -159,69 +244,76 @@ function redirectProductionApex(url, env) {
     return Response.redirect(canonicalUrl, 308);
 }
 
+async function handleRequest(request, env) {
+    const url = new URL(request.url);
+    const apexRedirect = redirectProductionApex(url, env);
+    if (apexRedirect) return apexRedirect;
+
+    const pathname = normalisePathname(url.pathname);
+
+    if (pathname === AUTH_PATH || pathname.startsWith(`${AUTH_PATH}/`)) {
+        const auth = await getCloudflareBackend(request, env);
+
+        return auth
+            ? auth.handler(request)
+            : json({
+                error: "Cloudflare authentication is not configured yet."
+            }, 503);
+    }
+
+    if (pathname.startsWith("/api/")) {
+        const rejectedMutation = guardApiMutation(request, env);
+        if (rejectedMutation) return rejectedMutation;
+
+        const auth = await getCloudflareBackend(request, env);
+
+        return auth
+            ? handleCloudflareApi(request, env, auth)
+            : json({
+                error: "The Cloudflare data service is not configured yet."
+            }, 503);
+    }
+
+    if (request.method !== "GET" && request.method !== "HEAD") {
+        return new Response("Method Not Allowed", {
+            status: 405,
+            headers: { Allow: "GET, HEAD" }
+        });
+    }
+
+    if (pathname === "/") {
+        return Response.redirect(new URL("/analysis", request.url), 308);
+    }
+
+    if (pathname.startsWith("/news")) {
+        return Response.redirect(new URL("/analysis", request.url), 308);
+    }
+
+    if (
+        pathname === "/settings"
+        || pathname.startsWith("/settings/")
+    ) {
+        return renderPage(request, env, "settings.html");
+    }
+
+    const filepath = PAGE_ROUTES.get(pathname);
+    if (filepath) {
+        return renderPage(
+            request,
+            env,
+            filepath,
+            metadataFor(pathname)
+        );
+    }
+
+    const assetResponse = await env.ASSETS.fetch(request);
+    if (assetResponse.status !== 404) return assetResponse;
+
+    return renderPage(request, env, "unfound.html", {}, 404);
+}
+
 export default {
     async fetch(request, env) {
-        const url = new URL(request.url);
-        const apexRedirect = redirectProductionApex(url, env);
-        if (apexRedirect) return apexRedirect;
-
-        const pathname = normalisePathname(url.pathname);
-
-        if (pathname === AUTH_PATH || pathname.startsWith(`${AUTH_PATH}/`)) {
-            const auth = await getCloudflareBackend(request, env);
-
-            return auth
-                ? auth.handler(request)
-                : json({
-                    error: "Cloudflare authentication is not configured yet."
-                }, 503);
-        }
-
-        if (pathname.startsWith("/api/")) {
-            const auth = await getCloudflareBackend(request, env);
-
-            return auth
-                ? handleCloudflareApi(request, env, auth)
-                : json({
-                    error: "The Cloudflare data service is not configured yet."
-                }, 503);
-        }
-
-        if (request.method !== "GET" && request.method !== "HEAD") {
-            return new Response("Method Not Allowed", {
-                status: 405,
-                headers: { Allow: "GET, HEAD" }
-            });
-        }
-
-        if (pathname === "/") {
-            return Response.redirect(new URL("/analysis", request.url), 308);
-        }
-
-        if (pathname.startsWith("/news")) {
-            return Response.redirect(new URL("/analysis", request.url), 308);
-        }
-
-        if (
-            pathname === "/settings"
-            || pathname.startsWith("/settings/")
-        ) {
-            return renderPage(request, env, "settings.html");
-        }
-
-        const filepath = PAGE_ROUTES.get(pathname);
-        if (filepath) {
-            return renderPage(
-                request,
-                env,
-                filepath,
-                metadataFor(pathname)
-            );
-        }
-
-        const assetResponse = await env.ASSETS.fetch(request);
-        if (assetResponse.status !== 404) return assetResponse;
-
-        return renderPage(request, env, "unfound.html", {}, 404);
+        return secureResponse(await handleRequest(request, env), env);
     }
 };

@@ -110,6 +110,11 @@ function createAuth(env, request) {
         secret: env.AUTH_SECRET,
         database: env.DB,
         trustedOrigins: [origin],
+        rateLimit: {
+            enabled: true,
+            window: 60,
+            max: 100
+        },
         emailAndPassword: {
             enabled: true,
             minPasswordLength: 8,
@@ -224,7 +229,10 @@ function createAuth(env, request) {
             }
         },
         advanced: {
-            cookiePrefix: "wintrchess"
+            cookiePrefix: "wintrchess",
+            ipAddress: {
+                ipAddressHeaders: ["cf-connecting-ip"]
+            }
         },
         logger: {
             level: "error"
