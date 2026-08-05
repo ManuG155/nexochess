@@ -1,4 +1,10 @@
 import {
+    getSearchIndexingPolicy,
+    isCanonicalProductionSearchRequest,
+    renderRobotsTxt,
+    renderSitemapXml
+} from "../config/search-indexing.mjs";
+import {
     PERMANENT_CANONICAL_REDIRECT_STATUS,
     PRODUCTION_ENVIRONMENT,
     getProductionCanonicalRedirect,
@@ -115,11 +121,24 @@ function withSecurityHeaders(headers, env) {
     return nextHeaders;
 }
 
-function secureResponse(response, env) {
+function secureResponse(response, env, request) {
+    const headers = withSecurityHeaders(response.headers, env);
+    const indexingPolicy = getSearchIndexingPolicy(request.url, {
+        environment: env.NEXOCHESS_ENV,
+        responseStatus: response.status,
+        contentType: headers.get("Content-Type")
+    });
+
+    if (indexingPolicy.directive) {
+        headers.set("X-Robots-Tag", indexingPolicy.directive);
+    } else {
+        headers.delete("X-Robots-Tag");
+    }
+
     return new Response(response.body, {
         status: response.status,
         statusText: response.statusText,
-        headers: withSecurityHeaders(response.headers, env)
+        headers
     });
 }
 
@@ -132,11 +151,9 @@ function withPageHeaders(headers, contentType, env) {
     if (isProduction(env)) {
         nextHeaders.delete("Pragma");
         nextHeaders.delete("Expires");
-        nextHeaders.delete("X-Robots-Tag");
     } else {
         nextHeaders.set("Pragma", "no-cache");
         nextHeaders.set("Expires", "0");
-        nextHeaders.set("X-Robots-Tag", "noindex, nofollow, noarchive");
     }
 
     return nextHeaders;
@@ -152,6 +169,13 @@ function withApiHeaders(headers, contentType) {
     nextHeaders.set("X-Robots-Tag", "noindex, nofollow, noarchive");
 
     return nextHeaders;
+}
+
+function textDocument(request, env, body, contentType, status = 200) {
+    return new Response(request.method === "HEAD" ? null : body, {
+        status,
+        headers: withPageHeaders({}, contentType, env)
+    });
 }
 
 async function renderPage(request, env, filepath, replacements = {}, status = 200) {
@@ -240,6 +264,37 @@ async function handleRequest(request, env) {
         });
     }
 
+    const indexingEnabled = isCanonicalProductionSearchRequest(
+        url,
+        env.NEXOCHESS_ENV
+    );
+
+    if (pathname === "/robots.txt") {
+        return textDocument(
+            request,
+            env,
+            renderRobotsTxt({ indexingEnabled }),
+            "text/plain; charset=utf-8"
+        );
+    }
+
+    if (pathname === "/sitemap.xml") {
+        return indexingEnabled
+            ? textDocument(
+                request,
+                env,
+                renderSitemapXml(),
+                "application/xml; charset=utf-8"
+            )
+            : textDocument(
+                request,
+                env,
+                "Not Found\n",
+                "text/plain; charset=utf-8",
+                404
+            );
+    }
+
     if (pathname === "/") {
         return Response.redirect(new URL("/analysis", request.url), 308);
     }
@@ -273,6 +328,10 @@ async function handleRequest(request, env) {
 
 export default {
     async fetch(request, env) {
-        return secureResponse(await handleRequest(request, env), env);
+        return secureResponse(
+            await handleRequest(request, env),
+            env,
+            request
+        );
     }
 };
