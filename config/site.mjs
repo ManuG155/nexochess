@@ -47,6 +47,11 @@ export function normaliseOrigin(value) {
 
 export function productionUrl(pathname = "/", search = "") {
     const url = new URL(pathname, `${PRODUCTION_CANONICAL_ORIGIN}/`);
+
+    if (url.origin !== PRODUCTION_CANONICAL_ORIGIN) {
+        throw new Error("Canonical NexoChess URLs cannot target an external origin.");
+    }
+
     url.search = search;
     return url.toString();
 }
