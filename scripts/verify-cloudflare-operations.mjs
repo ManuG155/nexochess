@@ -146,7 +146,7 @@ assert.ok(deployWorkflow.includes("branches: [develop]"));
 assert.ok(deployWorkflow.includes("ENABLE_STAGING_DEPLOY"));
 assert.ok(deployWorkflow.includes("CLOUDFLARE_API_TOKEN"));
 assert.ok(deployWorkflow.includes("CLOUDFLARE_ACCOUNT_ID"));
-assert.ok(deployWorkflow.includes("deploy --environment staging --ci"));
+assert.ok(deployWorkflow.includes("npm run deploy:staging -- --ci"));
 assert.ok(!deployWorkflow.includes("production"));
 
 assert.ok(monitorWorkflow.includes('cron: "17 */6 * * *"'));
