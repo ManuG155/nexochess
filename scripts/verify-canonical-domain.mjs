@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
-import { extname, resolve } from "node:path";
+import { extname, relative, resolve } from "node:path";
 
 import {
     PERMANENT_CANONICAL_REDIRECT_STATUS,
@@ -131,6 +131,15 @@ const productionGenerator = await readFile(
     resolve(ROOT, "scripts", "prepare-cloudflare-production.mjs"),
     "utf8"
 );
+const operations = await readFile(
+    resolve(ROOT, "scripts", "cloudflare-operations.mjs"),
+    "utf8"
+);
+const environmentExample = await readFile(resolve(ROOT, ".env.example"), "utf8");
+const canonicalRunbook = await readFile(
+    resolve(ROOT, "docs", "operations", "CANONICAL_DOMAIN.md"),
+    "utf8"
+);
 const stagingConfiguration = JSON.parse(
     await readFile(resolve(ROOT, "wrangler.jsonc"), "utf8")
 );
@@ -179,6 +188,42 @@ assert.equal(stagingConfiguration.preview_urls, false);
 assert.equal(stagingConfiguration.vars.NEXOCHESS_ENV, STAGING_ENVIRONMENT);
 assert.equal(stagingConfiguration.vars.NEXOCHESS_ORIGIN, STAGING_ORIGIN);
 
+for (const fragment of [
+    `origin: "${PRODUCTION_CANONICAL_ORIGIN}"`,
+    `origin: "${STAGING_ORIGIN}"`
+]) {
+    assert.ok(
+        operations.includes(fragment),
+        `Operational environment registry is inconsistent: ${fragment}`
+    );
+}
+
+for (const fragment of [
+    `# ORIGIN=${PRODUCTION_CANONICAL_ORIGIN}`,
+    `# ${PRODUCTION_CANONICAL_ORIGIN}/auth/account/callback/google`
+]) {
+    assert.ok(
+        environmentExample.includes(fragment),
+        `.env.example is inconsistent: ${fragment}`
+    );
+}
+
+for (const fragment of [
+    "# NexoChess canonical domain",
+    PRODUCTION_CANONICAL_ORIGIN,
+    "308 Permanent Redirect",
+    '"workers_dev": false',
+    '"preview_urls": false',
+    STAGING_ORIGIN,
+    "/auth/account/callback/google",
+    "does not alter DNS"
+]) {
+    assert.ok(
+        canonicalRunbook.includes(fragment),
+        `Canonical-domain runbook is incomplete: ${fragment}`
+    );
+}
+
 assert.ok(
     archivePage.includes("location.href = `/analysis?game=${encodeURIComponent(id)}`"),
     "Archive navigation must remain relative to the active environment."
@@ -205,7 +250,7 @@ for (const path of publicFacingFiles) {
         `https://${PRODUCTION_WORKER_HOST}`
     ]) {
         if (content.includes(forbidden)) {
-            forbiddenReferences.push(`${path.replace(`${ROOT}/`, "")}: ${forbidden}`);
+            forbiddenReferences.push(`${relative(ROOT, path)}: ${forbidden}`);
         }
     }
 }
