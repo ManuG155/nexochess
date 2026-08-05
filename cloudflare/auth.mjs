@@ -4,6 +4,7 @@ import {
     createAuthMiddleware,
     getMigrations
 } from "../client/cloudflare/betterAuthRuntime.mjs";
+import { resolveApplicationOrigin } from "../config/site.mjs";
 import { queueAccountEmail } from "./emailQueue.mjs";
 
 const AUTH_PATH = "/auth/account";
@@ -11,10 +12,6 @@ const SCHEMA_VERSION = 1;
 
 let authInstance;
 let schemaPromise;
-
-function cleanOrigin(value) {
-    return value?.trim().replace(/\/+$/, "");
-}
 
 function validateUsername(value) {
     if (typeof value !== "string") return "INVALID_USERNAME";
@@ -69,8 +66,7 @@ function createAuth(env, request) {
     if (!env.DB) throw new Error("The NexoChess D1 binding is missing.");
     if (!env.AUTH_SECRET) throw new Error("AUTH_SECRET is not configured.");
 
-    const origin = cleanOrigin(env.NEXOCHESS_ORIGIN)
-        || new URL(request.url).origin;
+    const origin = resolveApplicationOrigin(request.url, env);
     const fallbackEmailRequest = new Request(origin);
 
     const sendEmail = ({ type, recipient, url, callbackRequest, newEmail }) => {

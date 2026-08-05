@@ -1,12 +1,19 @@
+import {
+    PRODUCTION_CANONICAL_ORIGIN,
+    PRODUCTION_PUZZLE_ORIGIN,
+    STAGING_ORIGIN,
+    STAGING_PUZZLE_ORIGIN
+} from "../config/site.mjs";
+
 const ENVIRONMENTS = {
     staging: {
-        origin: "https://nexochess-staging.manuel-garcia-villaescusa.workers.dev",
-        puzzleOrigin: "https://nexochess-puzzle-data-staging.manuel-garcia-villaescusa.workers.dev",
+        origin: STAGING_ORIGIN,
+        puzzleOrigin: STAGING_PUZZLE_ORIGIN,
         shouldBeIndexable: false
     },
     production: {
-        origin: "https://www.nexochess.com",
-        puzzleOrigin: "https://nexochess-puzzle-data-production.manuel-garcia-villaescusa.workers.dev",
+        origin: PRODUCTION_CANONICAL_ORIGIN,
+        puzzleOrigin: PRODUCTION_PUZZLE_ORIGIN,
         shouldBeIndexable: true
     }
 };

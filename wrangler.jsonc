@@ -7,6 +7,7 @@
         "nodejs_compat"
     ],
     "workers_dev": true,
+    "preview_urls": false,
     "assets": {
         "directory": "./cloudflare-dist",
         "binding": "ASSETS",
