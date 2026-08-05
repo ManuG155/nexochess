@@ -1,0 +1,33 @@
+name: Monitor staging
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: monitor-staging
+  cancel-in-progress: true
+
+jobs:
+  monitor:
+    name: Remote staging smoke test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verify staging services
+        run: node scripts/verify-cloudflare-deployment.mjs --environment staging
