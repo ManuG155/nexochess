@@ -53,6 +53,9 @@ jobs:
       - name: Verify public API and D1 isolation
         run: npm run verify:public-api
 
+      - name: Verify deployment and recovery controls
+        run: npm run verify:operations
+
       - name: Type-check client
         run: npm run check -w client
 
@@ -70,8 +73,11 @@ jobs:
           node --check cloudflare/email.mjs
           node --check cloudflare/emailQueue.mjs
           node --check scripts/build-cloudflare.mjs
+          node --check scripts/cloudflare-operations.mjs
           node --check scripts/export-puzzles-static.mjs
           node --check scripts/prepare-cloudflare-production.mjs
+          node --check scripts/verify-cloudflare-deployment.mjs
+          node --check scripts/verify-cloudflare-operations.mjs
           node --check scripts/verify-cloudflare-production.mjs
           node --check scripts/verify-puzzle-data.mjs
           node --check scripts/verify-account-email.mjs
