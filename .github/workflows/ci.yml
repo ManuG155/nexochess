@@ -29,6 +29,17 @@ jobs:
           node-version: 22
           cache: npm
 
+      - name: Prepare non-breaking dependency fixes
+        run: npm audit fix --package-lock-only
+
+      - name: Upload audited lockfile
+        uses: actions/upload-artifact@v4
+        with:
+          name: audited-package-lock
+          path: package-lock.json
+          if-no-files-found: error
+          retention-days: 1
+
       - name: Install dependencies
         run: npm ci
 
