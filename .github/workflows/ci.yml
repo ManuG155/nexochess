@@ -7,7 +7,7 @@ on:
     branches: [master, main, develop, staging]
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -31,6 +31,24 @@ jobs:
 
       - name: Prepare non-breaking dependency fixes
         run: npm audit fix --package-lock-only || true
+
+      - name: Commit audited lockfile once
+        if: github.event_name == 'pull_request' && github.head_ref == 'security/develop-hardening-v2'
+        env:
+          HEAD_BRANCH: ${{ github.head_ref }}
+        run: |
+          if git diff --quiet -- package-lock.json; then
+            exit 0
+          fi
+          cp package-lock.json /tmp/audited-package-lock.json
+          git fetch origin "$HEAD_BRANCH"
+          git checkout -B "$HEAD_BRANCH" "origin/$HEAD_BRANCH"
+          cp /tmp/audited-package-lock.json package-lock.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          git commit -m "Actualiza dependencias con correcciones de seguridad"
+          git push origin "HEAD:$HEAD_BRANCH"
 
       - name: Upload audited lockfile
         uses: actions/upload-artifact@v4
