@@ -41,6 +41,9 @@ jobs:
       - name: Audit repository contents
         run: npm run check:repository
 
+      - name: Audit puzzle backend
+        run: npm run check:puzzles
+
       - name: Verify account email templates
         run: npm run verify:account-email
 
@@ -81,6 +84,7 @@ jobs:
           node --check cloudflare/email.mjs
           node --check cloudflare/emailQueue.mjs
           node --check scripts/build-cloudflare.mjs
+          node --check scripts/check-puzzle-backend.mjs
           node --check scripts/cloudflare-operations.mjs
           node --check scripts/portable-command-shim.mjs
           node --check scripts/export-puzzles-static.mjs
