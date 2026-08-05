@@ -11,6 +11,8 @@ const files = {
     deploymentVerifier: "scripts/verify-cloudflare-deployment.mjs",
     packageJson: "package.json"
 };
+const EXPECTED_PRODUCTION_PUZZLE_ORIGIN =
+    "https://nexochess-puzzle-data-production.manuel-garcia-villaescusa.workers.dev";
 
 const contents = Object.fromEntries(await Promise.all(
     Object.entries(files).map(async ([name, path]) => [
@@ -119,10 +121,19 @@ requireFragments("deploymentVerifier", "The deployment puzzle smoke test", [
 ]);
 
 const productionBuild = packageJson.scripts?.["build:cloudflare:production"] || "";
-if (!productionBuild.includes(
-    "https://nexochess-puzzle-data-production.manuel-garcia-villaescusa.workers.dev"
-)) {
-    errors.push("The production build does not select the production puzzle-data origin.");
+const productionBuildArguments = productionBuild.trim().split(/\s+/u);
+const puzzleOriginArgumentIndexes = productionBuildArguments
+    .map((argument, index) => argument === "--puzzle-origin" ? index : -1)
+    .filter(index => index >= 0);
+const productionPuzzleOrigin = puzzleOriginArgumentIndexes.length === 1
+    ? productionBuildArguments[puzzleOriginArgumentIndexes[0] + 1]
+    : undefined;
+
+if (productionPuzzleOrigin !== EXPECTED_PRODUCTION_PUZZLE_ORIGIN) {
+    errors.push(
+        "The production build must select exactly the approved production "
+        + "puzzle-data origin."
+    );
 }
 
 if (packageJson.scripts?.["verify:puzzle-data"] !== "node scripts/verify-puzzle-data.mjs") {
