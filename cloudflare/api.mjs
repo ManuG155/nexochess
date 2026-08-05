@@ -4,6 +4,7 @@ const MAX_DELETE_IDS = 50;
 const MAX_PROGRESS_COMPLETIONS = 20_000;
 const USERNAME_PATTERN = /^[a-z0-9_]{3,20}$/i;
 const PUBLIC_ARCHIVE_ID_PATTERN = /^[a-z0-9_-]{1,100}$/i;
+const MUTATING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 
 function apiHeaders(contentType) {
     const headers = new Headers();
@@ -39,6 +40,49 @@ function methodNotAllowed(methods) {
         405,
         { Allow: methods.join(", ") }
     );
+}
+
+function configuredOrigin(request, env) {
+    try {
+        return new URL(env.NEXOCHESS_ORIGIN || request.url).origin;
+    } catch {
+        return new URL(request.url).origin;
+    }
+}
+
+function validMutationOrigin(request, env) {
+    const expectedOrigin = configuredOrigin(request, env);
+    const suppliedOrigin = request.headers.get("Origin");
+
+    if (suppliedOrigin) {
+        try {
+            if (new URL(suppliedOrigin).origin !== expectedOrigin) return false;
+        } catch {
+            return false;
+        }
+    }
+
+    return request.headers.get("Sec-Fetch-Site") !== "cross-site";
+}
+
+function validJsonContentType(request) {
+    const contentType = request.headers.get("Content-Type") || "";
+    return contentType.split(";", 1)[0].trim().toLowerCase()
+        === "application/json";
+}
+
+function guardApiMutation(request, env) {
+    if (!MUTATING_METHODS.has(request.method.toUpperCase())) return null;
+
+    if (!validMutationOrigin(request, env)) {
+        return json({ error: "Untrusted request origin." }, 403);
+    }
+
+    if (!validJsonContentType(request)) {
+        return json({ error: "Expected an application/json request body." }, 415);
+    }
+
+    return null;
 }
 
 function normaliseRoles(value) {
@@ -545,6 +589,9 @@ export async function handleCloudflareApi(request, env, auth) {
 
     if (!methods) return empty(404);
     if (!methods.includes(request.method)) return methodNotAllowed(methods);
+
+    const rejectedMutation = guardApiMutation(request, env);
+    if (rejectedMutation) return rejectedMutation;
 
     try {
         return await routeApiRequest(request, url, pathname, env, auth);
