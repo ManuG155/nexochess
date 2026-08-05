@@ -19,6 +19,7 @@ function assertAbsent(content, fragment, description) {
 }
 
 const worker = await readFile(resolve(root, "cloudflare", "worker.mjs"), "utf8");
+const api = await readFile(resolve(root, "cloudflare", "api.mjs"), "utf8");
 const auth = await readFile(resolve(root, "cloudflare", "auth.mjs"), "utf8");
 
 for (const [fragment, description] of [
@@ -29,12 +30,19 @@ for (const [fragment, description] of [
     ["Referrer-Policy", "Referrer policy"],
     ["Permissions-Policy", "Browser capability policy"],
     ["Strict-Transport-Security", "Production HSTS"],
-    ["validMutationOrigin", "Mutation origin validation"],
-    ["Sec-Fetch-Site", "Fetch Metadata validation"],
-    ["application/json", "JSON mutation requirement"],
     ["secureResponse(await handleRequest", "Global response hardening"]
 ]) {
     assertContains(worker, fragment, description);
+}
+
+for (const [fragment, description] of [
+    ["validMutationOrigin", "Mutation origin validation"],
+    ["Sec-Fetch-Site", "Fetch Metadata validation"],
+    ["application/json", "JSON mutation requirement"],
+    ["guardApiMutation(request, env)", "API mutation guard"],
+    ["methodNotAllowed", "Method-specific error handling"]
+]) {
+    assertContains(api, fragment, description);
 }
 
 for (const [fragment, description] of [

@@ -50,7 +50,6 @@ const LEGAL_METADATA = {
     }
 };
 
-const MUTATING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 const MINIMAL_CSP = [
     "base-uri 'self'",
     "frame-ancestors 'none'",
@@ -81,14 +80,6 @@ function replacePlaceholders(html, replacements) {
 
 function isProduction(env) {
     return env.NEXOCHESS_ENV === "production";
-}
-
-function configuredOrigin(request, env) {
-    try {
-        return new URL(env.NEXOCHESS_ORIGIN || request.url).origin;
-    } catch {
-        return new URL(request.url).origin;
-    }
 }
 
 function withSecurityHeaders(headers, env) {
@@ -190,41 +181,6 @@ function json(payload, status = 200) {
     });
 }
 
-function validMutationOrigin(request, env) {
-    const expectedOrigin = configuredOrigin(request, env);
-    const suppliedOrigin = request.headers.get("Origin");
-
-    if (suppliedOrigin) {
-        try {
-            if (new URL(suppliedOrigin).origin !== expectedOrigin) return false;
-        } catch {
-            return false;
-        }
-    }
-
-    return request.headers.get("Sec-Fetch-Site") !== "cross-site";
-}
-
-function validJsonContentType(request) {
-    const contentType = request.headers.get("Content-Type") || "";
-    return contentType.split(";", 1)[0].trim().toLowerCase()
-        === "application/json";
-}
-
-function guardApiMutation(request, env) {
-    if (!MUTATING_METHODS.has(request.method.toUpperCase())) return null;
-
-    if (!validMutationOrigin(request, env)) {
-        return json({ error: "Untrusted request origin." }, 403);
-    }
-
-    if (!validJsonContentType(request)) {
-        return json({ error: "Expected an application/json request body." }, 415);
-    }
-
-    return null;
-}
-
 async function getCloudflareBackend(request, env) {
     try {
         const auth = getCloudflareAuth(env, request);
@@ -262,9 +218,6 @@ async function handleRequest(request, env) {
     }
 
     if (pathname.startsWith("/api/")) {
-        const rejectedMutation = guardApiMutation(request, env);
-        if (rejectedMutation) return rejectedMutation;
-
         const auth = await getCloudflareBackend(request, env);
 
         return auth

@@ -32,6 +32,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Audit dependencies
+        run: npm run audit:dependencies
+
       - name: Audit translations
         run: npm run check:translations
 
@@ -46,6 +49,9 @@ jobs:
 
       - name: Verify security hardening
         run: npm run verify:security
+
+      - name: Verify public API and D1 isolation
+        run: npm run verify:public-api
 
       - name: Type-check client
         run: npm run check -w client
@@ -71,6 +77,7 @@ jobs:
           node --check scripts/verify-account-email.mjs
           node --check scripts/verify-consent-contact.mjs
           node --check scripts/verify-security-hardening.mjs
+          node --check scripts/verify-public-api-security.mjs
 
       - name: Prepare staging Cloudflare assets
         run: node scripts/build-cloudflare.mjs
