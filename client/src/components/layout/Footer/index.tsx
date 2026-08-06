@@ -10,6 +10,7 @@ import {
     createGmailComposeUrl
 } from "@/lib/contact";
 import { manageDataConsent } from "@/lib/consent";
+import { getAboutNavigationLabel } from "@/lib/aboutNavigation";
 
 import FooterProps from "./FooterProps";
 import * as styles from "./Footer.module.css";
@@ -25,6 +26,13 @@ function Footer({ className, style }: FooterProps) {
 
     const consentCopy = useMemo(
         () => getConsentCopy(i18n.resolvedLanguage || i18n.language),
+        [i18n.resolvedLanguage, i18n.language]
+    );
+
+    const aboutLabel = useMemo(
+        () => getAboutNavigationLabel(
+            i18n.resolvedLanguage || i18n.language
+        ),
         [i18n.resolvedLanguage, i18n.language]
     );
 
@@ -55,6 +63,10 @@ function Footer({ className, style }: FooterProps) {
 
         <nav className={styles.links} aria-label={t("footer.navigationLabel")}>
             <div className={styles.linkGroup}>
+                <a href="/about">
+                    {aboutLabel}
+                </a>
+
                 <a href="/help">
                     {t("navigationTitle", { ns: "helpCenter" })}
                 </a>
