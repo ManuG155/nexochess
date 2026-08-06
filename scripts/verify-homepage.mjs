@@ -135,7 +135,8 @@ assert.ok(
     "The canonical homepage must be part of the indexing policy."
 );
 assert.ok(
-    files.deployment.includes('    "/",\n    "/analysis"'),
+    files.deployment.includes('    "/",')
+        && files.deployment.includes('    "/analysis",'),
     "Remote deployment verification must request the homepage."
 );
 assert.ok(

@@ -68,6 +68,9 @@ jobs:
       - name: Verify public homepage
         run: npm run verify:homepage
 
+      - name: Verify About NexoChess page
+        run: npm run verify:about
+
       - name: Type-check client
         run: npm run check -w client
 
@@ -103,6 +106,7 @@ jobs:
           node --check scripts/verify-public-api-security.mjs
           node --check scripts/verify-search-indexing.mjs
           node --check scripts/verify-homepage.mjs
+          node --check scripts/verify-about-page.mjs
 
       - name: Prepare staging Cloudflare assets
         run: node scripts/build-cloudflare.mjs
