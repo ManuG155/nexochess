@@ -10,6 +10,7 @@ import seoHi from "../client/public/locales/hi/seo.json" with { type: "json" };
 import seoMr from "../client/public/locales/mr/seo.json" with { type: "json" };
 import seoPl from "../client/public/locales/pl/seo.json" with { type: "json" };
 
+import { getHreflangReplacements } from "./hreflang.mjs";
 import { INDEXABLE_PAGE_ROUTES } from "./search-indexing.mjs";
 import { getStructuredDataReplacements } from "./structured-data.mjs";
 import { productionUrl } from "./site.mjs";
@@ -189,6 +190,7 @@ export function getPageMetadataReplacements(pathname) {
         TWITTER_DESCRIPTION: metadata.twitter.description,
         TWITTER_IMAGE: metadata.twitter.image.url,
         TWITTER_IMAGE_ALT: metadata.twitter.image.alt,
+        ...getHreflangReplacements(pathname),
         ...getStructuredDataReplacements(
             pathname,
             metadata,
