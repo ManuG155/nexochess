@@ -1,3 +1,4 @@
+import { getPageMetadataReplacements } from "../config/page-metadata.mjs";
 import {
     getSearchIndexingPolicy,
     isCanonicalProductionSearchRequest,
@@ -47,20 +48,14 @@ const AUTH_METADATA = {
     }
 };
 
-const LEGAL_METADATA = {
+const LEGAL_CANONICALS = {
     "/terms": {
-        LEGAL_TITLE: "Terms of Service",
-        LEGAL_DESCRIPTION: "Read the terms that govern the use of NexoChess.",
         LEGAL_CANONICAL: productionUrl("/terms")
     },
     "/privacy": {
-        LEGAL_TITLE: "Privacy Policy",
-        LEGAL_DESCRIPTION: "Learn how NexoChess handles account, Archive and browser data.",
         LEGAL_CANONICAL: productionUrl("/privacy")
     },
     "/source": {
-        LEGAL_TITLE: "Source code and licences",
-        LEGAL_DESCRIPTION: "View NexoChess source-code and licence information.",
         LEGAL_CANONICAL: productionUrl("/source")
     }
 };
@@ -80,7 +75,11 @@ function normalisePathname(pathname) {
 }
 
 function metadataFor(pathname) {
-    return AUTH_METADATA[pathname] || LEGAL_METADATA[pathname] || {};
+    return {
+        ...getPageMetadataReplacements(pathname),
+        ...(AUTH_METADATA[pathname] || {}),
+        ...(LEGAL_CANONICALS[pathname] || {})
+    };
 }
 
 function replacePlaceholders(html, replacements) {
