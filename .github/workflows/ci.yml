@@ -65,6 +65,9 @@ jobs:
       - name: Verify search indexing
         run: npm run verify:indexing
 
+      - name: Verify page titles and meta descriptions
+        run: npm run verify:metadata
+
       - name: Verify public homepage
         run: npm run verify:homepage
 
@@ -93,6 +96,7 @@ jobs:
         run: |
           node --check config/site.mjs
           node --check config/search-indexing.mjs
+          node --check config/page-metadata.mjs
           node --check cloudflare/worker.mjs
           node --check cloudflare/auth.mjs
           node --check cloudflare/api.mjs
@@ -114,6 +118,7 @@ jobs:
           node --check scripts/verify-security-hardening.mjs
           node --check scripts/verify-public-api-security.mjs
           node --check scripts/verify-search-indexing.mjs
+          node --check scripts/verify-page-metadata.mjs
           node --check scripts/verify-homepage.mjs
           node --check scripts/verify-about-page.mjs
           node --check scripts/verify-footer-balance.mjs
