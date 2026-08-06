@@ -20,6 +20,7 @@ import { handleCloudflareApi } from "./api.mjs";
 const PAGE_ROUTES = new Map([
     ["/", "home.html"],
     ["/about", "about.html"],
+    ["/faq", "faq.html"],
     ["/analysis", "features/analysis.html"],
     ["/archive", "features/archive.html"],
     ["/academy", "features/academy.html"],
