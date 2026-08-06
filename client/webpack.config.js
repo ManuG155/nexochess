@@ -12,6 +12,7 @@ const nodeEnv = process.env.NODE_ENV || "production";
 module.exports = {
     entry: {
         home: "./src/apps/home/index.tsx",
+        about: "./src/apps/about/index.tsx",
         analysis: "./src/apps/features/analysis/index.tsx",
         archive: "./src/apps/features/archive/index.tsx",
         academy: "./src/apps/features/academy/index.tsx",
