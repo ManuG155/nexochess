@@ -18,6 +18,7 @@ import {
 import { handleCloudflareApi } from "./api.mjs";
 
 const PAGE_ROUTES = new Map([
+    ["/", "home.html"],
     ["/analysis", "features/analysis.html"],
     ["/archive", "features/archive.html"],
     ["/academy", "features/academy.html"],
@@ -293,10 +294,6 @@ async function handleRequest(request, env) {
                 "text/plain; charset=utf-8",
                 404
             );
-    }
-
-    if (pathname === "/") {
-        return Response.redirect(new URL("/analysis", request.url), 308);
     }
 
     if (pathname.startsWith("/news")) {
