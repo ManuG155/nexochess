@@ -63,10 +63,6 @@ function Footer({ className, style }: FooterProps) {
 
         <nav className={styles.links} aria-label={t("footer.navigationLabel")}>
             <div className={styles.linkGroup}>
-                <a href="/about">
-                    {aboutLabel}
-                </a>
-
                 <a href="/help">
                     {t("navigationTitle", { ns: "helpCenter" })}
                 </a>
@@ -99,6 +95,10 @@ function Footer({ className, style }: FooterProps) {
             </div>
 
             <div className={styles.linkGroup}>
+                <a href="/about">
+                    {aboutLabel}
+                </a>
+
                 <a href="/terms">
                     {t("footer.termsOfService")}
                 </a>
