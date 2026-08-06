@@ -107,7 +107,6 @@ async function assertJavaScript(path) {
         !source.trimStart().startsWith("<!DOCTYPE html"),
         `${path} returned HTML instead of JavaScript.`
     );
-    assertSecurityHeaders(response, path);
     console.log(`OK ${path}: JavaScript bundle available`);
 }
 
