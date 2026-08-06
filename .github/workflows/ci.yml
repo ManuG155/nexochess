@@ -68,6 +68,9 @@ jobs:
       - name: Verify page titles and meta descriptions
         run: npm run verify:metadata
 
+      - name: Verify Open Graph and social cards
+        run: npm run verify:open-graph
+
       - name: Verify public homepage
         run: npm run verify:homepage
 
@@ -119,6 +122,7 @@ jobs:
           node --check scripts/verify-public-api-security.mjs
           node --check scripts/verify-search-indexing.mjs
           node --check scripts/verify-page-metadata.mjs
+          node --check scripts/verify-open-graph.mjs
           node --check scripts/verify-homepage.mjs
           node --check scripts/verify-about-page.mjs
           node --check scripts/verify-footer-balance.mjs
