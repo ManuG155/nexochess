@@ -34,11 +34,11 @@ function requireFragments(name, description, fragments) {
 }
 
 requireFragments("html", "About document metadata", [
-    '<meta name="description"',
+    '<meta name="description" content="${PAGE_DESCRIPTION}">',
     '<meta name="robots" content="index, follow, max-image-preview:large">',
     '<link rel="canonical" href="https://www.nexochess.com/about">',
     '<script src="/about.bundle.js"></script>',
-    "<title>About NexoChess</title>"
+    '<title>${PAGE_TITLE}</title>'
 ]);
 
 requireFragments("entry", "About React entry", [
