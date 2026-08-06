@@ -3,6 +3,10 @@ import { useTranslation } from "react-i18next";
 
 import Dialog from "@/components/common/Dialog";
 import languages from "@/i18n/languages";
+import {
+    navigateToLanguage,
+    normaliseSupportedLanguage
+} from "@/i18n/routing";
 
 import LanguagesDialogProps from "./LanguagesDialogProps";
 import * as styles from "./LanguagesDialog.module.css";
@@ -26,8 +30,12 @@ function LanguagesDialog({ onClose }: LanguagesDialogProps) {
     }, [query]);
 
     async function setLanguage(id: string) {
-        await i18n.changeLanguage(id);
+        const language = normaliseSupportedLanguage(id);
+        if (!language) return;
+
+        await i18n.changeLanguage(language);
         onClose();
+        navigateToLanguage(language);
     }
 
     return <Dialog className={styles.wrapper} onClose={onClose}>

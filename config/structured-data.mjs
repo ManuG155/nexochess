@@ -1,18 +1,10 @@
+import {
+    SUPPORTED_LANGUAGE_CODES,
+    parseLocalizedPathname
+} from "./language-routing.mjs";
 import { productionUrl } from "./site.mjs";
 
-export const STRUCTURED_DATA_LANGUAGE_CODES = Object.freeze([
-    "en",
-    "es",
-    "fr",
-    "de",
-    "pt",
-    "ru",
-    "zh",
-    "vi",
-    "hi",
-    "mr",
-    "pl"
-]);
+export const STRUCTURED_DATA_LANGUAGE_CODES = SUPPORTED_LANGUAGE_CODES;
 
 export const STRUCTURED_DATA_IDS = Object.freeze({
     image: productionUrl("/#primaryimage"),
@@ -22,26 +14,11 @@ export const STRUCTURED_DATA_IDS = Object.freeze({
 });
 
 export const FAQ_STRUCTURED_DATA_ITEMS = Object.freeze([
-    Object.freeze({
-        question: "Do I need an account to analyse games?",
-        answer: "No. You can analyse games and use the local Archive without creating an account. An account is only needed for optional synchronisation across devices."
-    }),
-    Object.freeze({
-        question: "Where are my analyses saved?",
-        answer: "Guest analyses are stored in the current browser. When you sign in, compatible data can also be associated with your account for cross-device access."
-    }),
-    Object.freeze({
-        question: "Which chess engine does NexoChess use?",
-        answer: "NexoChess uses Stockfish 17 to evaluate positions and produce the engine lines used by the review."
-    }),
-    Object.freeze({
-        question: "How is the language selected?",
-        answer: "On the first visit, NexoChess follows your browser language when it is supported. You can change it manually at any time in Appearance settings."
-    }),
-    Object.freeze({
-        question: "Is an account required to keep my local games?",
-        answer: "No. The local Archive works without an account. Signing in is optional and is intended for synchronisation and account features."
-    })
+    Object.freeze({ question: "Do I need an account to analyse games?", answer: "No. You can analyse games and use the local Archive without creating an account. An account is only needed for optional synchronisation across devices." }),
+    Object.freeze({ question: "Where are my analyses saved?", answer: "Guest analyses are stored in the current browser. When you sign in, compatible data can also be associated with your account for cross-device access." }),
+    Object.freeze({ question: "Which chess engine does NexoChess use?", answer: "NexoChess uses Stockfish 17 to evaluate positions and produce the engine lines used by the review." }),
+    Object.freeze({ question: "How is the language selected?", answer: "On the first visit, NexoChess follows your browser language when it is supported. You can change it manually at any time in Appearance settings." }),
+    Object.freeze({ question: "Is an account required to keep my local games?", answer: "No. The local Archive works without an account. Signing in is optional and is intended for synchronisation and account features." })
 ]);
 
 const PAGE_SCHEMA_TYPES = Object.freeze({
@@ -57,13 +34,7 @@ const PAGE_SCHEMA_TYPES = Object.freeze({
     "/source": "WebPage"
 });
 
-const FEATURE_PAGE_PATHS = new Set([
-    "/",
-    "/analysis",
-    "/academy",
-    "/puzzles",
-    "/help"
-]);
+const FEATURE_PAGE_PATHS = new Set(["/", "/analysis", "/academy", "/puzzles", "/help"]);
 
 function reference(id) {
     return Object.freeze({ "@id": id });
@@ -89,9 +60,7 @@ function createOrganization() {
         url: productionUrl("/"),
         logo: reference(STRUCTURED_DATA_IDS.image),
         email: "contact@nexochess.com",
-        sameAs: Object.freeze([
-            "https://github.com/ManuG155/nexochess"
-        ]),
+        sameAs: Object.freeze(["https://github.com/ManuG155/nexochess"]),
         contactPoint: Object.freeze({
             "@type": "ContactPoint",
             contactType: "technical support",
@@ -128,11 +97,7 @@ function createApplication(homeDescription) {
         publisher: reference(STRUCTURED_DATA_IDS.organization),
         isAccessibleForFree: true,
         inLanguage: STRUCTURED_DATA_LANGUAGE_CODES,
-        offers: Object.freeze({
-            "@type": "Offer",
-            price: "0",
-            priceCurrency: "EUR"
-        }),
+        offers: Object.freeze({ "@type": "Offer", price: "0", priceCurrency: "EUR" }),
         softwareHelp: reference(productionUrl("/help#webpage")),
         featureList: Object.freeze([
             "Chess game analysis",
@@ -149,17 +114,16 @@ function createFaqQuestions() {
     return FAQ_STRUCTURED_DATA_ITEMS.map(item => Object.freeze({
         "@type": "Question",
         name: item.question,
-        acceptedAnswer: Object.freeze({
-            "@type": "Answer",
-            text: item.answer
-        })
+        acceptedAnswer: Object.freeze({ "@type": "Answer", text: item.answer })
     }));
 }
 
 function createWebPage(pathname, metadata) {
-    const url = productionUrl(pathname);
+    const parsed = parseLocalizedPathname(pathname);
+    const basePathname = parsed.basePathname;
+    const url = metadata.canonicalUrl;
     const page = {
-        "@type": PAGE_SCHEMA_TYPES[pathname],
+        "@type": PAGE_SCHEMA_TYPES[basePathname],
         "@id": `${url}#webpage`,
         url,
         name: metadata.title,
@@ -168,22 +132,22 @@ function createWebPage(pathname, metadata) {
         about: reference(STRUCTURED_DATA_IDS.application),
         publisher: reference(STRUCTURED_DATA_IDS.organization),
         primaryImageOfPage: reference(STRUCTURED_DATA_IDS.image),
-        inLanguage: "en"
+        inLanguage: parsed.language
     };
 
-    if (pathname === "/about") {
+    if (basePathname === "/about") {
         page.mainEntity = reference(STRUCTURED_DATA_IDS.organization);
-    } else if (pathname === "/faq") {
+    } else if (basePathname === "/faq") {
         page.mainEntity = Object.freeze(createFaqQuestions());
-    } else if (FEATURE_PAGE_PATHS.has(pathname)) {
+    } else if (FEATURE_PAGE_PATHS.has(basePathname)) {
         page.mainEntity = reference(STRUCTURED_DATA_IDS.application);
     }
-
     return Object.freeze(page);
 }
 
 export function getStructuredData(pathname, metadata, homeDescription) {
-    if (!metadata || !PAGE_SCHEMA_TYPES[pathname]) return null;
+    const basePathname = parseLocalizedPathname(pathname).basePathname;
+    if (!metadata || !PAGE_SCHEMA_TYPES[basePathname]) return null;
 
     return Object.freeze({
         "@context": "https://schema.org",
@@ -199,9 +163,7 @@ export function getStructuredData(pathname, metadata, homeDescription) {
 
 export function serializeStructuredData(pathname, metadata, homeDescription) {
     const structuredData = getStructuredData(pathname, metadata, homeDescription);
-
     if (!structuredData) return "";
-
     return JSON.stringify(structuredData)
         .replaceAll("&", "\\u0026")
         .replaceAll("<", "\\u003c")
@@ -210,8 +172,5 @@ export function serializeStructuredData(pathname, metadata, homeDescription) {
 
 export function getStructuredDataReplacements(pathname, metadata, homeDescription) {
     const serialized = serializeStructuredData(pathname, metadata, homeDescription);
-
-    return serialized
-        ? { STRUCTURED_DATA_JSON: serialized }
-        : {};
+    return serialized ? { STRUCTURED_DATA_JSON: serialized } : {};
 }

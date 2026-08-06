@@ -6,6 +6,11 @@ import {
     renderSitemapXml
 } from "../config/search-indexing.mjs";
 import {
+    getDefaultLanguageAliasRedirect,
+    parseLocalizedPathname,
+    localizePathname
+} from "../config/language-routing.mjs";
+import {
     PERMANENT_CANONICAL_REDIRECT_STATUS,
     PRODUCTION_ENVIRONMENT,
     getProductionCanonicalRedirect,
@@ -48,18 +53,6 @@ const AUTH_METADATA = {
     }
 };
 
-const LEGAL_CANONICALS = {
-    "/terms": {
-        LEGAL_CANONICAL: productionUrl("/terms")
-    },
-    "/privacy": {
-        LEGAL_CANONICAL: productionUrl("/privacy")
-    },
-    "/source": {
-        LEGAL_CANONICAL: productionUrl("/source")
-    }
-};
-
 const MINIMAL_CSP = [
     "base-uri 'self'",
     "frame-ancestors 'none'",
@@ -67,28 +60,23 @@ const MINIMAL_CSP = [
 ].join("; ");
 
 function normalisePathname(pathname) {
-    if (pathname.length > 1 && pathname.endsWith("/")) {
-        return pathname.slice(0, -1);
-    }
-
+    if (pathname.length > 1 && pathname.endsWith("/")) return pathname.slice(0, -1);
     return pathname;
 }
 
-function metadataFor(pathname) {
+function metadataFor(localizedPathname, basePathname, language) {
     return {
-        ...getPageMetadataReplacements(pathname),
-        ...(AUTH_METADATA[pathname] || {}),
-        ...(LEGAL_CANONICALS[pathname] || {})
+        ...getPageMetadataReplacements(localizedPathname),
+        ...(AUTH_METADATA[basePathname] || {}),
+        PAGE_LANGUAGE: language
     };
 }
 
 function replacePlaceholders(html, replacements) {
     let output = html;
-
     for (const [key, value] of Object.entries(replacements)) {
         output = output.replaceAll("${" + key + "}", value);
     }
-
     return output;
 }
 
@@ -98,7 +86,6 @@ function isProduction(env) {
 
 function withSecurityHeaders(headers, env) {
     const nextHeaders = new Headers(headers);
-
     nextHeaders.set("Content-Security-Policy", MINIMAL_CSP);
     nextHeaders.set(
         "Permissions-Policy",
@@ -112,14 +99,10 @@ function withSecurityHeaders(headers, env) {
     nextHeaders.delete("X-Powered-By");
 
     if (isProduction(env)) {
-        nextHeaders.set(
-            "Strict-Transport-Security",
-            "max-age=31536000; includeSubDomains"
-        );
+        nextHeaders.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
     } else {
         nextHeaders.delete("Strict-Transport-Security");
     }
-
     return nextHeaders;
 }
 
@@ -131,11 +114,8 @@ function secureResponse(response, env, request) {
         contentType: headers.get("Content-Type")
     });
 
-    if (indexingPolicy.directive) {
-        headers.set("X-Robots-Tag", indexingPolicy.directive);
-    } else {
-        headers.delete("X-Robots-Tag");
-    }
+    if (indexingPolicy.directive) headers.set("X-Robots-Tag", indexingPolicy.directive);
+    else headers.delete("X-Robots-Tag");
 
     return new Response(response.body, {
         status: response.status,
@@ -146,7 +126,6 @@ function secureResponse(response, env, request) {
 
 function withPageHeaders(headers, contentType, env) {
     const nextHeaders = new Headers(headers);
-
     if (contentType) nextHeaders.set("Content-Type", contentType);
     nextHeaders.set("Cache-Control", "no-cache, must-revalidate");
 
@@ -157,19 +136,16 @@ function withPageHeaders(headers, contentType, env) {
         nextHeaders.set("Pragma", "no-cache");
         nextHeaders.set("Expires", "0");
     }
-
     return nextHeaders;
 }
 
 function withApiHeaders(headers, contentType) {
     const nextHeaders = new Headers(headers);
-
     if (contentType) nextHeaders.set("Content-Type", contentType);
     nextHeaders.set("Cache-Control", "no-cache, no-store, must-revalidate");
     nextHeaders.set("Pragma", "no-cache");
     nextHeaders.set("Expires", "0");
     nextHeaders.set("X-Robots-Tag", "noindex, nofollow, noarchive");
-
     return nextHeaders;
 }
 
@@ -186,30 +162,19 @@ async function renderPage(request, env, filepath, replacements = {}, status = 20
         method: "GET",
         headers: request.headers
     }));
-
     if (!assetResponse.ok) return assetResponse;
 
-    const html = replacePlaceholders(
-        await assetResponse.text(),
-        replacements
-    );
-
+    const html = replacePlaceholders(await assetResponse.text(), replacements);
     return new Response(request.method === "HEAD" ? null : html, {
         status,
-        headers: withPageHeaders(
-            assetResponse.headers,
-            "text/html; charset=utf-8",
-            env
-        )
+        headers: withPageHeaders(assetResponse.headers, "text/html; charset=utf-8", env)
     });
 }
 
 function json(payload, status = 200) {
     return new Response(JSON.stringify(payload), {
         status,
-        headers: withApiHeaders(
-            { "Content-Type": "application/json; charset=utf-8" }
-        )
+        headers: withApiHeaders({ "Content-Type": "application/json; charset=utf-8" })
     });
 }
 
@@ -226,10 +191,7 @@ async function getCloudflareBackend(request, env) {
 
 function redirectToCanonicalProductionOrigin(request, env) {
     const target = getProductionCanonicalRedirect(request.url, env);
-
-    return target
-        ? Response.redirect(target, PERMANENT_CANONICAL_REDIRECT_STATUS)
-        : null;
+    return target ? Response.redirect(target, PERMANENT_CANONICAL_REDIRECT_STATUS) : null;
 }
 
 async function handleRequest(request, env) {
@@ -237,75 +199,57 @@ async function handleRequest(request, env) {
     if (canonicalRedirect) return canonicalRedirect;
 
     const url = new URL(request.url);
-    const pathname = normalisePathname(url.pathname);
+    const rawPathname = normalisePathname(url.pathname);
 
-    if (pathname === AUTH_PATH || pathname.startsWith(`${AUTH_PATH}/`)) {
+    if (rawPathname === AUTH_PATH || rawPathname.startsWith(`${AUTH_PATH}/`)) {
         const auth = await getCloudflareBackend(request, env);
-
         return auth
             ? auth.handler(request)
-            : json({
-                error: "Cloudflare authentication is not configured yet."
-            }, 503);
+            : json({ error: "Cloudflare authentication is not configured yet." }, 503);
     }
 
-    if (pathname.startsWith("/api/")) {
+    if (rawPathname.startsWith("/api/")) {
         const auth = await getCloudflareBackend(request, env);
-
         return auth
             ? handleCloudflareApi(request, env, auth)
-            : json({
-                error: "The Cloudflare data service is not configured yet."
-            }, 503);
+            : json({ error: "The Cloudflare data service is not configured yet." }, 503);
     }
 
     if (request.method !== "GET" && request.method !== "HEAD") {
-        return new Response("Method Not Allowed", {
-            status: 405,
-            headers: { Allow: "GET, HEAD" }
-        });
+        return new Response("Method Not Allowed", { status: 405, headers: { Allow: "GET, HEAD" } });
     }
 
-    const indexingEnabled = isCanonicalProductionSearchRequest(
-        url,
-        env.NEXOCHESS_ENV
-    );
+    const indexingEnabled = isCanonicalProductionSearchRequest(url, env.NEXOCHESS_ENV);
+    if (rawPathname === "/robots.txt") {
+        return textDocument(request, env, renderRobotsTxt({ indexingEnabled }), "text/plain; charset=utf-8");
+    }
+    if (rawPathname === "/sitemap.xml") {
+        return indexingEnabled
+            ? textDocument(request, env, renderSitemapXml(), "application/xml; charset=utf-8")
+            : textDocument(request, env, "Not Found\n", "text/plain; charset=utf-8", 404);
+    }
 
-    if (pathname === "/robots.txt") {
-        return textDocument(
-            request,
-            env,
-            renderRobotsTxt({ indexingEnabled }),
-            "text/plain; charset=utf-8"
+    const englishAlias = getDefaultLanguageAliasRedirect(url);
+    if (englishAlias) return Response.redirect(englishAlias, 308);
+
+    const languageRoute = parseLocalizedPathname(rawPathname);
+    const pathname = languageRoute.basePathname;
+    const localizedPathname = languageRoute.localizedPathname;
+
+    if (pathname.startsWith("/news")) {
+        return Response.redirect(
+            new URL(localizePathname("/analysis", languageRoute.language), request.url),
+            308
         );
     }
 
-    if (pathname === "/sitemap.xml") {
-        return indexingEnabled
-            ? textDocument(
-                request,
-                env,
-                renderSitemapXml(),
-                "application/xml; charset=utf-8"
-            )
-            : textDocument(
-                request,
-                env,
-                "Not Found\n",
-                "text/plain; charset=utf-8",
-                404
-            );
-    }
-
-    if (pathname.startsWith("/news")) {
-        return Response.redirect(new URL("/analysis", request.url), 308);
-    }
-
-    if (
-        pathname === "/settings"
-        || pathname.startsWith("/settings/")
-    ) {
-        return renderPage(request, env, "settings.html");
+    if (pathname === "/settings" || pathname.startsWith("/settings/")) {
+        return renderPage(
+            request,
+            env,
+            "settings.html",
+            metadataFor(localizedPathname, "/settings", languageRoute.language)
+        );
     }
 
     const filepath = PAGE_ROUTES.get(pathname);
@@ -314,22 +258,17 @@ async function handleRequest(request, env) {
             request,
             env,
             filepath,
-            metadataFor(pathname)
+            metadataFor(localizedPathname, pathname, languageRoute.language)
         );
     }
 
     const assetResponse = await env.ASSETS.fetch(request);
     if (assetResponse.status !== 404) return assetResponse;
-
     return renderPage(request, env, "unfound.html", {}, 404);
 }
 
 export default {
     async fetch(request, env) {
-        return secureResponse(
-            await handleRequest(request, env),
-            env,
-            request
-        );
+        return secureResponse(await handleRequest(request, env), env, request);
     }
 };
