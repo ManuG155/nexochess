@@ -26,6 +26,10 @@ export const INDEXABLE_PAGE_ROUTES = Object.freeze([
         assetPath: "apps/home.html"
     }),
     freezeRoute({
+        pathname: "/about",
+        assetPath: "apps/about.html"
+    }),
+    freezeRoute({
         pathname: "/analysis",
         assetPath: "apps/features/analysis.html"
     }),
