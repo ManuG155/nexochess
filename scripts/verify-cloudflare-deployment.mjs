@@ -165,6 +165,7 @@ async function assertSearchFiles() {
 for (const path of [
     "/",
     "/about",
+    "/faq",
     "/analysis",
     "/archive",
     "/puzzles",
@@ -180,6 +181,7 @@ for (const path of [
 await assertPage("/analysis?game=deployment-smoke-test");
 await assertJavaScript("/home.bundle.js");
 await assertJavaScript("/about.bundle.js");
+await assertJavaScript("/faq.bundle.js");
 await assertJavaScript("/settings.bundle.js");
 await assertSearchFiles();
 

@@ -74,6 +74,9 @@ jobs:
       - name: Verify footer balance
         run: npm run verify:footer
 
+      - name: Verify public FAQ page
+        run: npm run verify:faq
+
       - name: Type-check client
         run: npm run check -w client
 
@@ -111,6 +114,7 @@ jobs:
           node --check scripts/verify-homepage.mjs
           node --check scripts/verify-about-page.mjs
           node --check scripts/verify-footer-balance.mjs
+          node --check scripts/verify-faq-page.mjs
 
       - name: Prepare staging Cloudflare assets
         run: node scripts/build-cloudflare.mjs
