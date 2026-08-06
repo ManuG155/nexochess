@@ -1,0 +1,41 @@
+.boardShell {
+    padding-top: 34px;
+    padding-left: 0;
+}
+
+.board {
+    width: 100%;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    grid-template-rows: repeat(8, minmax(0, 1fr));
+}
+
+.square {
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+}
+
+.evaluation {
+    top: 0;
+    left: 12px;
+    width: 52px;
+    height: 30px;
+    min-height: 30px;
+    border-radius: 9px;
+    font-size: 0.72rem;
+}
+
+@media (max-width: 760px) {
+    .boardShell {
+        padding-top: 30px;
+    }
+
+    .evaluation {
+        left: 10px;
+        width: 48px;
+        height: 27px;
+        min-height: 27px;
+        font-size: 0.68rem;
+    }
+}

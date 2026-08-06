@@ -51,6 +51,17 @@ function PageWrapper({
         };
     }, [colourMode]);
 
+    useEffect(() => {
+        const brandLink = document.querySelector<HTMLAnchorElement>(
+            'header a[href="/analysis"]'
+        );
+
+        if (!brandLink) return;
+
+        brandLink.setAttribute("href", "/?home=nav");
+        brandLink.setAttribute("aria-label", "NexoChess");
+    }, []);
+
     return <QueryClientProvider client={queryClient}>
         <div
             className={[
