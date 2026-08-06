@@ -266,10 +266,10 @@ assert.equal(productionApi.indexable, false);
 assert.match(productionApi.directive, /^noindex, nofollow/);
 
 const previewRobots = renderRobotsTxt({ indexingEnabled: false });
-assert.ok(
-    previewRobots.includes("Allow: /")
-        && !previewRobots.includes("Sitemap:"),
-    "Preview robots.txt must allow crawling of pages carrying noindex and omit the production sitemap."
+assert.equal(
+    previewRobots,
+    "User-agent: *\nDisallow: /\n",
+    "Non-production robots.txt must block all crawling and omit the production sitemap."
 );
 
 console.log(
