@@ -1,0 +1,42 @@
+{
+  "home": {
+    "title": "NexoChess — 看懂每一步棋",
+    "description": "使用 NexoChess 分析国际象棋对局，理解关键时刻，重新查看已保存的复盘，并通过六百多万个战术题持续训练。"
+  },
+  "about": {
+    "title": "关于 NexoChess — 独立国际象棋工具",
+    "description": "了解 NexoChess 的创立原因、独立工具的构建方式，以及指导棋局分析、训练和开源开发的核心原则。"
+  },
+  "faq": {
+    "title": "NexoChess 常见问题 — 账户、分析与隐私",
+    "description": "查找有关 NexoChess 账户、棋局分析、已保存对局、战术题、支持语言、隐私以及其他常见问题的清晰答案。"
+  },
+  "analysis": {
+    "title": "免费 Stockfish 国际象棋分析 — NexoChess",
+    "description": "使用 Stockfish 分析棋局，在清晰的交互式棋盘上查看关键时刻、着法分类、准确率和预估表现。"
+  },
+  "academy": {
+    "title": "NexoChess 学院 — 学习国际象棋记谱",
+    "description": "通过简短的互动课程学习国际象棋记谱、棋子走法以及 NexoChess 的着法分类，并把知识用于实战。"
+  },
+  "puzzles": {
+    "title": "国际象棋战术题与训练 — NexoChess",
+    "description": "练习来自已分析对局的战术题，或从六百多万个局面中按主题和难度筛选适合自己的训练内容。"
+  },
+  "help": {
+    "title": "NexoChess 帮助中心 — 指南与故障排除",
+    "description": "了解如何分析棋局、使用存档、练习战术题、管理账户，并通过实用指南解决 NexoChess 的常见问题。"
+  },
+  "terms": {
+    "title": "NexoChess 服务条款",
+    "description": "阅读关于访问 NexoChess、使用棋局分析、账户、已保存对局、战术题以及其他可用服务的相关条款。"
+  },
+  "privacy": {
+    "title": "NexoChess 隐私政策",
+    "description": "了解 NexoChess 会处理哪些数据、使用这些数据的原因、账户和浏览器信息的管理方式，以及可用的隐私选项。"
+  },
+  "source": {
+    "title": "NexoChess 源代码与许可证",
+    "description": "查看 NexoChess 源代码、开源许可证、第三方组件、国际象棋引擎信息以及必须保留的数据来源说明。"
+  }
+}

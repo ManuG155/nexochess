@@ -1,0 +1,42 @@
+{
+  "home": {
+    "title": "NexoChess — Comprenez chaque coup",
+    "description": "Analysez vos parties d’échecs, comprenez chaque moment critique, retrouvez vos analyses et entraînez-vous avec plus de six millions de problèmes sur NexoChess."
+  },
+  "about": {
+    "title": "À propos de NexoChess — Outils d’échecs indépendants",
+    "description": "Découvrez pourquoi NexoChess existe, comment ses outils indépendants sont conçus et quels principes guident l’analyse, l’entraînement et le développement libre."
+  },
+  "faq": {
+    "title": "FAQ NexoChess — Comptes, analyse et confidentialité",
+    "description": "Trouvez des réponses claires sur les comptes, l’analyse des parties, les parties enregistrées, les problèmes, les langues disponibles et la confidentialité."
+  },
+  "analysis": {
+    "title": "Analyse gratuite de parties avec Stockfish — NexoChess",
+    "description": "Analysez vos parties avec Stockfish et examinez les moments critiques, la classification des coups, la précision et la performance estimée sur un échiquier clair."
+  },
+  "academy": {
+    "title": "Académie NexoChess — Apprendre la notation des échecs",
+    "description": "Apprenez la notation, le déplacement des pièces et les classifications NexoChess grâce à de courtes leçons interactives conçues pour la pratique."
+  },
+  "puzzles": {
+    "title": "Problèmes d’échecs et entraînement tactique — NexoChess",
+    "description": "Entraînez votre tactique avec des problèmes issus de vos analyses ou filtrés par thème et difficulté parmi plus de six millions de positions."
+  },
+  "help": {
+    "title": "Centre d’aide NexoChess — Guides et dépannage",
+    "description": "Apprenez à analyser des parties, utiliser les Archives, résoudre des problèmes, gérer votre compte et corriger les difficultés courantes grâce à des guides pratiques."
+  },
+  "terms": {
+    "title": "Conditions d’utilisation de NexoChess",
+    "description": "Consultez les conditions qui régissent l’accès à NexoChess, l’analyse des parties, les comptes, les parties enregistrées, les problèmes et les autres services."
+  },
+  "privacy": {
+    "title": "Politique de confidentialité de NexoChess",
+    "description": "Découvrez quelles données NexoChess traite, pourquoi elles sont utilisées, comment les informations du compte et du navigateur sont gérées et quels choix existent."
+  },
+  "source": {
+    "title": "Code source et licences de NexoChess",
+    "description": "Consultez le code source de NexoChess, les licences libres, les composants tiers, les informations sur le moteur d’échecs et les attributions requises."
+  }
+}
