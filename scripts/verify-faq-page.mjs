@@ -14,19 +14,16 @@ const paths = {
     sitemap: "client/public/sitemap.xml",
     deployment: "scripts/verify-cloudflare-deployment.mjs"
 };
-
 const files = Object.fromEntries(await Promise.all(
-    Object.entries(paths).map(async ([name, path]) => [
-        name,
-        await readFile(resolve(path), "utf8")
-    ])
+    Object.entries(paths).map(async ([name, path]) => [name, await readFile(resolve(path), "utf8")])
 ));
 
 function includes(name, fragment, message) {
     assert.ok(files[name].includes(fragment), message || `${name} is missing ${fragment}`);
 }
 
-includes("html", 'href="https://www.nexochess.com/faq"');
+includes("html", '<link rel="canonical" href="${PAGE_CANONICAL}">');
+includes("html", '<script type="application/ld+json">${STRUCTURED_DATA_JSON}</script>');
 includes("html", '<script src="/faq.bundle.js"></script>');
 includes("entry", 'import Faq from "./Faq"');
 includes("entry", "<Faq/>");
@@ -46,12 +43,8 @@ includes("indexing", 'assetPath: "apps/faq.html"');
 includes("sitemap", "<loc>https://www.nexochess.com/faq</loc>");
 includes("deployment", '    "/faq",');
 includes("deployment", 'assertJavaScript("/faq.bundle.js")');
-
 for (const item of ["account", "archive", "engine", "languages", "privacy"]) {
     includes("component", `"${item}"`);
 }
 
-console.log(
-    "FAQ verification passed: public route, visible Help Center access, "
-    + "translated content reuse, responsive layout and deployment coverage."
-);
+console.log("FAQ verification passed with centralized canonical metadata and visible Help Center access.");
