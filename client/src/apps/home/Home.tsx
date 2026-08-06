@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { getHomeCopy } from "./copy";
 import * as styles from "./Home.module.css";
+import * as previewFix from "./HomePreviewFix.module.css";
 
 type IconName =
     | "academy"
@@ -113,8 +114,11 @@ function AnalysisPreview() {
         </figcaption>
 
         <div className={styles.previewWorkspace}>
-            <div className={styles.boardShell} aria-hidden="true">
-                <div className={styles.board}>
+            <div
+                className={`${styles.boardShell} ${previewFix.boardShell}`}
+                aria-hidden="true"
+            >
+                <div className={`${styles.board} ${previewFix.board}`}>
                     {Array.from({ length: 64 }, (_, index) => {
                         const row = Math.floor(index / 8);
                         const column = index % 8;
@@ -124,6 +128,7 @@ function AnalysisPreview() {
                             key={index}
                             className={[
                                 styles.square,
+                                previewFix.square,
                                 light ? styles.lightSquare : styles.darkSquare,
                                 index === 28 ? styles.selectedSquare : "",
                                 index === 36 ? styles.targetSquare : ""
@@ -134,7 +139,9 @@ function AnalysisPreview() {
                     })}
                 </div>
 
-                <span className={styles.evaluation}>+1.6</span>
+                <span className={`${styles.evaluation} ${previewFix.evaluation}`}>
+                    +1.6
+                </span>
             </div>
 
             <div className={styles.reviewCard}>
