@@ -65,6 +65,9 @@ jobs:
       - name: Verify search indexing
         run: npm run verify:indexing
 
+      - name: Verify public homepage
+        run: npm run verify:homepage
+
       - name: Type-check client
         run: npm run check -w client
 
@@ -99,6 +102,7 @@ jobs:
           node --check scripts/verify-security-hardening.mjs
           node --check scripts/verify-public-api-security.mjs
           node --check scripts/verify-search-indexing.mjs
+          node --check scripts/verify-homepage.mjs
 
       - name: Prepare staging Cloudflare assets
         run: node scripts/build-cloudflare.mjs
