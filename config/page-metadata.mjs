@@ -1,3 +1,4 @@
+import { getStructuredDataReplacements } from "./structured-data.mjs";
 import { productionUrl } from "./site.mjs";
 
 export const OPEN_GRAPH_IMAGE_METADATA = Object.freeze({
@@ -116,7 +117,12 @@ export function getPageMetadataReplacements(pathname) {
             TWITTER_TITLE: metadata.twitter.title,
             TWITTER_DESCRIPTION: metadata.twitter.description,
             TWITTER_IMAGE: metadata.twitter.image.url,
-            TWITTER_IMAGE_ALT: metadata.twitter.image.alt
+            TWITTER_IMAGE_ALT: metadata.twitter.image.alt,
+            ...getStructuredDataReplacements(
+                pathname,
+                metadata,
+                INDEXABLE_PAGE_METADATA["/"].description
+            )
         }
         : {};
 }

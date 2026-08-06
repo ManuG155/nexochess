@@ -71,6 +71,9 @@ jobs:
       - name: Verify Open Graph and social cards
         run: npm run verify:open-graph
 
+      - name: Verify Schema.org structured data
+        run: npm run verify:structured-data
+
       - name: Verify public homepage
         run: npm run verify:homepage
 
@@ -100,6 +103,7 @@ jobs:
           node --check config/site.mjs
           node --check config/search-indexing.mjs
           node --check config/page-metadata.mjs
+          node --check config/structured-data.mjs
           node --check cloudflare/worker.mjs
           node --check cloudflare/auth.mjs
           node --check cloudflare/api.mjs
@@ -123,6 +127,7 @@ jobs:
           node --check scripts/verify-search-indexing.mjs
           node --check scripts/verify-page-metadata.mjs
           node --check scripts/verify-open-graph.mjs
+          node --check scripts/verify-structured-data.mjs
           node --check scripts/verify-homepage.mjs
           node --check scripts/verify-about-page.mjs
           node --check scripts/verify-footer-balance.mjs
