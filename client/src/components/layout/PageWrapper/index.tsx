@@ -37,9 +37,9 @@ function PageWrapper({
     );
 
     const routeName = typeof window == "undefined"
-        ? "analysis"
+        ? "home"
         : window.location.pathname.split("/").filter(Boolean).at(0)
-            || "analysis";
+            || "home";
 
     useEffect(() => {
         document.documentElement.dataset.theme = colourMode;
