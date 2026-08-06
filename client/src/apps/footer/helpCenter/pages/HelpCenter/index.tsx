@@ -203,11 +203,14 @@ function HelpCenter() {
             </div>
         </section>
 
-        <section className={`${styles.section} ${styles.faqSection}`}>
+        <section className={`${styles.section} ${styles.faqSection}`} id="faq">
             <div className={styles.sectionHeading}>
                 <span>{t("faq.eyebrow")}</span>
                 <h2>{t("faq.title")}</h2>
                 <p>{t("faq.subtitle")}</p>
+                <a className={styles.secondaryAction} href="/faq">
+                    {t("faq.eyebrow")} →
+                </a>
             </div>
 
             <div className={styles.faqList}>
