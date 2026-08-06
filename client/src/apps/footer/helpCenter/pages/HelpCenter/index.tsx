@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import * as styles from "./HelpCenter.module.css";
+import HelpCompletion from "./HelpCompletion";
 
 import iconInterfaceHelp from "@assets/img/interface/help.svg";
 import iconInterfaceAnalysis from "@assets/img/interface/analysis.svg";
@@ -202,6 +203,8 @@ function HelpCenter() {
                 ))}
             </div>
         </section>
+
+        <HelpCompletion contactUrl={contactUrl}/>
 
         <section className={`${styles.section} ${styles.faqSection}`} id="faq">
             <div className={styles.sectionHeading}>

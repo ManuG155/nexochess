@@ -77,6 +77,9 @@ jobs:
       - name: Verify public FAQ page
         run: npm run verify:faq
 
+      - name: Verify completed Help Center
+        run: npm run verify:help
+
       - name: Type-check client
         run: npm run check -w client
 
@@ -115,6 +118,7 @@ jobs:
           node --check scripts/verify-about-page.mjs
           node --check scripts/verify-footer-balance.mjs
           node --check scripts/verify-faq-page.mjs
+          node --check scripts/verify-help-center.mjs
 
       - name: Prepare staging Cloudflare assets
         run: node scripts/build-cloudflare.mjs
