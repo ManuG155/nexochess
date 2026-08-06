@@ -68,6 +68,9 @@ jobs:
       - name: Verify robots.txt crawler policy
         run: npm run verify:robots
 
+      - name: Verify XML sitemap
+        run: npm run verify:sitemap
+
       - name: Verify page titles and meta descriptions
         run: npm run verify:metadata
 
@@ -105,6 +108,7 @@ jobs:
         run: |
           node --check config/site.mjs
           node --check config/search-indexing.mjs
+          node --check config/sitemap.mjs
           node --check config/page-metadata.mjs
           node --check config/structured-data.mjs
           node --check cloudflare/worker.mjs
@@ -129,6 +133,7 @@ jobs:
           node --check scripts/verify-public-api-security.mjs
           node --check scripts/verify-search-indexing.mjs
           node --check scripts/verify-robots-txt.mjs
+          node --check scripts/verify-sitemap.mjs
           node --check scripts/verify-page-metadata.mjs
           node --check scripts/verify-open-graph.mjs
           node --check scripts/verify-structured-data.mjs
