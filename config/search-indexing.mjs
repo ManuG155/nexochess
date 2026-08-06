@@ -22,6 +22,10 @@ function normaliseHostname(hostname) {
 
 export const INDEXABLE_PAGE_ROUTES = Object.freeze([
     freezeRoute({
+        pathname: "/",
+        assetPath: "apps/home.html"
+    }),
+    freezeRoute({
         pathname: "/analysis",
         assetPath: "apps/features/analysis.html"
     }),
