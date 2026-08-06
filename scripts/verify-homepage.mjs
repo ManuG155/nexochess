@@ -9,6 +9,8 @@ const files = Object.fromEntries(await Promise.all(
         component: "client/src/apps/home/Home.tsx",
         copy: "client/src/apps/home/copy.ts",
         styles: "client/src/apps/home/Home.module.css",
+        previewFix: "client/src/apps/home/HomePreviewFix.module.css",
+        pageWrapper: "client/src/components/layout/PageWrapper/index.tsx",
         webpack: "client/webpack.config.js",
         worker: "cloudflare/worker.mjs",
         indexing: "config/search-indexing.mjs",
@@ -54,6 +56,10 @@ requireFragments("component", "Homepage content", [
     '{ icon: "archive", href: "/archive" }',
     '{ icon: "puzzle", href: "/puzzles" }',
     '{ icon: "academy", href: "/academy" }',
+    'previewFix.boardShell',
+    'previewFix.board',
+    'previewFix.square',
+    'previewFix.evaluation',
     'aria-labelledby="features-title"',
     'aria-labelledby="process-title"',
     'aria-labelledby="proof-title"',
@@ -97,6 +103,21 @@ requireFragments("styles", "Homepage responsive and theme styles", [
     ".featureCard:focus-visible"
 ]);
 
+requireFragments("previewFix", "Homepage board geometry", [
+    "grid-template-columns: repeat(8, minmax(0, 1fr))",
+    "grid-template-rows: repeat(8, minmax(0, 1fr))",
+    "aspect-ratio: 1 / 1",
+    "overflow: hidden",
+    "width: 52px",
+    "height: 30px"
+]);
+
+requireFragments("pageWrapper", "Homepage navigation access", [
+    "document.querySelector<HTMLAnchorElement>",
+    'brandLink.setAttribute("href", "/?home=nav")',
+    'brandLink.setAttribute("aria-label", "NexoChess")'
+]);
+
 assert.ok(
     files.webpack.includes('home: "./src/apps/home/index.tsx"'),
     "Webpack must compile the homepage entry."
@@ -124,5 +145,5 @@ assert.ok(
 
 console.log(
     `Homepage verification passed: ${expectedLanguages.length} languages, `
-    + "responsive themes, accessible landmarks, canonical root and functional routes."
+    + "rigid 8x8 preview, home navigation, responsive themes, accessible landmarks and canonical root."
 );
