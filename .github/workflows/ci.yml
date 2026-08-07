@@ -177,8 +177,7 @@ jobs:
       - name: Bundle production Cloudflare Worker
         run: |
           node scripts/prepare-cloudflare-production.mjs \
-            --database-id 00000000-0000-4000-8000-000000000000 \
-            --analytics-measurement-id G-NEXOCHESSTEST
+            --database-id 00000000-0000-4000-8000-000000000000
           npx --yes wrangler@4.119.0 deploy \
             --dry-run \
             --config wrangler.production.local.jsonc \
