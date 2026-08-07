@@ -82,6 +82,7 @@ assert.ok(
     "Staging must not receive a production Analytics measurement ID."
 );
 for (const fragment of [
+    'DEFAULT_ANALYTICS_MEASUREMENT_ID = "G-V4227TJCDB"',
     "NEXOCHESS_GA_MEASUREMENT_ID",
     "--analytics-measurement-id",
     "ANALYTICS_MEASUREMENT_ID_PATTERN",
@@ -130,7 +131,7 @@ assert.ok(
 );
 assert.ok(ci.includes("Verify privacy-first analytics installation"));
 assert.ok(ci.includes("npm run verify:analytics"));
-assert.ok(ci.includes("--analytics-measurement-id G-NEXOCHESSTEST"));
+assert.ok(!ci.includes("G-NEXOCHESSTEST"));
 
 console.log("Analytics installation verification passed.");
-console.log("GA4 is production-only, consent-gated, advertising-disabled and disclosed in 11 languages for Step 32.");
+console.log("GA4 is production-only, consent-gated, advertising-disabled, configured with G-V4227TJCDB and disclosed in 11 languages for Step 32.");
