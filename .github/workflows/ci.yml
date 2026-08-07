@@ -65,6 +65,9 @@ jobs:
       - name: Verify search indexing
         run: npm run verify:indexing
 
+      - name: Verify robots.txt crawler policy
+        run: npm run verify:robots
+
       - name: Verify page titles and meta descriptions
         run: npm run verify:metadata
 
@@ -125,6 +128,7 @@ jobs:
           node --check scripts/verify-security-hardening.mjs
           node --check scripts/verify-public-api-security.mjs
           node --check scripts/verify-search-indexing.mjs
+          node --check scripts/verify-robots-txt.mjs
           node --check scripts/verify-page-metadata.mjs
           node --check scripts/verify-open-graph.mjs
           node --check scripts/verify-structured-data.mjs

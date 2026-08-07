@@ -120,6 +120,21 @@ export const TECHNICAL_ROBOTS_DISALLOW_PATHS = Object.freeze([
     "/cloudflare-build.json"
 ]);
 
+export const ROBOTS_TXT_POLICIES = Object.freeze({
+    production: Object.freeze({
+        userAgent: "*",
+        allowPaths: Object.freeze(["/"]),
+        disallowPaths: TECHNICAL_ROBOTS_DISALLOW_PATHS,
+        sitemapUrl: productionUrl("/sitemap.xml")
+    }),
+    nonProduction: Object.freeze({
+        userAgent: "*",
+        allowPaths: Object.freeze([]),
+        disallowPaths: Object.freeze(["/"]),
+        sitemapUrl: null
+    })
+});
+
 export const INDEXING_DIRECTIVES = Object.freeze({
     index: INDEX_DIRECTIVE,
     noindexFollow: NOINDEX_FOLLOW_DIRECTIVE,
@@ -271,25 +286,27 @@ export function getSearchIndexingPolicy(input, {
     };
 }
 
-export function renderRobotsTxt({ indexingEnabled = true } = {}) {
-    if (!indexingEnabled) {
-        return [
-            "User-agent: *",
-            "Allow: /",
-            ""
-        ].join("\n");
+function renderRobotsPolicy(policy) {
+    const lines = [
+        `User-agent: ${policy.userAgent}`,
+        ...policy.allowPaths.map(path => `Allow: ${path}`),
+        ...policy.disallowPaths.map(path => `Disallow: ${path}`)
+    ];
+
+    if (policy.sitemapUrl) {
+        lines.push("", `Sitemap: ${policy.sitemapUrl}`);
     }
 
-    return [
-        "User-agent: *",
-        "Allow: /",
-        ...TECHNICAL_ROBOTS_DISALLOW_PATHS.map(path => (
-            `Disallow: ${path}`
-        )),
-        "",
-        `Sitemap: ${productionUrl("/sitemap.xml")}`,
-        ""
-    ].join("\n");
+    lines.push("");
+    return lines.join("\n");
+}
+
+export function renderRobotsTxt({ indexingEnabled = true } = {}) {
+    return renderRobotsPolicy(
+        indexingEnabled
+            ? ROBOTS_TXT_POLICIES.production
+            : ROBOTS_TXT_POLICIES.nonProduction
+    );
 }
 
 function escapeXml(value) {
