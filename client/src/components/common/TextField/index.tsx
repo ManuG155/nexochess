@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import displayToast from "@/lib/toast";
+import { getAccessibilityCopy } from "@/i18n/accessibilityCopy";
 
 import TextFieldProps from "./TextFieldProps";
 import * as styles from "./TextField.module.css";
@@ -27,7 +28,10 @@ function TextField({
     onChange,
     onClick
 }: TextFieldProps) {
-    const { t } = useTranslation("common");
+    const { i18n } = useTranslation();
+    const accessibilityCopy = getAccessibilityCopy(
+        i18n.resolvedLanguage || i18n.language
+    );
     const [text, setText] = useState(value || "");
 
     const sharedProps = {
@@ -83,7 +87,7 @@ function TextField({
                 ...copyStyle
             }}
             title={copyTooltip}
-            aria-label={copyTooltip || t("accessibility.copyToClipboard")}
+            aria-label={copyTooltip || accessibilityCopy.copyToClipboard}
             onClick={copy}
         >
             <img src={iconInterfaceCopy} alt="" aria-hidden="true" />
