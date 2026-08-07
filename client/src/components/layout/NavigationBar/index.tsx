@@ -8,13 +8,14 @@ import type { StateTreeNode } from "shared/types/game/position/StateTreeNode";
 import { useAuthedProfile } from "@/hooks/api/useProfile";
 import Typography from "@/components/Typography";
 import BlurBackground from "@/components/layout/BlurBackground";
-import Sidebar from "@/components/layout/sidebar/Sidebar";
 import { parseLanguagePathname } from "@/i18n/routing";
 import HoverDropdown from "./HoverDropdown";
 import * as styles from "./NavigationBar.module.css";
 
 const PUZZLES_FLIP_EVENT = "nexochess:puzzles:flip-board";
+const loadSidebar = () => import("@/components/layout/sidebar/Sidebar");
 const loadShareDialog = () => import("@analysis/components/ShareDialog");
+const Sidebar = lazy(loadSidebar);
 const ShareDialog = lazy(loadShareDialog);
 
 type IconName =
@@ -142,6 +143,7 @@ function NavigationAction({ children, icon, onClick }: NavigationActionProps) {
 function NavigationBar() {
     const { t } = useTranslation(["common", "analysis"]);
     const { profile, status } = useAuthedProfile();
+    const [sidebarMounted, setSidebarMounted] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [shareState, setShareState] = useState<ShareState | null>(null);
     const currentPathname = parseLanguagePathname(location.pathname).basePathname;
@@ -155,6 +157,12 @@ function NavigationBar() {
 
     const showFlipAction = onAnalysisPage || onPuzzlesPage;
     const showShareAction = onAnalysisPage;
+
+    async function openSidebar() {
+        setSidebarMounted(true);
+        await loadSidebar();
+        requestAnimationFrame(() => setSidebarOpen(true));
+    }
 
     async function flipVisibleBoard() {
         if (onPuzzlesPage) {
@@ -197,7 +205,9 @@ function NavigationBar() {
             <button
                 type="button"
                 className={styles.menuButton}
-                onClick={() => setSidebarOpen(true)}
+                onClick={() => {
+                    void openSidebar();
+                }}
                 aria-label={t("navigationBar.openMenu", { ns: "common" })}
             >
                 <NavIcon name="menu" />
@@ -305,14 +315,16 @@ function NavigationBar() {
             style={{ zIndex: 1000 }}
             onClick={() => setSidebarOpen(false)}
         />}
-        <Sidebar
-            style={{
-                zIndex: 1001,
-                transition: "left 0.3s ease",
-                left: sidebarOpen ? "0" : "-320px"
-            }}
-            onClose={() => setSidebarOpen(false)}
-        />
+        {sidebarMounted && <Suspense fallback={null}>
+            <Sidebar
+                style={{
+                    zIndex: 1001,
+                    transition: "left 0.3s ease",
+                    left: sidebarOpen ? "0" : "-320px"
+                }}
+                onClose={() => setSidebarOpen(false)}
+            />
+        </Suspense>}
         {shareState && <Suspense fallback={null}>
             <ShareDialog
                 game={shareState.game}
