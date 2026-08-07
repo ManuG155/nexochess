@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import displayToast from "@/lib/toast";
 
@@ -26,7 +27,8 @@ function TextField({
     onChange,
     onClick
 }: TextFieldProps) {
-    const [ text, setText ] = useState(value || "");
+    const { t } = useTranslation("common");
+    const [text, setText] = useState(value || "");
 
     const sharedProps = {
         className: `${styles.field} ${className}`,
@@ -73,17 +75,19 @@ function TextField({
             />
         }
 
-        {copyable && <div
+        {copyable && <button
+            type="button"
             className={`${styles.copyWrapper} ${copyClassName}`}
             style={{
                 height: `min(${multiline ? "35px" : "100%"}, 100%)`,
                 ...copyStyle
             }}
             title={copyTooltip}
+            aria-label={copyTooltip || t("accessibility.copyToClipboard")}
             onClick={copy}
         >
-            <img src={iconInterfaceCopy} />
-        </div>}
+            <img src={iconInterfaceCopy} alt="" aria-hidden="true" />
+        </button>}
     </div>;
 }
 
