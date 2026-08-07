@@ -12,6 +12,11 @@ import useAnalysisBoardStore from "@analysis/stores/AnalysisBoardStore";
 import useAnalysisProgressStore from "@analysis/stores/AnalysisProgressStore";
 import { analyseStateTree } from "@analysis/lib/reporter";
 import { archiveGame } from "@/lib/gameArchive";
+import {
+    trackAnalysisCompleted,
+    trackAnalysisFailed,
+    trackAnalysisStarted
+} from "@/lib/analytics";
 
 function useAnalyseGame(
     onAnalysisError?: (message: string) => void
@@ -38,6 +43,8 @@ function useAnalyseGame(
     } = useAnalysisProgressStore();
 
     return async () => {
+        trackAnalysisStarted();
+
         const analyseResult = await analyseStateTree(
             analysisGame.stateTree,
             {
@@ -74,12 +81,14 @@ function useAnalyseGame(
         );
 
         if (analyseResult.status != StatusCodes.OK) {
+            trackAnalysisFailed("request_failed");
             return onAnalysisError?.(
                 t("progressReporter.reportFailed")
             );
         }
 
         if (!analyseResult.gameAnalysis) {
+            trackAnalysisFailed("missing_result");
             return setAnalysisStatus(AnalysisStatus.INACTIVE);
         }
 
@@ -88,6 +97,7 @@ function useAnalyseGame(
             ...analyseResult.gameAnalysis
         };
 
+        trackAnalysisCompleted();
         setAnalysisGame(completedGame);
 
         /*
