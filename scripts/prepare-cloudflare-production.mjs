@@ -10,6 +10,7 @@ import {
 
 const DEFAULT_WORKER_NAME = "nexochess-production";
 const DEFAULT_DATABASE_NAME = "nexochess-production";
+const DEFAULT_ANALYTICS_MEASUREMENT_ID = "G-V4227TJCDB";
 const OUTPUT_FILE = resolve("wrangler.production.local.jsonc");
 const ANALYTICS_MEASUREMENT_ID_PATTERN = /^G-[A-Z0-9]+$/i;
 
@@ -38,7 +39,7 @@ const origin = normaliseOrigin(
 const analyticsMeasurementId = (
     readArgument("--analytics-measurement-id")
     || process.env.NEXOCHESS_GA_MEASUREMENT_ID
-    || ""
+    || DEFAULT_ANALYTICS_MEASUREMENT_ID
 ).trim().toUpperCase();
 const attachDomains = hasFlag("--attach-domains")
     || process.env.NEXOCHESS_ATTACH_PRODUCTION_DOMAINS === "1";
