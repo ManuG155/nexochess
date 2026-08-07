@@ -11,9 +11,15 @@ NexoChess uses Google Analytics 4 (GA4) for optional, consent-gated usage analyt
 - Google Signals and ad-personalisation signals are disabled in the client integration.
 - Product-specific events are intentionally not configured until Step 33.
 
-## Create the GA4 property and web stream
+## GA4 property and web stream
 
-Create a GA4 property for NexoChess and a Web data stream for `https://www.nexochess.com`.
+The NexoChess GA4 Web stream is configured for `https://www.nexochess.com`.
+
+Production Measurement ID:
+
+```text
+G-V4227TJCDB
+```
 
 Use these privacy-first settings for Step 32:
 
@@ -23,17 +29,23 @@ Use these privacy-first settings for Step 32:
 - Keep Google Signals disabled.
 - In the Google tag data-transmission controls, prevent advertising data transmission and prevent behavioral analytics data transmission when consent is denied.
 
-Copy the Web stream Measurement ID (`G-...`).
-
 ## Production configuration
 
-Before preparing or deploying the production Worker, expose that public identifier to the production configuration process:
+The production Cloudflare configuration generator uses `G-V4227TJCDB` as the tracked default Measurement ID. This identifier is public and is intentionally not included in staging.
+
+For recovery or controlled testing, the default can still be overridden with either:
 
 ```powershell
 $env:NEXOCHESS_GA_MEASUREMENT_ID="G-XXXXXXXXXX"
 ```
 
-The production configuration generator rejects a missing or malformed Measurement ID. The identifier is not a secret, but NexoChess keeps it out of staging so test traffic cannot contaminate production analytics.
+or:
+
+```text
+--analytics-measurement-id G-XXXXXXXXXX
+```
+
+The production configuration generator rejects malformed Measurement IDs. Staging receives no production Analytics identifier, so staging traffic cannot contaminate the production property.
 
 ## Google Analytics privacy settings
 
