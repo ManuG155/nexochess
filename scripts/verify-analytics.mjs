@@ -14,6 +14,20 @@ const pageWrapper = await readFile(
     resolve("client", "src", "components", "layout", "PageWrapper", "index.tsx"),
     "utf8"
 );
+const privacyPage = await readFile(
+    resolve(
+        "client", "src", "apps", "footer", "legal", "pages",
+        "PrivacyPolicy", "index.tsx"
+    ),
+    "utf8"
+);
+const privacyAnalyticsRevision = await readFile(
+    resolve(
+        "client", "src", "apps", "footer", "legal", "pages",
+        "PrivacyPolicy", "analyticsPrivacyRevision.ts"
+    ),
+    "utf8"
+);
 const worker = await readFile(resolve("cloudflare", "worker.mjs"), "utf8");
 const stagingWrangler = await readFile(resolve("wrangler.jsonc"), "utf8");
 const productionPreparer = await readFile(
@@ -79,6 +93,32 @@ for (const fragment of [
     );
 }
 
+assert.ok(
+    privacyPage.includes("applyAnalyticsPrivacyRevision"),
+    "The Privacy Policy must apply the GA4-specific revision."
+);
+for (const language of ["en", "es", "fr", "de", "pt", "ru", "zh", "vi", "hi", "mr", "pl"]) {
+    assert.match(
+        privacyAnalyticsRevision,
+        new RegExp(`\\n\\s{4}${language}: \\{`),
+        `Missing GA4 privacy revision for language: ${language}`
+    );
+}
+for (const fragment of [
+    "Google Analytics 4",
+    "_ga",
+    "_ga_<container-id>",
+    "providerBullet",
+    "retentionParagraph",
+    "dataBullet",
+    "purposeBullet"
+]) {
+    assert.ok(
+        privacyAnalyticsRevision.includes(fragment),
+        `GA4 Privacy Policy disclosure is missing: ${fragment}`
+    );
+}
+
 assert.equal(
     packageJson.scripts?.["verify:analytics"],
     "node scripts/verify-analytics.mjs",
@@ -93,4 +133,4 @@ assert.ok(ci.includes("npm run verify:analytics"));
 assert.ok(ci.includes("--analytics-measurement-id G-NEXOCHESSTEST"));
 
 console.log("Analytics installation verification passed.");
-console.log("GA4 is production-only, consent-gated and advertising-disabled for Step 32.");
+console.log("GA4 is production-only, consent-gated, advertising-disabled and disclosed in 11 languages for Step 32.");
