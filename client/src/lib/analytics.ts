@@ -9,10 +9,8 @@ const ENVIRONMENT_META_NAME = "nexochess-environment";
 const GOOGLE_TAG_SCRIPT_ID = "nexochess-google-analytics";
 const PRODUCTION_ENVIRONMENT = "production";
 
-interface AnalyticsWindow extends Window {
-    dataLayer?: unknown[][];
-    gtag?: (...args: unknown[]) => void;
-}
+type Gtag = (...args: unknown[]) => void;
+type AnalyticsWindow = Window & typeof globalThis & { gtag?: Gtag };
 
 let activeMeasurementId: string | null = null;
 let stopConsentListener: (() => void) | null = null;
@@ -41,8 +39,8 @@ function readRuntimeMeasurementId() {
 function ensureGtag() {
     const target = analyticsWindow();
     target.dataLayer ||= [];
-    target.gtag ||= (...args: unknown[]) => {
-        target.dataLayer?.push(args);
+    target.gtag ||= function (..._args: unknown[]) {
+        target.dataLayer.push(arguments);
     };
     return target.gtag;
 }
