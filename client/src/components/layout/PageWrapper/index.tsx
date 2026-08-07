@@ -1,5 +1,6 @@
 import React, { lazy, Suspense, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { ToastContainer } from "react-toastify";
 
 import useSettingsStore from "@/stores/SettingsStore";
@@ -26,6 +27,7 @@ function PageWrapper({
     footerClassName,
     footerStyle
 }: PageWrapperProps) {
+    const { t } = useTranslation("common");
     const bugReportingMode = useSettingsStore(
         state => state.settings.bugReportingMode
     );
@@ -71,15 +73,21 @@ function PageWrapper({
             data-theme={colourMode}
             data-route={routeName}
         >
+            <a className={styles.skipLink} href="#nexo-main-content">
+                {t("accessibility.skipToContent")}
+            </a>
+
             <NavigationBar/>
 
             <div
+                id="nexo-main-content"
                 className={[
                     styles.content,
                     contentClassName
                 ].filter(Boolean).join(" ")}
                 style={contentStyle}
                 data-nexo-content
+                tabIndex={-1}
             >
                 {children}
             </div>
