@@ -11,6 +11,7 @@ const files = Object.fromEntries(await Promise.all(
         styles: "client/src/apps/home/Home.module.css",
         previewFix: "client/src/apps/home/HomePreviewFix.module.css",
         pageWrapper: "client/src/components/layout/PageWrapper/index.tsx",
+        routing: "client/src/i18n/routing.ts",
         webpack: "client/webpack.config.js",
         worker: "cloudflare/worker.mjs",
         indexing: "config/search-indexing.mjs",
@@ -65,11 +66,20 @@ requireFragments("previewFix", "Homepage board geometry", [
 ]);
 requireFragments("pageWrapper", "Homepage navigation access", [
     "document.querySelector<HTMLAnchorElement>",
-    'brandLink.setAttribute("href", "/?home=nav")'
+    'brandLink.setAttribute("href", "/home")'
+]);
+requireFragments("routing", "Localized homepage recovery access", [
+    '"/", "/home", "/about"'
+]);
+requireFragments("worker", "Homepage cached redirect recovery", [
+    '["/", "home.html"]',
+    'async function renderHomepageRecovery(request, env, language)',
+    'headers.set("Clear-Site-Data", \'"cache"\')',
+    'if (pathname === "/home")',
+    'history.replaceState(history.state'
 ]);
 assert.ok(files.webpack.includes('home: "./src/apps/home/index.tsx"'));
-assert.ok(files.worker.includes('["/", "home.html"]'));
 assert.ok(files.indexing.includes('pathname: "/",\n        assetPath: "apps/home.html"'));
 assert.ok(files.deployment.includes('    "/",') && files.deployment.includes('assertJavaScript("/home.bundle.js")'));
 
-console.log("Homepage verification passed with centralized canonical metadata and eleven languages.");
+console.log("Homepage verification passed with cache recovery, centralized canonical metadata and eleven languages.");
