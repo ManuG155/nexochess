@@ -58,7 +58,7 @@ function PageWrapper({
 
         if (!brandLink) return;
 
-        brandLink.setAttribute("href", "/?home=nav");
+        brandLink.setAttribute("href", "/home");
         brandLink.setAttribute("aria-label", "NexoChess");
     }, []);
 
