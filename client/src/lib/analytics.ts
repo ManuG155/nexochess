@@ -8,9 +8,60 @@ const ANALYTICS_META_NAME = "nexochess-analytics-measurement-id";
 const ENVIRONMENT_META_NAME = "nexochess-environment";
 const GOOGLE_TAG_SCRIPT_ID = "nexochess-google-analytics";
 const PRODUCTION_ENVIRONMENT = "production";
+const PENDING_AUTH_STORAGE_KEY = "nexochess-analytics-pending-auth-v1";
+const PENDING_AUTH_MAX_AGE_MS = 10 * 60 * 1000;
 
 type Gtag = (...args: unknown[]) => void;
 type AnalyticsWindow = Window & typeof globalThis & { gtag?: Gtag };
+
+type AnalysisFailureReason = "request_failed" | "missing_result";
+type PuzzleSource = "archive" | "lichess";
+type PuzzleSessionMode = "rated" | "practice";
+type ShareMethod = "native" | "pgn_download";
+type AuthFlow = "login" | "signup";
+type AuthMethod = "email" | "google";
+
+type AnalyticsEvent =
+    | { name: "analysis_started" }
+    | { name: "analysis_completed" }
+    | {
+        name: "analysis_failed";
+        failureReason: AnalysisFailureReason;
+    }
+    | {
+        name: "puzzle_started";
+        puzzleSource: PuzzleSource;
+        sessionMode: PuzzleSessionMode;
+    }
+    | {
+        name: "puzzle_solved";
+        puzzleSource: PuzzleSource;
+        sessionMode: PuzzleSessionMode;
+        solvedWithoutHelp: boolean;
+    }
+    | {
+        name: "puzzle_failed";
+        puzzleSource: PuzzleSource;
+        sessionMode: PuzzleSessionMode;
+    }
+    | {
+        name: "game_shared";
+        shareMethod: ShareMethod;
+    }
+    | {
+        name: "signup_completed";
+        authMethod: AuthMethod;
+    }
+    | {
+        name: "login_completed";
+        authMethod: AuthMethod;
+    };
+
+interface PendingAuthAnalytics {
+    flow: AuthFlow;
+    method: AuthMethod;
+    createdAt: number;
+}
 
 let activeMeasurementId: string | null = null;
 let stopConsentListener: (() => void) | null = null;
@@ -97,6 +148,91 @@ function applyPreferences(preferences: ConsentPreferences | null) {
     }
 }
 
+function analyticsEligible() {
+    return Boolean(
+        readRuntimeMeasurementId()
+        && readConsentPreferences()?.analytics === true
+    );
+}
+
+function emitAnalyticsEvent(event: AnalyticsEvent) {
+    if (!analyticsEligible()) return false;
+
+    const measurementId = readRuntimeMeasurementId();
+    if (!measurementId) return false;
+
+    loadGoogleAnalytics(measurementId);
+
+    const parameters: Record<string, string | boolean> = {};
+
+    switch (event.name) {
+        case "analysis_failed":
+            parameters.failure_reason = event.failureReason;
+            break;
+        case "puzzle_started":
+        case "puzzle_failed":
+            parameters.puzzle_source = event.puzzleSource;
+            parameters.session_mode = event.sessionMode;
+            break;
+        case "puzzle_solved":
+            parameters.puzzle_source = event.puzzleSource;
+            parameters.session_mode = event.sessionMode;
+            parameters.solved_without_help = event.solvedWithoutHelp;
+            break;
+        case "game_shared":
+            parameters.share_method = event.shareMethod;
+            break;
+        case "signup_completed":
+        case "login_completed":
+            parameters.auth_method = event.authMethod;
+            break;
+    }
+
+    ensureGtag()("event", event.name, parameters);
+    return true;
+}
+
+function isAuthFlow(value: unknown): value is AuthFlow {
+    return value === "login" || value === "signup";
+}
+
+function isAuthMethod(value: unknown): value is AuthMethod {
+    return value === "email" || value === "google";
+}
+
+function readPendingAuthAnalytics(): PendingAuthAnalytics | null {
+    if (typeof window == "undefined") return null;
+
+    try {
+        const stored = window.sessionStorage.getItem(PENDING_AUTH_STORAGE_KEY);
+        if (!stored) return null;
+
+        const parsed = JSON.parse(stored) as Partial<PendingAuthAnalytics>;
+        const valid = (
+            isAuthFlow(parsed.flow)
+            && isAuthMethod(parsed.method)
+            && typeof parsed.createdAt == "number"
+            && Number.isFinite(parsed.createdAt)
+            && Date.now() - parsed.createdAt <= PENDING_AUTH_MAX_AGE_MS
+            && parsed.createdAt <= Date.now() + 5_000
+        );
+
+        if (!valid) {
+            clearPendingAuthAnalytics();
+            return null;
+        }
+
+        return {
+            flow: parsed.flow,
+            method: parsed.method,
+            createdAt: parsed.createdAt
+        };
+    } catch {
+        clearPendingAuthAnalytics();
+        return null;
+    }
+}
+
 export function initialiseAnalytics() {
     if (typeof window == "undefined" || typeof document == "undefined") {
         return () => undefined;
@@ -113,4 +249,111 @@ export function initialiseAnalytics() {
         stopConsentListener?.();
         stopConsentListener = null;
     };
+}
+
+export function trackAnalysisStarted() {
+    return emitAnalyticsEvent({ name: "analysis_started" });
+}
+
+export function trackAnalysisCompleted() {
+    return emitAnalyticsEvent({ name: "analysis_completed" });
+}
+
+export function trackAnalysisFailed(reason: AnalysisFailureReason) {
+    return emitAnalyticsEvent({
+        name: "analysis_failed",
+        failureReason: reason
+    });
+}
+
+export function trackPuzzleStarted(
+    source: PuzzleSource,
+    mode: PuzzleSessionMode
+) {
+    return emitAnalyticsEvent({
+        name: "puzzle_started",
+        puzzleSource: source,
+        sessionMode: mode
+    });
+}
+
+export function trackPuzzleSolved(
+    source: PuzzleSource,
+    mode: PuzzleSessionMode,
+    solvedWithoutHelp: boolean
+) {
+    return emitAnalyticsEvent({
+        name: "puzzle_solved",
+        puzzleSource: source,
+        sessionMode: mode,
+        solvedWithoutHelp
+    });
+}
+
+export function trackPuzzleFailed(
+    source: PuzzleSource,
+    mode: PuzzleSessionMode
+) {
+    return emitAnalyticsEvent({
+        name: "puzzle_failed",
+        puzzleSource: source,
+        sessionMode: mode
+    });
+}
+
+export function trackGameShared(method: ShareMethod) {
+    return emitAnalyticsEvent({
+        name: "game_shared",
+        shareMethod: method
+    });
+}
+
+export function markPendingAuthAnalytics(
+    flow: AuthFlow,
+    method: AuthMethod
+) {
+    if (typeof window == "undefined") return;
+
+    clearPendingAuthAnalytics();
+    if (!analyticsEligible()) return;
+
+    const pending: PendingAuthAnalytics = {
+        flow,
+        method,
+        createdAt: Date.now()
+    };
+
+    try {
+        window.sessionStorage.setItem(
+            PENDING_AUTH_STORAGE_KEY,
+            JSON.stringify(pending)
+        );
+    } catch {
+        // Analytics must never interfere with authentication.
+    }
+}
+
+export function clearPendingAuthAnalytics() {
+    if (typeof window == "undefined") return;
+
+    try {
+        window.sessionStorage.removeItem(PENDING_AUTH_STORAGE_KEY);
+    } catch {
+        // Analytics must never interfere with authentication.
+    }
+}
+
+export function completePendingAuthAnalytics(authenticated: boolean) {
+    const pending = readPendingAuthAnalytics();
+    if (!pending) return false;
+
+    clearPendingAuthAnalytics();
+    if (!authenticated || !analyticsEligible()) return false;
+
+    return emitAnalyticsEvent({
+        name: pending.flow === "signup"
+            ? "signup_completed"
+            : "login_completed",
+        authMethod: pending.method
+    });
 }
