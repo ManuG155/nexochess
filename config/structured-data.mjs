@@ -1,5 +1,18 @@
+import helpCenterEn from "../client/public/locales/en/helpCenter.json" with { type: "json" };
+import helpCenterEs from "../client/public/locales/es/helpCenter.json" with { type: "json" };
+import helpCenterFr from "../client/public/locales/fr/helpCenter.json" with { type: "json" };
+import helpCenterDe from "../client/public/locales/de/helpCenter.json" with { type: "json" };
+import helpCenterPt from "../client/public/locales/pt/helpCenter.json" with { type: "json" };
+import helpCenterRu from "../client/public/locales/ru/helpCenter.json" with { type: "json" };
+import helpCenterZh from "../client/public/locales/zh/helpCenter.json" with { type: "json" };
+import helpCenterVi from "../client/public/locales/vi/helpCenter.json" with { type: "json" };
+import helpCenterHi from "../client/public/locales/hi/helpCenter.json" with { type: "json" };
+import helpCenterMr from "../client/public/locales/mr/helpCenter.json" with { type: "json" };
+import helpCenterPl from "../client/public/locales/pl/helpCenter.json" with { type: "json" };
+
 import {
     SUPPORTED_LANGUAGE_CODES,
+    localizePathname,
     parseLocalizedPathname
 } from "./language-routing.mjs";
 import { productionUrl } from "./site.mjs";
@@ -13,13 +26,49 @@ export const STRUCTURED_DATA_IDS = Object.freeze({
     application: productionUrl("/#software")
 });
 
-export const FAQ_STRUCTURED_DATA_ITEMS = Object.freeze([
-    Object.freeze({ question: "Do I need an account to analyse games?", answer: "No. You can analyse games and use the local Archive without creating an account. An account is only needed for optional synchronisation across devices." }),
-    Object.freeze({ question: "Where are my analyses saved?", answer: "Guest analyses are stored in the current browser. When you sign in, compatible data can also be associated with your account for cross-device access." }),
-    Object.freeze({ question: "Which chess engine does NexoChess use?", answer: "NexoChess uses Stockfish 17 to evaluate positions and produce the engine lines used by the review." }),
-    Object.freeze({ question: "How is the language selected?", answer: "On the first visit, NexoChess follows your browser language when it is supported. You can change it manually at any time in Appearance settings." }),
-    Object.freeze({ question: "Is an account required to keep my local games?", answer: "No. The local Archive works without an account. Signing in is optional and is intended for synchronisation and account features." })
+const HELP_CENTER_CONTENT = Object.freeze({
+    en: helpCenterEn,
+    es: helpCenterEs,
+    fr: helpCenterFr,
+    de: helpCenterDe,
+    pt: helpCenterPt,
+    ru: helpCenterRu,
+    zh: helpCenterZh,
+    vi: helpCenterVi,
+    hi: helpCenterHi,
+    mr: helpCenterMr,
+    pl: helpCenterPl
+});
+
+const FAQ_KEYS = Object.freeze([
+    "account",
+    "archive",
+    "engine",
+    "languages",
+    "privacy"
 ]);
+
+function freezeFaqItems(content) {
+    return Object.freeze(FAQ_KEYS.map(key => Object.freeze({
+        question: content.faq[key].question,
+        answer: content.faq[key].answer
+    })));
+}
+
+export const FAQ_STRUCTURED_DATA_ITEMS_BY_LANGUAGE = Object.freeze(
+    Object.fromEntries(SUPPORTED_LANGUAGE_CODES.map(language => [
+        language,
+        freezeFaqItems(HELP_CENTER_CONTENT[language])
+    ]))
+);
+
+export const FAQ_STRUCTURED_DATA_ITEMS =
+    FAQ_STRUCTURED_DATA_ITEMS_BY_LANGUAGE.en;
+
+export function getFaqStructuredDataItems(language) {
+    return FAQ_STRUCTURED_DATA_ITEMS_BY_LANGUAGE[language]
+        || FAQ_STRUCTURED_DATA_ITEMS_BY_LANGUAGE.en;
+}
 
 const PAGE_SCHEMA_TYPES = Object.freeze({
     "/": "WebPage",
@@ -34,7 +83,13 @@ const PAGE_SCHEMA_TYPES = Object.freeze({
     "/source": "WebPage"
 });
 
-const FEATURE_PAGE_PATHS = new Set(["/", "/analysis", "/academy", "/puzzles", "/help"]);
+const FEATURE_PAGE_PATHS = new Set([
+    "/",
+    "/analysis",
+    "/academy",
+    "/puzzles",
+    "/help"
+]);
 
 function reference(id) {
     return Object.freeze({ "@id": id });
@@ -60,7 +115,9 @@ function createOrganization() {
         url: productionUrl("/"),
         logo: reference(STRUCTURED_DATA_IDS.image),
         email: "contact@nexochess.com",
-        sameAs: Object.freeze(["https://github.com/ManuG155/nexochess"]),
+        sameAs: Object.freeze([
+            "https://github.com/ManuG155/nexochess"
+        ]),
         contactPoint: Object.freeze({
             "@type": "ContactPoint",
             contactType: "technical support",
@@ -82,7 +139,7 @@ function createWebsite(homeDescription) {
     });
 }
 
-function createApplication(homeDescription) {
+function createApplication(homeDescription, language) {
     return Object.freeze({
         "@type": "SoftwareApplication",
         "@id": STRUCTURED_DATA_IDS.application,
@@ -97,8 +154,14 @@ function createApplication(homeDescription) {
         publisher: reference(STRUCTURED_DATA_IDS.organization),
         isAccessibleForFree: true,
         inLanguage: STRUCTURED_DATA_LANGUAGE_CODES,
-        offers: Object.freeze({ "@type": "Offer", price: "0", priceCurrency: "EUR" }),
-        softwareHelp: reference(productionUrl("/help#webpage")),
+        offers: Object.freeze({
+            "@type": "Offer",
+            price: "0",
+            priceCurrency: "EUR"
+        }),
+        softwareHelp: reference(productionUrl(
+            `${localizePathname("/help", language)}#webpage`
+        )),
         featureList: Object.freeze([
             "Chess game analysis",
             "Move-by-move review",
@@ -110,11 +173,14 @@ function createApplication(homeDescription) {
     });
 }
 
-function createFaqQuestions() {
-    return FAQ_STRUCTURED_DATA_ITEMS.map(item => Object.freeze({
+function createFaqQuestions(language) {
+    return getFaqStructuredDataItems(language).map(item => Object.freeze({
         "@type": "Question",
         name: item.question,
-        acceptedAnswer: Object.freeze({ "@type": "Answer", text: item.answer })
+        acceptedAnswer: Object.freeze({
+            "@type": "Answer",
+            text: item.answer
+        })
     }));
 }
 
@@ -138,10 +204,11 @@ function createWebPage(pathname, metadata) {
     if (basePathname === "/about") {
         page.mainEntity = reference(STRUCTURED_DATA_IDS.organization);
     } else if (basePathname === "/faq") {
-        page.mainEntity = Object.freeze(createFaqQuestions());
+        page.mainEntity = Object.freeze(createFaqQuestions(parsed.language));
     } else if (FEATURE_PAGE_PATHS.has(basePathname)) {
         page.mainEntity = reference(STRUCTURED_DATA_IDS.application);
     }
+
     return Object.freeze(page);
 }
 
@@ -155,22 +222,41 @@ export function getStructuredData(pathname, metadata, homeDescription) {
             createImageObject(),
             createOrganization(),
             createWebsite(homeDescription),
-            createApplication(homeDescription),
+            createApplication(
+                homeDescription,
+                parseLocalizedPathname(pathname).language
+            ),
             createWebPage(pathname, metadata)
         ])
     });
 }
 
 export function serializeStructuredData(pathname, metadata, homeDescription) {
-    const structuredData = getStructuredData(pathname, metadata, homeDescription);
+    const structuredData = getStructuredData(
+        pathname,
+        metadata,
+        homeDescription
+    );
     if (!structuredData) return "";
+
     return JSON.stringify(structuredData)
         .replaceAll("&", "\\u0026")
         .replaceAll("<", "\\u003c")
         .replaceAll(">", "\\u003e");
 }
 
-export function getStructuredDataReplacements(pathname, metadata, homeDescription) {
-    const serialized = serializeStructuredData(pathname, metadata, homeDescription);
-    return serialized ? { STRUCTURED_DATA_JSON: serialized } : {};
+export function getStructuredDataReplacements(
+    pathname,
+    metadata,
+    homeDescription
+) {
+    const serialized = serializeStructuredData(
+        pathname,
+        metadata,
+        homeDescription
+    );
+
+    return serialized
+        ? { STRUCTURED_DATA_JSON: serialized }
+        : {};
 }

@@ -1,3 +1,15 @@
+import seoEn from "../client/public/locales/en/seo.json" with { type: "json" };
+import seoEs from "../client/public/locales/es/seo.json" with { type: "json" };
+import seoFr from "../client/public/locales/fr/seo.json" with { type: "json" };
+import seoDe from "../client/public/locales/de/seo.json" with { type: "json" };
+import seoPt from "../client/public/locales/pt/seo.json" with { type: "json" };
+import seoRu from "../client/public/locales/ru/seo.json" with { type: "json" };
+import seoZh from "../client/public/locales/zh/seo.json" with { type: "json" };
+import seoVi from "../client/public/locales/vi/seo.json" with { type: "json" };
+import seoHi from "../client/public/locales/hi/seo.json" with { type: "json" };
+import seoMr from "../client/public/locales/mr/seo.json" with { type: "json" };
+import seoPl from "../client/public/locales/pl/seo.json" with { type: "json" };
+
 import { INDEXABLE_PAGE_ROUTES } from "./search-indexing.mjs";
 import { getStructuredDataReplacements } from "./structured-data.mjs";
 import { productionUrl } from "./site.mjs";
@@ -11,10 +23,24 @@ export const OPEN_GRAPH_IMAGE_METADATA = Object.freeze({
     alt: "NexoChess"
 });
 
+export const OPEN_GRAPH_LOCALES = Object.freeze({
+    en: "en_US",
+    es: "es_ES",
+    fr: "fr_FR",
+    de: "de_DE",
+    pt: "pt_PT",
+    ru: "ru_RU",
+    zh: "zh_CN",
+    vi: "vi_VN",
+    hi: "hi_IN",
+    mr: "mr_IN",
+    pl: "pl_PL"
+});
+
 export const OPEN_GRAPH_DEFAULTS = Object.freeze({
     type: "website",
     siteName: "NexoChess",
-    locale: "en_US",
+    locale: OPEN_GRAPH_LOCALES.en,
     image: OPEN_GRAPH_IMAGE_METADATA
 });
 
@@ -23,56 +49,81 @@ export const TWITTER_CARD_DEFAULTS = Object.freeze({
     image: OPEN_GRAPH_IMAGE_METADATA
 });
 
-export const BASE_PAGE_METADATA = Object.freeze({
-    "/": Object.freeze({
-        title: "NexoChess — Understand Every Move",
-        description: "Analyse your chess games, understand every critical move, revisit saved reviews and train with more than six million puzzles in NexoChess."
-    }),
-    "/about": Object.freeze({
-        title: "About NexoChess — Independent Chess Tools",
-        description: "Learn why NexoChess exists, how its independent chess tools are built and which principles guide its analysis, training and open-source development."
-    }),
-    "/faq": Object.freeze({
-        title: "NexoChess FAQ — Accounts, Analysis and Privacy",
-        description: "Find clear answers about NexoChess accounts, chess analysis, saved games, puzzles, supported languages, privacy and other common questions."
-    }),
-    "/analysis": Object.freeze({
-        title: "Free Chess Game Analysis with Stockfish — NexoChess",
-        description: "Analyse chess games with Stockfish, review critical moments, move classifications, accuracy and estimated performance in a clear interactive board."
-    }),
-    "/academy": Object.freeze({
-        title: "NexoChess Academy — Learn Chess Notation",
-        description: "Learn chess notation, piece movement and NexoChess move classifications through short interactive lessons designed for practical understanding."
-    }),
-    "/puzzles": Object.freeze({
-        title: "Chess Puzzles and Tactics Training — NexoChess",
-        description: "Train chess tactics with puzzles created from your analysed games or filtered by theme and difficulty from a database of more than six million positions."
-    }),
-    "/help": Object.freeze({
-        title: "NexoChess Help Center — Guides and Troubleshooting",
-        description: "Learn how to analyse games, use the Archive, train with puzzles, manage your account and solve common NexoChess problems with practical guides."
-    }),
-    "/terms": Object.freeze({
-        title: "NexoChess Terms of Service",
-        description: "Read the terms that govern access to NexoChess, its chess analysis, accounts, saved games, puzzles and other available services."
-    }),
-    "/privacy": Object.freeze({
-        title: "NexoChess Privacy Policy",
-        description: "Learn what data NexoChess processes, why it is used, how account and browser information is handled and which privacy choices are available."
-    }),
-    "/source": Object.freeze({
-        title: "NexoChess Source Code and Licences",
-        description: "Review the NexoChess source code, open-source licences, third-party components, chess engine information and required data attributions."
-    })
+export const SEO_PAGE_KEYS = Object.freeze({
+    "/": "home",
+    "/about": "about",
+    "/faq": "faq",
+    "/analysis": "analysis",
+    "/academy": "academy",
+    "/puzzles": "puzzles",
+    "/help": "help",
+    "/terms": "terms",
+    "/privacy": "privacy",
+    "/source": "source"
 });
 
+export const SEO_DOCUMENTS = Object.freeze({
+    en: seoEn,
+    es: seoEs,
+    fr: seoFr,
+    de: seoDe,
+    pt: seoPt,
+    ru: seoRu,
+    zh: seoZh,
+    vi: seoVi,
+    hi: seoHi,
+    mr: seoMr,
+    pl: seoPl
+});
+
+function createLocalizedPageSet(document) {
+    return Object.freeze(Object.fromEntries(
+        Object.entries(SEO_PAGE_KEYS).map(([pathname, key]) => {
+            const item = document[key];
+
+            if (!item || typeof item.title !== "string"
+                || typeof item.description !== "string") {
+                throw new Error(`Missing SEO metadata entry: ${key}.`);
+            }
+
+            return [pathname, Object.freeze({
+                title: item.title,
+                description: item.description
+            })];
+        })
+    ));
+}
+
+export const LOCALIZED_PAGE_METADATA = Object.freeze(Object.fromEntries(
+    Object.entries(SEO_DOCUMENTS).map(([language, document]) => [
+        language,
+        createLocalizedPageSet(document)
+    ])
+));
+
+export const BASE_PAGE_METADATA = LOCALIZED_PAGE_METADATA.en;
+
+export function getLocalizedBasePageMetadata(language, basePathname) {
+    const localizedPages = LOCALIZED_PAGE_METADATA[language]
+        || LOCALIZED_PAGE_METADATA.en;
+
+    return localizedPages[basePathname]
+        || LOCALIZED_PAGE_METADATA.en[basePathname]
+        || null;
+}
+
 function createPageMetadata(route) {
-    const base = BASE_PAGE_METADATA[route.basePathname];
+    const base = getLocalizedBasePageMetadata(
+        route.language,
+        route.basePathname
+    );
     const canonicalUrl = productionUrl(route.pathname);
+    const locale = OPEN_GRAPH_LOCALES[route.language]
+        || OPEN_GRAPH_LOCALES.en;
     const openGraph = Object.freeze({
         type: OPEN_GRAPH_DEFAULTS.type,
         siteName: OPEN_GRAPH_DEFAULTS.siteName,
-        locale: OPEN_GRAPH_DEFAULTS.locale,
+        locale,
         title: base.title,
         description: base.description,
         url: canonicalUrl,
@@ -97,7 +148,10 @@ function createPageMetadata(route) {
 }
 
 export const INDEXABLE_PAGE_METADATA = Object.freeze(Object.fromEntries(
-    INDEXABLE_PAGE_ROUTES.map(route => [route.pathname, createPageMetadata(route)])
+    INDEXABLE_PAGE_ROUTES.map(route => [
+        route.pathname,
+        createPageMetadata(route)
+    ])
 ));
 
 export function getIndexablePageMetadata(pathname) {
@@ -107,6 +161,11 @@ export function getIndexablePageMetadata(pathname) {
 export function getPageMetadataReplacements(pathname) {
     const metadata = getIndexablePageMetadata(pathname);
     if (!metadata) return {};
+
+    const homeMetadata = getLocalizedBasePageMetadata(
+        metadata.language,
+        "/"
+    );
 
     return {
         PAGE_TITLE: metadata.title,
@@ -133,7 +192,7 @@ export function getPageMetadataReplacements(pathname) {
         ...getStructuredDataReplacements(
             pathname,
             metadata,
-            BASE_PAGE_METADATA["/"].description
+            homeMetadata.description
         )
     };
 }
