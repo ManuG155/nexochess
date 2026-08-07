@@ -197,7 +197,7 @@ const productionConfigurationGenerator = await readFile(
 );
 
 assert.ok(
-    worker.includes('pathname === "/robots.txt"')
+    worker.includes('rawPathname === "/robots.txt"')
         && worker.includes("renderRobotsTxt({ indexingEnabled })")
         && worker.includes('"text/plain; charset=utf-8"'),
     "The Worker must serve environment-aware robots.txt as UTF-8 plain text."
