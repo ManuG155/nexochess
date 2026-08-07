@@ -12,6 +12,12 @@ const verifier = await readFile(
     resolve("scripts", "verify-cloudflare-deployment.mjs"),
     "utf8"
 );
+const stagingWrangler = await readFile(resolve("wrangler.jsonc"), "utf8");
+const productionPreparer = await readFile(
+    resolve("scripts", "prepare-cloudflare-production.mjs"),
+    "utf8"
+);
+const worker = await readFile(resolve("cloudflare", "worker.mjs"), "utf8");
 const packageJson = JSON.parse(await readFile(resolve("package.json"), "utf8"));
 const gitignore = await readFile(resolve(".gitignore"), "utf8");
 const runbook = await readFile(
@@ -107,6 +113,29 @@ for (const fragment of [
         `Deployment smoke test is missing: ${fragment}`
     );
 }
+
+for (const [label, source] of [
+    ["staging wrangler configuration", stagingWrangler],
+    ["production wrangler generator", productionPreparer]
+]) {
+    assert.ok(
+        source.includes('"/*.bundle.js"'),
+        `${label} must route JavaScript bundles through the Worker.`
+    );
+}
+assert.ok(
+    worker.includes("withStaticAssetCaching(assetResponse, request)"),
+    "The Worker must apply static asset caching after ASSETS.fetch()."
+);
+assert.ok(
+    worker.includes('"public, max-age=31536000, immutable"'),
+    "The Worker immutable bundle cache policy is missing."
+);
+assert.ok(
+    verifier.includes('/home.bundle.js?v=deployment-smoke-test')
+        && verifier.includes("immutable: true"),
+    "Remote deployment verification must assert immutable cache headers."
+);
 
 const operationalScripts = [
     "deploy:staging",

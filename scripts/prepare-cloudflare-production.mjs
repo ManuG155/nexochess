@@ -68,6 +68,7 @@ const configuration = {
         not_found_handling: "none",
         run_worker_first: [
             "/",
+            "/*.bundle.js",
             "/robots.txt",
             "/sitemap.xml",
             "/analysis",
