@@ -12,6 +12,10 @@ import Button from "@/components/common/Button";
 import LogMessage from "@/components/common/LogMessage";
 import StatusMessage from "@/components/common/LogMessage/StatusMessage";
 import authClient from "@/lib/auth";
+import {
+    clearPendingAuthAnalytics,
+    markPendingAuthAnalytics
+} from "@/lib/analytics";
 
 import * as styles from "../../index.module.css";
 import iconGoogle from "@assets/img/connections/google.png";
@@ -31,6 +35,8 @@ function SignUp() {
     useAuthErrorReporter(setStatus);
 
     async function googleLogin() {
+        clearPendingAuthAnalytics();
+
         try {
             const response = await authClient.signIn.social({
                 provider: "google",
@@ -55,8 +61,10 @@ function SignUp() {
                 return;
             }
 
+            markPendingAuthAnalytics("signup", "google");
             window.location.assign(response.data.url);
         } catch (error) {
+            clearPendingAuthAnalytics();
             console.error("Failed to start Google authentication:", error);
             setStatus({
                 theme: "error",
@@ -84,25 +92,32 @@ function SignUp() {
         }
 
         setRegistrationPending(true);
+        markPendingAuthAnalytics("signup", "email");
 
-        const registerResponse = await authClient.signUp.email(registration, {
-            headers: {
-                "x-nexochess-language": i18n.resolvedLanguage
-                    || i18n.language
-            },
-            onSuccess: () => window.location.assign("/analysis")
-        });
-
-        if (registerResponse.error) {
-            setStatus({
-                theme: "error",
-                message: getErrorMessage(registerResponse.error.code)
+        try {
+            const registerResponse = await authClient.signUp.email(registration, {
+                headers: {
+                    "x-nexochess-language": i18n.resolvedLanguage
+                        || i18n.language
+                },
+                onSuccess: () => window.location.assign("/analysis")
             });
 
-            console.error(`failed to sign up: ${JSON.stringify(registerResponse.error)}`);
-        }
+            if (registerResponse.error) {
+                clearPendingAuthAnalytics();
+                setStatus({
+                    theme: "error",
+                    message: getErrorMessage(registerResponse.error.code)
+                });
 
-        setRegistrationPending(false);
+                console.error(`failed to sign up: ${JSON.stringify(registerResponse.error)}`);
+            }
+        } catch (error) {
+            clearPendingAuthAnalytics();
+            throw error;
+        } finally {
+            setRegistrationPending(false);
+        }
     }
 
     return (
