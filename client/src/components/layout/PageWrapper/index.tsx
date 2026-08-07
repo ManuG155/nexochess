@@ -8,6 +8,7 @@ import NavigationBar from "@/components/layout/NavigationBar";
 import Footer from "@/components/layout/Footer";
 import CookieConsent from "@/components/privacy/CookieConsent";
 import { getAccessibilityCopy } from "@/i18n/accessibilityCopy";
+import { initialiseAnalytics } from "@/lib/analytics";
 
 import PageWrapperProps from "./PageWrapperProps";
 import * as styles from "./PageWrapper.module.css";
@@ -45,6 +46,8 @@ function PageWrapper({
         ? "home"
         : window.location.pathname.split("/").filter(Boolean).at(0)
             || "home";
+
+    useEffect(() => initialiseAnalytics(), []);
 
     useEffect(() => {
         document.documentElement.dataset.theme = colourMode;
