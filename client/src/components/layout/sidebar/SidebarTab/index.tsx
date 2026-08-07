@@ -5,22 +5,23 @@ import * as styles from "./SidebarTab.module.css";
 
 const defaultIconSize = "30px";
 
-function SidebarTab({ 
+function SidebarTab({
     children,
     className,
     style,
     active,
     url,
     icon,
-    iconSize
+    iconSize,
+    tabIndex
 }: SidebarTabProps) {
     const isTabActive = active || (location.pathname == url);
 
-    return <button 
-        className={`${styles.sidebarTab} ${className}`} 
-        onClick={() => {
-            if (url) location.href = url;
-        }}
+    return <a
+        className={`${styles.sidebarTab} ${className}`}
+        href={url}
+        tabIndex={tabIndex}
+        aria-current={isTabActive ? "page" : undefined}
         style={{
             ...style,
             backdropFilter: isTabActive ? "brightness(1.2)" : "",
@@ -30,10 +31,12 @@ function SidebarTab({
         {icon && <img
             src={icon}
             height={iconSize || defaultIconSize}
+            alt=""
+            aria-hidden="true"
         />}
 
         {children}
-    </button>;
+    </a>;
 }
 
 export default SidebarTab;
