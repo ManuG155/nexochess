@@ -34,6 +34,7 @@
         "verify:footer": "node scripts/verify-footer-balance.mjs",
         "verify:faq": "node scripts/verify-faq-page.mjs",
         "verify:help": "node scripts/verify-help-center.mjs",
+        "verify:accessibility": "node scripts/verify-accessibility.mjs",
         "audit:dependencies": "npm audit --audit-level=high",
         "deploy:staging": "node --import ./scripts/portable-command-shim.mjs scripts/cloudflare-operations.mjs deploy --environment staging",
         "deploy:production": "node --import ./scripts/portable-command-shim.mjs scripts/cloudflare-operations.mjs deploy --environment production",
@@ -55,7 +56,7 @@
         "check:puzzles": "node scripts/check-puzzle-backend.mjs",
         "check:translations": "node scripts/check-translations.mjs",
         "check:repository": "node scripts/check-repository.mjs",
-        "check": "npm run check:translations && npm run check:repository && npm run check:puzzles && npm run verify:account-email && npm run verify:consent-contact && npm run verify:security && npm run verify:public-api && npm run verify:operations && npm run verify:canonical && npm run verify:indexing && npm run verify:robots && npm run verify:sitemap && npm run verify:canonical-links && npm run verify:language-urls && npm run verify:hreflang && npm run verify:metadata && npm run verify:open-graph && npm run verify:structured-data && npm run verify:homepage && npm run verify:about && npm run verify:footer && npm run verify:faq && npm run verify:help && npm run check -w client && npm run check -w server",
+        "check": "npm run check:translations && npm run check:repository && npm run check:puzzles && npm run verify:account-email && npm run verify:consent-contact && npm run verify:security && npm run verify:public-api && npm run verify:operations && npm run verify:canonical && npm run verify:indexing && npm run verify:robots && npm run verify:sitemap && npm run verify:canonical-links && npm run verify:language-urls && npm run verify:hreflang && npm run verify:metadata && npm run verify:open-graph && npm run verify:structured-data && npm run verify:homepage && npm run verify:about && npm run verify:footer && npm run verify:faq && npm run verify:help && npm run verify:accessibility && npm run check -w client && npm run check -w server",
         "verify": "npm run check && npm run build",
         "import:puzzles": "node scripts/import-lichess-puzzles.mjs",
         "export:puzzles:static": "node scripts/export-puzzles-static.mjs"

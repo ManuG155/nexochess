@@ -104,6 +104,9 @@ jobs:
       - name: Verify completed Help Center
         run: npm run verify:help
 
+      - name: Verify accessibility safeguards
+        run: npm run verify:accessibility
+
       - name: Type-check client
         run: npm run check -w client
 
@@ -156,6 +159,7 @@ jobs:
           node --check scripts/verify-footer-balance.mjs
           node --check scripts/verify-faq-page.mjs
           node --check scripts/verify-help-center.mjs
+          node --check scripts/verify-accessibility.mjs
 
       - name: Prepare staging Cloudflare assets
         run: node scripts/build-cloudflare.mjs
