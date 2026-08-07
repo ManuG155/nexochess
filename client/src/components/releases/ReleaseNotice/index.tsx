@@ -4,6 +4,7 @@ import Dialog from "@/components/common/Dialog";
 import { parseLanguagePathname } from "@/i18n/routing";
 import {
     V1_1_RELEASE_NOTE_COPY,
+    V1_1_RELEASE_NOTE_CUTOFF,
     V1_1_RELEASE_NOTE_ENDPOINT,
     V1_1_RELEASE_NOTE_STORAGE_KEY,
     V1_1_RELEASE_VERSION,
@@ -115,6 +116,17 @@ function ReleaseNotice() {
         return () => {
             cancelled = true;
         };
+    }, []);
+
+    useEffect(() => {
+        const remaining = Date.parse(V1_1_RELEASE_NOTE_CUTOFF) - Date.now();
+        if (remaining <= 0) {
+            setVisible(false);
+            return;
+        }
+
+        const timeout = window.setTimeout(() => setVisible(false), remaining);
+        return () => window.clearTimeout(timeout);
     }, []);
 
     if (!visible) return null;
