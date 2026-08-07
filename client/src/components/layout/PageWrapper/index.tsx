@@ -21,6 +21,7 @@ import "./Accessibility.css";
 
 const queryClient = new QueryClient();
 const BugReportingWidget = lazy(() => import("@/components/BugReportingWidget"));
+const ReleaseNotice = lazy(() => import("@/components/releases/ReleaseNotice"));
 
 function PageWrapper({
     children,
@@ -108,6 +109,9 @@ function PageWrapper({
                 <BugReportingWidget/>
             </Suspense>}
 
+            <Suspense fallback={null}>
+                <ReleaseNotice/>
+            </Suspense>
             <CookieConsent/>
             <ToastContainer/>
         </div>

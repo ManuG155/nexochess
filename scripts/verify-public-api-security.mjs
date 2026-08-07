@@ -158,6 +158,25 @@ await expectStatus(handleCloudflareApi(
     createAuth()
 ), 415);
 
+await expectStatus(handleCloudflareApi(
+    request("/api/account/release-notes/v1.1"),
+    { DB: noDb, NEXOCHESS_ORIGIN: ORIGIN },
+    createAuth()
+), 401);
+
+await expectStatus(handleCloudflareApi(
+    request("/api/account/release-notes/v1.1", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Origin: "https://attacker.example"
+        },
+        body: "{}"
+    }),
+    { DB: noDb, NEXOCHESS_ORIGIN: ORIGIN },
+    createAuth()
+), 403);
+
 const source = await readFile(resolve("cloudflare", "api.mjs"), "utf8");
 
 function functionSource(name) {
@@ -176,6 +195,8 @@ function functionSource(name) {
 for (const name of [
     "accountProfile",
     "updateDateOfBirth",
+    "getReleaseNoteState",
+    "markReleaseNoteSeen",
     "listArchive",
     "addArchiveGame",
     "deleteArchiveGames",
