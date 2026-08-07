@@ -16,7 +16,6 @@ type AnalyticsWindow = Window & typeof globalThis & { gtag?: Gtag };
 
 type AnalysisFailureReason = "request_failed" | "missing_result";
 type PuzzleSource = "archive" | "lichess";
-type PuzzleSessionMode = "rated" | "practice";
 type ShareMethod = "native" | "pgn_download";
 type AuthFlow = "login" | "signup";
 type AuthMethod = "email" | "google";
@@ -31,18 +30,14 @@ type AnalyticsEvent =
     | {
         name: "puzzle_started";
         puzzleSource: PuzzleSource;
-        sessionMode: PuzzleSessionMode;
     }
     | {
         name: "puzzle_solved";
         puzzleSource: PuzzleSource;
-        sessionMode: PuzzleSessionMode;
-        solvedWithoutHelp: boolean;
     }
     | {
         name: "puzzle_failed";
         puzzleSource: PuzzleSource;
-        sessionMode: PuzzleSessionMode;
     }
     | {
         name: "game_shared";
@@ -163,21 +158,16 @@ function emitAnalyticsEvent(event: AnalyticsEvent) {
 
     loadGoogleAnalytics(measurementId);
 
-    const parameters: Record<string, string | boolean> = {};
+    const parameters: Record<string, string> = {};
 
     switch (event.name) {
         case "analysis_failed":
             parameters.failure_reason = event.failureReason;
             break;
         case "puzzle_started":
+        case "puzzle_solved":
         case "puzzle_failed":
             parameters.puzzle_source = event.puzzleSource;
-            parameters.session_mode = event.sessionMode;
-            break;
-        case "puzzle_solved":
-            parameters.puzzle_source = event.puzzleSource;
-            parameters.session_mode = event.sessionMode;
-            parameters.solved_without_help = event.solvedWithoutHelp;
             break;
         case "game_shared":
             parameters.share_method = event.shareMethod;
@@ -266,38 +256,24 @@ export function trackAnalysisFailed(reason: AnalysisFailureReason) {
     });
 }
 
-export function trackPuzzleStarted(
-    source: PuzzleSource,
-    mode: PuzzleSessionMode
-) {
+export function trackPuzzleStarted(source: PuzzleSource) {
     return emitAnalyticsEvent({
         name: "puzzle_started",
-        puzzleSource: source,
-        sessionMode: mode
+        puzzleSource: source
     });
 }
 
-export function trackPuzzleSolved(
-    source: PuzzleSource,
-    mode: PuzzleSessionMode,
-    solvedWithoutHelp: boolean
-) {
+export function trackPuzzleSolved(source: PuzzleSource) {
     return emitAnalyticsEvent({
         name: "puzzle_solved",
-        puzzleSource: source,
-        sessionMode: mode,
-        solvedWithoutHelp
+        puzzleSource: source
     });
 }
 
-export function trackPuzzleFailed(
-    source: PuzzleSource,
-    mode: PuzzleSessionMode
-) {
+export function trackPuzzleFailed(source: PuzzleSource) {
     return emitAnalyticsEvent({
         name: "puzzle_failed",
-        puzzleSource: source,
-        sessionMode: mode
+        puzzleSource: source
     });
 }
 
