@@ -171,6 +171,38 @@ async function renderPage(request, env, filepath, replacements = {}, status = 20
     });
 }
 
+async function renderHomepageRecovery(request, env, language) {
+    const localizedRoot = localizePathname("/", language);
+    const pageResponse = await renderPage(
+        request,
+        env,
+        "home.html",
+        metadataFor(localizedRoot, "/", language)
+    );
+    const headers = new Headers(pageResponse.headers);
+    headers.set("Clear-Site-Data", '"cache"');
+
+    if (!pageResponse.ok || request.method === "HEAD") {
+        return new Response(pageResponse.body, {
+            status: pageResponse.status,
+            statusText: pageResponse.statusText,
+            headers
+        });
+    }
+
+    const recoveryScript = `<script>history.replaceState(history.state,"",${JSON.stringify(localizedRoot)});</script>`;
+    const html = (await pageResponse.text()).replace(
+        "</head>",
+        `${recoveryScript}\n</head>`
+    );
+
+    return new Response(html, {
+        status: pageResponse.status,
+        statusText: pageResponse.statusText,
+        headers
+    });
+}
+
 function json(payload, status = 200) {
     return new Response(JSON.stringify(payload), {
         status,
@@ -235,6 +267,10 @@ async function handleRequest(request, env) {
     const languageRoute = parseLocalizedPathname(rawPathname);
     const pathname = languageRoute.basePathname;
     const localizedPathname = languageRoute.localizedPathname;
+
+    if (pathname === "/home") {
+        return renderHomepageRecovery(request, env, languageRoute.language);
+    }
 
     if (pathname.startsWith("/news")) {
         return Response.redirect(
