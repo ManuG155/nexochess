@@ -77,6 +77,9 @@ jobs:
       - name: Verify localized language URLs
         run: npm run verify:language-urls
 
+      - name: Verify reciprocal hreflang clusters
+        run: npm run verify:hreflang
+
       - name: Verify page titles and meta descriptions
         run: npm run verify:metadata
 
@@ -114,6 +117,7 @@ jobs:
         run: |
           node --check config/site.mjs
           node --check config/language-routing.mjs
+          node --check config/hreflang.mjs
           node --check config/search-indexing.mjs
           node --check config/sitemap.mjs
           node --check config/page-metadata.mjs
@@ -143,6 +147,7 @@ jobs:
           node --check scripts/verify-sitemap.mjs
           node --check scripts/verify-canonical-links.mjs
           node --check scripts/verify-language-urls.mjs
+          node --check scripts/verify-hreflang.mjs
           node --check scripts/verify-page-metadata.mjs
           node --check scripts/verify-open-graph.mjs
           node --check scripts/verify-structured-data.mjs
