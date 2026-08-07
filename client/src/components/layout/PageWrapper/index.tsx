@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ToastContainer } from "react-toastify";
 
 import useSettingsStore from "@/stores/SettingsStore";
 import NavigationBar from "@/components/layout/NavigationBar";
 import Footer from "@/components/layout/Footer";
-import BugReportingWidget from "@/components/BugReportingWidget";
 import CookieConsent from "@/components/privacy/CookieConsent";
 
 import PageWrapperProps from "./PageWrapperProps";
@@ -14,10 +13,9 @@ import "./GlobalTheme.css";
 import "./GlobalThemePolish.css";
 import "./LightThemeContrast.css";
 import "./LightThemeComponentFixes.css";
-import "./PuzzlesLightRepair.css";
-import "./PuzzlesSetupPolish.css";
 
 const queryClient = new QueryClient();
+const BugReportingWidget = lazy(() => import("@/components/BugReportingWidget"));
 
 function PageWrapper({
     children,
@@ -88,7 +86,9 @@ function PageWrapper({
 
             <Footer className={footerClassName} style={footerStyle} />
 
-            {bugReportingMode && <BugReportingWidget/>}
+            {bugReportingMode && <Suspense fallback={null}>
+                <BugReportingWidget/>
+            </Suspense>}
 
             <CookieConsent/>
             <ToastContainer/>

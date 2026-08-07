@@ -96,7 +96,7 @@ async function assertPage(path) {
     console.log(`OK ${path}: HTTP 200, security and indexing headers`);
 }
 
-async function assertJavaScript(path) {
+async function assertJavaScript(path, { immutable = false } = {}) {
     const response = await request(path);
     const contentType = response.headers.get("content-type") || "";
     const source = await response.text();
@@ -107,7 +107,18 @@ async function assertJavaScript(path) {
         !source.trimStart().startsWith("<!DOCTYPE html"),
         `${path} returned HTML instead of JavaScript.`
     );
-    console.log(`OK ${path}: JavaScript bundle available`);
+
+    if (immutable) {
+        const cacheControl = response.headers.get("cache-control") || "";
+        assert(
+            cacheControl.includes("max-age=31536000") && cacheControl.includes("immutable"),
+            `${path} is versioned but lacks long-lived immutable browser caching.`
+        );
+    }
+
+    console.log(
+        `OK ${path}: JavaScript bundle available${immutable ? ", immutable cache" : ""}`
+    );
 }
 
 async function assertSearchFiles() {
@@ -179,7 +190,7 @@ for (const path of [
     await assertPage(path);
 }
 await assertPage("/analysis?game=deployment-smoke-test");
-await assertJavaScript("/home.bundle.js");
+await assertJavaScript("/home.bundle.js?v=deployment-smoke-test", { immutable: true });
 await assertJavaScript("/about.bundle.js");
 await assertJavaScript("/faq.bundle.js");
 await assertJavaScript("/settings.bundle.js");

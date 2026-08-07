@@ -1,20 +1,22 @@
-import React, { ReactNode, useState } from "react";
+import React, { lazy, ReactNode, Suspense, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Tooltip } from "react-tooltip";
 
+import type AnalysedGame from "shared/types/game/AnalysedGame";
+import type { StateTreeNode } from "shared/types/game/position/StateTreeNode";
+
 import { useAuthedProfile } from "@/hooks/api/useProfile";
-import useAnalysisGameStore from "@analysis/stores/AnalysisGameStore";
-import useAnalysisBoardStore from "@analysis/stores/AnalysisBoardStore";
-import ShareDialog from "@analysis/components/ShareDialog";
 import Typography from "@/components/Typography";
 import BlurBackground from "@/components/layout/BlurBackground";
-import Sidebar from "@/components/layout/sidebar/Sidebar";
-import authClient from "@/lib/auth";
 import { parseLanguagePathname } from "@/i18n/routing";
 import HoverDropdown from "./HoverDropdown";
 import * as styles from "./NavigationBar.module.css";
 
 const PUZZLES_FLIP_EVENT = "nexochess:puzzles:flip-board";
+const loadSidebar = () => import("@/components/layout/sidebar/Sidebar");
+const loadShareDialog = () => import("@analysis/components/ShareDialog");
+const Sidebar = lazy(loadSidebar);
+const ShareDialog = lazy(loadShareDialog);
 
 type IconName =
     | "academy"
@@ -30,6 +32,11 @@ type IconName =
 
 interface NavIconProps {
     name: IconName;
+}
+
+interface ShareState {
+    game: AnalysedGame;
+    currentNode: StateTreeNode;
 }
 
 function NavIcon({ name }: NavIconProps) {
@@ -136,8 +143,9 @@ function NavigationAction({ children, icon, onClick }: NavigationActionProps) {
 function NavigationBar() {
     const { t } = useTranslation(["common", "analysis"]);
     const { profile, status } = useAuthedProfile();
+    const [sidebarMounted, setSidebarMounted] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [shareOpen, setShareOpen] = useState(false);
+    const [shareState, setShareState] = useState<ShareState | null>(null);
     const currentPathname = parseLanguagePathname(location.pathname).basePathname;
 
     const onAnalysisPage = currentPathname.startsWith("/analysis");
@@ -149,20 +157,45 @@ function NavigationBar() {
 
     const showFlipAction = onAnalysisPage || onPuzzlesPage;
     const showShareAction = onAnalysisPage;
-    const analysisGame = useAnalysisGameStore(state => state.analysisGame);
-    const currentStateTreeNode = useAnalysisBoardStore(state => state.currentStateTreeNode);
-    const boardFlipped = useAnalysisBoardStore(state => state.boardFlipped);
-    const setBoardFlipped = useAnalysisBoardStore(state => state.setBoardFlipped);
 
-    function flipVisibleBoard() {
+    async function openSidebar() {
+        setSidebarMounted(true);
+        await loadSidebar();
+        requestAnimationFrame(() => setSidebarOpen(true));
+    }
+
+    async function flipVisibleBoard() {
         if (onPuzzlesPage) {
             window.dispatchEvent(new Event(PUZZLES_FLIP_EVENT));
             return;
         }
+
+        if (!onAnalysisPage) return;
+
+        const { default: useAnalysisBoardStore } = await import(
+            "@analysis/stores/AnalysisBoardStore"
+        );
+        const { boardFlipped, setBoardFlipped } = useAnalysisBoardStore.getState();
         setBoardFlipped(!boardFlipped);
     }
 
+    async function openShareDialog() {
+        if (!onAnalysisPage) return;
+
+        const [gameStoreModule, boardStoreModule] = await Promise.all([
+            import("@analysis/stores/AnalysisGameStore"),
+            import("@analysis/stores/AnalysisBoardStore"),
+            loadShareDialog()
+        ]);
+
+        setShareState({
+            game: gameStoreModule.default.getState().analysisGame,
+            currentNode: boardStoreModule.default.getState().currentStateTreeNode
+        });
+    }
+
     async function signOut() {
+        const { default: authClient } = await import("@/lib/auth");
         await authClient.signOut();
         location.href = "/signin";
     }
@@ -172,7 +205,9 @@ function NavigationBar() {
             <button
                 type="button"
                 className={styles.menuButton}
-                onClick={() => setSidebarOpen(true)}
+                onClick={() => {
+                    void openSidebar();
+                }}
                 aria-label={t("navigationBar.openMenu", { ns: "common" })}
             >
                 <NavIcon name="menu" />
@@ -201,7 +236,9 @@ function NavigationBar() {
             <NavigationItem icon="archive" url="/archive" current={onArchivePage}>
                 {t("sidebar.archive", { ns: "common" })}
             </NavigationItem>
-            {showFlipAction && <NavigationAction icon="flip" onClick={flipVisibleBoard}>
+            {showFlipAction && <NavigationAction icon="flip" onClick={() => {
+                void flipVisibleBoard();
+            }}>
                 {t("optionsToolbar.flipBoard", { ns: "analysis" })}
             </NavigationAction>}
             <NavigationItem icon="academy" url="/academy" current={onAcademyPage}>
@@ -210,17 +247,23 @@ function NavigationBar() {
             <NavigationItem icon="puzzle" url="/puzzles" current={onPuzzlesPage}>
                 {t("navigationBar.puzzles", { ns: "common" })}
             </NavigationItem>
-            {showShareAction && <NavigationAction icon="share" onClick={() => setShareOpen(true)}>
+            {showShareAction && <NavigationAction icon="share" onClick={() => {
+                void openShareDialog();
+            }}>
                 {t("navigationBar.share", { ns: "common" })}
             </NavigationAction>}
         </nav>
 
         <div className={styles.rightArea}>
             {(showFlipAction || showShareAction) && <div className={styles.analysisActions}>
-                {showFlipAction && <NavigationAction icon="flip" onClick={flipVisibleBoard}>
+                {showFlipAction && <NavigationAction icon="flip" onClick={() => {
+                    void flipVisibleBoard();
+                }}>
                     {t("optionsToolbar.flipBoard", { ns: "analysis" })}
                 </NavigationAction>}
-                {showShareAction && <NavigationAction icon="share" onClick={() => setShareOpen(true)}>
+                {showShareAction && <NavigationAction icon="share" onClick={() => {
+                    void openShareDialog();
+                }}>
                     {t("navigationBar.share", { ns: "common" })}
                 </NavigationAction>}
             </div>}
@@ -272,19 +315,23 @@ function NavigationBar() {
             style={{ zIndex: 1000 }}
             onClick={() => setSidebarOpen(false)}
         />}
-        <Sidebar
-            style={{
-                zIndex: 1001,
-                transition: "left 0.3s ease",
-                left: sidebarOpen ? "0" : "-320px"
-            }}
-            onClose={() => setSidebarOpen(false)}
-        />
-        {shareOpen && <ShareDialog
-            game={analysisGame}
-            currentNode={currentStateTreeNode}
-            onClose={() => setShareOpen(false)}
-        />}
+        {sidebarMounted && <Suspense fallback={null}>
+            <Sidebar
+                style={{
+                    zIndex: 1001,
+                    transition: "left 0.3s ease",
+                    left: sidebarOpen ? "0" : "-320px"
+                }}
+                onClose={() => setSidebarOpen(false)}
+            />
+        </Suspense>}
+        {shareState && <Suspense fallback={null}>
+            <ShareDialog
+                game={shareState.game}
+                currentNode={shareState.currentNode}
+                onClose={() => setShareState(null)}
+            />
+        </Suspense>}
     </header>;
 }
 

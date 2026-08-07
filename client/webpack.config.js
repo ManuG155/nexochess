@@ -5,6 +5,17 @@ const DotenvPlugin = require("dotenv-webpack");
 require("dotenv").config({ path: "../.env" });
 
 const nodeEnv = process.env.NODE_ENV || "production";
+const publicDirectory = resolve("./public");
+
+function publicAssetFilename(pathData) {
+    const filename = String(pathData.filename || "").replaceAll("\\", "/");
+    const publicMarker = "public/";
+    const publicIndex = filename.lastIndexOf(publicMarker);
+
+    return publicIndex >= 0
+        ? filename.slice(publicIndex + publicMarker.length)
+        : filename.replace(/^\.\//, "");
+}
 
 /**
  * @type {Configuration}
@@ -46,7 +57,7 @@ module.exports = {
         alias: {
             "@": resolve("./src"),
             "@analysis": resolve("./src/apps/features/analysis"),
-            "@assets": resolve("./public")
+            "@assets": publicDirectory
         }
     },
     module: {
@@ -75,6 +86,26 @@ module.exports = {
             },
             {
                 test: /\.(png|svg|gif|ttf|mp3)$/i,
+                include: publicDirectory,
+                type: "asset",
+                parser: {
+                    dataUrlCondition: {
+                        maxSize: 8 * 1024
+                    }
+                },
+                generator: {
+                    // client/public is copied verbatim into cloudflare-dist.
+                    // Keep small assets inline, but point larger imported assets
+                    // at that canonical public copy instead of emitting a second
+                    // hashed duplicate into client/dist.
+                    emit: false,
+                    filename: publicAssetFilename,
+                    publicPath: "/"
+                }
+            },
+            {
+                test: /\.(png|svg|gif|ttf|mp3)$/i,
+                exclude: publicDirectory,
                 type: "asset"
             }
         ]

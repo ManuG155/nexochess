@@ -139,6 +139,24 @@ function withPageHeaders(headers, contentType, env) {
     return nextHeaders;
 }
 
+function isImmutableBundleUrl(url) {
+    if (!url.pathname.endsWith(".bundle.js")) return false;
+    if (url.searchParams.has("v")) return true;
+    return /\.[0-9a-f]{8}\.bundle\.js$/i.test(url.pathname);
+}
+
+function withStaticAssetCaching(response, request) {
+    if (!response.ok || !isImmutableBundleUrl(new URL(request.url))) return response;
+
+    const headers = new Headers(response.headers);
+    headers.set("Cache-Control", "public, max-age=31536000, immutable");
+    return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers
+    });
+}
+
 function withApiHeaders(headers, contentType) {
     const nextHeaders = new Headers(headers);
     if (contentType) nextHeaders.set("Content-Type", contentType);
@@ -299,7 +317,9 @@ async function handleRequest(request, env) {
     }
 
     const assetResponse = await env.ASSETS.fetch(request);
-    if (assetResponse.status !== 404) return assetResponse;
+    if (assetResponse.status !== 404) {
+        return withStaticAssetCaching(assetResponse, request);
+    }
     return renderPage(request, env, "unfound.html", {}, 404);
 }
 

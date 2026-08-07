@@ -20,6 +20,8 @@ function Unfound() {
             className={styles.image}
             src={iconUnfoundgame}
             alt=""
+            loading="lazy"
+            decoding="async"
         />
 
         <a href="/">

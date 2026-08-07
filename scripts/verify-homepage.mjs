@@ -83,6 +83,12 @@ requireFragments("worker", "Homepage cached redirect recovery", [
 ]);
 assert.ok(files.webpack.includes('home: "./src/apps/home/index.tsx"'));
 assert.ok(files.indexing.includes('freezeRoute({ pathname: "/", assetPath: "apps/home.html" })'));
-assert.ok(files.deployment.includes('    "/",') && files.deployment.includes('assertJavaScript("/home.bundle.js")'));
+assert.ok(
+    files.deployment.includes('    "/",')
+    && files.deployment.includes(
+        'assertJavaScript("/home.bundle.js?v=deployment-smoke-test", { immutable: true })'
+    ),
+    "Homepage deployment verification must check the versioned immutable bundle."
+);
 
-console.log("Homepage verification passed with forced HTTP-cache recovery, centralized canonical metadata and eleven languages.");
+console.log("Homepage verification passed with forced HTTP-cache recovery, immutable versioned bundle delivery, centralized canonical metadata and eleven languages.");
