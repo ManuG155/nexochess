@@ -27,13 +27,23 @@ function useSuggestionArrows(): SuggestionArrow[] {
 
     const node = useAnalysisBoardStore(state => state.currentStateTreeNode);
 
-    const { displayedEngineLines } = useRealtimeEngineStore();
+    const {
+        displayedPositionFen,
+        displayedEngineLines
+    } = useRealtimeEngineStore();
 
     return useMemo(() => {
         const arrowsType = settings.engine.suggestionArrows;
 
         if (arrowsType == EngineArrowType.TOP_CONTINUATION) {
-            const uciMove = displayedEngineLines.at(0)?.moves.at(0)?.uci;
+            const realtimeTopLine = displayedPositionFen == node.state.fen
+                ? getTopEngineLine(displayedEngineLines)
+                : undefined;
+            const storedTopLine = getTopEngineLine(node.state.engineLines);
+            const uciMove = (
+                realtimeTopLine
+                || storedTopLine
+            )?.moves.at(0)?.uci;
 
             if (!uciMove) return [];
 
@@ -54,8 +64,9 @@ function useSuggestionArrows(): SuggestionArrow[] {
 
         return [];
     }, [
-        node.state.fen,
+        node,
         displayedEngineLines,
+        displayedPositionFen,
         settings.engine.suggestionArrows
     ]);
 }
