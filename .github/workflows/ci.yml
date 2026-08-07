@@ -113,6 +113,9 @@ jobs:
       - name: Verify privacy-safe analytics events
         run: npm run verify:analytics-events
 
+      - name: Verify v1.1 release safeguards
+        run: npm run verify:release-v1.1
+
       - name: Type-check client
         run: npm run check -w client
 
@@ -168,6 +171,7 @@ jobs:
           node --check scripts/verify-accessibility.mjs
           node --check scripts/verify-analytics.mjs
           node --check scripts/verify-analytics-events.mjs
+          node --check scripts/verify-release-v1.1.mjs
 
       - name: Prepare staging Cloudflare assets
         run: node scripts/build-cloudflare.mjs
