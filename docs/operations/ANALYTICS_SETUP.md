@@ -11,9 +11,21 @@ NexoChess uses Google Analytics 4 (GA4) for optional, consent-gated usage analyt
 - Google Signals and ad-personalisation signals are disabled in the client integration.
 - Product-specific events are intentionally not configured until Step 33.
 
-## Production configuration
+## Create the GA4 property and web stream
 
-Create a GA4 web data stream for `https://www.nexochess.com` and obtain its Measurement ID (`G-...`).
+Create a GA4 property for NexoChess and a Web data stream for `https://www.nexochess.com`.
+
+Use these privacy-first settings for Step 32:
+
+- Keep Enhanced Measurement disabled for now. Step 33 will decide intentionally which NexoChess interactions become events.
+- Set user and event data retention to 2 months.
+- Do not link Google Ads or enable advertising features during Step 32.
+- Keep Google Signals disabled.
+- In the Google tag data-transmission controls, prevent advertising data transmission and prevent behavioral analytics data transmission when consent is denied.
+
+Copy the Web stream Measurement ID (`G-...`).
+
+## Production configuration
 
 Before preparing or deploying the production Worker, expose that public identifier to the production configuration process:
 
@@ -25,7 +37,9 @@ The production configuration generator rejects a missing or malformed Measuremen
 
 ## Google Analytics privacy settings
 
-For the NexoChess GA4 property, keep advertising features disabled for Step 32 and configure the Google tag data-transmission controls so behavioral analytics is not transmitted when `analytics_storage` is denied. Advertising integration belongs to the later advertising/CMP roadmap steps.
+The NexoChess client uses basic consent behavior: the Google tag is not loaded before Analytics consent. The runtime configuration additionally keeps `ad_storage`, `ad_user_data` and `ad_personalization` denied, and disables Google Signals and ad-personalisation signals. Advertising integration belongs to the later advertising/CMP roadmap steps.
+
+GA4 may set first-party `_ga` and `_ga_<container-id>` cookies only after the Analytics category is granted. Google documents a default cookie lifetime of up to two years, subject to browser limits. The NexoChess Privacy Policy discloses this behavior in all eleven supported languages.
 
 ## Validation
 
