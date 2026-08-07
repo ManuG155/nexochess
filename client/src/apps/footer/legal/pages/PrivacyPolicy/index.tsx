@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import LegalDocument from "../../components/LegalDocument";
+import { applyAnalyticsPrivacyRevision } from "./analyticsPrivacyRevision";
 import { getPrivacyRevisionCopy } from "./privacyRevisionCopy";
 
 const sectionOrder = [
@@ -24,11 +25,13 @@ const sectionOrder = [
 
 function PrivacyPolicy() {
     const { i18n } = useTranslation("legal");
+    const language = i18n.resolvedLanguage || i18n.language;
     const copy = useMemo(
-        () => getPrivacyRevisionCopy(
-            i18n.resolvedLanguage || i18n.language
+        () => applyAnalyticsPrivacyRevision(
+            getPrivacyRevisionCopy(language),
+            language
         ),
-        [i18n.resolvedLanguage, i18n.language]
+        [language]
     );
 
     return <LegalDocument

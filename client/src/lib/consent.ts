@@ -77,6 +77,20 @@ export function onConsentSettingsRequested(listener: () => void) {
     return () => window.removeEventListener(CONSENT_OPEN_EVENT, listener);
 }
 
+export function onConsentChanged(
+    listener: (preferences: ConsentPreferences) => void
+) {
+    if (typeof window == "undefined") return () => undefined;
+
+    const handleChange = (event: Event) => {
+        const preferences = (event as CustomEvent<unknown>).detail;
+        if (isConsentPreferences(preferences)) listener(preferences);
+    };
+
+    window.addEventListener(CONSENT_CHANGE_EVENT, handleChange);
+    return () => window.removeEventListener(CONSENT_CHANGE_EVENT, handleChange);
+}
+
 export function removeDefaultConsentLink() {
     if (typeof document == "undefined") return;
 
