@@ -24,6 +24,27 @@
     pointer-events: none;
 }
 
+.skipLink {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 5000;
+
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: var(--nexo-surface);
+    color: var(--nexo-text);
+    box-shadow: 0 8px 24px var(--nexo-shadow);
+    text-decoration: none;
+
+    transform: translateY(-180%);
+    transition: transform 120ms ease;
+}
+
+.skipLink:focus-visible {
+    transform: translateY(0);
+}
+
 .announcementMarkdown * {
     margin: 0;
     color: white;
@@ -37,4 +58,10 @@
     min-height: calc(100vh - 65px);
 
     background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .skipLink {
+        transition: none;
+    }
 }
