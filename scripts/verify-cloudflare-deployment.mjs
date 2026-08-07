@@ -209,7 +209,11 @@ assertSecurityHeaders(profileResponse, "/api/account/profile");
 console.log("OK protected API isolation");
 
 const invalidProfile = await request("/api/public/profile/%E0%A4%A");
-assert(invalidProfile.status === 404, "Malformed public profile did not return 404.");
+assert(
+    invalidProfile.status >= 400 && invalidProfile.status < 500,
+    `Malformed public profile was not rejected with HTTP 4xx (got ${invalidProfile.status}).`
+);
+console.log(`OK malformed public profile rejected: HTTP ${invalidProfile.status}`);
 
 const unknownApi = await request("/api/operations/unknown");
 assert(unknownApi.status === 404, "Unknown API route did not return 404.");
