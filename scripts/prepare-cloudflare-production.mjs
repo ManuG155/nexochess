@@ -11,6 +11,7 @@ import {
 const DEFAULT_WORKER_NAME = "nexochess-production";
 const DEFAULT_DATABASE_NAME = "nexochess-production";
 const OUTPUT_FILE = resolve("wrangler.production.local.jsonc");
+const ANALYTICS_MEASUREMENT_ID_PATTERN = /^G-[A-Z0-9]+$/i;
 
 function readArgument(name) {
     const index = process.argv.indexOf(name);
@@ -34,6 +35,11 @@ const origin = normaliseOrigin(
     || process.env.NEXOCHESS_PRODUCTION_ORIGIN
     || PRODUCTION_CANONICAL_ORIGIN
 );
+const analyticsMeasurementId = (
+    readArgument("--analytics-measurement-id")
+    || process.env.NEXOCHESS_GA_MEASUREMENT_ID
+    || ""
+).trim().toUpperCase();
 const attachDomains = hasFlag("--attach-domains")
     || process.env.NEXOCHESS_ATTACH_PRODUCTION_DOMAINS === "1";
 
@@ -50,6 +56,12 @@ if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
 if (origin !== PRODUCTION_CANONICAL_ORIGIN) {
     throw new Error(
         `Production origin is fixed to ${PRODUCTION_CANONICAL_ORIGIN}.`
+    );
+}
+
+if (!ANALYTICS_MEASUREMENT_ID_PATTERN.test(analyticsMeasurementId)) {
+    throw new Error(
+        "Missing or invalid --analytics-measurement-id / NEXOCHESS_GA_MEASUREMENT_ID (expected G-...)."
     );
 }
 
@@ -97,6 +109,7 @@ const configuration = {
     vars: {
         NEXOCHESS_ENV: "production",
         NEXOCHESS_ORIGIN: origin,
+        GOOGLE_ANALYTICS_MEASUREMENT_ID: analyticsMeasurementId,
         EMAIL_FROM_NAME: "NexoChess",
         EMAIL_FROM_ADDRESS: "contact@nexochess.com",
         EMAIL_REPLY_TO: "contact@nexochess.com"
@@ -127,6 +140,7 @@ console.log(`Prepared ${OUTPUT_FILE}`);
 console.log(`Worker: ${workerName}`);
 console.log(`D1: ${databaseName} (${databaseId})`);
 console.log(`Origin: ${origin}`);
+console.log(`Analytics: ${analyticsMeasurementId}`);
 console.log("workers.dev: disabled");
 console.log("Preview URLs: disabled");
 console.log(`Custom domains: ${attachDomains ? "enabled" : "disabled"}`);
