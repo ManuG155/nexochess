@@ -160,7 +160,10 @@ function OptionsToolbar() {
             freshAnalysisGame.stateTree
         );
 
-        setDisplayedEngineLines([]);
+        setDisplayedEngineLines(
+            freshAnalysisGame.stateTree.state.fen,
+            []
+        );
     }
 
 

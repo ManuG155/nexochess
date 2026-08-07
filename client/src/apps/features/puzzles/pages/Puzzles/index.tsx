@@ -20,6 +20,8 @@ import { playBoardMoveSound } from "@/lib/boardSounds";
 
 import EvaluationBar from
     "@analysis/components/EvaluationBar";
+import SuggestionArrowOverlay from
+    "@analysis/components/Board/SuggestionArrowOverlay";
 import CoachPortrait from
     "@analysis/components/AnalysisPanel/CoachPortrait";
 import CoachPicker from
@@ -1134,11 +1136,15 @@ function Puzzles() {
         const cachedEvaluation =
             evaluationCacheRef.current.get(currentFen);
 
-        setBoardEvaluation(
-            cachedEvaluation
-                ? { ...cachedEvaluation }
-                : { ...provisionalEvaluation }
-        );
+        /*
+         * No sustituimos una evaluación válida por 0.0/material mientras
+         * Stockfish arranca para la siguiente posición. Si ya conocemos esta
+         * FEN usamos la caché; si no, mantenemos la lectura anterior hasta la
+         * primera línea real del motor.
+         */
+        if (cachedEvaluation) {
+            setBoardEvaluation({ ...cachedEvaluation });
+        }
 
         let cancelled = false;
         const selectedVersion = settings.analysis.engine.version;
@@ -1162,7 +1168,7 @@ function Puzzles() {
                 if (
                     !cancelled
                     && line.index == 1
-                    && line.depth >= 6
+                    && line.depth >= 4
                 ) {
                     updateEvaluation(line.evaluation);
                 }
@@ -1798,8 +1804,6 @@ function Puzzles() {
                                         >["customSquare"]
                                     >
                                 }
-                                customArrows={hintArrow}
-                                customArrowColor="#78a7ff"
                                 customSquareStyles={boardSquareStyles}
                                 customLightSquareStyle={{
                                     backgroundColor:
@@ -1815,6 +1819,21 @@ function Puzzles() {
                                         "0 24px 58px rgba(0, 0, 0, 0.34)"
                                 }}
                             />
+
+                            {hintArrow.length > 0 && (
+                                <SuggestionArrowOverlay
+                                    arrows={hintArrow.map(arrow => ({
+                                        from: arrow[0],
+                                        to: arrow[1],
+                                        colour: String(
+                                            arrow[2] || "#78a7ff"
+                                        )
+                                    }))}
+                                    flipped={
+                                        puzzleBoardOrientation == "black"
+                                    }
+                                />
+                            )}
 
                             {settings.themes.board.coordinates == "outside" && (
                                 <OutsideCoordinates
