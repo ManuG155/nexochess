@@ -7,6 +7,7 @@ import useSettingsStore from "@/stores/SettingsStore";
 import NavigationBar from "@/components/layout/NavigationBar";
 import Footer from "@/components/layout/Footer";
 import CookieConsent from "@/components/privacy/CookieConsent";
+import { getAccessibilityCopy } from "@/i18n/accessibilityCopy";
 
 import PageWrapperProps from "./PageWrapperProps";
 import * as styles from "./PageWrapper.module.css";
@@ -28,7 +29,10 @@ function PageWrapper({
     footerClassName,
     footerStyle
 }: PageWrapperProps) {
-    const { t } = useTranslation("common");
+    const { i18n } = useTranslation();
+    const accessibilityCopy = getAccessibilityCopy(
+        i18n.resolvedLanguage || i18n.language
+    );
     const bugReportingMode = useSettingsStore(
         state => state.settings.bugReportingMode
     );
@@ -75,7 +79,7 @@ function PageWrapper({
             data-route={routeName}
         >
             <a className={styles.skipLink} href="#nexo-main-content">
-                {t("accessibility.skipToContent")}
+                {accessibilityCopy.skipToContent}
             </a>
 
             <NavigationBar/>
