@@ -1,0 +1,27 @@
+/* Accesibilidad global del shell sin alterar tablero, piezas ni lógica de juego. */
+html[data-theme="light"] {
+    --nexo-text-muted: rgba(35, 55, 79, 0.72);
+}
+
+[data-nexo-shell] :is(
+    a,
+    button,
+    input,
+    textarea,
+    select,
+    [tabindex]
+):focus-visible {
+    outline: 3px solid #78a9ff !important;
+    outline-offset: 3px;
+}
+
+[data-nexo-shell][data-theme="light"] :is(
+    a,
+    button,
+    input,
+    textarea,
+    select,
+    [tabindex]
+):focus-visible {
+    outline-color: #235fae !important;
+}
