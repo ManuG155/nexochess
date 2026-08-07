@@ -58,6 +58,7 @@ const MINIMAL_CSP = [
     "frame-ancestors 'none'",
     "object-src 'none'"
 ].join("; ");
+const ANALYTICS_MEASUREMENT_ID_PATTERN = /^G-[A-Z0-9]+$/i;
 
 function normalisePathname(pathname) {
     if (pathname.length > 1 && pathname.endsWith("/")) return pathname.slice(0, -1);
@@ -82,6 +83,24 @@ function replacePlaceholders(html, replacements) {
 
 function isProduction(env) {
     return env.NEXOCHESS_ENV === PRODUCTION_ENVIRONMENT;
+}
+
+function runtimeMetadata(env) {
+    const environmentMeta = `<meta name="nexochess-environment" content="${env.NEXOCHESS_ENV || "unknown"}">`;
+    if (!isProduction(env)) return environmentMeta;
+
+    const measurementId = String(env.GOOGLE_ANALYTICS_MEASUREMENT_ID || "")
+        .trim()
+        .toUpperCase();
+    if (!ANALYTICS_MEASUREMENT_ID_PATTERN.test(measurementId)) {
+        return environmentMeta;
+    }
+
+    return `${environmentMeta}\n<meta name="nexochess-analytics-measurement-id" content="${measurementId}">`;
+}
+
+function injectRuntimeMetadata(html, env) {
+    return html.replace("</head>", `${runtimeMetadata(env)}\n</head>`);
 }
 
 function withSecurityHeaders(headers, env) {
@@ -182,7 +201,10 @@ async function renderPage(request, env, filepath, replacements = {}, status = 20
     }));
     if (!assetResponse.ok) return assetResponse;
 
-    const html = replacePlaceholders(await assetResponse.text(), replacements);
+    const html = injectRuntimeMetadata(
+        replacePlaceholders(await assetResponse.text(), replacements),
+        env
+    );
     return new Response(request.method === "HEAD" ? null : html, {
         status,
         headers: withPageHeaders(assetResponse.headers, "text/html; charset=utf-8", env)
