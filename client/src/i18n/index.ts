@@ -3,142 +3,95 @@ import { initReactI18next } from "react-i18next";
 import httpApi from "i18next-http-backend";
 
 import LocalStorageKey from "@/constants/LocalStorageKey";
-
-const supportedLanguages = [
-    "en",
-    "es",
-    "fr",
-    "de",
-    "pt",
-    "ru",
-    "zh",
-    "vi",
-    "hi",
-    "mr",
-    "pl"
-] as const;
-
-type SupportedLanguage = typeof supportedLanguages[number];
+import {
+    DEFAULT_LANGUAGE,
+    SUPPORTED_LANGUAGES,
+    SupportedLanguage,
+    getUrlLanguage,
+    installLocalizedLinkRouting,
+    normaliseSupportedLanguage,
+    refreshLocalizedLinks
+} from "./routing";
 
 const namespaces = [
-    "common",
-    "academy",
-    "puzzles",
-    "analysis",
-    "settings",
-    "otherPages",
-    "helpCenter",
-    "coach",
-    "legal"
+    "common", "academy", "puzzles", "analysis", "settings",
+    "otherPages", "helpCenter", "coach", "legal"
 ] as const;
-
-function normaliseLanguage(value?: string | null): SupportedLanguage | null {
-    if (!value) return null;
-
-    const normalised = value
-        .trim()
-        .toLowerCase()
-        .replace("_", "-");
-
-    const baseLanguage = normalised.split("-")[0];
-
-    return supportedLanguages.includes(baseLanguage as SupportedLanguage)
-        ? baseLanguage as SupportedLanguage
-        : null;
-}
 
 function getBrowserLanguages(): string[] {
     if (typeof navigator == "undefined") return [];
-
-    const candidates = [
+    return [
         ...(Array.isArray(navigator.languages) ? navigator.languages : []),
         navigator.language
-    ];
-
-    return candidates.filter((value): value is string => Boolean(value));
+    ].filter((value): value is string => Boolean(value));
 }
 
 function detectBrowserLanguage(): SupportedLanguage {
     for (const candidate of getBrowserLanguages()) {
-        const detected = normaliseLanguage(candidate);
+        const detected = normaliseSupportedLanguage(candidate);
         if (detected) return detected;
     }
-
-    return "en";
+    return DEFAULT_LANGUAGE;
 }
 
 function getInitialLanguage(): SupportedLanguage {
-    if (typeof window == "undefined") return "en";
+    if (typeof window == "undefined") return DEFAULT_LANGUAGE;
+    const urlLanguage = getUrlLanguage(window.location.pathname);
+    if (urlLanguage) return urlLanguage;
 
-    /*
-     * A manual selection always wins on later visits. On the first visit,
-     * NexoChess follows the browser language automatically.
-     */
-    const saved = normaliseLanguage(
+    const saved = normaliseSupportedLanguage(
         localStorage.getItem(LocalStorageKey.PREFERRED_LANGUAGE)
     );
-
     return saved || detectBrowserLanguage();
 }
 
 function updateDocumentLanguage(language: string) {
     if (typeof document == "undefined") return;
-
-    document.documentElement.lang = normaliseLanguage(language) || "en";
+    document.documentElement.lang = normaliseSupportedLanguage(language) || DEFAULT_LANGUAGE;
 }
 
 const initialLanguage = getInitialLanguage();
 updateDocumentLanguage(initialLanguage);
+installLocalizedLinkRouting(() => (
+    normaliseSupportedLanguage(i18next.resolvedLanguage || i18next.language)
+    || initialLanguage
+));
 
-/*
- * Suspense is deliberately disabled here. Translation namespaces are loaded
- * over HTTP; suspending during the synchronous "Analyse" click caused React
- * to replace the application with a blank screen while coach.json loaded.
- */
 void i18next
     .use(initReactI18next)
     .use(httpApi)
     .init({
         lng: initialLanguage,
-        fallbackLng: "en",
-        supportedLngs: [...supportedLanguages],
+        fallbackLng: DEFAULT_LANGUAGE,
+        supportedLngs: [...SUPPORTED_LANGUAGES],
         nonExplicitSupportedLngs: true,
         load: "languageOnly",
         ns: [...namespaces],
         defaultNS: "common",
-        backend: {
-            loadPath: "/locales/{{lng}}/{{ns}}.json"
-        },
-        interpolation: {
-            escapeValue: false
-        },
+        backend: { loadPath: "/locales/{{lng}}/{{ns}}.json" },
+        interpolation: { escapeValue: false },
         returnEmptyString: false,
-        react: {
-            useSuspense: false
-        }
+        react: { useSuspense: false }
     });
 
 i18next.on("initialized", () => {
     updateDocumentLanguage(i18next.resolvedLanguage || i18next.language);
+    refreshLocalizedLinks();
 });
 
 i18next.on("languageChanged", language => {
-    const normalised = normaliseLanguage(language) || "en";
-
+    const normalised = normaliseSupportedLanguage(language) || DEFAULT_LANGUAGE;
     if (typeof window != "undefined") {
-        localStorage.setItem(
-            LocalStorageKey.PREFERRED_LANGUAGE,
-            normalised
-        );
+        localStorage.setItem(LocalStorageKey.PREFERRED_LANGUAGE, normalised);
     }
-
     updateDocumentLanguage(normalised);
+    refreshLocalizedLinks();
 });
 
 export {
     detectBrowserLanguage,
-    normaliseLanguage,
-    supportedLanguages
+    normaliseSupportedLanguage as normaliseLanguage,
+    SUPPORTED_LANGUAGES as supportedLanguages
 };
-
+export type { SupportedLanguage };
 export default i18next;

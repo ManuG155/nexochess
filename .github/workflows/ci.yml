@@ -74,6 +74,9 @@ jobs:
       - name: Verify canonical URL annotations
         run: npm run verify:canonical-links
 
+      - name: Verify localized language URLs
+        run: npm run verify:language-urls
+
       - name: Verify page titles and meta descriptions
         run: npm run verify:metadata
 
@@ -110,6 +113,7 @@ jobs:
       - name: Validate Cloudflare and export scripts
         run: |
           node --check config/site.mjs
+          node --check config/language-routing.mjs
           node --check config/search-indexing.mjs
           node --check config/sitemap.mjs
           node --check config/page-metadata.mjs
@@ -138,6 +142,7 @@ jobs:
           node --check scripts/verify-robots-txt.mjs
           node --check scripts/verify-sitemap.mjs
           node --check scripts/verify-canonical-links.mjs
+          node --check scripts/verify-language-urls.mjs
           node --check scripts/verify-page-metadata.mjs
           node --check scripts/verify-open-graph.mjs
           node --check scripts/verify-structured-data.mjs
