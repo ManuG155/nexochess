@@ -7,6 +7,7 @@
         "nodejs_compat"
     ],
     "workers_dev": true,
+    "preview_urls": false,
     "assets": {
         "directory": "./cloudflare-dist",
         "binding": "ASSETS",
@@ -14,6 +15,9 @@
         "not_found_handling": "none",
         "run_worker_first": [
             "/",
+            "/*.bundle.js",
+            "/robots.txt",
+            "/sitemap.xml",
             "/analysis",
             "/archive",
             "/academy",

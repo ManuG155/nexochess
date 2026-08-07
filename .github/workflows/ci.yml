@@ -32,14 +32,89 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Audit dependencies
+        run: npm run audit:dependencies
+
       - name: Audit translations
         run: npm run check:translations
 
       - name: Audit repository contents
         run: npm run check:repository
 
+      - name: Audit puzzle backend
+        run: npm run check:puzzles
+
       - name: Verify account email templates
         run: npm run verify:account-email
+
+      - name: Verify consent and contact
+        run: npm run verify:consent-contact
+
+      - name: Verify security hardening
+        run: npm run verify:security
+
+      - name: Verify public API and D1 isolation
+        run: npm run verify:public-api
+
+      - name: Verify deployment and recovery controls
+        run: npm run verify:operations
+
+      - name: Verify canonical domain
+        run: npm run verify:canonical
+
+      - name: Verify search indexing
+        run: npm run verify:indexing
+
+      - name: Verify robots.txt crawler policy
+        run: npm run verify:robots
+
+      - name: Verify XML sitemap
+        run: npm run verify:sitemap
+
+      - name: Verify canonical URL annotations
+        run: npm run verify:canonical-links
+
+      - name: Verify localized language URLs
+        run: npm run verify:language-urls
+
+      - name: Verify reciprocal hreflang clusters
+        run: npm run verify:hreflang
+
+      - name: Verify page titles and meta descriptions
+        run: npm run verify:metadata
+
+      - name: Verify Open Graph and social cards
+        run: npm run verify:open-graph
+
+      - name: Verify Schema.org structured data
+        run: npm run verify:structured-data
+
+      - name: Verify public homepage
+        run: npm run verify:homepage
+
+      - name: Verify About NexoChess page
+        run: npm run verify:about
+
+      - name: Verify footer balance
+        run: npm run verify:footer
+
+      - name: Verify public FAQ page
+        run: npm run verify:faq
+
+      - name: Verify completed Help Center
+        run: npm run verify:help
+
+      - name: Verify accessibility safeguards
+        run: npm run verify:accessibility
+
+      - name: Verify privacy-first analytics installation
+        run: npm run verify:analytics
+
+      - name: Verify privacy-safe analytics events
+        run: npm run verify:analytics-events
+
+      - name: Verify v1.1 release safeguards
+        run: npm run verify:release-v1.1
 
       - name: Type-check client
         run: npm run check -w client
@@ -52,23 +127,57 @@ jobs:
 
       - name: Validate Cloudflare and export scripts
         run: |
+          node --check config/site.mjs
+          node --check config/language-routing.mjs
+          node --check config/hreflang.mjs
+          node --check config/search-indexing.mjs
+          node --check config/sitemap.mjs
+          node --check config/page-metadata.mjs
+          node --check config/structured-data.mjs
           node --check cloudflare/worker.mjs
           node --check cloudflare/auth.mjs
           node --check cloudflare/api.mjs
           node --check cloudflare/email.mjs
           node --check cloudflare/emailQueue.mjs
           node --check scripts/build-cloudflare.mjs
+          node --check scripts/check-puzzle-backend.mjs
+          node --check scripts/cloudflare-operations.mjs
+          node --check scripts/portable-command-shim.mjs
           node --check scripts/export-puzzles-static.mjs
           node --check scripts/prepare-cloudflare-production.mjs
+          node --check scripts/verify-canonical-domain.mjs
+          node --check scripts/verify-cloudflare-deployment.mjs
+          node --check scripts/verify-cloudflare-operations.mjs
           node --check scripts/verify-cloudflare-production.mjs
           node --check scripts/verify-puzzle-data.mjs
           node --check scripts/verify-account-email.mjs
+          node --check scripts/verify-consent-contact.mjs
+          node --check scripts/verify-security-hardening.mjs
+          node --check scripts/verify-public-api-security.mjs
+          node --check scripts/verify-search-indexing.mjs
+          node --check scripts/verify-robots-txt.mjs
+          node --check scripts/verify-sitemap.mjs
+          node --check scripts/verify-canonical-links.mjs
+          node --check scripts/verify-language-urls.mjs
+          node --check scripts/verify-hreflang.mjs
+          node --check scripts/verify-page-metadata.mjs
+          node --check scripts/verify-open-graph.mjs
+          node --check scripts/verify-structured-data.mjs
+          node --check scripts/verify-homepage.mjs
+          node --check scripts/verify-about-page.mjs
+          node --check scripts/verify-footer-balance.mjs
+          node --check scripts/verify-faq-page.mjs
+          node --check scripts/verify-help-center.mjs
+          node --check scripts/verify-accessibility.mjs
+          node --check scripts/verify-analytics.mjs
+          node --check scripts/verify-analytics-events.mjs
+          node --check scripts/verify-release-v1.1.mjs
 
       - name: Prepare staging Cloudflare assets
         run: node scripts/build-cloudflare.mjs
 
       - name: Bundle staging Cloudflare Worker
-        run: npx --yes wrangler@4 deploy --dry-run --outdir .wrangler-dry-run
+        run: npx --yes wrangler@4.119.0 deploy --dry-run --outdir .wrangler-dry-run
 
       - name: Prepare production Cloudflare assets
         run: node scripts/build-cloudflare.mjs --puzzle-origin https://nexochess-puzzle-data-production.manuel-garcia-villaescusa.workers.dev
@@ -77,7 +186,7 @@ jobs:
         run: |
           node scripts/prepare-cloudflare-production.mjs \
             --database-id 00000000-0000-4000-8000-000000000000
-          npx --yes wrangler@4 deploy \
+          npx --yes wrangler@4.119.0 deploy \
             --dry-run \
             --config wrangler.production.local.jsonc \
             --outdir .wrangler-production-dry-run

@@ -35,19 +35,19 @@
     max-width: 38ch;
     margin: 2px 0 0;
     color: rgba(255, 255, 255, 0.68);
-    font-size: 0.87rem;
-    line-height: 1.45;
+    font-size: 0.94rem;
+    line-height: 1.55;
 }
 
 .copyrightNotice,
 .footerMeta {
-    color: rgba(255, 255, 255, 0.42);
-    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.48);
+    font-size: 0.82rem;
 }
 
 .links {
     display: grid;
-    grid-template-columns: repeat(2, minmax(150px, 1fr));
+    grid-template-columns: repeat(2, minmax(170px, 1fr));
     gap: 8px 34px;
 }
 
@@ -61,14 +61,14 @@
 .linkButton {
     display: inline-flex;
     align-items: center;
-    min-height: 34px;
+    min-height: 38px;
     padding: 0;
 
     border: 0;
     background: transparent;
-    color: rgba(255, 255, 255, 0.76);
+    color: rgba(255, 255, 255, 0.8);
     font: inherit;
-    font-size: 0.84rem;
+    font-size: 0.93rem;
     text-align: left;
     text-decoration: none;
     cursor: pointer;

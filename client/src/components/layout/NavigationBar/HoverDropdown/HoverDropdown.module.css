@@ -14,9 +14,14 @@
     padding: 0 15px;
     height: 100%;
 
+    border: none;
+    background: transparent;
     color: white;
+    font: inherit;
     font-size: 1.1rem;
+    text-decoration: none;
 
+    cursor: pointer;
     transition-duration: 0.3s;
 }
 
@@ -48,8 +53,14 @@
     box-sizing: border-box;
     width: 100%;
 
+    border: none;
+    background: transparent;
     color: white;
+    font: inherit;
+    text-align: center;
+    text-decoration: none;
 
+    cursor: pointer;
     transition-duration: 0.3s;
 }
 

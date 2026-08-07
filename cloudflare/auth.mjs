@@ -4,17 +4,14 @@ import {
     createAuthMiddleware,
     getMigrations
 } from "../client/cloudflare/betterAuthRuntime.mjs";
+import { resolveApplicationOrigin } from "../config/site.mjs";
 import { queueAccountEmail } from "./emailQueue.mjs";
 
 const AUTH_PATH = "/auth/account";
-const SCHEMA_VERSION = 1;
+const SCHEMA_VERSION = 2;
 
 let authInstance;
 let schemaPromise;
-
-function cleanOrigin(value) {
-    return value?.trim().replace(/\/+$/, "");
-}
 
 function validateUsername(value) {
     if (typeof value !== "string") return "INVALID_USERNAME";
@@ -69,8 +66,7 @@ function createAuth(env, request) {
     if (!env.DB) throw new Error("The NexoChess D1 binding is missing.");
     if (!env.AUTH_SECRET) throw new Error("AUTH_SECRET is not configured.");
 
-    const origin = cleanOrigin(env.NEXOCHESS_ORIGIN)
-        || new URL(request.url).origin;
+    const origin = resolveApplicationOrigin(request.url, env);
     const fallbackEmailRequest = new Request(origin);
 
     const sendEmail = ({ type, recipient, url, callbackRequest, newEmail }) => {
@@ -110,6 +106,11 @@ function createAuth(env, request) {
         secret: env.AUTH_SECRET,
         database: env.DB,
         trustedOrigins: [origin],
+        rateLimit: {
+            enabled: true,
+            window: 60,
+            max: 100
+        },
         emailAndPassword: {
             enabled: true,
             minPasswordLength: 8,
@@ -224,7 +225,10 @@ function createAuth(env, request) {
             }
         },
         advanced: {
-            cookiePrefix: "wintrchess"
+            cookiePrefix: "wintrchess",
+            ipAddress: {
+                ipAddressHeaders: ["cf-connecting-ip"]
+            }
         },
         logger: {
             level: "error"
@@ -288,6 +292,15 @@ async function createApplicationTables(database) {
         database.prepare(`
             CREATE INDEX IF NOT EXISTS puzzle_completions_user_date
             ON puzzle_completions(user_id, completed_at DESC)
+        `),
+        database.prepare(`
+            CREATE TABLE IF NOT EXISTS release_note_views (
+                user_id TEXT NOT NULL,
+                version TEXT NOT NULL,
+                seen_at INTEGER NOT NULL,
+                PRIMARY KEY (user_id, version),
+                FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE
+            )
         `)
     ]);
 }

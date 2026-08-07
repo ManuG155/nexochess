@@ -1,34 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="${PAGE_LANGUAGE}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="application-name" content="NexoChess">
     <meta name="apple-mobile-web-app-title" content="NexoChess">
     <meta name="theme-color" content="#47acff">
-    <meta name="description" content="Analyse chess games for free with Stockfish 17. Review key moments, move quality and accuracy without creating an account.">
+    <meta name="description" content="${PAGE_DESCRIPTION}">
     <meta name="robots" content="index, follow, max-image-preview:large">
 
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="NexoChess">
-    <meta property="og:locale" content="en_US">
-    <meta property="og:locale:alternate" content="es_ES">
-    <meta property="og:title" content="NexoChess — Free Chess Game Analysis">
-    <meta property="og:url" content="https://www.nexochess.com/analysis">
-    <meta property="og:image" content="https://www.nexochess.com/img/nexochess.png">
-    <meta property="og:image:alt" content="NexoChess">
-    <meta property="og:description" content="Analyse chess games for free with Stockfish 17 and understand the key moments of every game.">
+    <meta property="og:type" content="${OPEN_GRAPH_TYPE}">
+    <meta property="og:site_name" content="${OPEN_GRAPH_SITE_NAME}">
+    <meta property="og:locale" content="${OPEN_GRAPH_LOCALE}">
+    <meta property="og:title" content="${OPEN_GRAPH_TITLE}">
+    <meta property="og:description" content="${OPEN_GRAPH_DESCRIPTION}">
+    <meta property="og:url" content="${OPEN_GRAPH_URL}">
+    <meta property="og:image" content="${OPEN_GRAPH_IMAGE}">
+    <meta property="og:image:secure_url" content="${OPEN_GRAPH_IMAGE_SECURE_URL}">
+    <meta property="og:image:type" content="${OPEN_GRAPH_IMAGE_TYPE}">
+    <meta property="og:image:width" content="${OPEN_GRAPH_IMAGE_WIDTH}">
+    <meta property="og:image:height" content="${OPEN_GRAPH_IMAGE_HEIGHT}">
+    <meta property="og:image:alt" content="${OPEN_GRAPH_IMAGE_ALT}">
 
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="NexoChess — Free Chess Game Analysis">
-    <meta name="twitter:description" content="Analyse chess games for free with Stockfish 17 and understand the key moments of every game.">
-    <meta name="twitter:image" content="https://www.nexochess.com/img/nexochess.png">
+    <meta name="twitter:card" content="${TWITTER_CARD}">
+    <meta name="twitter:title" content="${TWITTER_TITLE}">
+    <meta name="twitter:description" content="${TWITTER_DESCRIPTION}">
+    <meta name="twitter:image" content="${TWITTER_IMAGE}">
+    <meta name="twitter:image:alt" content="${TWITTER_IMAGE_ALT}">
 
-    <link rel="canonical" href="https://www.nexochess.com/analysis">
+    <script type="application/ld+json">${STRUCTURED_DATA_JSON}</script>
+
+    <link rel="canonical" href="${PAGE_CANONICAL}">
+    ${HREFLANG_LINKS}
     <link rel="icon" href="/favicon.ico">
     <link rel="manifest" href="/manifest.webmanifest">
 
-    <title>NexoChess — Free Chess Game Analysis</title>
+    <title>${PAGE_TITLE}</title>
 </head>
 <body>
     <div class="root"></div>

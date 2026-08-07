@@ -7,6 +7,8 @@ interface DialogProps {
     closeButtonStyle?: CSSProperties;
     onClose?: () => void;
     closeOnBackdrop?: boolean;
+    ariaLabel?: string;
+    ariaLabelledBy?: string;
 }
 
 export default DialogProps;
