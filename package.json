@@ -59,7 +59,7 @@
         "check": "npm run check:translations && npm run check:repository && npm run check:puzzles && npm run verify:account-email && npm run verify:consent-contact && npm run verify:security && npm run verify:public-api && npm run verify:operations && npm run verify:canonical && npm run verify:indexing && npm run verify:robots && npm run verify:sitemap && npm run verify:canonical-links && npm run verify:language-urls && npm run verify:hreflang && npm run verify:metadata && npm run verify:open-graph && npm run verify:structured-data && npm run verify:homepage && npm run verify:about && npm run verify:footer && npm run verify:faq && npm run verify:help && npm run verify:accessibility && npm run check -w client && npm run check -w server",
         "verify": "npm run check && npm run build",
         "import:puzzles": "node scripts/import-lichess-puzzles.mjs",
-        "export:puzzles:static": "node scripts/export-lichess-puzzles.mjs"
+        "export:puzzles:static": "node scripts/export-puzzles-static.mjs"
     },
     "devDependencies": {
         "@stylistic/eslint-plugin-ts": "^2.1.0",
