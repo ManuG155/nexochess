@@ -59,6 +59,9 @@ jobs:
       - name: Verify deployment and recovery controls
         run: npm run verify:operations
 
+      - name: Verify production Worker routing
+        run: npm run verify:production-routing
+
       - name: Verify canonical domain
         run: npm run verify:canonical
 
@@ -145,10 +148,12 @@ jobs:
           node --check scripts/portable-command-shim.mjs
           node --check scripts/export-puzzles-static.mjs
           node --check scripts/prepare-cloudflare-production.mjs
+          node --check scripts/ensure-cloudflare-production-config.mjs
           node --check scripts/verify-canonical-domain.mjs
           node --check scripts/verify-cloudflare-deployment.mjs
           node --check scripts/verify-cloudflare-operations.mjs
           node --check scripts/verify-cloudflare-production.mjs
+          node --check scripts/verify-production-routing.mjs
           node --check scripts/verify-puzzle-data.mjs
           node --check scripts/verify-account-email.mjs
           node --check scripts/verify-consent-contact.mjs
