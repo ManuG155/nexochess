@@ -1,102 +1,28 @@
-import React, { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import React, {
+    useEffect,
+    useState
+} from "react";
 import { useTranslation } from "react-i18next";
-import { Tooltip } from "react-tooltip";
-import { useShallow } from "zustand/react/shallow";
+import { useSearchParams } from "react-router-dom";
+import { cloneDeep } from "lodash-es";
 
-import { StatusCodes } from "http-status-codes";
+import AnalysisStatus from "@analysis/constants/AnalysisStatus";
+import defaultAnalysedGame from "@analysis/constants/defaultAnalysedGame";
+import useAnalysisGameStore from "@analysis/stores/AnalysisGameStore";
+import useAnalysisBoardStore from "@analysis/stores/AnalysisBoardStore";
+import useAnalysisProgressStore from "@analysis/stores/AnalysisProgressStore";
+import useRealtimeEngineStore from "@analysis/stores/RealtimeEngineStore";
+import useAnalysisTabStore from "@analysis/stores/AnalysisTabStore";
+import useAnalysisSessionStore from "@analysis/stores/AnalysisSessionStore";
+import { archiveGame } from "@/lib/gameArchive";
+import AnalysisTab from "@analysis/constants/AnalysisTab";
+import LogMessage from "@/components/common/LogMessage";
 
-import {
-    FetchStatus
-} from "@tanstack/react-query";
-
-import {
-    cloneDeep,
-    omit
-} from "lodash-es";
-
-
-import {
-    defaultAnalysedGame
-} from "shared/constants/utils";
-
-import AnalysisStatus from
-    "@analysis/constants/AnalysisStatus";
-
-import useAnalysisProgressStore from
-    "../../stores/AnalysisProgressStore";
-
-import {
-    useAnalysisGameStore
-} from "@analysis/stores/AnalysisGameStore";
-
-import useAnalysisBoardStore from
-    "@analysis/stores/AnalysisBoardStore";
-
-import useRealtimeEngineStore from
-    "@analysis/stores/RealtimeEngineStore";
-
-import {
-    useAuthedProfile
-} from "@/hooks/api/useProfile";
-
-import Button from
-    "@/components/common/Button";
-
-import displayToast from
-    "@/lib/toast";
-
-import {
-    archiveGame
-} from "@/lib/gameArchive";
-
-
-import * as styles from
-    "./OptionsToolbar.module.css";
-
-
-import iconBack from
-    "@assets/img/interface/back.svg";
-
-import iconSave from
-    "@assets/img/interface/save.svg";
-
+import * as styles from "./OptionsToolbar.module.css";
 
 function OptionsToolbar() {
-    const { t } = useTranslation([
-        "analysis",
-        "common"
-    ]);
-
-
-    const [
-        searchParams,
-        setSearchParams
-    ] = useSearchParams();
-
-
-    const {
-        status: profileStatus
-    } = useAuthedProfile();
-
-
-    const {
-        evaluationController,
-        setAnalysisStatus,
-        setAnalysisError
-    } = useAnalysisProgressStore(
-        useShallow(state => ({
-            evaluationController:
-                state.evaluationController,
-
-            setAnalysisStatus:
-                state.setAnalysisStatus,
-
-            setAnalysisError:
-                state.setAnalysisError
-        }))
-    );
-
+    const { t } = useTranslation("analysis");
+    const [ searchParams, setSearchParams ] = useSearchParams();
 
     const {
         analysisGame,
@@ -105,35 +31,59 @@ function OptionsToolbar() {
         setGameAnalysisOpen
     } = useAnalysisGameStore();
 
-
     const {
-        setCurrentStateTreeNode
+        currentStateTreeNode,
+        setCurrentStateTreeNode,
+        boardFlipped,
+        setBoardFlipped
     } = useAnalysisBoardStore();
 
+    const {
+        analysisStatus,
+        setAnalysisStatus,
+        evaluationController,
+        setAnalysisError
+    } = useAnalysisProgressStore();
 
-    const setDisplayedEngineLines =
-        useRealtimeEngineStore(
-            state =>
-                state.setDisplayedEngineLines
-        );
+    const setDisplayedEngineLines = useRealtimeEngineStore(
+        state => state.setDisplayedEngineLines
+    );
 
+    const setActiveTab = useAnalysisTabStore(
+        state => state.setActiveTab
+    );
 
-    const [
-        archiveStatus,
-        setArchiveStatus
-    ] = useState<FetchStatus>("idle");
+    const resetAnalysisSession = useAnalysisSessionStore(
+        state => state.reset
+    );
 
+    const [ archiveStatus, setArchiveStatus ] = useState<
+        "inactive" | "fetching" | "success" | "error"
+    >("inactive");
 
-    function back() {
+    useEffect(() => {
+        setArchiveStatus("inactive");
+    }, [analysisGame]);
+
+    function flipBoard() {
+        setBoardFlipped(!boardFlipped);
+    }
+
+    function resetAnalysis() {
         setSearchParams(
-            omit(
-                Object.fromEntries(
-                    searchParams.entries()
-                ),
-                ["game"]
-            )
+            Object.fromEntries(
+                searchParams.entries()
+            ),
+            { replace: true }
         );
 
+        searchParams.delete("game");
+        setSearchParams(
+            Object.fromEntries(
+                searchParams.entries()
+            ),
+            { replace: true }
+        );
 
         evaluationController?.abort();
 
@@ -143,12 +93,10 @@ function OptionsToolbar() {
 
         setAnalysisError();
 
-
         const freshAnalysisGame =
             cloneDeep(
                 defaultAnalysedGame
             );
-
 
         setGameAnalysisOpen(false);
 
@@ -160,156 +108,86 @@ function OptionsToolbar() {
             freshAnalysisGame.stateTree
         );
 
-        setDisplayedEngineLines([]);
+        setDisplayedEngineLines(
+            freshAnalysisGame.stateTree.state.fen,
+            []
+        );
     }
-
 
     async function saveToArchive() {
         setArchiveStatus(
             "fetching"
         );
 
-
         const archival =
             await archiveGame(
                 analysisGame,
-
                 searchParams.get(
                     "game"
                 ) || undefined
             );
 
-
-        if (
-            archival.status
-            == StatusCodes
-                .INSUFFICIENT_STORAGE
-        ) {
-            return displayToast({
-                message:
-                    t(
-                        "optionsToolbar"
-                        + ".noArchiveStorage"
-                    ),
-
-                theme:
-                    "error",
-
-                autoClose:
-                    false
-            });
+        if (!archival) {
+            setArchiveStatus("error");
+            return;
         }
 
+        setArchiveStatus("success");
 
-        if (!archival.id) {
-            return displayToast({
-                message:
-                    t(
-                        "unknownError",
-                        { ns: "common" }
-                    ),
-
-                theme:
-                    "error"
-            });
-        }
-
-
-        setSearchParams({
-            ...Object.fromEntries(
+        searchParams.set("game", archival.id);
+        setSearchParams(
+            Object.fromEntries(
                 searchParams.entries()
             ),
-
-            game:
-                archival.id
-        });
-
-
-        setArchiveStatus(
-            "idle"
+            { replace: true }
         );
-
-
-        displayToast({
-            message:
-                t(
-                    "optionsToolbar"
-                    + ".gameArchived"
-                ),
-
-            theme:
-                "success",
-
-            autoClose:
-                10
-        });
     }
 
+    function closeAnalysis() {
+        setGameAnalysisOpen(false);
+        setActiveTab(AnalysisTab.GAME);
+        resetAnalysisSession();
+    }
 
-    return (
-        <div className={styles.wrapper}>
+    return <div className={styles.wrapper}>
+        <div className={styles.buttonRow}>
+            <button
+                type="button"
+                onClick={flipBoard}
+            >
+                {t("optionsToolbar.flipBoard")}
+            </button>
 
-            {gameAnalysisOpen && (
-                <Button
-                    icon={iconBack}
-                    iconSize="40px"
-                    className={
-                        styles.backButton
-                    }
-                    tooltipId={
-                        "options-toolbar-back"
-                    }
-                    onClick={back}
-                />
-            )}
+            <button
+                type="button"
+                onClick={resetAnalysis}
+            >
+                {t("optionsToolbar.newGame")}
+            </button>
 
+            {gameAnalysisOpen && <button
+                type="button"
+                onClick={closeAnalysis}
+            >
+                {t("optionsToolbar.closeAnalysis")}
+            </button>}
 
-            <Tooltip
-                id="options-toolbar-back"
-                content={t(
-                    "back",
-                    { ns: "common" }
-                )}
-                delayShow={500}
-            />
-
-
-            {(
-                gameAnalysisOpen
-                && profileStatus
-                    == "success"
-            ) && (
-                <Button
-                    className={
-                        styles.optionButton
-                    }
-                    icon={iconSave}
-                    iconSize="35px"
-                    tooltipId={
-                        "options-toolbar-save"
-                    }
-                    disabled={
-                        archiveStatus
-                            == "fetching"
-                    }
-                    onClick={
-                        saveToArchive
-                    }
-                />
-            )}
-
-
-            <Tooltip
-                id="options-toolbar-save"
-                content={t(
-                    "optionsToolbar.save"
-                )}
-                delayShow={500}
-            />
-
+            <button
+                type="button"
+                onClick={() => void saveToArchive()}
+                disabled={archiveStatus == "fetching"}
+            >
+                {t("optionsToolbar.saveToArchive")}
+            </button>
         </div>
-    );
-}
 
+        {archiveStatus == "success" && <LogMessage>
+            {t("optionsToolbar.archiveSuccess")}
+        </LogMessage>}
+        {archiveStatus == "error" && <LogMessage>
+            {t("optionsToolbar.archiveError")}
+        </LogMessage>}
+    </div>;
+}
 
 export default OptionsToolbar;
