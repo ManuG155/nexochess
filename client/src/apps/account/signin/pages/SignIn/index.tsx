@@ -10,6 +10,10 @@ import Button from "@/components/common/Button";
 import LogMessage from "@/components/common/LogMessage";
 import StatusMessage from "@/components/common/LogMessage/StatusMessage";
 import authClient from "@/lib/auth";
+import {
+    clearPendingAuthAnalytics,
+    markPendingAuthAnalytics
+} from "@/lib/analytics";
 
 import { getPasswordResetCopy } from "./passwordResetCopy";
 import * as styles from "../../index.module.css";
@@ -32,6 +36,8 @@ function SignIn() {
     useAuthErrorReporter(setStatus);
 
     async function googleLogin() {
+        clearPendingAuthAnalytics();
+
         try {
             const response = await authClient.signIn.social({
                 provider: "google",
@@ -56,8 +62,10 @@ function SignIn() {
                 return;
             }
 
+            markPendingAuthAnalytics("login", "google");
             window.location.assign(response.data.url);
         } catch (error) {
+            clearPendingAuthAnalytics();
             console.error("Failed to start Google authentication:", error);
             setStatus({
                 theme: "error",
@@ -69,19 +77,27 @@ function SignIn() {
     async function login() {
         if (pending) return;
         setPending(true);
+        markPendingAuthAnalytics("login", "email");
 
-        const loginResponse = await authClient.signIn.email({
-            email,
-            password,
-            callbackURL: "/analysis"
-        });
-
-        if (loginResponse.error) {
-            setStatus({
-                theme: "error",
-                message: getErrorMessage(loginResponse.error.code)
+        try {
+            const loginResponse = await authClient.signIn.email({
+                email,
+                password,
+                callbackURL: "/analysis"
             });
+
+            if (loginResponse.error) {
+                clearPendingAuthAnalytics();
+                setStatus({
+                    theme: "error",
+                    message: getErrorMessage(loginResponse.error.code)
+                });
+                setPending(false);
+            }
+        } catch (error) {
+            clearPendingAuthAnalytics();
             setPending(false);
+            throw error;
         }
     }
 
