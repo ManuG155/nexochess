@@ -20,8 +20,11 @@ const signUp = await read(
 const navigation = await read(
     "client", "src", "components", "layout", "NavigationBar", "index.tsx"
 );
-const puzzles = await read(
-    "client", "src", "apps", "features", "puzzles", "pages", "Puzzles", "index.tsx"
+const puzzleSources = await read(
+    "client", "src", "apps", "features", "puzzles", "lib", "sources.ts"
+);
+const puzzleProgress = await read(
+    "client", "src", "apps", "features", "puzzles", "lib", "progress.ts"
 );
 const ci = await read(".github", "workflows", "ci.yml");
 const packageJson = JSON.parse(await read("package.json"));
@@ -71,8 +74,6 @@ assert.ok(
 for (const allowedParameter of [
     "failure_reason",
     "puzzle_source",
-    "session_mode",
-    "solved_without_help",
     "share_method",
     "auth_method"
 ]) {
@@ -156,15 +157,28 @@ for (const fragment of [
 }
 
 for (const fragment of [
-    "trackPuzzleStarted(",
-    "trackPuzzleSolved(",
-    "trackPuzzleFailed("
+    'trackPuzzleStarted("lichess")',
+    "trackPuzzleStarted(source)"
 ]) {
-    assert.ok(puzzles.includes(fragment), `Puzzle analytics hook is missing: ${fragment}`);
+    assert.ok(
+        puzzleSources.includes(fragment),
+        `Puzzle-start analytics hook is missing: ${fragment}`
+    );
+}
+for (const fragment of [
+    "if (solvedWithoutHelp)",
+    "trackPuzzleSolved(source);",
+    "trackPuzzleFailed(source);"
+]) {
+    assert.ok(
+        puzzleProgress.includes(fragment),
+        `Puzzle-outcome analytics hook is missing: ${fragment}`
+    );
 }
 assert.ok(
-    puzzles.includes("solvedWithoutHelp"),
-    "Puzzle completion analytics must preserve the existing no-help outcome."
+    puzzleProgress.indexOf("trackPuzzleSolved(source);")
+        > puzzleProgress.indexOf("await storeLocalCompletions([completion]);"),
+    "Puzzle outcomes must only be measured after local completion is stored."
 );
 
 assert.equal(
