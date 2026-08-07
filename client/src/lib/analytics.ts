@@ -190,6 +190,10 @@ function isAuthMethod(value: unknown): value is AuthMethod {
     return value === "email" || value === "google";
 }
 
+function isPuzzleSource(value: unknown): value is PuzzleSource {
+    return value === "archive" || value === "lichess";
+}
+
 function readPendingAuthAnalytics(): PendingAuthAnalytics | null {
     if (typeof window == "undefined") return null;
 
@@ -198,25 +202,23 @@ function readPendingAuthAnalytics(): PendingAuthAnalytics | null {
         if (!stored) return null;
 
         const parsed = JSON.parse(stored) as Partial<PendingAuthAnalytics>;
-        const valid = (
-            isAuthFlow(parsed.flow)
-            && isAuthMethod(parsed.method)
-            && typeof parsed.createdAt == "number"
-            && Number.isFinite(parsed.createdAt)
-            && Date.now() - parsed.createdAt <= PENDING_AUTH_MAX_AGE_MS
-            && parsed.createdAt <= Date.now() + 5_000
-        );
+        const flow = parsed.flow;
+        const method = parsed.method;
+        const createdAt = parsed.createdAt;
 
-        if (!valid) {
+        if (
+            !isAuthFlow(flow)
+            || !isAuthMethod(method)
+            || typeof createdAt != "number"
+            || !Number.isFinite(createdAt)
+            || Date.now() - createdAt > PENDING_AUTH_MAX_AGE_MS
+            || createdAt > Date.now() + 5_000
+        ) {
             clearPendingAuthAnalytics();
             return null;
         }
 
-        return {
-            flow: parsed.flow,
-            method: parsed.method,
-            createdAt: parsed.createdAt
-        };
+        return { flow, method, createdAt };
     } catch {
         clearPendingAuthAnalytics();
         return null;
@@ -256,7 +258,9 @@ export function trackAnalysisFailed(reason: AnalysisFailureReason) {
     });
 }
 
-export function trackPuzzleStarted(source: PuzzleSource) {
+export function trackPuzzleStarted(source: unknown) {
+    if (!isPuzzleSource(source)) return false;
+
     return emitAnalyticsEvent({
         name: "puzzle_started",
         puzzleSource: source
