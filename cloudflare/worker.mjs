@@ -190,7 +190,7 @@ async function renderHomepageRecovery(request, env, language) {
         });
     }
 
-    const recoveryScript = `<script>history.replaceState(history.state,"",${JSON.stringify(localizedRoot)});</script>`;
+    const recoveryScript = `<script>(async()=>{const root=${JSON.stringify(localizedRoot)};try{const response=await fetch(root,{cache:"reload",credentials:"same-origin",redirect:"follow"});if(response.ok&&new URL(response.url,location.href).pathname===root){history.replaceState(history.state,"",root);}}catch{}})();</script>`;
     const html = (await pageResponse.text()).replace(
         "</head>",
         `${recoveryScript}\n</head>`
