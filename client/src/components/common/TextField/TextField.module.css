@@ -33,6 +33,7 @@
     bottom: 0;
     right: 0;
 
+    border: none;
     background-color: var(--ui-shade-2);
 
     cursor: pointer;
