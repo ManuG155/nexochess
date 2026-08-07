@@ -65,7 +65,7 @@ requireFragments("styles", "About responsive styles", [
 assert.ok(files.footer.includes('href="/about"') && files.footer.includes("getAboutNavigationLabel"));
 assert.ok(files.webpack.includes('about: "./src/apps/about/index.tsx"'));
 assert.ok(files.worker.includes('["/about", "about.html"]'));
-assert.ok(files.indexing.includes('pathname: "/about",\n        assetPath: "apps/about.html"'));
+assert.ok(files.indexing.includes('freezeRoute({ pathname: "/about", assetPath: "apps/about.html" })'));
 assert.ok(files.sitemap.includes("<loc>https://www.nexochess.com/about</loc>"));
 assert.ok(files.deployment.includes('    "/about",') && files.deployment.includes('assertJavaScript("/about.bundle.js")'));
 assert.ok(files.packageJson.includes('"verify:about": "node scripts/verify-about-page.mjs"'));

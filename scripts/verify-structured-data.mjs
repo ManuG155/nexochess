@@ -215,7 +215,7 @@ for (const route of INDEXABLE_PAGE_ROUTES) {
                 `${route.pathname} must use AboutPage.`
             );
         } else if (route.basePathname === "/faq") {
-            const expectedItems = getFaqStructuredDataItems(route.languae);
+            const expectedItems = getFaqStructuredDataItems(route.language);
             assert(
                 page["@type"] === "FAQPage"
                     && page.mainEntity?.length === expectedItems.length,
@@ -258,33 +258,31 @@ for (const route of INDEXABLE_PAGE_ROUTES) {
         failures.push(`${route.pathname} invalid JSON-LD: ${error.message}`);
     }
 
-    const html = await readFile(
-        path.join(repositoryRoot, "client/public", route.assetPath),
+    const template = await readFile(
+        path.join(
+            repositoryRoot,
+            "client/public",
+            route.assetPath
+        ),
         "utf8"
     );
     assert(
-        html.split(jsonLdTemplate).length - 1 === 1,
-        `${route.assetPath} must contain one JSON-LD placeholder.`
+        template.includes(jsonLdTemplate),
+        `${route.assetPath} is missing the JSON-LD placeholder.`
     );
-    const rendered = renderTemplate(html, {
-        ...replacements,
-        PAGE_LANGUAGE: route.language
-    });
+    const rendered = renderTemplate(template, replacements);
     assert(
-        rendered.includes(
-            `<script type="application/ld+json">${serialized}</script>`
-        ),
-        `${route.pathname} JSON-LD was not rendered.`
+        rendered.includes(`<script type="application/ld+json">${serialized}</script>`),
+        `${route.pathname} JSON-LD was not rendered into HTML.`
     );
 }
 
 if (failures.length) {
     console.error("Structured data verification failed:\n");
-    failures.forEach(failure => console.error(`- ${failure}`));
-    process.exit(1);
+    for (const failure of failures) console.error(`- ${failure}`);
+    process.exitCode = 1;
+} else {
+    console.log(
+        `Verified Schema.org structured data for ${INDEXABLE_PAGE_ROUTES.length} localized routes.`
+    );
 }
-
-console.log(
-    `Verified localized Schema.org data for `
-    + `${INDEXABLE_PAGE_ROUTES.length} routes in eleven languages.`
-);

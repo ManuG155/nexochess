@@ -79,7 +79,7 @@ requireFragments("worker", "Homepage cached redirect recovery", [
     'history.replaceState(history.state'
 ]);
 assert.ok(files.webpack.includes('home: "./src/apps/home/index.tsx"'));
-assert.ok(files.indexing.includes('pathname: "/",\n        assetPath: "apps/home.html"'));
+assert.ok(files.indexing.includes('freezeRoute({ pathname: "/", assetPath: "apps/home.html" })'));
 assert.ok(files.deployment.includes('    "/",') && files.deployment.includes('assertJavaScript("/home.bundle.js")'));
 
 console.log("Homepage verification passed with cache recovery, centralized canonical metadata and eleven languages.");

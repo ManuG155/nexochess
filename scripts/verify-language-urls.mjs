@@ -19,8 +19,8 @@ import {
     getSearchIndexingPolicy
 } from "../config/search-indexing.mjs";
 import {
-    BASE_PAGE_METADATA,
     INDEXABLE_PAGE_METADATA,
+    getLocalizedBasePageMetadata,
     getPageMetadataReplacements
 } from "../config/page-metadata.mjs";
 import { SITEMAP_ENTRIES } from "../config/sitemap.mjs";
@@ -74,12 +74,17 @@ for (const language of SUPPORTED_LANGUAGE_CODES) {
         assert.equal(policy.canonicalUrl, productionUrl(pathname));
 
         const metadata = INDEXABLE_PAGE_METADATA[pathname];
+        const localizedBaseMetadata = getLocalizedBasePageMetadata(
+            language,
+            baseRoute.pathname
+        );
         assert.ok(metadata, `Missing metadata for ${pathname}.`);
+        assert.ok(localizedBaseMetadata, `Missing localized SEO metadata for ${pathname}.`);
         assert.equal(metadata.language, language);
         assert.equal(metadata.basePathname, baseRoute.pathname);
         assert.equal(metadata.canonicalUrl, productionUrl(pathname));
-        assert.equal(metadata.title, BASE_PAGE_METADATA[baseRoute.pathname].title);
-        assert.equal(metadata.description, BASE_PAGE_METADATA[baseRoute.pathname].description);
+        assert.equal(metadata.title, localizedBaseMetadata.title);
+        assert.equal(metadata.description, localizedBaseMetadata.description);
 
         const replacements = getPageMetadataReplacements(pathname);
         assert.equal(replacements.PAGE_LANGUAGE, language);

@@ -317,7 +317,7 @@ const productionConfigurationGenerator = await readFile(
 );
 
 assert.ok(
-    worker.includes('pathname === "/sitemap.xml"')
+    worker.includes('rawPathname === "/sitemap.xml"')
         && worker.includes("renderSitemapXml()")
         && worker.includes('"application/xml; charset=utf-8"')
         && worker.includes("return indexingEnabled")
