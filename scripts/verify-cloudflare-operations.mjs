@@ -2,7 +2,10 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
-import { preparePortableSpawn } from "./portable-command-shim.mjs";
+import {
+    preparePortableSpawn,
+    WRANGLER_PACKAGE
+} from "./portable-command-shim.mjs";
 
 const operations = await readFile(
     resolve("scripts", "cloudflare-operations.mjs"),
@@ -22,6 +25,10 @@ const packageJson = JSON.parse(await readFile(resolve("package.json"), "utf8"));
 const gitignore = await readFile(resolve(".gitignore"), "utf8");
 const runbook = await readFile(
     resolve("docs", "operations", "DEPLOYMENT_AND_RECOVERY.md"),
+    "utf8"
+);
+const ciWorkflow = await readFile(
+    resolve(".github", "workflows", "ci.yml"),
     "utf8"
 );
 const deployWorkflow = await readFile(
@@ -171,6 +178,21 @@ for (const script of operationalScripts) {
     );
 }
 
+assert.equal(
+    WRANGLER_PACKAGE,
+    "wrangler@4.119.0",
+    "Cloudflare operations must use the approved pinned Wrangler version."
+);
+assert.equal(
+    (ciWorkflow.match(/wrangler@4\.119\.0/g) || []).length,
+    2,
+    "Both CI Wrangler dry-runs must use the same pinned version as local operations."
+);
+assert.ok(
+    !ciWorkflow.includes("wrangler@4 "),
+    "CI must not use a floating Wrangler 4.x version."
+);
+
 const windowsNpx = preparePortableSpawn(
     "npx.cmd",
     ["wrangler", "secret", "list"],
@@ -186,7 +208,7 @@ assert.deepEqual(windowsNpx, {
         "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
         "exec",
         "--",
-        "wrangler",
+        "wrangler@4.119.0",
         "secret",
         "list"
     ]
@@ -207,8 +229,8 @@ assert.deepEqual(windowsNpm, {
 });
 
 assert.deepEqual(
-    preparePortableSpawn("npx", ["wrangler"], { platform: "linux" }),
-    { executable: "npx", args: ["wrangler"] }
+    preparePortableSpawn("npx", ["wrangler", "deploy"], { platform: "linux" }),
+    { executable: "npx", args: ["wrangler@4.119.0", "deploy"] }
 );
 assert.throws(
     () => preparePortableSpawn(

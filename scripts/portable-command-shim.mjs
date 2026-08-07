@@ -4,6 +4,18 @@ import { basename } from "node:path";
 
 const INSTALLATION_KEY = Symbol.for("nexochess.portable-command-shim");
 const originalSpawnSync = childProcess.spawnSync;
+export const WRANGLER_PACKAGE = "wrangler@4.119.0";
+
+function pinNpxPackage(commandName, args) {
+    if (
+        (commandName === "npx" || commandName === "npx.cmd")
+        && args[0] === "wrangler"
+    ) {
+        return [WRANGLER_PACKAGE, ...args.slice(1)];
+    }
+
+    return args;
+}
 
 export function preparePortableSpawn(
     executable,
@@ -15,12 +27,13 @@ export function preparePortableSpawn(
     } = {}
 ) {
     const commandName = basename(String(executable)).toLowerCase();
+    const pinnedArgs = pinNpxPackage(commandName, args);
 
     if (
         platform !== "win32"
         || (commandName !== "npm.cmd" && commandName !== "npx.cmd")
     ) {
-        return { executable, args };
+        return { executable, args: pinnedArgs };
     }
 
     if (!npmExecPath) {
@@ -32,8 +45,8 @@ export function preparePortableSpawn(
     return {
         executable: nodeExecutable,
         args: commandName === "npx.cmd"
-            ? [npmExecPath, "exec", "--", ...args]
-            : [npmExecPath, ...args]
+            ? [npmExecPath, "exec", "--", ...pinnedArgs]
+            : [npmExecPath, ...pinnedArgs]
     };
 }
 
