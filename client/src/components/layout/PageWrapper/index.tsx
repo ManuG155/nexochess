@@ -13,8 +13,6 @@ import "./GlobalTheme.css";
 import "./GlobalThemePolish.css";
 import "./LightThemeContrast.css";
 import "./LightThemeComponentFixes.css";
-import "./PuzzlesLightRepair.css";
-import "./PuzzlesSetupPolish.css";
 
 const queryClient = new QueryClient();
 const BugReportingWidget = lazy(() => import("@/components/BugReportingWidget"));
