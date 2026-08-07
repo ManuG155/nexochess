@@ -5,6 +5,7 @@ import I18nGate from "@/components/layout/I18nGate";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import PageWrapper from "@/components/layout/PageWrapper";
+import { getLanguageRouterBasename } from "@/i18n/routing";
 import { removeDefaultConsentLink } from "@/lib/consent";
 
 import * as styles from "./index.module.css";
@@ -23,7 +24,9 @@ function App() {
         removeDefaultConsentLink();
     }, []);
 
-    return <BrowserRouter>
+    const basename = getLanguageRouterBasename(window.location.pathname);
+
+    return <BrowserRouter basename={basename}>
         <PageWrapper
             className={styles.wrapper}
             footerClassName={styles.footer}
