@@ -23,13 +23,14 @@ export const TWITTER_CARD_DEFAULTS = Object.freeze({
 });
 
 function createPageMetadata(pathname, { title, description }) {
+    const canonicalUrl = productionUrl(pathname);
     const openGraph = Object.freeze({
         type: OPEN_GRAPH_DEFAULTS.type,
         siteName: OPEN_GRAPH_DEFAULTS.siteName,
         locale: OPEN_GRAPH_DEFAULTS.locale,
         title,
         description,
-        url: productionUrl(pathname),
+        url: canonicalUrl,
         image: OPEN_GRAPH_DEFAULTS.image
     });
     const twitter = Object.freeze({
@@ -42,6 +43,7 @@ function createPageMetadata(pathname, { title, description }) {
     return Object.freeze({
         title,
         description,
+        canonicalUrl,
         openGraph,
         twitter
     });
@@ -101,6 +103,7 @@ export function getPageMetadataReplacements(pathname) {
         ? {
             PAGE_TITLE: metadata.title,
             PAGE_DESCRIPTION: metadata.description,
+            PAGE_CANONICAL: metadata.canonicalUrl,
             OPEN_GRAPH_TYPE: metadata.openGraph.type,
             OPEN_GRAPH_SITE_NAME: metadata.openGraph.siteName,
             OPEN_GRAPH_LOCALE: metadata.openGraph.locale,

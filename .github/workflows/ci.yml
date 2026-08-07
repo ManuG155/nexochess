@@ -71,6 +71,9 @@ jobs:
       - name: Verify XML sitemap
         run: npm run verify:sitemap
 
+      - name: Verify canonical URL annotations
+        run: npm run verify:canonical-links
+
       - name: Verify page titles and meta descriptions
         run: npm run verify:metadata
 
@@ -134,6 +137,7 @@ jobs:
           node --check scripts/verify-search-indexing.mjs
           node --check scripts/verify-robots-txt.mjs
           node --check scripts/verify-sitemap.mjs
+          node --check scripts/verify-canonical-links.mjs
           node --check scripts/verify-page-metadata.mjs
           node --check scripts/verify-open-graph.mjs
           node --check scripts/verify-structured-data.mjs
