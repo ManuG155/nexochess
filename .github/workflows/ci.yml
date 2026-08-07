@@ -107,6 +107,9 @@ jobs:
       - name: Verify accessibility safeguards
         run: npm run verify:accessibility
 
+      - name: Verify privacy-first analytics installation
+        run: npm run verify:analytics
+
       - name: Type-check client
         run: npm run check -w client
 
@@ -160,6 +163,7 @@ jobs:
           node --check scripts/verify-faq-page.mjs
           node --check scripts/verify-help-center.mjs
           node --check scripts/verify-accessibility.mjs
+          node --check scripts/verify-analytics.mjs
 
       - name: Prepare staging Cloudflare assets
         run: node scripts/build-cloudflare.mjs
@@ -173,7 +177,8 @@ jobs:
       - name: Bundle production Cloudflare Worker
         run: |
           node scripts/prepare-cloudflare-production.mjs \
-            --database-id 00000000-0000-4000-8000-000000000000
+            --database-id 00000000-0000-4000-8000-000000000000 \
+            --analytics-measurement-id G-NEXOCHESSTEST
           npx --yes wrangler@4.119.0 deploy \
             --dry-run \
             --config wrangler.production.local.jsonc \
