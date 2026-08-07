@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
 import { extname, relative, resolve } from "node:path";
 
+import { getPageMetadataReplacements } from "../config/page-metadata.mjs";
 import {
     PERMANENT_CANONICAL_REDIRECT_STATUS,
     PRODUCTION_APEX_HOST,
@@ -165,11 +166,16 @@ const archiveLibrary = await readFile(
 for (const fragment of [
     "getProductionCanonicalRedirect",
     "PERMANENT_CANONICAL_REDIRECT_STATUS",
-    "productionUrl(\"/signin\")",
-    "productionUrl(\"/privacy\")"
+    "getPageMetadataReplacements(localizedPathname)",
+    "productionUrl(\"/signin\")"
 ]) {
     assert.ok(worker.includes(fragment), `Worker canonical control is missing: ${fragment}`);
 }
+assert.equal(
+    getPageMetadataReplacements("/privacy").PAGE_CANONICAL,
+    productionUrl("/privacy"),
+    "Privacy canonical must be resolved by the centralized page metadata registry."
+);
 assert.ok(!worker.includes('url.hostname !== "nexochess.com"'));
 assert.ok(!worker.includes('canonicalUrl.hostname = "www.nexochess.com"'));
 
