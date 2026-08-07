@@ -14,6 +14,7 @@ import "./GlobalTheme.css";
 import "./GlobalThemePolish.css";
 import "./LightThemeContrast.css";
 import "./LightThemeComponentFixes.css";
+import "./Accessibility.css";
 
 const queryClient = new QueryClient();
 const BugReportingWidget = lazy(() => import("@/components/BugReportingWidget"));
