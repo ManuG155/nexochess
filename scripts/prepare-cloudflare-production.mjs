@@ -19,10 +19,6 @@ function readArgument(name) {
     return index >= 0 ? process.argv[index + 1] : undefined;
 }
 
-function hasFlag(name) {
-    return process.argv.includes(name);
-}
-
 const databaseId = readArgument("--database-id")
     || process.env.NEXOCHESS_PRODUCTION_D1_ID;
 const databaseName = readArgument("--database-name")
@@ -41,8 +37,6 @@ const analyticsMeasurementId = (
     || process.env.NEXOCHESS_GA_MEASUREMENT_ID
     || DEFAULT_ANALYTICS_MEASUREMENT_ID
 ).trim().toUpperCase();
-const attachDomains = hasFlag("--attach-domains")
-    || process.env.NEXOCHESS_ATTACH_PRODUCTION_DOMAINS === "1";
 
 if (!databaseId) {
     throw new Error(
@@ -74,6 +68,16 @@ const configuration = {
     compatibility_flags: ["nodejs_compat"],
     workers_dev: false,
     preview_urls: false,
+    routes: [
+        {
+            pattern: `${PRODUCTION_CANONICAL_HOST}/*`,
+            zone_name: PRODUCTION_APEX_HOST
+        },
+        {
+            pattern: `${PRODUCTION_APEX_HOST}/*`,
+            zone_name: PRODUCTION_APEX_HOST
+        }
+    ],
     assets: {
         directory: "./cloudflare-dist",
         binding: "ASSETS",
@@ -114,21 +118,7 @@ const configuration = {
         EMAIL_FROM_NAME: "NexoChess",
         EMAIL_FROM_ADDRESS: "contact@nexochess.com",
         EMAIL_REPLY_TO: "contact@nexochess.com"
-    },
-    ...(attachDomains
-        ? {
-            routes: [
-                {
-                    pattern: PRODUCTION_CANONICAL_HOST,
-                    custom_domain: true
-                },
-                {
-                    pattern: PRODUCTION_APEX_HOST,
-                    custom_domain: true
-                }
-            ]
-        }
-        : {})
+    }
 };
 
 await writeFile(
@@ -144,4 +134,5 @@ console.log(`Origin: ${origin}`);
 console.log(`Analytics: ${analyticsMeasurementId}`);
 console.log("workers.dev: disabled");
 console.log("Preview URLs: disabled");
-console.log(`Custom domains: ${attachDomains ? "enabled" : "disabled"}`);
+console.log(`Worker routes: ${PRODUCTION_CANONICAL_HOST}/*, ${PRODUCTION_APEX_HOST}/*`);
+console.log("Existing proxied DNS records are preserved; production does not use Custom Domains.");
