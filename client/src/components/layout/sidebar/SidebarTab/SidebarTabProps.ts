@@ -8,6 +8,7 @@ interface SidebarTabProps {
     url?: string;
     icon?: string;
     iconSize?: string;
+    tabIndex?: number;
 }
 
 export default SidebarTabProps;
