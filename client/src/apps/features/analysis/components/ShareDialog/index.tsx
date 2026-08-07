@@ -5,6 +5,7 @@ import renderStateTree from "shared/lib/stateTree/render";
 
 import Dialog from "@/components/common/Dialog";
 import TextField from "@/components/common/TextField";
+import { trackGameShared } from "@/lib/analytics";
 
 import ShareDialogProps from "./ShareDialogProps";
 import * as styles from "./ShareDialog.module.css";
@@ -43,6 +44,7 @@ function ShareDialog({ game, currentNode, onClose }: ShareDialogProps) {
         anchor.download = "nexochess-game.pgn";
         document.body.appendChild(anchor);
         anchor.click();
+        trackGameShared("pgn_download");
         anchor.remove();
 
         URL.revokeObjectURL(url);
@@ -54,6 +56,7 @@ function ShareDialog({ game, currentNode, onClose }: ShareDialogProps) {
                 title: t("shareGame.title"),
                 text: pgn
             });
+            trackGameShared("native");
         } catch (error) {
             if (
                 error instanceof DOMException

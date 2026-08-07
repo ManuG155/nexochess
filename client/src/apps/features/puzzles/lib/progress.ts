@@ -2,6 +2,10 @@ import {
     PuzzleProfile,
     PuzzleSource
 } from "../types";
+import {
+    trackPuzzleFailed,
+    trackPuzzleSolved
+} from "@/lib/analytics";
 
 const DATABASE_NAME = "nexochess-puzzles";
 const DATABASE_VERSION = 1;
@@ -274,6 +278,12 @@ export async function markPuzzleCompleted(
 
     saveFallbackCompletion(id);
     await storeLocalCompletions([completion]);
+
+    if (solvedWithoutHelp) {
+        trackPuzzleSolved(source);
+    } else {
+        trackPuzzleFailed(source);
+    }
 
     void saveCloudCompletions([{
         id,

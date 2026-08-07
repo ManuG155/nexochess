@@ -55,10 +55,6 @@ for (const fragment of [
 }
 
 assert.ok(
-    !analytics.includes('gtag("event"'),
-    "Step 32 must not configure product events; those belong to Step 33."
-);
-assert.ok(
     consent.includes("export function onConsentChanged"),
     "Consent changes must be observable by the analytics layer."
 );

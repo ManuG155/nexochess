@@ -12,6 +12,7 @@ import {
     getArchivedGame,
     getArchivedGames
 } from "@/lib/gameArchive";
+import { trackPuzzleStarted } from "@/lib/analytics";
 
 import {
     LichessPuzzleRecord,
@@ -269,8 +270,7 @@ export function normaliseLichessPuzzle(
         if (solution.length == 0) return null;
 
         const solver = board.turn() == "w" ? "white" : "black";
-
-        return {
+        const puzzle: TrainingPuzzle = {
             id: `lichess:${record.id}`,
             source: "lichess",
             startFen,
@@ -286,6 +286,9 @@ export function normaliseLichessPuzzle(
             openingTags: record.openingTags || [],
             gameUrl: record.gameUrl
         };
+
+        trackPuzzleStarted("lichess");
+        return puzzle;
     } catch {
         return null;
     }
@@ -522,5 +525,15 @@ export async function loadNextLichessPuzzleRecord(
 export function pickRandomPuzzle<T>(puzzles: T[]) {
     if (puzzles.length == 0) return;
 
-    return puzzles[randomIndex(puzzles.length)];
+    const selected = puzzles[randomIndex(puzzles.length)];
+
+    if (selected && typeof selected == "object" && "source" in selected) {
+        const source = (selected as { source?: unknown }).source;
+
+        if (source == "archive" || source == "lichess") {
+            trackPuzzleStarted(source);
+        }
+    }
+
+    return selected;
 }
