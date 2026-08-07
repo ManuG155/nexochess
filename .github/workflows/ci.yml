@@ -165,7 +165,7 @@ jobs:
         run: node scripts/build-cloudflare.mjs
 
       - name: Bundle staging Cloudflare Worker
-        run: npx --yes wrangler@4 deploy --dry-run --outdir .wrangler-dry-run
+        run: npx --yes wrangler@4.119.0 deploy --dry-run --outdir .wrangler-dry-run
 
       - name: Prepare production Cloudflare assets
         run: node scripts/build-cloudflare.mjs --puzzle-origin https://nexochess-puzzle-data-production.manuel-garcia-villaescusa.workers.dev
@@ -174,7 +174,7 @@ jobs:
         run: |
           node scripts/prepare-cloudflare-production.mjs \
             --database-id 00000000-0000-4000-8000-000000000000
-          npx --yes wrangler@4 deploy \
+          npx --yes wrangler@4.119.0 deploy \
             --dry-run \
             --config wrangler.production.local.jsonc \
             --outdir .wrangler-production-dry-run
