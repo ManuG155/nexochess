@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import PageWrapper from "@/components/layout/PageWrapper";
 import Settings from "./pages/Settings";
+import { getLanguageRouterBasename } from "@/i18n/routing";
 import { removeDefaultConsentLink } from "@/lib/consent";
 
 const UserSection = lazy(() => import("./components/categories/User"));
@@ -26,9 +27,11 @@ function App() {
         removeDefaultConsentLink();
     }, []);
 
+    const basename = getLanguageRouterBasename(window.location.pathname);
+
     return (
         <PageWrapper contentClassName={styles.content}>
-            <BrowserRouter>
+            <BrowserRouter basename={basename}>
                 <Suspense fallback={null}>
                     <Routes>
                     <Route path="/settings" element={<Settings/>}>

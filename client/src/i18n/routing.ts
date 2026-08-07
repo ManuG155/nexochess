@@ -55,6 +55,14 @@ export function parseLanguagePathname(pathname: string): {
     };
 }
 
+export function getLanguageRouterBasename(pathname: string): string | undefined {
+    const parsed = parseLanguagePathname(pathname);
+
+    return parsed.explicitLanguage
+        ? `/${parsed.language}`
+        : undefined;
+}
+
 export function getUrlLanguage(
     pathname = window.location.pathname
 ): SupportedLanguage | null {

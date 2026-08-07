@@ -8,6 +8,7 @@ import NavigationBar from "@/components/layout/NavigationBar";
 import Footer from "@/components/layout/Footer";
 import CookieConsent from "@/components/privacy/CookieConsent";
 import { getAccessibilityCopy } from "@/i18n/accessibilityCopy";
+import { parseLanguagePathname } from "@/i18n/routing";
 import { initialiseAnalytics } from "@/lib/analytics";
 
 import PageWrapperProps from "./PageWrapperProps";
@@ -44,7 +45,8 @@ function PageWrapper({
 
     const routeName = typeof window == "undefined"
         ? "home"
-        : window.location.pathname.split("/").filter(Boolean).at(0)
+        : parseLanguagePathname(window.location.pathname)
+            .basePathname.split("/").filter(Boolean).at(0)
             || "home";
 
     useEffect(() => initialiseAnalytics(), []);
