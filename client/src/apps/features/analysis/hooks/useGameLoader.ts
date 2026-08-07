@@ -35,7 +35,10 @@ function useGameLoader() {
         setGameAnalysisOpen(true);
         setAnalysisGame(game);
         setCurrentStateTreeNode(game.stateTree);
-        setDisplayedEngineLines(game.stateTree.state.engineLines);
+        setDisplayedEngineLines(
+            game.stateTree.state.fen,
+            game.stateTree.state.engineLines
+        );
     }
 
     useEffect(() => {
