@@ -24,11 +24,13 @@ function RealtimeEngineArea() {
 
     const {
         currentStateTreeNode,
-        currentEngineLines
+        currentEngineLines,
+        dispatchCurrentNodeUpdate
     } = useAnalysisBoardStore(
         useShallow(state => ({
             currentStateTreeNode: state.currentStateTreeNode,
-            currentEngineLines: state.currentStateTreeNode.state.engineLines
+            currentEngineLines: state.currentStateTreeNode.state.engineLines,
+            dispatchCurrentNodeUpdate: state.dispatchCurrentNodeUpdate
         }))
     );
 
@@ -62,14 +64,25 @@ function RealtimeEngineArea() {
                 : undefined
         }}
         cachedEngineLines={currentEngineLines}
-        onEngineLines={setDisplayedEngineLines}
+        onEngineLines={lines => {
+            setDisplayedEngineLines(
+                currentStateTreeNode.state.fen,
+                lines
+            );
+        }}
         onEvaluationComplete={lines => {
             currentStateTreeNode.state.engineLines = uniqWith(
                 currentStateTreeNode.state.engineLines.concat(lines),
                 isEngineLineEqual
             );
 
-            considerRealtimeAnalyse();
+            /*
+             * engineLines vive dentro del nodo mutable. Forzamos la señal de
+             * actualización antes de clasificar para que barra, flechas,
+             * secuencia y entrenador vean inmediatamente la evaluación nueva.
+             */
+            dispatchCurrentNodeUpdate();
+            void considerRealtimeAnalyse(currentStateTreeNode);
         }}
     />;
 }
