@@ -112,8 +112,8 @@ for (const fragment of [
     "X-Robots-Tag",
     "renderRobotsTxt",
     "renderSitemapXml",
-    "getPageMetadataReplacements(pathname)",
-    "metadataFor(pathname)",
+    "getPageMetadataReplacements(localizedPathname)",
+    "metadataFor(localizedPathname, pathname, languageRoute.language)",
     "env.NEXOCHESS_ENV"
 ]) {
     assert.ok(worker.includes(fragment), `Worker indexing control is missing: ${fragment}`);
