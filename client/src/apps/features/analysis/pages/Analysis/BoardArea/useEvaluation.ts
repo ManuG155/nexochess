@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { defaultEvaluation } from "shared/constants/utils";
+import { getTopEngineLine } from "shared/types/game/position/EngineLine";
 import useAnalysisGameStore from "@analysis/stores/AnalysisGameStore";
 import useAnalysisBoardStore from "@analysis/stores/AnalysisBoardStore";
 import useRealtimeEngineStore from "@analysis/stores/RealtimeEngineStore";
@@ -13,6 +14,10 @@ function useEvaluation() {
 
     const gameAnalysisOpen = useAnalysisGameStore(
         state => state.gameAnalysisOpen
+    );
+
+    const displayedPositionFen = useRealtimeEngineStore(
+        state => state.displayedPositionFen
     );
 
     const displayedEngineLines = useRealtimeEngineStore(
@@ -31,15 +36,24 @@ function useEvaluation() {
 
     useEffect(() => {
         /*
-         * Mientras el motor en tiempo real está calculando, su primera línea
-         * es la fuente más reciente. En el resumen y durante la revisión ese
-         * motor puede no estar montado; en ese caso usamos la evaluación que
-         * ya quedó guardada en la posición analizada.
+         * Las líneas del motor en tiempo real sólo son válidas para la FEN
+         * para la que fueron calculadas. Antes se reutilizaba globalmente la
+         * última línea visible, por lo que al recorrer una partida la barra
+         * podía quedarse mostrando la evaluación de otra posición.
          */
-        const realtimeEvaluation =
-            displayedEngineLines.at(0)?.evaluation;
-        const storedEvaluation =
-            currentStateTreeNode.state.engineLines.at(0)?.evaluation;
+        const realtimeEvaluation = displayedPositionFen
+            == currentStateTreeNode.state.fen
+            ? getTopEngineLine(displayedEngineLines)?.evaluation
+            : undefined;
+
+        /*
+         * engineLines acumula profundidades. La primera entrada no tiene por
+         * qué ser la mejor ni la más reciente, así que usamos explícitamente
+         * la línea superior de mayor profundidad.
+         */
+        const storedEvaluation = getTopEngineLine(
+            currentStateTreeNode.state.engineLines
+        )?.evaluation;
 
         if (realtimeEvaluation) {
             setEvaluation(realtimeEvaluation);
@@ -51,11 +65,19 @@ function useEvaluation() {
             return;
         }
 
-        setEvaluation(defaultEvaluation);
+        if (!gameAnalysisOpen) {
+            setEvaluation(defaultEvaluation);
+        }
+        /*
+         * Una variante recién creada tarda unos instantes en recibir su
+         * primera línea. Durante ese intervalo conservamos la última lectura
+         * en lugar de hacer parpadear la barra artificialmente a 0.0.
+         */
     }, [
         currentStateTreeNode,
         currentStateTreeNodeUpdate,
         displayedEngineLines,
+        displayedPositionFen,
         gameAnalysisOpen
     ]);
 

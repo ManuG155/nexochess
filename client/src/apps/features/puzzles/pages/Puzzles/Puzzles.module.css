@@ -794,23 +794,25 @@
 }
 
 .evaluationBar {
-    width: 17px;
-    min-width: 17px;
-    margin-right: 8px;
+    width: 26px;
+    min-width: 26px;
+    margin-right: 10px;
 }
 
 .boardStageWithOutsideCoordinates .evaluationBar {
-    margin-right: 16px;
+    margin-right: 18px;
 }
 
 .boardShell {
     position: relative;
-    width: calc(100% - 25px);
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
     aspect-ratio: 1;
 }
 
 .boardStageWithOutsideCoordinates .boardShell {
-    width: calc(100% - 33px);
+    width: auto;
 }
 
 .squareFeedbackSurface {
