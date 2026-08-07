@@ -20,8 +20,11 @@ function LogMessage({
     theme,
     includeIcon = true
 }: LogMessageProps) {
+    const role = !theme || theme === "error" ? "alert" : "status";
+
     return <span
         className={`${styles.wrapper} ${className}`}
+        role={role}
         style={{
             backgroundColor: theme
                 ? themeColours[theme]
@@ -33,6 +36,8 @@ function LogMessage({
             && <img
                 src={iconInterfaceError}
                 height={25}
+                alt=""
+                aria-hidden="true"
             />
         }
 
