@@ -24,7 +24,7 @@
         "verify:robots": "node scripts/verify-robots-txt.mjs",
         "verify:sitemap": "node scripts/verify-sitemap.mjs",
         "verify:canonical-links": "node scripts/verify-canonical-links.mjs",
-        "verify:language-urls": "node scripts/verify-language-urls.mjs",
+        "verify:language-urls": "node scripts/verify-language-urls.mjs && node scripts/verify-localized-legal-pages.mjs",
         "verify:hreflang": "node scripts/verify-hreflang.mjs",
         "verify:metadata": "node scripts/verify-page-metadata.mjs",
         "verify:open-graph": "node scripts/verify-open-graph.mjs",
