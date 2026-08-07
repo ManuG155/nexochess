@@ -8,7 +8,7 @@ import { resolveApplicationOrigin } from "../config/site.mjs";
 import { queueAccountEmail } from "./emailQueue.mjs";
 
 const AUTH_PATH = "/auth/account";
-const SCHEMA_VERSION = 1;
+const SCHEMA_VERSION = 2;
 
 let authInstance;
 let schemaPromise;
@@ -292,6 +292,15 @@ async function createApplicationTables(database) {
         database.prepare(`
             CREATE INDEX IF NOT EXISTS puzzle_completions_user_date
             ON puzzle_completions(user_id, completed_at DESC)
+        `),
+        database.prepare(`
+            CREATE TABLE IF NOT EXISTS release_note_views (
+                user_id TEXT NOT NULL,
+                version TEXT NOT NULL,
+                seen_at INTEGER NOT NULL,
+                PRIMARY KEY (user_id, version),
+                FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE
+            )
         `)
     ]);
 }
