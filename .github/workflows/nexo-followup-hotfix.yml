@@ -1,0 +1,143 @@
+name: NexoChess followup hotfix
+
+on:
+  push:
+    branches:
+      - fix/v1.1-followup-functional
+    paths:
+      - .github/workflows/nexo-followup-hotfix.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/v1.1-followup-functional
+
+      - name: Patch navigation and puzzles
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+
+          function replaceOnce(source, label, before, after) {
+            if (!source.includes(before)) throw new Error(`Missing expected block: ${label}`);
+            return source.replace(before, after);
+          }
+
+          // 1) Navegación: acceso robusto y localizado a Analysis, evitando redirects cacheados antiguos.
+          const navPath = 'client/src/components/layout/NavigationBar/index.tsx';
+          let nav = fs.readFileSync(navPath, 'utf8');
+          nav = replaceOnce(
+            nav,
+            'routing import',
+            'import { parseLanguagePathname } from "@/i18n/routing";',
+            'import { currentLanguageHref, parseLanguagePathname } from "@/i18n/routing";'
+          );
+          nav = replaceOnce(
+            nav,
+            'analysis navigation URL',
+            '<NavigationItem icon="analysis" url="/analysis" current={onAnalysisPage}>',
+            '<NavigationItem\n                icon="analysis"\n                url={currentLanguageHref("/analysis?nexo-nav=1")}\n                current={onAnalysisPage}\n            >'
+          );
+          fs.writeFileSync(navPath, nav);
+
+          // Strip the cache-busting navigation marker once Analysis has loaded.
+          const analysisPath = 'client/src/apps/features/analysis/pages/Analysis/index.tsx';
+          let analysis = fs.readFileSync(analysisPath, 'utf8');
+          analysis = replaceOnce(
+            analysis,
+            'analysis react import',
+            'import React from "react";',
+            'import React, { useEffect } from "react";'
+          );
+          analysis = replaceOnce(
+            analysis,
+            'analysis function start',
+            'function Analysis() {\n    useGameLoader();',
+            `function Analysis() {\n    useGameLoader();\n\n    useEffect(() => {\n        const url = new URL(window.location.href);\n        if (!url.searchParams.has("nexo-nav")) return;\n\n        url.searchParams.delete("nexo-nav");\n        window.history.replaceState(\n            window.history.state,\n            "",\n            url.pathname + url.search + url.hash\n        );\n    }, []);`
+          );
+          fs.writeFileSync(analysisPath, analysis);
+
+          // 2) Puzzles: Stockfish real por FEN y renderer común para flechas manuales + pistas.
+          const puzzlePath = 'client/src/apps/features/puzzles/pages/Puzzles/index.tsx';
+          let puzzle = fs.readFileSync(puzzlePath, 'utf8');
+
+          puzzle = replaceOnce(
+            puzzle,
+            'manual arrows state',
+            `    const [ hintArrow, setHintArrow ] =\n        useState<NonNullable<\n            React.ComponentProps<typeof Chessboard>["customArrows"]\n        >>([]);\n`,
+            `    const [ hintArrow, setHintArrow ] =\n        useState<NonNullable<\n            React.ComponentProps<typeof Chessboard>["customArrows"]\n        >>([]);\n    const [ manualArrows, setManualArrows ] =\n        useState<NonNullable<\n            React.ComponentProps<typeof Chessboard>["customArrows"]\n        >>([]);\n`
+          );
+
+          puzzle = replaceOnce(
+            puzzle,
+            'clear manual arrows for new puzzle',
+            '        setHintArrow([]);\n        setPendingReply(false);',
+            '        setHintArrow([]);\n        setManualArrows([]);\n        setPendingReply(false);'
+          );
+
+          puzzle = replaceOnce(
+            puzzle,
+            'fixed puzzle engine',
+            `        const selectedVersion = settings.analysis.engine.version;\n        const localVersion = selectedVersion == EngineVersion.LICHESS_CLOUD\n            ? EngineVersion.STOCKFISH_17_LITE\n            : selectedVersion;\n        const engine = new Engine(localVersion);\n`,
+            `        // Puzzles usa siempre el motor local ligero: no depende de la\n        // configuración del analizador ni de servicios externos. Cada FEN\n        // crea una instancia nueva y produce una evaluación real de posición.\n        const engine = new Engine(EngineVersion.STOCKFISH_17_LITE);\n`
+          );
+
+          puzzle = replaceOnce(
+            puzzle,
+            'puzzle engine depth and timing',
+            `            depth: Math.min(\n                18,\n                Math.max(12, settings.analysis.engine.depth)\n            ),\n            timeLimit: 1100,\n`,
+            `            depth: 16,\n            timeLimit: 1600,\n`
+          );
+
+          puzzle = replaceOnce(
+            puzzle,
+            'puzzle early updates',
+            '                    && line.depth >= 4\n',
+            '                    && line.depth >= 2\n'
+          );
+
+          puzzle = replaceOnce(
+            puzzle,
+            'puzzle effect dependencies',
+            `    }, [\n        currentFen,\n        puzzle?.id,\n        settings.analysis.engine.depth,\n        settings.analysis.engine.version\n    ]);\n`,
+            `    }, [\n        currentFen,\n        puzzle?.id\n    ]);\n`
+          );
+
+          puzzle = replaceOnce(
+            puzzle,
+            'puzzle chessboard manual arrow capture',
+            `                                customSquareStyles={boardSquareStyles}\n                                customLightSquareStyle={{\n`,
+            `                                customArrowColor="rgba(0,0,0,0)"\n                                onArrowsChange={setManualArrows}\n                                customSquareStyles={boardSquareStyles}\n                                customLightSquareStyle={{\n`
+          );
+
+          puzzle = replaceOnce(
+            puzzle,
+            'puzzle overlay condition and data',
+            `                            {hintArrow.length > 0 && (\n                                <SuggestionArrowOverlay\n                                    arrows={hintArrow.map(arrow => ({\n                                        from: arrow[0],\n                                        to: arrow[1],\n                                        colour: String(\n                                            arrow[2] || "#78a7ff"\n                                        )\n                                    }))}\n`,
+            `                            {(hintArrow.length > 0\n                                || manualArrows.length > 0) && (\n                                <SuggestionArrowOverlay\n                                    arrows={[\n                                        ...hintArrow.map(arrow => ({\n                                            from: arrow[0],\n                                            to: arrow[1],\n                                            colour: String(\n                                                arrow[2] || "#78a7ff"\n                                            )\n                                        })),\n                                        ...manualArrows.map(arrow => ({\n                                            from: arrow[0],\n                                            to: arrow[1],\n                                            colour: String(\n                                                arrow[2]\n                                                || settings.analysis.arrowStyle.manualColour\n                                            )\n                                        }))\n                                    ]}\n`
+          );
+
+          fs.writeFileSync(puzzlePath, puzzle);
+          NODE
+
+      - name: Commit focused changes
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            client/src/components/layout/NavigationBar/index.tsx \
+            client/src/apps/features/analysis/pages/Analysis/index.tsx \
+            client/src/apps/features/puzzles/pages/Puzzles/index.tsx
+          git commit -m "Hotfix: corrige acceso a Analysis y motor/flechas de Puzzles"
+          git push origin HEAD:fix/v1.1-followup-functional
