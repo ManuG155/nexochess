@@ -55,6 +55,7 @@ function RealtimeEngineArea() {
     }
 
     return <RealtimeEngine
+        key={currentStateTreeNode.state.fen}
         initialPosition={initialPosition}
         playedUciMoves={playedUciMoves}
         config={{
@@ -76,11 +77,6 @@ function RealtimeEngineArea() {
                 isEngineLineEqual
             );
 
-            /*
-             * engineLines vive dentro del nodo mutable. Forzamos la señal de
-             * actualización antes de clasificar para que barra, flechas,
-             * secuencia y entrenador vean inmediatamente la evaluación nueva.
-             */
             dispatchCurrentNodeUpdate();
             void considerRealtimeAnalyse(currentStateTreeNode);
         }}
