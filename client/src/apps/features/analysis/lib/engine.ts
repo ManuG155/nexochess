@@ -16,6 +16,7 @@ class Engine {
 
     private position = STARTING_FEN;
     private evaluating = false;
+    private terminated = false;
 
     constructor(version: EngineVersion) {
         this.worker = new Worker("/engines/" + version);
@@ -33,12 +34,6 @@ class Engine {
         const worker = this.worker;
         const logMessages: string[] = [];
 
-        /*
-         * El listener debe existir ANTES de enviar el comando. En especial,
-         * Stockfish puede responder a `stop` con `bestmove` prácticamente de
-         * inmediato. Si publicamos primero y escuchamos después, esa respuesta
-         * puede perderse y dejar la promesa bloqueada para siempre.
-         */
         return new Promise((res, rej) => {
             function cleanup() {
                 worker.removeEventListener("message", onMessageReceived);
@@ -86,8 +81,18 @@ class Engine {
     }
 
     terminate() {
+        if (this.terminated) return;
+
         this.evaluating = false;
-        this.worker.postMessage("quit");
+        this.terminated = true;
+
+        try {
+            this.worker.postMessage("quit");
+        } catch {
+            // The worker may already have stopped itself.
+        }
+
+        this.worker.terminate();
     }
 
     setOption(option: string, value: string) {
@@ -155,13 +160,11 @@ class Engine {
                     if (!log.startsWith("info depth")) return;
                     if (log.includes("currmove")) return;
 
-                    // Extract depth and multipv index of line
                     const depth = parseInt(log.match(/(?<= depth )\d+/)?.[0] || "");
                     if (isNaN(depth)) return;
 
                     const index = parseInt(log.match(/(?<= multipv )\d+/)?.[0] || "") || 1;
 
-                    // Extract evaluation type and score
                     const scoreMatches = log.match(/ score (cp|mate) (-?\d+)/);
 
                     const evaluationType = uciEvaluationTypes[scoreMatches?.[1] || ""];
@@ -173,15 +176,12 @@ class Engine {
                     let evaluationScore = parseInt(scoreMatches?.[2] || "");
                     if (isNaN(evaluationScore)) return;
 
-                    // Make sure evaluations are always from White's view
                     if (this.position.includes(" b ")) {
                         evaluationScore = -evaluationScore;
                     }
 
-                    // Extract UCI moves from pv
                     const moveUcis = log.match(/ pv (.*)/)?.at(1)?.split(" ") || [];
 
-                    // Convert these to SANs on a temp board
                     const moveSans: string[] = [];
 
                     const board = new Chess(this.position);
@@ -189,7 +189,6 @@ class Engine {
                         moveSans.push(board.move(moveUci).san);
                     }
 
-                    // Remove old duplicate line and add new one
                     const newEngineLine: EngineLine = {
                         depth: depth,
                         index: index,
@@ -216,13 +215,8 @@ class Engine {
     }
 
     async stopEvaluation() {
-        if (!this.evaluating) return;
+        if (!this.evaluating || this.terminated) return;
 
-        /*
-         * `consumeLogs` registra primero el listener y sólo entonces manda
-         * `stop`, por lo que nunca perdemos el `bestmove` que desbloquea la
-         * siguiente posición/variante.
-         */
         await this.consumeLogs(
             "stop",
             log => log.startsWith("bestmove")
