@@ -70,6 +70,21 @@ class Engine {
         });
     }
 
+    /**
+     * UCI no permite asumir que el motor acepta opciones o posiciones antes
+     * de responder a `uci`. Conservamos la API síncrona/encadenable, pero la
+     * orden real queda encolada hasta `uciok`. Las callbacks de una Promise se
+     * ejecutan en orden de registro, por lo que setoption/position mantienen
+     * exactamente el orden en que el llamador las configuró antes de evaluate.
+     */
+    private postWhenUciReady(command: string) {
+        void this.uciReady.then(() => {
+            if (!this.terminated) {
+                this.worker.postMessage(command);
+            }
+        });
+    }
+
     onMessage(handler: (message: string) => void) {
         this.worker.addEventListener("message", event => {
             handler(String(event.data));
@@ -103,7 +118,7 @@ class Engine {
     }
 
     setOption(option: string, value: string) {
-        this.worker.postMessage(
+        this.postWhenUciReady(
             `setoption name ${option} value ${value}`
         );
 
@@ -124,7 +139,7 @@ class Engine {
 
     setPosition(fen: string, uciMoves?: string[]) {
         if (uciMoves?.length) {
-            this.worker.postMessage(
+            this.postWhenUciReady(
                 `position fen ${fen} moves ${uciMoves.join(" ")}`
             );
 
@@ -138,7 +153,7 @@ class Engine {
             return this;
         }
 
-        this.worker.postMessage(`position fen ${fen}`);
+        this.postWhenUciReady(`position fen ${fen}`);
         this.position = fen;
 
         return this;
@@ -156,10 +171,9 @@ class Engine {
             ? `movetime ${options.timeLimit}` : "";
 
         /*
-         * UCI exige que el motor esté inicializado y haya procesado opciones
-         * y posición antes de buscar. Los caminos rápidos (Puzzles y ramas)
-         * creaban un Worker y enviaban `go` inmediatamente, lo que podía dejar
-         * la promesa esperando para siempre.
+         * Todos los setoption/position registrados antes de esta llamada se
+         * vacían al resolver uciReady. Después `isready` funciona como barrera
+         * UCI: `go` no sale hasta que Stockfish confirma que procesó todo.
          */
         await this.uciReady;
         if (this.terminated || generation != this.evaluationGeneration) {
@@ -234,6 +248,13 @@ class Engine {
                     options.onEngineLine?.(newEngineLine);
                 }
             );
+
+            if (
+                this.terminated
+                || generation != this.evaluationGeneration
+            ) {
+                return [];
+            }
 
             return engineLines;
         } finally {
