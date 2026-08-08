@@ -16,7 +16,7 @@
     "subtitle": "Springe direkt zu dem Bereich, den du brauchst.",
     "analysis": {
       "title": "Partie analysieren",
-      "description": "Importiere eine Partie und starte eine vollständige Stockfish-Analyse.",
+      "description": "Analysiere Schachpartien kostenlos online und prüfe jeden Zug mit Stockfish 17.",
       "action": "Jetzt starten"
     },
     "import": {
@@ -86,8 +86,8 @@
       "answer": "Gastanalysen werden im aktuellen Browser gespeichert. Nach der Anmeldung können kompatible Daten zusätzlich deinem Konto zugeordnet werden."
     },
     "engine": {
-      "question": "Welche Engine verwendet NexoChess?",
-      "answer": "NexoChess verwendet Stockfish 17 zur Stellungsbewertung und zur Erzeugung der Analysevarianten."
+      "question": "Was ist NexoChess und welche Engine verwendet es?",
+      "answer": "NexoChess ist ein kostenloser Analysator für Schachpartien. Er verwendet Stockfish 17, um Stellungen zu bewerten, Fehler zu erkennen und die in der Partieanalyse verwendeten Engine-Varianten zu erzeugen."
     },
     "languages": {
       "question": "Wie wird die Sprache gewählt?",

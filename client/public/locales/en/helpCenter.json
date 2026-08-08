@@ -16,7 +16,7 @@
     "subtitle": "Jump straight to the part of NexoChess you need.",
     "analysis": {
       "title": "Analyse a game",
-      "description": "Import a game and start a full Stockfish review.",
+      "description": "Analyse chess games online for free and review every move with Stockfish 17.",
       "action": "Start now"
     },
     "import": {
@@ -86,8 +86,8 @@
       "answer": "Guest analyses are stored in the current browser. When you sign in, compatible data can also be associated with your account for cross-device access."
     },
     "engine": {
-      "question": "Which chess engine does NexoChess use?",
-      "answer": "NexoChess uses Stockfish 17 to evaluate positions and produce the engine lines used by the review."
+      "question": "What is NexoChess and which chess engine does it use?",
+      "answer": "NexoChess is a free chess game analyser. It uses Stockfish 17 to evaluate positions, identify mistakes and produce the engine lines used in the review."
     },
     "languages": {
       "question": "How is the language selected?",

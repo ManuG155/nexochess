@@ -212,8 +212,8 @@
   },
   "gameSelection": {
     "eyebrow": "Revisión de partida",
-    "title": "Entiende cada jugada",
-    "subtitle": "Pega un PGN, sube un archivo o importa una partida pública de Chess.com o Lichess.",
+    "title": "Analiza partidas de ajedrez online gratis",
+    "subtitle": "Pega un PGN, sube un archivo o importa una partida pública de Chess.com o Lichess para revisarla con Stockfish 17, clasificaciones de jugadas, precisión y mejores alternativas.",
     "benefits": {
       "free": "Análisis gratuito",
       "engine": "Stockfish 17",
