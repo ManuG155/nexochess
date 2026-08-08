@@ -243,6 +243,47 @@ async function renderHomepageRecovery(request, env, language) {
     });
 }
 
+async function renderAnalysisRecovery(request, env, language) {
+    const localizedAnalysis = localizePathname("/analysis", language);
+    const pageResponse = await renderPage(
+        request,
+        env,
+        "features/analysis.html",
+        metadataFor(localizedAnalysis, "/analysis", language)
+    );
+    const headers = new Headers(pageResponse.headers);
+
+    // Elimina redirects HTTP permanentes antiguos que algunos navegadores
+    // conservaron durante la transición de la portada.
+    headers.set("Clear-Site-Data", '"cache"');
+    headers.set("Cache-Control", "no-store");
+
+    if (!pageResponse.ok || request.method === "HEAD") {
+        return new Response(pageResponse.body, {
+            status: pageResponse.status,
+            statusText: pageResponse.statusText,
+            headers
+        });
+    }
+
+    /*
+     * La ruta técnica nunca solicita /analysis: cambia la URL antes de que
+     * arranque el bundle. BrowserRouter ve así la ruta canónica correcta y
+     * un redirect cacheado no puede secuestrar la navegación.
+     */
+    const recoveryScript = `<script>history.replaceState(history.state,"",${JSON.stringify(localizedAnalysis)});</script>`;
+    const html = (await pageResponse.text()).replace(
+        "</head>",
+        `${recoveryScript}\n</head>`
+    );
+
+    return new Response(html, {
+        status: pageResponse.status,
+        statusText: pageResponse.statusText,
+        headers
+    });
+}
+
 function json(payload, status = 200) {
     return new Response(JSON.stringify(payload), {
         status,
@@ -310,6 +351,10 @@ async function handleRequest(request, env) {
 
     if (pathname === "/home") {
         return renderHomepageRecovery(request, env, languageRoute.language);
+    }
+
+    if (pathname === "/analysis-entry") {
+        return renderAnalysisRecovery(request, env, languageRoute.language);
     }
 
     if (pathname.startsWith("/news")) {

@@ -13,16 +13,22 @@ const uciEvaluationTypes: Record<string, string | undefined> = {
 class Engine {
     private worker: Worker;
     private version: EngineVersion;
+    private uciReady: Promise<void>;
 
     private position = STARTING_FEN;
     private evaluating = false;
     private terminated = false;
+    private evaluationGeneration = 0;
 
     constructor(version: EngineVersion) {
         this.worker = new Worker("/engines/" + version);
         this.version = version;
 
-        this.worker.postMessage("uci");
+        this.uciReady = this.consumeLogs(
+            "uci",
+            log => log.trim() == "uciok"
+        ).then(() => undefined);
+
         this.setPosition(this.position);
     }
 
@@ -83,6 +89,7 @@ class Engine {
     terminate() {
         if (this.terminated) return;
 
+        this.evaluationGeneration++;
         this.evaluating = false;
         this.terminated = true;
 
@@ -143,9 +150,29 @@ class Engine {
         onEngineLine?: (line: EngineLine) => void;
     }): Promise<EngineLine[]> {
         const engineLines: EngineLine[] = [];
+        const generation = ++this.evaluationGeneration;
 
         const maxTimeArgument = options.timeLimit
             ? `movetime ${options.timeLimit}` : "";
+
+        /*
+         * UCI exige que el motor esté inicializado y haya procesado opciones
+         * y posición antes de buscar. Los caminos rápidos (Puzzles y ramas)
+         * creaban un Worker y enviaban `go` inmediatamente, lo que podía dejar
+         * la promesa esperando para siempre.
+         */
+        await this.uciReady;
+        if (this.terminated || generation != this.evaluationGeneration) {
+            return [];
+        }
+
+        await this.consumeLogs(
+            "isready",
+            log => log.trim() == "readyok"
+        );
+        if (this.terminated || generation != this.evaluationGeneration) {
+            return [];
+        }
 
         this.evaluating = true;
 
@@ -215,6 +242,7 @@ class Engine {
     }
 
     async stopEvaluation() {
+        this.evaluationGeneration++;
         if (!this.evaluating || this.terminated) return;
 
         await this.consumeLogs(

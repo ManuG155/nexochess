@@ -7,7 +7,6 @@ import React, {
 import { useTranslation } from "react-i18next";
 import { Chess, Square } from "chess.js";
 import { Chessboard } from "react-chessboard";
-import { Arrow } from "react-chessboard/dist/chessboard/types";
 
 import PieceColour from "shared/constants/PieceColour";
 import EngineVersion from "shared/constants/EngineVersion";
@@ -79,6 +78,8 @@ type PageState =
     | "error";
 
 type SourceLoadState = "loading" | "ready" | "error";
+
+type ManualArrow = [Square, Square, string?];
 
 interface CoachMessage {
     key: string;
@@ -310,7 +311,7 @@ function Puzzles() {
             React.ComponentProps<typeof Chessboard>["customArrows"]
         >>([]);
     const [ manualArrows, setManualArrows ] =
-        useState<Arrow[]>([]);
+        useState<ManualArrow[]>([]);
     const [ pendingReply, setPendingReply ] =
         useState(false);
     const [ coachMessage, setCoachMessage ] =
@@ -1053,7 +1054,7 @@ function Puzzles() {
         return `${file}${rank}` as Square;
     }
 
-    function beginManualArrow(event: React.PointerEvent<HTMLDivElement>) {
+    function beginManualArrow(event: React.MouseEvent<HTMLDivElement>) {
         if (event.button != 2) return;
 
         const square = pointerSquare(event.clientX, event.clientY);
@@ -1061,11 +1062,11 @@ function Puzzles() {
 
         event.preventDefault();
         event.stopPropagation();
+        event.nativeEvent.stopImmediatePropagation();
         manualArrowStartRef.current = square;
-        event.currentTarget.setPointerCapture?.(event.pointerId);
     }
 
-    function finishManualArrow(event: React.PointerEvent<HTMLDivElement>) {
+    function finishManualArrow(event: React.MouseEvent<HTMLDivElement>) {
         if (event.button != 2) return;
 
         const from = manualArrowStartRef.current;
@@ -1074,7 +1075,7 @@ function Puzzles() {
 
         event.preventDefault();
         event.stopPropagation();
-        event.currentTarget.releasePointerCapture?.(event.pointerId);
+        event.nativeEvent.stopImmediatePropagation();
 
         if (!from || !to || from == to) return;
 
@@ -1204,6 +1205,14 @@ function Puzzles() {
 
         if (cachedEvaluation) {
             setBoardEvaluation({ ...cachedEvaluation });
+        } else if (
+            provisionalEvaluation.type == "mate"
+            || provisionalEvaluation.value != 0
+        ) {
+            // Capturas/promociones reaccionan de inmediato mientras Stockfish
+            // termina de preparar la evaluación posicional. Una posición de
+            // material igual no fuerza artificialmente la barra a 0.0.
+            setBoardEvaluation({ ...provisionalEvaluation });
         }
 
         /*
@@ -1843,8 +1852,8 @@ function Puzzles() {
                         <div
                             ref={puzzleBoardShellRef}
                             className={styles.boardShell}
-                            onPointerDownCapture={beginManualArrow}
-                            onPointerUpCapture={finishManualArrow}
+                            onMouseDownCapture={beginManualArrow}
+                            onMouseUpCapture={finishManualArrow}
                             onContextMenu={event => event.preventDefault()}
                         >
                             <Chessboard
