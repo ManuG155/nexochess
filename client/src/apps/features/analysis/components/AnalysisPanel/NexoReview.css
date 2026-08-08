@@ -131,7 +131,7 @@
 }
 
 .nexo-review-coach > section {
-    align-items: end !important;
+    align-items: flex-start !important;
     gap: 14px !important;
 
     padding: 0 4px !important;
