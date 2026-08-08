@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { uniqWith } from "lodash-es";
 
@@ -46,6 +46,23 @@ function RealtimeEngineArea() {
             .filter(node => node.state.move)
             .map(node => node.state.move!.uci)
     ), [currentStateTreeNode]);
+
+    useEffect(() => {
+        if (
+            activeTab == AnalysisTab.REPORT
+            || !settings.analysis.engine.enabled
+            || !currentStateTreeNode.parent
+            || currentStateTreeNode.state.classification
+            || currentEngineLines.length == 0
+        ) return;
+
+        void considerRealtimeAnalyse(currentStateTreeNode);
+    }, [
+        activeTab,
+        currentStateTreeNode,
+        currentEngineLines.length,
+        settings.analysis.engine.enabled
+    ]);
 
     if (
         activeTab == AnalysisTab.REPORT
