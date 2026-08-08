@@ -1,0 +1,151 @@
+name: Apply final functional hotfix
+
+on:
+  push:
+    branches:
+      - fix/v1.1-functional-final
+    paths:
+      - .github/workflows/final-functional-hotfix-patch.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/v1.1-functional-final
+
+      - name: Apply focused fixes
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+
+          function patch(path, transforms) {
+            let source = fs.readFileSync(path, 'utf8');
+            for (const [label, before, after] of transforms) {
+              if (!source.includes(before)) {
+                throw new Error(`${path}: missing expected block: ${label}`);
+              }
+              source = source.replace(before, after);
+            }
+            fs.writeFileSync(path, source);
+          }
+
+          patch('client/src/i18n/routing.ts', [[
+            'analysis recovery localizable path',
+            '    "/", "/home", "/about", "/faq", "/analysis", "/archive", "/academy",\n',
+            '    "/", "/home", "/about", "/faq", "/analysis", "/analysis-entry", "/archive", "/academy",\n'
+          ]]);
+
+          patch('client/src/components/layout/NavigationBar/index.tsx', [[
+            'analysis recovery target',
+            '            window.location.assign(\n                currentLanguageHref("/analysis?nexo-nav=1")\n            );\n',
+            '            /*\n             * /analysis tuvo redirects permanentes durante el cambio de\n             * portada. Entramos por una ruta técnica que sirve el mismo HTML,\n             * limpia esa caché y cambia la URL a /analysis antes de montar\n             * React. Así no dependemos del redirect cacheado del navegador.\n             */\n            window.location.assign(\n                currentLanguageHref("/analysis-entry")\n            );\n'
+          ]]);
+
+          patch('cloudflare/worker.mjs', [[
+            'analysis recovery renderer',
+            'function json(payload, status = 200) {\n',
+            `async function renderAnalysisRecovery(request, env, language) {\n    const localizedAnalysis = localizePathname("/analysis", language);\n    const pageResponse = await renderPage(\n        request,\n        env,\n        "features/analysis.html",\n        metadataFor(localizedAnalysis, "/analysis", language)\n    );\n    const headers = new Headers(pageResponse.headers);\n\n    // Elimina redirects HTTP permanentes antiguos que algunos navegadores\n    // conservaron durante la transición de la portada.\n    headers.set("Clear-Site-Data", '\"cache\"');\n    headers.set("Cache-Control", "no-store");\n\n    if (!pageResponse.ok || request.method === "HEAD") {\n        return new Response(pageResponse.body, {\n            status: pageResponse.status,\n            statusText: pageResponse.statusText,\n            headers\n        });\n    }\n\n    /*\n     * La ruta técnica nunca solicita /analysis: cambia la URL antes de que\n     * arranque el bundle. BrowserRouter ve así la ruta canónica correcta y\n     * un redirect cacheado no puede secuestrar la navegación.\n     */\n    const recoveryScript = \`<script>history.replaceState(history.state,"",\${JSON.stringify(localizedAnalysis)});</script>\`;\n    const html = (await pageResponse.text()).replace(\n        "</head>",\n        \`\${recoveryScript}\\n</head>\`\n    );\n\n    return new Response(html, {\n        status: pageResponse.status,\n        statusText: pageResponse.statusText,\n        headers\n    });\n}\n\nfunction json(payload, status = 200) {\n`
+          ], [
+            'analysis recovery route',
+            '    if (pathname === "/home") {\n        return renderHomepageRecovery(request, env, languageRoute.language);\n    }\n\n',
+            '    if (pathname === "/home") {\n        return renderHomepageRecovery(request, env, languageRoute.language);\n    }\n\n    if (pathname === "/analysis-entry") {\n        return renderAnalysisRecovery(request, env, languageRoute.language);\n    }\n\n'
+          ]]);
+
+          patch('client/src/apps/features/analysis/lib/engine.ts', [[
+            'uci ready fields',
+            '    private worker: Worker;\n    private version: EngineVersion;\n\n    private position = STARTING_FEN;\n    private evaluating = false;\n    private terminated = false;\n',
+            '    private worker: Worker;\n    private version: EngineVersion;\n    private uciReady: Promise<void>;\n\n    private position = STARTING_FEN;\n    private evaluating = false;\n    private terminated = false;\n    private evaluationGeneration = 0;\n'
+          ], [
+            'uci handshake constructor',
+            '        this.worker.postMessage("uci");\n        this.setPosition(this.position);\n',
+            '        this.uciReady = this.consumeLogs(\n            "uci",\n            log => log.trim() == "uciok"\n        ).then(() => undefined);\n\n        this.setPosition(this.position);\n'
+          ], [
+            'terminate cancels pending searches',
+            '        this.evaluating = false;\n        this.terminated = true;\n',
+            '        this.evaluationGeneration++;\n        this.evaluating = false;\n        this.terminated = true;\n'
+          ], [
+            'evaluate readiness',
+            '    }): Promise<EngineLine[]> {\n        const engineLines: EngineLine[] = [];\n\n        const maxTimeArgument = options.timeLimit\n            ? `movetime ${options.timeLimit}` : "";\n\n        this.evaluating = true;\n\n        try {\n',
+            '    }): Promise<EngineLine[]> {\n        const engineLines: EngineLine[] = [];\n        const generation = ++this.evaluationGeneration;\n\n        const maxTimeArgument = options.timeLimit\n            ? `movetime ${options.timeLimit}` : "";\n\n        /*\n         * UCI exige que el motor esté inicializado y haya procesado opciones\n         * y posición antes de buscar. Los caminos rápidos (Puzzles y ramas)\n         * creaban un Worker y enviaban `go` inmediatamente, lo que podía dejar\n         * la promesa esperando para siempre.\n         */\n        await this.uciReady;\n        if (this.terminated || generation != this.evaluationGeneration) {\n            return [];\n        }\n\n        await this.consumeLogs(\n            "isready",\n            log => log.trim() == "readyok"\n        );\n        if (this.terminated || generation != this.evaluationGeneration) {\n            return [];\n        }\n\n        this.evaluating = true;\n\n        try {\n'
+          ], [
+            'stop cancels pending readiness',
+            '    async stopEvaluation() {\n        if (!this.evaluating || this.terminated) return;\n\n        await this.consumeLogs(\n',
+            '    async stopEvaluation() {\n        this.evaluationGeneration++;\n        if (!this.evaluating || this.terminated) return;\n\n        await this.consumeLogs(\n'
+          ]]);
+
+          patch('client/src/apps/features/analysis/components/AnalysisPanel/RealtimeEngineArea/index.tsx', [[
+            'remove AnalysisTab import',
+            'import AnalysisTab from "@analysis/constants/AnalysisTab";\n',
+            ''
+          ], [
+            'remove tab store import',
+            'import useAnalysisTabStore from "@analysis/stores/AnalysisTabStore";\n',
+            ''
+          ], [
+            'remove active tab selector',
+            '    const { activeTab } = useAnalysisTabStore();\n\n',
+            ''
+          ], [
+            'classification guard independent of visual tab',
+            '        if (\n            activeTab == AnalysisTab.REPORT\n            || !settings.analysis.engine.enabled\n            || !currentStateTreeNode.parent\n',
+            '        if (\n            !settings.analysis.engine.enabled\n            || !currentStateTreeNode.parent\n'
+          ], [
+            'effect dependency without tab',
+            '        activeTab,\n        currentStateTreeNode,\n',
+            '        currentStateTreeNode,\n'
+          ], [
+            'render engine in review',
+            '    if (\n        activeTab == AnalysisTab.REPORT\n        || !settings.analysis.engine.enabled\n    ) {\n        return null;\n    }\n',
+            '    if (!settings.analysis.engine.enabled) {\n        return null;\n    }\n'
+          ]]);
+
+          patch('client/src/apps/features/puzzles/pages/Puzzles/index.tsx', [[
+            'remove native Arrow type',
+            'import { Arrow } from "react-chessboard/dist/chessboard/types";\n',
+            ''
+          ], [
+            'manual arrow tuple type',
+            'type SourceLoadState = "loading" | "ready" | "error";\n\n',
+            'type SourceLoadState = "loading" | "ready" | "error";\n\ntype ManualArrow = [Square, Square, string?];\n\n'
+          ], [
+            'manual arrow state type',
+            '    const [ manualArrows, setManualArrows ] =\n        useState<Arrow[]>([]);\n',
+            '    const [ manualArrows, setManualArrows ] =\n        useState<ManualArrow[]>([]);\n'
+          ], [
+            'mouse based manual arrow start',
+            '    function beginManualArrow(event: React.PointerEvent<HTMLDivElement>) {\n        if (event.button != 2) return;\n\n        const square = pointerSquare(event.clientX, event.clientY);\n        if (!square) return;\n\n        event.preventDefault();\n        event.stopPropagation();\n        manualArrowStartRef.current = square;\n        event.currentTarget.setPointerCapture?.(event.pointerId);\n    }\n\n    function finishManualArrow(event: React.PointerEvent<HTMLDivElement>) {\n        if (event.button != 2) return;\n\n        const from = manualArrowStartRef.current;\n        const to = pointerSquare(event.clientX, event.clientY);\n        manualArrowStartRef.current = undefined;\n\n        event.preventDefault();\n        event.stopPropagation();\n        event.currentTarget.releasePointerCapture?.(event.pointerId);\n\n        if (!from || !to || from == to) return;\n',
+            '    function beginManualArrow(event: React.MouseEvent<HTMLDivElement>) {\n        if (event.button != 2) return;\n\n        const square = pointerSquare(event.clientX, event.clientY);\n        if (!square) return;\n\n        event.preventDefault();\n        event.stopPropagation();\n        event.nativeEvent.stopImmediatePropagation();\n        manualArrowStartRef.current = square;\n    }\n\n    function finishManualArrow(event: React.MouseEvent<HTMLDivElement>) {\n        if (event.button != 2) return;\n\n        const from = manualArrowStartRef.current;\n        const to = pointerSquare(event.clientX, event.clientY);\n        manualArrowStartRef.current = undefined;\n\n        event.preventDefault();\n        event.stopPropagation();\n        event.nativeEvent.stopImmediatePropagation();\n\n        if (!from || !to || from == to) return;\n'
+          ], [
+            'manual arrow capture props',
+            '                            onPointerDownCapture={beginManualArrow}\n                            onPointerUpCapture={finishManualArrow}\n',
+            '                            onMouseDownCapture={beginManualArrow}\n                            onMouseUpCapture={finishManualArrow}\n'
+          ], [
+            'material fallback without zero reset',
+            '        if (cachedEvaluation) {\n            setBoardEvaluation({ ...cachedEvaluation });\n        }\n\n        /*\n',
+            '        if (cachedEvaluation) {\n            setBoardEvaluation({ ...cachedEvaluation });\n        } else if (\n            provisionalEvaluation.type == "mate"\n            || provisionalEvaluation.value != 0\n        ) {\n            // Capturas/promociones reaccionan de inmediato mientras Stockfish\n            // termina de preparar la evaluación posicional. Una posición de\n            // material igual no fuerza artificialmente la barra a 0.0.\n            setBoardEvaluation({ ...provisionalEvaluation });\n        }\n\n        /*\n'
+          ]]);
+          NODE
+
+      - name: Commit focused fixes
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add client/src/i18n/routing.ts \
+                  client/src/components/layout/NavigationBar/index.tsx \
+                  cloudflare/worker.mjs \
+                  client/src/apps/features/analysis/lib/engine.ts \
+                  client/src/apps/features/analysis/components/AnalysisPanel/RealtimeEngineArea/index.tsx \
+                  client/src/apps/features/puzzles/pages/Puzzles/index.tsx
+          git commit -m "Hotfix: resuelve acceso, motor de variantes y Puzzles"
+          git push origin HEAD:fix/v1.1-functional-final
