@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { uniqWith } from "lodash-es";
 
@@ -47,6 +47,23 @@ function RealtimeEngineArea() {
             .map(node => node.state.move!.uci)
     ), [currentStateTreeNode]);
 
+    useEffect(() => {
+        if (
+            activeTab == AnalysisTab.REPORT
+            || !settings.analysis.engine.enabled
+            || !currentStateTreeNode.parent
+            || currentStateTreeNode.state.classification
+            || currentEngineLines.length == 0
+        ) return;
+
+        void considerRealtimeAnalyse(currentStateTreeNode);
+    }, [
+        activeTab,
+        currentStateTreeNode,
+        currentEngineLines.length,
+        settings.analysis.engine.enabled
+    ]);
+
     if (
         activeTab == AnalysisTab.REPORT
         || !settings.analysis.engine.enabled
@@ -55,6 +72,7 @@ function RealtimeEngineArea() {
     }
 
     return <RealtimeEngine
+        key={currentStateTreeNode.state.fen}
         initialPosition={initialPosition}
         playedUciMoves={playedUciMoves}
         config={{
@@ -76,11 +94,6 @@ function RealtimeEngineArea() {
                 isEngineLineEqual
             );
 
-            /*
-             * engineLines vive dentro del nodo mutable. Forzamos la señal de
-             * actualización antes de clasificar para que barra, flechas,
-             * secuencia y entrenador vean inmediatamente la evaluación nueva.
-             */
             dispatchCurrentNodeUpdate();
             void considerRealtimeAnalyse(currentStateTreeNode);
         }}

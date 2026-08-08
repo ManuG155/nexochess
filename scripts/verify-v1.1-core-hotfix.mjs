@@ -22,9 +22,9 @@ function requireFragments(name, description, fragments) {
 }
 
 /*
- * Stockfish cancellation must be race-free. A listener that is installed
- * after `postMessage("stop")` can miss the immediate `bestmove` response and
- * leave every subsequent realtime evaluation waiting forever.
+ * UCI commands must install their listeners before they are posted. This
+ * remains a fundamental invariant even though visible positions now receive
+ * fresh workers instead of depending on cancellation of an older search.
  */
 const consumeStart = files.engine.indexOf("private consumeLogs(");
 const consumeEnd = files.engine.indexOf("\n    onMessage(", consumeStart);
@@ -39,18 +39,13 @@ assert.ok(
     "Engine.consumeLogs must attach its message listener before posting the UCI command."
 );
 
-const stopStart = files.engine.indexOf("async stopEvaluation()");
-assert.ok(stopStart >= 0, "Engine.stopEvaluation is missing.");
-const stopEvaluation = files.engine.slice(stopStart);
-requireFragments("engine", "Race-free Stockfish lifecycle", [
+requireFragments("engine", "Stockfish lifecycle", [
+    "private terminated = false;",
+    "this.worker.terminate();",
+    "if (!this.evaluating || this.terminated) return;",
     'await this.consumeLogs(\n            "stop",',
-    'log => log.startsWith("bestmove")',
-    "finally {\n            this.evaluating = false;"
+    'log => log.startsWith("bestmove")'
 ]);
-assert.ok(
-    !stopEvaluation.includes('this.worker.postMessage("stop")'),
-    "Engine.stopEvaluation must not post `stop` before consumeLogs attaches its listener."
-);
 
 /* The fallback evaluator for a parent position uses UCI movetime in ms. */
 requireFragments("realtimeAnalyser", "Realtime variant fallback", [
@@ -60,37 +55,52 @@ requireFragments("realtimeAnalyser", "Realtime variant fallback", [
     "analyseNode(targetNode"
 ]);
 requireFragments("realtimeArea", "Realtime variant classification", [
+    "key={currentStateTreeNode.state.fen}",
     "currentStateTreeNode.state.engineLines.concat(lines)",
     "dispatchCurrentNodeUpdate();",
+    "currentEngineLines.length == 0",
     "void considerRealtimeAnalyse(currentStateTreeNode);"
 ]);
 
 /*
- * Puzzles must reuse one engine across position changes and cancel/restart
- * that engine for every displayed FEN. This protects the evaluation bar from
- * behaving like a static decoration during multi-move puzzles.
+ * Every displayed puzzle FEN owns a fresh lightweight Stockfish worker. This
+ * deliberately avoids the old stop/reuse dependency that could leave the
+ * evaluation bar waiting forever after a move.
  */
 requireFragments("puzzles", "Dynamic puzzle evaluation", [
-    "const evaluationEngineRef = useRef<Engine>();",
-    "const evaluationEngineVersionRef = useRef<EngineVersion>();",
-    "await engine.stopEvaluation();",
+    "const engine = new Engine(EngineVersion.STOCKFISH_17_LITE);",
     ".setPosition(currentFen);",
     "line.depth >= 1",
     "evaluationCacheRef.current.set(currentFen, evaluation)",
-    "new Chess(currentFen).turn() == \"w\""
+    "new Chess(currentFen).turn() == \"w\"",
+    "engine.terminate();"
 ]);
+assert.ok(
+    !files.puzzles.includes("evaluationEngineRef"),
+    "Puzzles must not reuse one Stockfish worker across displayed FENs."
+);
+assert.ok(
+    !files.puzzles.includes("evaluationEngineVersionRef"),
+    "Puzzles must not retain an engine-version ref for a shared evaluation worker."
+);
 
 /*
- * Native react-chessboard arrows are transparent; both hints and user-drawn
- * arrows are routed through NexoChess's overlay, whose knight geometry is L.
+ * react-chessboard's own arrow renderer is disabled. Right-drag gestures are
+ * captured by NexoChess and both hints and manual arrows are routed through
+ * the same overlay, whose knight geometry is L-shaped.
  */
 requireFragments("puzzles", "Puzzle manual arrow rendering", [
-    "const [ manualArrows, setManualArrows ] =",
-    'customArrowColor="rgba(0,0,0,0)"',
-    "onArrowsChange={setManualArrows}",
-    "...manualArrows.map(([from, to]) => ({",
+    "const manualArrowStartRef = useRef<Square>();",
+    "onPointerDownCapture={beginManualArrow}",
+    "onPointerUpCapture={finishManualArrow}",
+    "areArrowsAllowed={false}",
+    "...manualArrows.map(([from, to, colour]) => ({",
     "<SuggestionArrowOverlay"
 ]);
+assert.ok(
+    !files.puzzles.includes("onArrowsChange={setManualArrows}"),
+    "Puzzles must not delegate user-drawn arrows to react-chessboard."
+);
 requireFragments("arrows", "Knight L-arrow geometry", [
     "function isKnightShape(start: Point, end: Point): boolean",
     "function buildKnightArrowShape(",
@@ -98,6 +108,7 @@ requireFragments("arrows", "Knight L-arrow geometry", [
 ]);
 
 console.log(
-    "Core v1.1 hotfix verification passed: realtime Stockfish cancellation is race-free, "
-    + "variant classification has a valid fallback, and Puzzles has dynamic evaluation plus L-shaped manual knight arrows."
+    "Core v1.1 hotfix verification passed: visible analysis positions use isolated Stockfish workers, "
+    + "variant classification has a valid fallback, and Puzzles evaluates each FEN independently "
+    + "while all manual knight arrows use NexoChess L-shaped geometry."
 );
