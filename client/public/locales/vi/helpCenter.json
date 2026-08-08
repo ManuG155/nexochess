@@ -16,7 +16,7 @@
     "subtitle": "Đi thẳng tới phần NexoChess bạn cần.",
     "analysis": {
       "title": "Phân tích một ván",
-      "description": "Nhập ván đấu và bắt đầu đánh giá đầy đủ bằng Stockfish.",
+      "description": "Phân tích ván cờ trực tuyến miễn phí và xem lại từng nước với Stockfish 17.",
       "action": "Bắt đầu"
     },
     "import": {
@@ -86,8 +86,8 @@
       "answer": "Phân tích của khách được lưu trong trình duyệt hiện tại. Khi đăng nhập, dữ liệu tương thích cũng có thể liên kết với tài khoản."
     },
     "engine": {
-      "question": "NexoChess dùng động cơ nào?",
-      "answer": "NexoChess dùng Stockfish 17 để đánh giá thế cờ và tạo các biến phân tích."
+      "question": "NexoChess là gì và dùng động cơ cờ vua nào?",
+      "answer": "NexoChess là công cụ phân tích ván cờ miễn phí. NexoChess dùng Stockfish 17 để đánh giá thế cờ, nhận diện sai lầm và tạo các biến thể của động cơ dùng trong phần xem lại."
     },
     "languages": {
       "question": "Ngôn ngữ được chọn thế nào?",
