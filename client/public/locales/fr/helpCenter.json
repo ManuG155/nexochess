@@ -16,7 +16,7 @@
     "subtitle": "Accédez directement à la partie de NexoChess dont vous avez besoin.",
     "analysis": {
       "title": "Analyser une partie",
-      "description": "Importez une partie et lancez une analyse complète avec Stockfish.",
+      "description": "Analysez gratuitement des parties d’échecs en ligne et révisez chaque coup avec Stockfish 17.",
       "action": "Commencer"
     },
     "import": {
@@ -86,8 +86,8 @@
       "answer": "Les analyses invitées sont stockées dans le navigateur actuel. En vous connectant, les données compatibles peuvent aussi être liées à votre compte."
     },
     "engine": {
-      "question": "Quel moteur utilise NexoChess ?",
-      "answer": "NexoChess utilise Stockfish 17 pour évaluer les positions et produire les variantes de l'analyse."
+      "question": "Qu’est-ce que NexoChess et quel moteur utilise-t-il ?",
+      "answer": "NexoChess est un analyseur gratuit de parties d’échecs. Il utilise Stockfish 17 pour évaluer les positions, repérer les erreurs et produire les variantes utilisées dans la révision."
     },
     "languages": {
       "question": "Comment la langue est-elle choisie ?",

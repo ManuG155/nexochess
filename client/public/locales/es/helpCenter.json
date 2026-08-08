@@ -16,7 +16,7 @@
     "subtitle": "Ve directamente a la parte de NexoChess que necesitas.",
     "analysis": {
       "title": "Analizar una partida",
-      "description": "Importa una partida e inicia una revisión completa con Stockfish.",
+      "description": "Analiza partidas de ajedrez online gratis y revisa cada jugada con Stockfish 17.",
       "action": "Empezar"
     },
     "import": {
@@ -86,8 +86,8 @@
       "answer": "Los análisis como invitado se guardan en el navegador actual. Al iniciar sesión, los datos compatibles también pueden asociarse a tu cuenta para acceder desde otros dispositivos."
     },
     "engine": {
-      "question": "¿Qué motor de ajedrez utiliza NexoChess?",
-      "answer": "NexoChess utiliza Stockfish 17 para evaluar posiciones y generar las líneas del motor empleadas en la revisión."
+      "question": "¿Qué es NexoChess y qué motor de ajedrez utiliza?",
+      "answer": "NexoChess es un analizador gratuito de partidas de ajedrez. Utiliza Stockfish 17 para evaluar posiciones, detectar errores y generar las líneas del motor empleadas en la revisión."
     },
     "languages": {
       "question": "¿Cómo se elige el idioma?",

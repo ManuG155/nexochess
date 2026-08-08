@@ -16,7 +16,7 @@
     "subtitle": "直接前往你需要的 NexoChess 功能。",
     "analysis": {
       "title": "分析棋局",
-      "description": "导入棋局并开始完整的 Stockfish 复盘。",
+      "description": "免费在线分析国际象棋棋局，并使用 Stockfish 17 逐步复盘每一步。",
       "action": "立即开始"
     },
     "import": {
@@ -86,8 +86,8 @@
       "answer": "访客分析保存在当前浏览器中。登录后，兼容数据也可以与账户关联，便于跨设备访问。"
     },
     "engine": {
-      "question": "NexoChess 使用哪个引擎？",
-      "answer": "NexoChess 使用 Stockfish 17 评估局面并生成复盘所需的引擎变化。"
+      "question": "NexoChess 是什么，它使用哪个国际象棋引擎？",
+      "answer": "NexoChess 是免费的国际象棋棋局分析工具。它使用 Stockfish 17 评估局面、识别错误，并生成复盘中使用的引擎变化。"
     },
     "languages": {
       "question": "语言是如何选择的？",
