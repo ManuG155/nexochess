@@ -114,14 +114,12 @@ interface NavigationItemProps {
     current?: boolean;
     icon: IconName;
     url: string;
-    onClick?: React.MouseEventHandler<HTMLAnchorElement>;
 }
 
-function NavigationItem({ children, current = false, icon, url, onClick }: NavigationItemProps) {
+function NavigationItem({ children, current = false, icon, url }: NavigationItemProps) {
     return <a
         className={`${styles.navItem} ${current ? styles.active : ""}`}
         href={url}
-        onClick={onClick}
         aria-current={current ? "page" : undefined}
     >
         <NavIcon name={icon} />
@@ -172,6 +170,47 @@ function NavigationBar() {
         }
     }, [status]);
 
+    useEffect(() => {
+        function interceptAnalysisNavigation(event: MouseEvent) {
+            if (
+                event.defaultPrevented
+                || event.button != 0
+                || event.metaKey
+                || event.ctrlKey
+                || event.shiftKey
+                || event.altKey
+            ) return;
+
+            const target = event.target;
+            if (!(target instanceof Element)) return;
+
+            const link = target.closest<HTMLAnchorElement>("a[href]");
+            if (!link || link.origin != window.location.origin) return;
+
+            if (
+                parseLanguagePathname(link.pathname).basePathname
+                != "/analysis"
+            ) return;
+
+            event.preventDefault();
+            window.location.assign(
+                currentLanguageHref("/analysis?nexo-nav=1")
+            );
+        }
+
+        document.addEventListener(
+            "click",
+            interceptAnalysisNavigation,
+            true
+        );
+
+        return () => document.removeEventListener(
+            "click",
+            interceptAnalysisNavigation,
+            true
+        );
+    }, []);
+
     async function openSidebar() {
         setSidebarMounted(true);
         await loadSidebar();
@@ -206,20 +245,6 @@ function NavigationBar() {
             game: gameStoreModule.default.getState().analysisGame,
             currentNode: boardStoreModule.default.getState().currentStateTreeNode
         });
-    }
-
-    function openAnalysis(event: React.MouseEvent<HTMLAnchorElement>) {
-        if (
-            event.defaultPrevented
-            || event.button != 0
-            || event.metaKey
-            || event.ctrlKey
-            || event.shiftKey
-            || event.altKey
-        ) return;
-
-        event.preventDefault();
-        window.location.assign(currentLanguageHref("/analysis?nexo-nav=1"));
     }
 
     async function signOut() {
@@ -260,7 +285,7 @@ function NavigationBar() {
             className={styles.primaryNavigation}
             aria-label={t("navigationBar.primaryNavigation", { ns: "common" })}
         >
-            <NavigationItem icon="analysis" url="/analysis" current={onAnalysisPage} onClick={openAnalysis}>
+            <NavigationItem icon="analysis" url="/analysis" current={onAnalysisPage}>
                 {t("sidebar.analysis", { ns: "common" })}
             </NavigationItem>
             <NavigationItem icon="archive" url="/archive" current={onArchivePage}>
