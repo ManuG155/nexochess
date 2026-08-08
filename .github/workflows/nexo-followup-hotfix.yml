@@ -18,112 +18,67 @@ jobs:
         with:
           ref: fix/v1.1-followup-functional
 
-      - name: Patch navigation and puzzles
+      - name: Patch puzzle engine and manual arrows
         shell: bash
         run: |
           node <<'NODE'
           const fs = require('fs');
+          const path = 'client/src/apps/features/puzzles/pages/Puzzles/index.tsx';
+          let source = fs.readFileSync(path, 'utf8');
 
-          function replaceOnce(source, label, before, after) {
+          function replaceOnce(label, before, after) {
             if (!source.includes(before)) throw new Error(`Missing expected block: ${label}`);
-            return source.replace(before, after);
+            source = source.replace(before, after);
           }
 
-          // 1) Navegación: acceso robusto y localizado a Analysis, evitando redirects cacheados antiguos.
-          const navPath = 'client/src/components/layout/NavigationBar/index.tsx';
-          let nav = fs.readFileSync(navPath, 'utf8');
-          nav = replaceOnce(
-            nav,
-            'routing import',
-            'import { parseLanguagePathname } from "@/i18n/routing";',
-            'import { currentLanguageHref, parseLanguagePathname } from "@/i18n/routing";'
-          );
-          nav = replaceOnce(
-            nav,
-            'analysis navigation URL',
-            '<NavigationItem icon="analysis" url="/analysis" current={onAnalysisPage}>',
-            '<NavigationItem\n                icon="analysis"\n                url={currentLanguageHref("/analysis?nexo-nav=1")}\n                current={onAnalysisPage}\n            >'
-          );
-          fs.writeFileSync(navPath, nav);
-
-          // Strip the cache-busting navigation marker once Analysis has loaded.
-          const analysisPath = 'client/src/apps/features/analysis/pages/Analysis/index.tsx';
-          let analysis = fs.readFileSync(analysisPath, 'utf8');
-          analysis = replaceOnce(
-            analysis,
-            'analysis react import',
-            'import React from "react";',
-            'import React, { useEffect } from "react";'
-          );
-          analysis = replaceOnce(
-            analysis,
-            'analysis function start',
-            'function Analysis() {\n    useGameLoader();',
-            `function Analysis() {\n    useGameLoader();\n\n    useEffect(() => {\n        const url = new URL(window.location.href);\n        if (!url.searchParams.has("nexo-nav")) return;\n\n        url.searchParams.delete("nexo-nav");\n        window.history.replaceState(\n            window.history.state,\n            "",\n            url.pathname + url.search + url.hash\n        );\n    }, []);`
-          );
-          fs.writeFileSync(analysisPath, analysis);
-
-          // 2) Puzzles: Stockfish real por FEN y renderer común para flechas manuales + pistas.
-          const puzzlePath = 'client/src/apps/features/puzzles/pages/Puzzles/index.tsx';
-          let puzzle = fs.readFileSync(puzzlePath, 'utf8');
-
-          puzzle = replaceOnce(
-            puzzle,
-            'manual arrows state',
-            `    const [ hintArrow, setHintArrow ] =\n        useState<NonNullable<\n            React.ComponentProps<typeof Chessboard>["customArrows"]\n        >>([]);\n`,
-            `    const [ hintArrow, setHintArrow ] =\n        useState<NonNullable<\n            React.ComponentProps<typeof Chessboard>["customArrows"]\n        >>([]);\n    const [ manualArrows, setManualArrows ] =\n        useState<NonNullable<\n            React.ComponentProps<typeof Chessboard>["customArrows"]\n        >>([]);\n`
+          replaceOnce(
+            'remove reusable engine refs',
+            `    const evaluationCacheRef = useRef(new Map<string, Evaluation>());\n    const evaluationRequestRef = useRef(0);\n    const evaluationEngineRef = useRef<Engine>();\n    const evaluationEngineVersionRef = useRef<EngineVersion>();\n    const setupRevealedRef = useRef(false);\n`,
+            `    const evaluationCacheRef = useRef(new Map<string, Evaluation>());\n    const evaluationRequestRef = useRef(0);\n    const manualArrowStartRef = useRef<Square>();\n    const puzzleBoardShellRef = useRef<HTMLDivElement | null>(null);\n    const setupRevealedRef = useRef(false);\n`
           );
 
-          puzzle = replaceOnce(
-            puzzle,
-            'clear manual arrows for new puzzle',
-            '        setHintArrow([]);\n        setPendingReply(false);',
-            '        setHintArrow([]);\n        setManualArrows([]);\n        setPendingReply(false);'
+          replaceOnce(
+            'remove reusable engine cleanup',
+            `    useEffect(() => () => {\n        evaluationRequestRef.current++;\n        evaluationEngineRef.current?.terminate();\n        evaluationEngineRef.current = undefined;\n        evaluationEngineVersionRef.current = undefined;\n    }, []);\n\n`,
+            ''
           );
 
-          puzzle = replaceOnce(
-            puzzle,
-            'fixed puzzle engine',
-            `        const selectedVersion = settings.analysis.engine.version;\n        const localVersion = selectedVersion == EngineVersion.LICHESS_CLOUD\n            ? EngineVersion.STOCKFISH_17_LITE\n            : selectedVersion;\n        const engine = new Engine(localVersion);\n`,
-            `        // Puzzles usa siempre el motor local ligero: no depende de la\n        // configuración del analizador ni de servicios externos. Cada FEN\n        // crea una instancia nueva y produce una evaluación real de posición.\n        const engine = new Engine(EngineVersion.STOCKFISH_17_LITE);\n`
+          const effectStart = source.indexOf('    useEffect(() => {\n        if (!puzzle || !currentFen) return;\n\n        const requestId = ++evaluationRequestRef.current;');
+          if (effectStart < 0) throw new Error('Missing puzzle evaluation effect start');
+          const effectEndMarker = `    }, [\n        currentFen,\n        puzzle?.id,\n        settings.analysis.engine.depth,\n        settings.analysis.engine.version\n    ]);\n`;
+          const effectEndStart = source.indexOf(effectEndMarker, effectStart);
+          if (effectEndStart < 0) throw new Error('Missing puzzle evaluation effect end');
+          const effectEnd = effectEndStart + effectEndMarker.length;
+
+          const newEffect = `    useEffect(() => {\n        if (!puzzle || !currentFen) return;\n\n        const requestId = ++evaluationRequestRef.current;\n        const updateEvaluation = (evaluation: Evaluation) => {\n            if (requestId != evaluationRequestRef.current) return;\n\n            evaluationCacheRef.current.set(currentFen, evaluation);\n            setBoardEvaluation({ ...evaluation });\n        };\n\n        if (\n            puzzle.source == "archive"\n            && currentFen == puzzle.startFen\n        ) {\n            updateEvaluation(puzzle.evaluation);\n            return;\n        }\n\n        const provisionalEvaluation = getProvisionalEvaluation(currentFen);\n        const cachedEvaluation = evaluationCacheRef.current.get(currentFen);\n\n        if (cachedEvaluation) {\n            setBoardEvaluation({ ...cachedEvaluation });\n        }\n\n        /*\n         * Una FEN = un Worker. No reutilizamos una búsqueda anterior ni\n         * esperamos a un \`stop\`: al cambiar de posición arrancamos un\n         * Stockfish limpio, por lo que la barra no puede quedar bloqueada por\n         * el estado del movimiento previo.\n         */\n        const engine = new Engine(EngineVersion.STOCKFISH_17_LITE);\n        let cancelled = false;\n\n        engine\n            .setThreadCount(1)\n            .setLineCount(1)\n            .setPosition(currentFen);\n\n        void engine.evaluate({\n            depth: 16,\n            timeLimit: 1200,\n            onEngineLine: line => {\n                if (\n                    !cancelled\n                    && requestId == evaluationRequestRef.current\n                    && line.index == 1\n                    && line.depth >= 1\n                ) {\n                    updateEvaluation(line.evaluation);\n                }\n            }\n        }).then(lines => {\n            const finalLine = lines\n                .filter(line => line.index == 1)\n                .at(-1);\n\n            if (\n                !cancelled\n                && requestId == evaluationRequestRef.current\n                && finalLine\n            ) {\n                updateEvaluation(finalLine.evaluation);\n            }\n        }).catch(() => {\n            if (\n                !cancelled\n                && requestId == evaluationRequestRef.current\n            ) {\n                setBoardEvaluation({ ...provisionalEvaluation });\n            }\n        }).finally(() => {\n            engine.terminate();\n        });\n\n        return () => {\n            cancelled = true;\n            evaluationRequestRef.current++;\n            engine.terminate();\n        };\n    }, [\n        currentFen,\n        puzzle?.id\n    ]);\n`;
+
+          source = source.slice(0, effectStart) + newEffect + source.slice(effectEnd);
+
+          replaceOnce(
+            'insert manual arrow handlers',
+            `    const puzzleBoardOrientation = puzzle\n        ? boardFlipped\n            ? puzzle.solver == "white"\n                ? "black"\n                : "white"\n            : puzzle.solver\n        : "white";\n\n`,
+            `    const puzzleBoardOrientation = puzzle\n        ? boardFlipped\n            ? puzzle.solver == "white"\n                ? "black"\n                : "white"\n            : puzzle.solver\n        : "white";\n\n    function pointerSquare(clientX: number, clientY: number) {\n        const rect = puzzleBoardShellRef.current?.getBoundingClientRect();\n        if (!rect || rect.width <= 0 || rect.height <= 0) return undefined;\n\n        const fileIndex = Math.min(\n            7,\n            Math.max(0, Math.floor(((clientX - rect.left) / rect.width) * 8))\n        );\n        const rankIndex = Math.min(\n            7,\n            Math.max(0, Math.floor(((clientY - rect.top) / rect.height) * 8))\n        );\n\n        const normalFiles = ["a", "b", "c", "d", "e", "f", "g", "h"];\n        const flippedFiles = [...normalFiles].reverse();\n        const file = (\n            puzzleBoardOrientation == "black"\n                ? flippedFiles\n                : normalFiles\n        )[fileIndex];\n        const rank = puzzleBoardOrientation == "black"\n            ? rankIndex + 1\n            : 8 - rankIndex;\n\n        return \`${'${file}${rank}'}\` as Square;\n    }\n\n    function beginManualArrow(event: React.PointerEvent<HTMLDivElement>) {\n        if (event.button != 2) return;\n\n        const square = pointerSquare(event.clientX, event.clientY);\n        if (!square) return;\n\n        event.preventDefault();\n        event.stopPropagation();\n        manualArrowStartRef.current = square;\n        event.currentTarget.setPointerCapture?.(event.pointerId);\n    }\n\n    function finishManualArrow(event: React.PointerEvent<HTMLDivElement>) {\n        if (event.button != 2) return;\n\n        const from = manualArrowStartRef.current;\n        const to = pointerSquare(event.clientX, event.clientY);\n        manualArrowStartRef.current = undefined;\n\n        event.preventDefault();\n        event.stopPropagation();\n        event.currentTarget.releasePointerCapture?.(event.pointerId);\n\n        if (!from || !to || from == to) return;\n\n        setManualArrows(previous => {\n            const existing = previous.findIndex(\n                ([start, end]) => start == from && end == to\n            );\n\n            if (existing >= 0) {\n                return previous.filter((_, index) => index != existing);\n            }\n\n            return [\n                ...previous,\n                [from, to, settings.analysis.arrowStyle.manualColour]\n            ];\n        });\n    }\n\n`
           );
 
-          puzzle = replaceOnce(
-            puzzle,
-            'puzzle engine depth and timing',
-            `            depth: Math.min(\n                18,\n                Math.max(12, settings.analysis.engine.depth)\n            ),\n            timeLimit: 1100,\n`,
-            `            depth: 16,\n            timeLimit: 1600,\n`
+          replaceOnce(
+            'board shell pointer capture',
+            `                        <div className={styles.boardShell}>\n                            <Chessboard\n`,
+            `                        <div\n                            ref={puzzleBoardShellRef}\n                            className={styles.boardShell}\n                            onPointerDownCapture={beginManualArrow}\n                            onPointerUpCapture={finishManualArrow}\n                            onContextMenu={event => event.preventDefault()}\n                        >\n                            <Chessboard\n`
           );
 
-          puzzle = replaceOnce(
-            puzzle,
-            'puzzle early updates',
-            '                    && line.depth >= 4\n',
-            '                    && line.depth >= 2\n'
+          replaceOnce(
+            'disable native arrows',
+            `                                onSquareClick={selectBoardSquare}\n                                customArrowColor="rgba(0,0,0,0)"\n                                onArrowsChange={setManualArrows}\n                                customPieces={customPieces}\n`,
+            `                                onSquareClick={selectBoardSquare}\n                                areArrowsAllowed={false}\n                                customPieces={customPieces}\n`
           );
 
-          puzzle = replaceOnce(
-            puzzle,
-            'puzzle effect dependencies',
-            `    }, [\n        currentFen,\n        puzzle?.id,\n        settings.analysis.engine.depth,\n        settings.analysis.engine.version\n    ]);\n`,
-            `    }, [\n        currentFen,\n        puzzle?.id\n    ]);\n`
+          replaceOnce(
+            'manual arrow colour',
+            `                                        ...manualArrows.map(([from, to]) => ({\n                                            from,\n                                            to,\n                                            colour: "#78a7ff"\n                                        }))\n`,
+            `                                        ...manualArrows.map(([from, to, colour]) => ({\n                                            from,\n                                            to,\n                                            colour: String(\n                                                colour\n                                                || settings.analysis.arrowStyle.manualColour\n                                            )\n                                        }))\n`
           );
 
-          puzzle = replaceOnce(
-            puzzle,
-            'puzzle chessboard manual arrow capture',
-            `                                customSquareStyles={boardSquareStyles}\n                                customLightSquareStyle={{\n`,
-            `                                customArrowColor="rgba(0,0,0,0)"\n                                onArrowsChange={setManualArrows}\n                                customSquareStyles={boardSquareStyles}\n                                customLightSquareStyle={{\n`
-          );
-
-          puzzle = replaceOnce(
-            puzzle,
-            'puzzle overlay condition and data',
-            `                            {hintArrow.length > 0 && (\n                                <SuggestionArrowOverlay\n                                    arrows={hintArrow.map(arrow => ({\n                                        from: arrow[0],\n                                        to: arrow[1],\n                                        colour: String(\n                                            arrow[2] || "#78a7ff"\n                                        )\n                                    }))}\n`,
-            `                            {(hintArrow.length > 0\n                                || manualArrows.length > 0) && (\n                                <SuggestionArrowOverlay\n                                    arrows={[\n                                        ...hintArrow.map(arrow => ({\n                                            from: arrow[0],\n                                            to: arrow[1],\n                                            colour: String(\n                                                arrow[2] || "#78a7ff"\n                                            )\n                                        })),\n                                        ...manualArrows.map(arrow => ({\n                                            from: arrow[0],\n                                            to: arrow[1],\n                                            colour: String(\n                                                arrow[2]\n                                                || settings.analysis.arrowStyle.manualColour\n                                            )\n                                        }))\n                                    ]}\n`
-          );
-
-          fs.writeFileSync(puzzlePath, puzzle);
+          fs.writeFileSync(path, source);
           NODE
 
       - name: Commit focused changes
@@ -135,9 +90,6 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add \
-            client/src/components/layout/NavigationBar/index.tsx \
-            client/src/apps/features/analysis/pages/Analysis/index.tsx \
-            client/src/apps/features/puzzles/pages/Puzzles/index.tsx
-          git commit -m "Hotfix: corrige acceso a Analysis y motor/flechas de Puzzles"
+          git add client/src/apps/features/puzzles/pages/Puzzles/index.tsx
+          git commit -m "Hotfix: independiza evaluación y flechas manuales de Puzzles"
           git push origin HEAD:fix/v1.1-followup-functional
