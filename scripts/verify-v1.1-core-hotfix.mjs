@@ -10,6 +10,9 @@ const files = Object.fromEntries(await Promise.all(
         engine: "client/src/apps/features/analysis/lib/engine.ts",
         realtimeAnalyser: "client/src/apps/features/analysis/hooks/useRealtimeAnalyser.ts",
         realtimeArea: "client/src/apps/features/analysis/components/AnalysisPanel/RealtimeEngineArea/index.tsx",
+        reviewPanel: "client/src/apps/features/analysis/components/AnalysisPanel/index.tsx",
+        reviewCss: "client/src/apps/features/analysis/components/AnalysisPanel/NexoReview.css",
+        move: "client/src/components/chess/StateTreeEditor/components/Move/index.tsx",
         puzzles: "client/src/apps/features/puzzles/pages/Puzzles/index.tsx",
         arrows: "client/src/apps/features/analysis/components/Board/SuggestionArrowOverlay/index.tsx"
     }).map(async ([name, path]) => [name, await readFile(resolve(path), "utf8")])
@@ -87,19 +90,46 @@ requireFragments("realtimeAnalyser", "Realtime variant fallback", [
 
 /*
  * Review is a visual mode, not a reason to disable the engine. A side
- * variation must receive lines, classification and a node update while the
- * review card is open so the coach can react to it.
+ * variation must receive useful streamed lines and classification without
+ * waiting for an entire depth-60/75 search to finish, so the move colour and
+ * coach bubble are produced promptly.
  */
 assert.ok(
     !files.realtimeArea.includes("AnalysisTab.REPORT"),
     "RealtimeEngineArea must not disable Stockfish merely because Review/REPORT is visible."
 );
 requireFragments("realtimeArea", "Realtime variant classification", [
+    "const REVIEW_CLASSIFICATION_DEPTH = 12;",
     "key={currentStateTreeNode.state.fen}",
-    "currentStateTreeNode.state.engineLines.concat(lines)",
+    "const classificationDepth = Math.min(",
+    "line => line.depth >= classificationDepth",
+    "currentStateTreeNode.state.engineLines.concat(usableLines)",
     "dispatchCurrentNodeUpdate();",
     "currentEngineLines.length == 0",
     "void considerRealtimeAnalyse(currentStateTreeNode);"
+]);
+
+/*
+ * Review chrome never scrolls with the current move. Raw Stockfish lines stay
+ * mounted for calculation but have zero visual/layout footprint, while the
+ * move table is the sole vertical scroll container.
+ */
+requireFragments("reviewPanel", "Review move scroll boundary", [
+    'data-review-moves-scroll="true"',
+    '<RealtimeEngineArea />'
+]);
+requireFragments("reviewCss", "Fixed Review layout", [
+    ".nexo-review-engine {\n    display: none !important;",
+    "min-height: 0 !important;",
+    "overflow: hidden !important;",
+    "overflow-y: auto !important;"
+]);
+requireFragments("move", "Contained Review auto-scroll and move colours", [
+    "const showClassificationColour = Boolean(",
+    "showClassificationColour && classification",
+    "classificationColours[classification]",
+    "data-review-moves-scroll",
+    "reviewScroll.scrollBy({"
 ]);
 
 /*
@@ -156,7 +186,7 @@ requireFragments("arrows", "Knight L-arrow geometry", [
 ]);
 
 console.log(
-    "Core v1.1 hotfix verification passed: Analysis navigation bypasses stale redirects, "
-    + "Stockfish obeys UCI readiness, review variations remain live, and Puzzles evaluates "
-    + "each FEN independently while user-drawn knight arrows use NexoChess L geometry."
+    "Core v1.1 hotfix verification passed: Analysis navigation is canonical, Stockfish obeys UCI readiness, "
+    + "Review variations classify from usable live lines with fixed chrome and contained move scrolling, "
+    + "and Puzzles evaluates each FEN independently while knight arrows use NexoChess L geometry."
 );

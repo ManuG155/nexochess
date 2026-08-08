@@ -195,6 +195,7 @@ function AnalysisPanel({
                                     styles.reviewMovesArea,
                                     "nexo-review-moves"
                                 ].join(" ")}
+                                data-review-moves-scroll="true"
                             >
                                 <GameAnalysis />
                             </div>
