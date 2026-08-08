@@ -117,13 +117,7 @@ interface NavigationItemProps {
     onClick?: React.MouseEventHandler<HTMLAnchorElement>;
 }
 
-function NavigationItem({
-    children,
-    current = false,
-    icon,
-    url,
-    onClick
-}: NavigationItemProps) {
+function NavigationItem({ children, current = false, icon, url, onClick }: NavigationItemProps) {
     return <a
         className={`${styles.navItem} ${current ? styles.active : ""}`}
         href={url}
@@ -287,7 +281,7 @@ function NavigationBar() {
                 void openShareDialog();
             }}>
                 {t("navigationBar.share", { ns: "common" })}
-            </NavigationItem>}
+            </NavigationAction>}
         </nav>
 
         <div className={styles.rightArea}>
