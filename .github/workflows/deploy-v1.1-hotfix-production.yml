@@ -1,0 +1,50 @@
+name: Deploy v1.1 hotfix to production
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - .github/workflows/deploy-v1.1-hotfix-production.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Validate, deploy and verify NexoChess v1.1 production
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      NEXOCHESS_PRODUCTION_D1_ID: 3ec78ccb-3471-4b44-8a4d-6f8d6d295777
+
+    steps:
+      - name: Check out master
+        uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Require Cloudflare credentials
+        shell: bash
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "Missing CLOUDFLARE_API_TOKEN or CLOUDFLARE_ACCOUNT_ID repository secret."
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Deploy NexoChess v1.1 hotfix to production
+        run: npm run deploy:production -- --ci --confirm-production DEPLOY-NEXOCHESS-PRODUCTION
