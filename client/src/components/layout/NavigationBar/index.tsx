@@ -8,7 +8,10 @@ import type { StateTreeNode } from "shared/types/game/position/StateTreeNode";
 import { useAuthedProfile } from "@/hooks/api/useProfile";
 import Typography from "@/components/Typography";
 import BlurBackground from "@/components/layout/BlurBackground";
-import { parseLanguagePathname } from "@/i18n/routing";
+import {
+    currentLanguageHref,
+    parseLanguagePathname
+} from "@/i18n/routing";
 import { completePendingAuthAnalytics } from "@/lib/analytics";
 import HoverDropdown from "./HoverDropdown";
 import * as styles from "./NavigationBar.module.css";
@@ -158,6 +161,7 @@ function NavigationBar() {
 
     const showFlipAction = onAnalysisPage || onPuzzlesPage;
     const showShareAction = onAnalysisPage;
+    const analysisHref = currentLanguageHref("/analysis?nexo-nav=1");
 
     useEffect(() => {
         if (status == "success") {
@@ -241,7 +245,7 @@ function NavigationBar() {
             className={styles.primaryNavigation}
             aria-label={t("navigationBar.primaryNavigation", { ns: "common" })}
         >
-            <NavigationItem icon="analysis" url="/analysis" current={onAnalysisPage}>
+            <NavigationItem icon="analysis" url={analysisHref} current={onAnalysisPage}>
                 {t("sidebar.analysis", { ns: "common" })}
             </NavigationItem>
             <NavigationItem icon="archive" url="/archive" current={onArchivePage}>
