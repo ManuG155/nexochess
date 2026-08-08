@@ -7,6 +7,7 @@ import React, {
 import { useTranslation } from "react-i18next";
 import { Chess, Square } from "chess.js";
 import { Chessboard } from "react-chessboard";
+import { Arrow } from "react-chessboard/dist/chessboard/types";
 
 import PieceColour from "shared/constants/PieceColour";
 import EngineVersion from "shared/constants/EngineVersion";
@@ -308,6 +309,8 @@ function Puzzles() {
         useState<NonNullable<
             React.ComponentProps<typeof Chessboard>["customArrows"]
         >>([]);
+    const [ manualArrows, setManualArrows ] =
+        useState<Arrow[]>([]);
     const [ pendingReply, setPendingReply ] =
         useState(false);
     const [ coachMessage, setCoachMessage ] =
@@ -339,6 +342,8 @@ function Puzzles() {
     const profileRef = useRef(profile);
     const evaluationCacheRef = useRef(new Map<string, Evaluation>());
     const evaluationRequestRef = useRef(0);
+    const evaluationEngineRef = useRef<Engine>();
+    const evaluationEngineVersionRef = useRef<EngineVersion>();
     const setupRevealedRef = useRef(false);
     const requestingPuzzleRef = useRef(false);
 
@@ -472,6 +477,7 @@ function Puzzles() {
         setWrongMovePreview(undefined);
         setMoveFeedback(undefined);
         setHintArrow([]);
+        setManualArrows([]);
         setPendingReply(false);
         setPageState("playing");
 
@@ -1106,6 +1112,13 @@ function Puzzles() {
         wrongMovePreview
     ]);
 
+    useEffect(() => () => {
+        evaluationRequestRef.current++;
+        evaluationEngineRef.current?.terminate();
+        evaluationEngineRef.current = undefined;
+        evaluationEngineVersionRef.current = undefined;
+    }, []);
+
     useEffect(() => {
         if (!puzzle || !currentFen) return;
 
@@ -1117,12 +1130,6 @@ function Puzzles() {
             setBoardEvaluation({ ...evaluation });
         };
 
-        /*
-         * Archived positions already carry the exact evaluation produced
-         * during the user's game analysis. Lichess puzzle rows do not include
-         * an engine score, so NexoChess evaluates the displayed position
-         * locally instead of presenting a guessed value.
-         */
         if (
             puzzle.source == "archive"
             && currentFen == puzzle.startFen
@@ -1136,65 +1143,88 @@ function Puzzles() {
         const cachedEvaluation =
             evaluationCacheRef.current.get(currentFen);
 
-        /*
-         * No sustituimos una evaluación válida por 0.0/material mientras
-         * Stockfish arranca para la siguiente posición. Si ya conocemos esta
-         * FEN usamos la caché; si no, mantenemos la lectura anterior hasta la
-         * primera línea real del motor.
-         */
         if (cachedEvaluation) {
             setBoardEvaluation({ ...cachedEvaluation });
         }
 
-        let cancelled = false;
         const selectedVersion = settings.analysis.engine.version;
         const localVersion = selectedVersion == EngineVersion.LICHESS_CLOUD
             ? EngineVersion.STOCKFISH_17_LITE
             : selectedVersion;
-        const engine = new Engine(localVersion);
 
-        engine
-            .setThreadCount(1)
-            .setLineCount(1)
-            .setPosition(currentFen);
+        if (
+            !evaluationEngineRef.current
+            || evaluationEngineVersionRef.current != localVersion
+        ) {
+            evaluationEngineRef.current?.terminate();
+            evaluationEngineRef.current = new Engine(localVersion);
+            evaluationEngineVersionRef.current = localVersion;
+        }
 
-        void engine.evaluate({
-            depth: Math.min(
-                18,
-                Math.max(12, settings.analysis.engine.depth)
-            ),
-            timeLimit: 1100,
-            onEngineLine: line => {
+        const engine = evaluationEngineRef.current;
+        let cancelled = false;
+
+        void (async () => {
+            try {
+                /*
+                 * Reutilizamos el mismo Stockfish durante toda la sesión.
+                 * Al cambiar de FEN detenemos la búsqueda anterior y lanzamos
+                 * la nueva; así la barra recibe líneas reales desde las
+                 * primeras profundidades en lugar de recrear un Worker en
+                 * cada movimiento.
+                 */
+                await engine.stopEvaluation();
+                if (
+                    cancelled
+                    || requestId != evaluationRequestRef.current
+                ) return;
+
+                engine
+                    .setThreadCount(1)
+                    .setLineCount(1)
+                    .setPosition(currentFen);
+
+                const lines = await engine.evaluate({
+                    depth: Math.min(
+                        16,
+                        Math.max(10, settings.analysis.engine.depth)
+                    ),
+                    timeLimit: 900,
+                    onEngineLine: line => {
+                        if (
+                            !cancelled
+                            && requestId == evaluationRequestRef.current
+                            && line.index == 1
+                            && line.depth >= 1
+                        ) {
+                            updateEvaluation(line.evaluation);
+                        }
+                    }
+                });
+
+                const finalLine = lines
+                    .filter(line => line.index == 1)
+                    .at(-1);
+
                 if (
                     !cancelled
-                    && line.index == 1
-                    && line.depth >= 4
+                    && requestId == evaluationRequestRef.current
+                    && finalLine
                 ) {
-                    updateEvaluation(line.evaluation);
+                    updateEvaluation(finalLine.evaluation);
+                }
+            } catch {
+                if (
+                    !cancelled
+                    && requestId == evaluationRequestRef.current
+                ) {
+                    setBoardEvaluation({ ...provisionalEvaluation });
                 }
             }
-        }).then(lines => {
-            const finalLine = lines
-                .filter(line => line.index == 1)
-                .at(-1);
-
-            if (!cancelled && finalLine) {
-                updateEvaluation(finalLine.evaluation);
-            }
-        }).catch(() => {
-            if (
-                !cancelled
-                && requestId == evaluationRequestRef.current
-            ) {
-                setBoardEvaluation({ ...provisionalEvaluation });
-            }
-        }).finally(() => {
-            engine.terminate();
-        });
+        })();
 
         return () => {
             cancelled = true;
-            engine.terminate();
         };
     }, [
         currentFen,
@@ -1770,7 +1800,7 @@ function Puzzles() {
                             className={styles.evaluationBar}
                             evaluation={boardEvaluation}
                             moveColour={
-                                puzzle.solver == "white"
+                                new Chess(currentFen).turn() == "w"
                                     ? PieceColour.WHITE
                                     : PieceColour.BLACK
                             }
@@ -1796,6 +1826,8 @@ function Puzzles() {
                                     playExpectedMove(from, to)
                                 )}
                                 onSquareClick={selectBoardSquare}
+                                customArrowColor="rgba(0,0,0,0)"
+                                onArrowsChange={setManualArrows}
                                 customPieces={customPieces}
                                 customSquare={
                                     PuzzleBoardSquare as unknown as NonNullable<
@@ -1820,15 +1852,25 @@ function Puzzles() {
                                 }}
                             />
 
-                            {hintArrow.length > 0 && (
+                            {(
+                                hintArrow.length > 0
+                                || manualArrows.length > 0
+                            ) && (
                                 <SuggestionArrowOverlay
-                                    arrows={hintArrow.map(arrow => ({
-                                        from: arrow[0],
-                                        to: arrow[1],
-                                        colour: String(
-                                            arrow[2] || "#78a7ff"
-                                        )
-                                    }))}
+                                    arrows={[
+                                        ...hintArrow.map(arrow => ({
+                                            from: arrow[0],
+                                            to: arrow[1],
+                                            colour: String(
+                                                arrow[2] || "#78a7ff"
+                                            )
+                                        })),
+                                        ...manualArrows.map(([from, to]) => ({
+                                            from,
+                                            to,
+                                            colour: "#78a7ff"
+                                        }))
+                                    ]}
                                     flipped={
                                         puzzleBoardOrientation == "black"
                                     }

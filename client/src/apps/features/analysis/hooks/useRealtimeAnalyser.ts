@@ -82,8 +82,9 @@ function useRealtimeAnalyser() {
         try {
             const lines = await engine.evaluate({
                 depth: settings.engine.depth,
+                // Engine.evaluate recibe milisegundos (UCI `movetime`).
                 timeLimit: settings.engine.timeLimitEnabled
-                    ? settings.engine.timeLimit
+                    ? settings.engine.timeLimit * 1000
                     : undefined
             });
 
