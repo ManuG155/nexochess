@@ -11,6 +11,7 @@ const files = Object.fromEntries(await Promise.all(
         styles: "client/src/apps/home/Home.module.css",
         previewFix: "client/src/apps/home/HomePreviewFix.module.css",
         pageWrapper: "client/src/components/layout/PageWrapper/index.tsx",
+        navigation: "client/src/components/layout/NavigationBar/index.tsx",
         routing: "client/src/i18n/routing.ts",
         webpack: "client/webpack.config.js",
         worker: "cloudflare/worker.mjs",
@@ -64,10 +65,25 @@ requireFragments("previewFix", "Homepage board geometry", [
     "grid-template-rows: repeat(8, minmax(0, 1fr))",
     "aspect-ratio: 1 / 1", "overflow: hidden"
 ]);
-requireFragments("pageWrapper", "Homepage navigation access", [
-    "document.querySelector<HTMLAnchorElement>",
-    'brandLink.setAttribute("href", "/home")'
+
+/*
+ * El logo y la navegación son destinos distintos. El antiguo parche de
+ * recuperación buscaba el primer `header a[href="/analysis"]` y lo convertía
+ * en `/home`; después de que el logo tuviera su propio `/home`, aquello pasó
+ * a secuestrar precisamente el botón Análisis. Esta verificación impide que
+ * vuelva a introducirse esa ambigüedad.
+ */
+requireFragments("navigation", "NexoChess header navigation", [
+    'className={styles.logoLink}',
+    'href="/home"',
+    '<NavigationItem icon="analysis" url="/analysis" current={onAnalysisPage}>'
 ]);
+assert.ok(
+    !files.pageWrapper.includes('header a[href="/analysis"]')
+    && !files.pageWrapper.includes('brandLink.setAttribute("href", "/home")'),
+    "PageWrapper must never rewrite the Analysis navigation link into the homepage."
+);
+
 requireFragments("routing", "Localized homepage recovery access", [
     '"/", "/home", "/about"'
 ]);
@@ -91,4 +107,4 @@ assert.ok(
     "Homepage deployment verification must check the versioned immutable bundle."
 );
 
-console.log("Homepage verification passed with forced HTTP-cache recovery, immutable versioned bundle delivery, centralized canonical metadata and eleven languages.");
+console.log("Homepage verification passed: canonical homepage recovery is preserved, the logo targets home, and the Analysis navigation remains independent in all localized shells.");
