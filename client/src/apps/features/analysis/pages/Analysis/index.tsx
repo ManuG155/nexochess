@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import ads from "@/constants/advertisements";
 import Advertisement from "@/components/Advertisement";
@@ -10,6 +10,18 @@ import * as styles from "./Analysis.module.css";
 
 function Analysis() {
     useGameLoader();
+
+    useEffect(() => {
+        const url = new URL(window.location.href);
+        if (!url.searchParams.has("nexo-nav")) return;
+
+        url.searchParams.delete("nexo-nav");
+        window.history.replaceState(
+            window.history.state,
+            "",
+            url.pathname + url.search + url.hash
+        );
+    }, []);
 
     return <div className={styles.wrapper}>
         <div className={styles.advertisement}>

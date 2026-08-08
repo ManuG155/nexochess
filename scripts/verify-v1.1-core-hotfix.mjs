@@ -4,6 +4,9 @@ import { resolve } from "node:path";
 
 const files = Object.fromEntries(await Promise.all(
     Object.entries({
+        routing: "client/src/i18n/routing.ts",
+        navigation: "client/src/components/layout/NavigationBar/index.tsx",
+        worker: "cloudflare/worker.mjs",
         engine: "client/src/apps/features/analysis/lib/engine.ts",
         realtimeAnalyser: "client/src/apps/features/analysis/hooks/useRealtimeAnalyser.ts",
         realtimeArea: "client/src/apps/features/analysis/components/AnalysisPanel/RealtimeEngineArea/index.tsx",
@@ -22,12 +25,34 @@ function requireFragments(name, description, fragments) {
 }
 
 /*
- * Stockfish cancellation must be race-free. A listener that is installed
- * after `postMessage("stop")` can miss the immediate `bestmove` response and
- * leave every subsequent realtime evaluation waiting forever.
+ * The canonical /analysis URL had a permanent redirect during the homepage
+ * transition. Internal navigation therefore enters through an unlisted
+ * recovery route, which serves the Analysis document directly, clears HTTP
+ * cache and rewrites the visible URL before BrowserRouter mounts.
+ */
+requireFragments("routing", "Localized Analysis recovery", [
+    '"/analysis-entry"'
+]);
+requireFragments("navigation", "Analysis navigation recovery", [
+    'currentLanguageHref("/analysis-entry")',
+    'parseLanguagePathname(link.pathname).basePathname'
+]);
+requireFragments("worker", "Analysis recovery response", [
+    'pathname === "/analysis-entry"',
+    'renderAnalysisRecovery(request, env, languageRoute.language)',
+    '"features/analysis.html"',
+    'headers.set("Clear-Site-Data", \'"cache"\')',
+    'history.replaceState(history.state,"",${JSON.stringify(localizedAnalysis)})'
+]);
+
+/*
+ * UCI commands must install their listeners before they are posted. More
+ * importantly, setoption/position are queued until uciok and every search is
+ * fenced by readyok. This removes timing dependence when Puzzles or a review
+ * variation creates a fresh Stockfish worker and evaluates immediately.
  */
 const consumeStart = files.engine.indexOf("private consumeLogs(");
-const consumeEnd = files.engine.indexOf("\n    onMessage(", consumeStart);
+const consumeEnd = files.engine.indexOf("\n    /**", consumeStart);
 assert.ok(consumeStart >= 0 && consumeEnd > consumeStart);
 const consumeLogs = files.engine.slice(consumeStart, consumeEnd);
 const listenerIndex = consumeLogs.indexOf(
@@ -39,18 +64,18 @@ assert.ok(
     "Engine.consumeLogs must attach its message listener before posting the UCI command."
 );
 
-const stopStart = files.engine.indexOf("async stopEvaluation()");
-assert.ok(stopStart >= 0, "Engine.stopEvaluation is missing.");
-const stopEvaluation = files.engine.slice(stopStart);
-requireFragments("engine", "Race-free Stockfish lifecycle", [
+requireFragments("engine", "Stockfish UCI lifecycle", [
+    "private uciReady: Promise<void>;",
+    'log => log.trim() == "uciok"',
+    "private postWhenUciReady(command: string)",
+    'this.postWhenUciReady(`position fen ${fen}`)',
+    'log => log.trim() == "readyok"',
+    "private evaluationGeneration = 0;",
+    "this.worker.terminate();",
+    "if (!this.evaluating || this.terminated) return;",
     'await this.consumeLogs(\n            "stop",',
-    'log => log.startsWith("bestmove")',
-    "finally {\n            this.evaluating = false;"
+    'log => log.startsWith("bestmove")'
 ]);
-assert.ok(
-    !stopEvaluation.includes('this.worker.postMessage("stop")'),
-    "Engine.stopEvaluation must not post `stop` before consumeLogs attaches its listener."
-);
 
 /* The fallback evaluator for a parent position uses UCI movetime in ms. */
 requireFragments("realtimeAnalyser", "Realtime variant fallback", [
@@ -59,38 +84,71 @@ requireFragments("realtimeAnalyser", "Realtime variant fallback", [
     "await ensureEngineLines(targetNode.parent)",
     "analyseNode(targetNode"
 ]);
+
+/*
+ * Review is a visual mode, not a reason to disable the engine. A side
+ * variation must receive lines, classification and a node update while the
+ * review card is open so the coach can react to it.
+ */
+assert.ok(
+    !files.realtimeArea.includes("AnalysisTab.REPORT"),
+    "RealtimeEngineArea must not disable Stockfish merely because Review/REPORT is visible."
+);
 requireFragments("realtimeArea", "Realtime variant classification", [
+    "key={currentStateTreeNode.state.fen}",
     "currentStateTreeNode.state.engineLines.concat(lines)",
     "dispatchCurrentNodeUpdate();",
+    "currentEngineLines.length == 0",
     "void considerRealtimeAnalyse(currentStateTreeNode);"
 ]);
 
 /*
- * Puzzles must reuse one engine across position changes and cancel/restart
- * that engine for every displayed FEN. This protects the evaluation bar from
- * behaving like a static decoration during multi-move puzzles.
+ * Every displayed puzzle FEN owns a fresh lightweight Stockfish worker. It
+ * updates from the first usable depth. Material can provide an immediate
+ * non-zero transition, but an equal-material position must not be forced to
+ * an artificial 0.0 while Stockfish starts.
  */
 requireFragments("puzzles", "Dynamic puzzle evaluation", [
-    "const evaluationEngineRef = useRef<Engine>();",
-    "const evaluationEngineVersionRef = useRef<EngineVersion>();",
-    "await engine.stopEvaluation();",
+    "const engine = new Engine(EngineVersion.STOCKFISH_17_LITE);",
     ".setPosition(currentFen);",
     "line.depth >= 1",
     "evaluationCacheRef.current.set(currentFen, evaluation)",
-    "new Chess(currentFen).turn() == \"w\""
+    "provisionalEvaluation.value != 0",
+    "new Chess(currentFen).turn() == \"w\"",
+    "engine.terminate();"
 ]);
+assert.ok(
+    !files.puzzles.includes("evaluationEngineRef"),
+    "Puzzles must not reuse one Stockfish worker across displayed FENs."
+);
+assert.ok(
+    !files.puzzles.includes("evaluationEngineVersionRef"),
+    "Puzzles must not retain an engine-version ref for a shared evaluation worker."
+);
 
 /*
- * Native react-chessboard arrows are transparent; both hints and user-drawn
- * arrows are routed through NexoChess's overlay, whose knight geometry is L.
+ * react-chessboard's arrow renderer is disabled. The right-mouse gesture is
+ * intercepted in capture phase and stopped at the native event, then both
+ * hints and manual arrows go through NexoChess's overlay. Knight displacement
+ * therefore always uses the L-shaped polygon, including user-drawn arrows.
  */
 requireFragments("puzzles", "Puzzle manual arrow rendering", [
-    "const [ manualArrows, setManualArrows ] =",
-    'customArrowColor="rgba(0,0,0,0)"',
-    "onArrowsChange={setManualArrows}",
-    "...manualArrows.map(([from, to]) => ({",
+    "const manualArrowStartRef = useRef<Square>();",
+    "onMouseDownCapture={beginManualArrow}",
+    "onMouseUpCapture={finishManualArrow}",
+    "event.nativeEvent.stopImmediatePropagation();",
+    "areArrowsAllowed={false}",
+    "...manualArrows.map(([from, to, colour]) => ({",
     "<SuggestionArrowOverlay"
 ]);
+assert.ok(
+    !files.puzzles.includes("onArrowsChange={setManualArrows}"),
+    "Puzzles must not delegate user-drawn arrows to react-chessboard."
+);
+assert.ok(
+    !files.puzzles.includes("onPointerDownCapture={beginManualArrow}"),
+    "Puzzle manual arrows must use the mouse capture path that suppresses react-chessboard's mouse handlers."
+);
 requireFragments("arrows", "Knight L-arrow geometry", [
     "function isKnightShape(start: Point, end: Point): boolean",
     "function buildKnightArrowShape(",
@@ -98,6 +156,7 @@ requireFragments("arrows", "Knight L-arrow geometry", [
 ]);
 
 console.log(
-    "Core v1.1 hotfix verification passed: realtime Stockfish cancellation is race-free, "
-    + "variant classification has a valid fallback, and Puzzles has dynamic evaluation plus L-shaped manual knight arrows."
+    "Core v1.1 hotfix verification passed: Analysis navigation bypasses stale redirects, "
+    + "Stockfish obeys UCI readiness, review variations remain live, and Puzzles evaluates "
+    + "each FEN independently while user-drawn knight arrows use NexoChess L geometry."
 );

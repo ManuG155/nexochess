@@ -8,7 +8,10 @@ import type { StateTreeNode } from "shared/types/game/position/StateTreeNode";
 import { useAuthedProfile } from "@/hooks/api/useProfile";
 import Typography from "@/components/Typography";
 import BlurBackground from "@/components/layout/BlurBackground";
-import { parseLanguagePathname } from "@/i18n/routing";
+import {
+    currentLanguageHref,
+    parseLanguagePathname
+} from "@/i18n/routing";
 import { completePendingAuthAnalytics } from "@/lib/analytics";
 import HoverDropdown from "./HoverDropdown";
 import * as styles from "./NavigationBar.module.css";
@@ -166,6 +169,53 @@ function NavigationBar() {
             completePendingAuthAnalytics(false);
         }
     }, [status]);
+
+    useEffect(() => {
+        function interceptAnalysisNavigation(event: MouseEvent) {
+            if (
+                event.defaultPrevented
+                || event.button != 0
+                || event.metaKey
+                || event.ctrlKey
+                || event.shiftKey
+                || event.altKey
+            ) return;
+
+            const target = event.target;
+            if (!(target instanceof Element)) return;
+
+            const link = target.closest<HTMLAnchorElement>("a[href]");
+            if (!link || link.origin != window.location.origin) return;
+
+            if (
+                parseLanguagePathname(link.pathname).basePathname
+                != "/analysis"
+            ) return;
+
+            event.preventDefault();
+            /*
+             * /analysis tuvo redirects permanentes durante el cambio de
+             * portada. Entramos por una ruta técnica que sirve el mismo HTML,
+             * limpia esa caché y cambia la URL a /analysis antes de montar
+             * React. Así no dependemos del redirect cacheado del navegador.
+             */
+            window.location.assign(
+                currentLanguageHref("/analysis-entry")
+            );
+        }
+
+        document.addEventListener(
+            "click",
+            interceptAnalysisNavigation,
+            true
+        );
+
+        return () => document.removeEventListener(
+            "click",
+            interceptAnalysisNavigation,
+            true
+        );
+    }, []);
 
     async function openSidebar() {
         setSidebarMounted(true);

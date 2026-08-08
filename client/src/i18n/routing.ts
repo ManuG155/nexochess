@@ -103,7 +103,16 @@ export function currentLanguageHref(
     href: string,
     fallback: SupportedLanguage = DEFAULT_LANGUAGE
 ): string {
-    return localizeHref(href, getUrlLanguage() || fallback);
+    /*
+     * /analysis-entry was a temporary cache-recovery route. Any legacy caller
+     * must now resolve to the real public route so navigation never exposes or
+     * depends on that implementation detail.
+     */
+    const canonicalHref = href == "/analysis-entry"
+        ? "/analysis"
+        : href;
+
+    return localizeHref(canonicalHref, getUrlLanguage() || fallback);
 }
 
 export function navigateToLanguage(language: SupportedLanguage): boolean {

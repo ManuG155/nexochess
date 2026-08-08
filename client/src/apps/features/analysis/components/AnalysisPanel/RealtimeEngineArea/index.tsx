@@ -1,13 +1,11 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { uniqWith } from "lodash-es";
 
 import { getNodeParentChain } from "shared/types/game/position/StateTreeNode";
 import { isEngineLineEqual } from "shared/types/game/position/EngineLine";
-import AnalysisTab from "@analysis/constants/AnalysisTab";
 import useRealtimeAnalyser from "@analysis/hooks/useRealtimeAnalyser";
 import useSettingsStore from "@/stores/SettingsStore";
-import useAnalysisTabStore from "@analysis/stores/AnalysisTabStore";
 import useAnalysisGameStore from "@analysis/stores/AnalysisGameStore";
 import useAnalysisBoardStore from "@analysis/stores/AnalysisBoardStore";
 import useRealtimeEngineStore from "@analysis/stores/RealtimeEngineStore";
@@ -15,8 +13,6 @@ import RealtimeEngine from "@analysis/components/RealtimeEngine";
 
 function RealtimeEngineArea() {
     const { settings } = useSettingsStore();
-
-    const { activeTab } = useAnalysisTabStore();
 
     const initialPosition = useAnalysisGameStore(
         state => state.analysisGame.initialPosition
@@ -47,14 +43,27 @@ function RealtimeEngineArea() {
             .map(node => node.state.move!.uci)
     ), [currentStateTreeNode]);
 
-    if (
-        activeTab == AnalysisTab.REPORT
-        || !settings.analysis.engine.enabled
-    ) {
+    useEffect(() => {
+        if (
+            !settings.analysis.engine.enabled
+            || !currentStateTreeNode.parent
+            || currentStateTreeNode.state.classification
+            || currentEngineLines.length == 0
+        ) return;
+
+        void considerRealtimeAnalyse(currentStateTreeNode);
+    }, [
+        currentStateTreeNode,
+        currentEngineLines.length,
+        settings.analysis.engine.enabled
+    ]);
+
+    if (!settings.analysis.engine.enabled) {
         return null;
     }
 
     return <RealtimeEngine
+        key={currentStateTreeNode.state.fen}
         initialPosition={initialPosition}
         playedUciMoves={playedUciMoves}
         config={{
@@ -76,11 +85,6 @@ function RealtimeEngineArea() {
                 isEngineLineEqual
             );
 
-            /*
-             * engineLines vive dentro del nodo mutable. Forzamos la señal de
-             * actualización antes de clasificar para que barra, flechas,
-             * secuencia y entrenador vean inmediatamente la evaluación nueva.
-             */
             dispatchCurrentNodeUpdate();
             void considerRealtimeAnalyse(currentStateTreeNode);
         }}

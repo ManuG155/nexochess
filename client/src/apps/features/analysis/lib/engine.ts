@@ -13,15 +13,22 @@ const uciEvaluationTypes: Record<string, string | undefined> = {
 class Engine {
     private worker: Worker;
     private version: EngineVersion;
+    private uciReady: Promise<void>;
 
     private position = STARTING_FEN;
     private evaluating = false;
+    private terminated = false;
+    private evaluationGeneration = 0;
 
     constructor(version: EngineVersion) {
         this.worker = new Worker("/engines/" + version);
         this.version = version;
 
-        this.worker.postMessage("uci");
+        this.uciReady = this.consumeLogs(
+            "uci",
+            log => log.trim() == "uciok"
+        ).then(() => undefined);
+
         this.setPosition(this.position);
     }
 
@@ -33,12 +40,6 @@ class Engine {
         const worker = this.worker;
         const logMessages: string[] = [];
 
-        /*
-         * El listener debe existir ANTES de enviar el comando. En especial,
-         * Stockfish puede responder a `stop` con `bestmove` prácticamente de
-         * inmediato. Si publicamos primero y escuchamos después, esa respuesta
-         * puede perderse y dejar la promesa bloqueada para siempre.
-         */
         return new Promise((res, rej) => {
             function cleanup() {
                 worker.removeEventListener("message", onMessageReceived);
@@ -69,6 +70,21 @@ class Engine {
         });
     }
 
+    /**
+     * UCI no permite asumir que el motor acepta opciones o posiciones antes
+     * de responder a `uci`. Conservamos la API síncrona/encadenable, pero la
+     * orden real queda encolada hasta `uciok`. Las callbacks de una Promise se
+     * ejecutan en orden de registro, por lo que setoption/position mantienen
+     * exactamente el orden en que el llamador las configuró antes de evaluate.
+     */
+    private postWhenUciReady(command: string) {
+        void this.uciReady.then(() => {
+            if (!this.terminated) {
+                this.worker.postMessage(command);
+            }
+        });
+    }
+
     onMessage(handler: (message: string) => void) {
         this.worker.addEventListener("message", event => {
             handler(String(event.data));
@@ -86,12 +102,23 @@ class Engine {
     }
 
     terminate() {
+        if (this.terminated) return;
+
+        this.evaluationGeneration++;
         this.evaluating = false;
-        this.worker.postMessage("quit");
+        this.terminated = true;
+
+        try {
+            this.worker.postMessage("quit");
+        } catch {
+            // The worker may already have stopped itself.
+        }
+
+        this.worker.terminate();
     }
 
     setOption(option: string, value: string) {
-        this.worker.postMessage(
+        this.postWhenUciReady(
             `setoption name ${option} value ${value}`
         );
 
@@ -112,7 +139,7 @@ class Engine {
 
     setPosition(fen: string, uciMoves?: string[]) {
         if (uciMoves?.length) {
-            this.worker.postMessage(
+            this.postWhenUciReady(
                 `position fen ${fen} moves ${uciMoves.join(" ")}`
             );
 
@@ -126,7 +153,7 @@ class Engine {
             return this;
         }
 
-        this.worker.postMessage(`position fen ${fen}`);
+        this.postWhenUciReady(`position fen ${fen}`);
         this.position = fen;
 
         return this;
@@ -138,9 +165,28 @@ class Engine {
         onEngineLine?: (line: EngineLine) => void;
     }): Promise<EngineLine[]> {
         const engineLines: EngineLine[] = [];
+        const generation = ++this.evaluationGeneration;
 
         const maxTimeArgument = options.timeLimit
             ? `movetime ${options.timeLimit}` : "";
+
+        /*
+         * Todos los setoption/position registrados antes de esta llamada se
+         * vacían al resolver uciReady. Después `isready` funciona como barrera
+         * UCI: `go` no sale hasta que Stockfish confirma que procesó todo.
+         */
+        await this.uciReady;
+        if (this.terminated || generation != this.evaluationGeneration) {
+            return [];
+        }
+
+        await this.consumeLogs(
+            "isready",
+            log => log.trim() == "readyok"
+        );
+        if (this.terminated || generation != this.evaluationGeneration) {
+            return [];
+        }
 
         this.evaluating = true;
 
@@ -155,13 +201,11 @@ class Engine {
                     if (!log.startsWith("info depth")) return;
                     if (log.includes("currmove")) return;
 
-                    // Extract depth and multipv index of line
                     const depth = parseInt(log.match(/(?<= depth )\d+/)?.[0] || "");
                     if (isNaN(depth)) return;
 
                     const index = parseInt(log.match(/(?<= multipv )\d+/)?.[0] || "") || 1;
 
-                    // Extract evaluation type and score
                     const scoreMatches = log.match(/ score (cp|mate) (-?\d+)/);
 
                     const evaluationType = uciEvaluationTypes[scoreMatches?.[1] || ""];
@@ -173,15 +217,12 @@ class Engine {
                     let evaluationScore = parseInt(scoreMatches?.[2] || "");
                     if (isNaN(evaluationScore)) return;
 
-                    // Make sure evaluations are always from White's view
                     if (this.position.includes(" b ")) {
                         evaluationScore = -evaluationScore;
                     }
 
-                    // Extract UCI moves from pv
                     const moveUcis = log.match(/ pv (.*)/)?.at(1)?.split(" ") || [];
 
-                    // Convert these to SANs on a temp board
                     const moveSans: string[] = [];
 
                     const board = new Chess(this.position);
@@ -189,7 +230,6 @@ class Engine {
                         moveSans.push(board.move(moveUci).san);
                     }
 
-                    // Remove old duplicate line and add new one
                     const newEngineLine: EngineLine = {
                         depth: depth,
                         index: index,
@@ -209,6 +249,13 @@ class Engine {
                 }
             );
 
+            if (
+                this.terminated
+                || generation != this.evaluationGeneration
+            ) {
+                return [];
+            }
+
             return engineLines;
         } finally {
             this.evaluating = false;
@@ -216,13 +263,9 @@ class Engine {
     }
 
     async stopEvaluation() {
-        if (!this.evaluating) return;
+        this.evaluationGeneration++;
+        if (!this.evaluating || this.terminated) return;
 
-        /*
-         * `consumeLogs` registra primero el listener y sólo entonces manda
-         * `stop`, por lo que nunca perdemos el `bestmove` que desbloquea la
-         * siguiente posición/variante.
-         */
         await this.consumeLogs(
             "stop",
             log => log.startsWith("bestmove")

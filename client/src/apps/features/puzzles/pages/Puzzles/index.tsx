@@ -7,7 +7,6 @@ import React, {
 import { useTranslation } from "react-i18next";
 import { Chess, Square } from "chess.js";
 import { Chessboard } from "react-chessboard";
-import { Arrow } from "react-chessboard/dist/chessboard/types";
 
 import PieceColour from "shared/constants/PieceColour";
 import EngineVersion from "shared/constants/EngineVersion";
@@ -79,6 +78,8 @@ type PageState =
     | "error";
 
 type SourceLoadState = "loading" | "ready" | "error";
+
+type ManualArrow = [Square, Square, string?];
 
 interface CoachMessage {
     key: string;
@@ -310,7 +311,7 @@ function Puzzles() {
             React.ComponentProps<typeof Chessboard>["customArrows"]
         >>([]);
     const [ manualArrows, setManualArrows ] =
-        useState<Arrow[]>([]);
+        useState<ManualArrow[]>([]);
     const [ pendingReply, setPendingReply ] =
         useState(false);
     const [ coachMessage, setCoachMessage ] =
@@ -342,8 +343,8 @@ function Puzzles() {
     const profileRef = useRef(profile);
     const evaluationCacheRef = useRef(new Map<string, Evaluation>());
     const evaluationRequestRef = useRef(0);
-    const evaluationEngineRef = useRef<Engine>();
-    const evaluationEngineVersionRef = useRef<EngineVersion>();
+    const manualArrowStartRef = useRef<Square>();
+    const puzzleBoardShellRef = useRef<HTMLDivElement | null>(null);
     const setupRevealedRef = useRef(false);
     const requestingPuzzleRef = useRef(false);
 
@@ -1026,6 +1027,74 @@ function Puzzles() {
             : puzzle.solver
         : "white";
 
+    function pointerSquare(clientX: number, clientY: number) {
+        const rect = puzzleBoardShellRef.current?.getBoundingClientRect();
+        if (!rect || rect.width <= 0 || rect.height <= 0) return undefined;
+
+        const fileIndex = Math.min(
+            7,
+            Math.max(0, Math.floor(((clientX - rect.left) / rect.width) * 8))
+        );
+        const rankIndex = Math.min(
+            7,
+            Math.max(0, Math.floor(((clientY - rect.top) / rect.height) * 8))
+        );
+
+        const normalFiles = ["a", "b", "c", "d", "e", "f", "g", "h"];
+        const flippedFiles = [...normalFiles].reverse();
+        const file = (
+            puzzleBoardOrientation == "black"
+                ? flippedFiles
+                : normalFiles
+        )[fileIndex];
+        const rank = puzzleBoardOrientation == "black"
+            ? rankIndex + 1
+            : 8 - rankIndex;
+
+        return `${file}${rank}` as Square;
+    }
+
+    function beginManualArrow(event: React.MouseEvent<HTMLDivElement>) {
+        if (event.button != 2) return;
+
+        const square = pointerSquare(event.clientX, event.clientY);
+        if (!square) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        event.nativeEvent.stopImmediatePropagation();
+        manualArrowStartRef.current = square;
+    }
+
+    function finishManualArrow(event: React.MouseEvent<HTMLDivElement>) {
+        if (event.button != 2) return;
+
+        const from = manualArrowStartRef.current;
+        const to = pointerSquare(event.clientX, event.clientY);
+        manualArrowStartRef.current = undefined;
+
+        event.preventDefault();
+        event.stopPropagation();
+        event.nativeEvent.stopImmediatePropagation();
+
+        if (!from || !to || from == to) return;
+
+        setManualArrows(previous => {
+            const existing = previous.findIndex(
+                ([start, end]) => start == from && end == to
+            );
+
+            if (existing >= 0) {
+                return previous.filter((_, index) => index != existing);
+            }
+
+            return [
+                ...previous,
+                [from, to, settings.analysis.arrowStyle.manualColour]
+            ];
+        });
+    }
+
     useEffect(() => {
         if (!coachEnabled && coachPickerOpen) {
             setCoachPickerOpen(false);
@@ -1112,13 +1181,6 @@ function Puzzles() {
         wrongMovePreview
     ]);
 
-    useEffect(() => () => {
-        evaluationRequestRef.current++;
-        evaluationEngineRef.current?.terminate();
-        evaluationEngineRef.current = undefined;
-        evaluationEngineVersionRef.current = undefined;
-    }, []);
-
     useEffect(() => {
         if (!puzzle || !currentFen) return;
 
@@ -1138,99 +1200,79 @@ function Puzzles() {
             return;
         }
 
-        const provisionalEvaluation =
-            getProvisionalEvaluation(currentFen);
-        const cachedEvaluation =
-            evaluationCacheRef.current.get(currentFen);
+        const provisionalEvaluation = getProvisionalEvaluation(currentFen);
+        const cachedEvaluation = evaluationCacheRef.current.get(currentFen);
 
         if (cachedEvaluation) {
             setBoardEvaluation({ ...cachedEvaluation });
-        }
-
-        const selectedVersion = settings.analysis.engine.version;
-        const localVersion = selectedVersion == EngineVersion.LICHESS_CLOUD
-            ? EngineVersion.STOCKFISH_17_LITE
-            : selectedVersion;
-
-        if (
-            !evaluationEngineRef.current
-            || evaluationEngineVersionRef.current != localVersion
+        } else if (
+            provisionalEvaluation.type == "mate"
+            || provisionalEvaluation.value != 0
         ) {
-            evaluationEngineRef.current?.terminate();
-            evaluationEngineRef.current = new Engine(localVersion);
-            evaluationEngineVersionRef.current = localVersion;
+            // Capturas/promociones reaccionan de inmediato mientras Stockfish
+            // termina de preparar la evaluación posicional. Una posición de
+            // material igual no fuerza artificialmente la barra a 0.0.
+            setBoardEvaluation({ ...provisionalEvaluation });
         }
 
-        const engine = evaluationEngineRef.current;
+        /*
+         * Una FEN = un Worker. No reutilizamos una búsqueda anterior ni
+         * esperamos a un `stop`: al cambiar de posición arrancamos un
+         * Stockfish limpio, por lo que la barra no puede quedar bloqueada por
+         * el estado del movimiento previo.
+         */
+        const engine = new Engine(EngineVersion.STOCKFISH_17_LITE);
         let cancelled = false;
 
-        void (async () => {
-            try {
-                /*
-                 * Reutilizamos el mismo Stockfish durante toda la sesión.
-                 * Al cambiar de FEN detenemos la búsqueda anterior y lanzamos
-                 * la nueva; así la barra recibe líneas reales desde las
-                 * primeras profundidades en lugar de recrear un Worker en
-                 * cada movimiento.
-                 */
-                await engine.stopEvaluation();
-                if (
-                    cancelled
-                    || requestId != evaluationRequestRef.current
-                ) return;
+        engine
+            .setThreadCount(1)
+            .setLineCount(1)
+            .setPosition(currentFen);
 
-                engine
-                    .setThreadCount(1)
-                    .setLineCount(1)
-                    .setPosition(currentFen);
-
-                const lines = await engine.evaluate({
-                    depth: Math.min(
-                        16,
-                        Math.max(10, settings.analysis.engine.depth)
-                    ),
-                    timeLimit: 900,
-                    onEngineLine: line => {
-                        if (
-                            !cancelled
-                            && requestId == evaluationRequestRef.current
-                            && line.index == 1
-                            && line.depth >= 1
-                        ) {
-                            updateEvaluation(line.evaluation);
-                        }
-                    }
-                });
-
-                const finalLine = lines
-                    .filter(line => line.index == 1)
-                    .at(-1);
-
+        void engine.evaluate({
+            depth: 16,
+            timeLimit: 1200,
+            onEngineLine: line => {
                 if (
                     !cancelled
                     && requestId == evaluationRequestRef.current
-                    && finalLine
+                    && line.index == 1
+                    && line.depth >= 1
                 ) {
-                    updateEvaluation(finalLine.evaluation);
-                }
-            } catch {
-                if (
-                    !cancelled
-                    && requestId == evaluationRequestRef.current
-                ) {
-                    setBoardEvaluation({ ...provisionalEvaluation });
+                    updateEvaluation(line.evaluation);
                 }
             }
-        })();
+        }).then(lines => {
+            const finalLine = lines
+                .filter(line => line.index == 1)
+                .at(-1);
+
+            if (
+                !cancelled
+                && requestId == evaluationRequestRef.current
+                && finalLine
+            ) {
+                updateEvaluation(finalLine.evaluation);
+            }
+        }).catch(() => {
+            if (
+                !cancelled
+                && requestId == evaluationRequestRef.current
+            ) {
+                setBoardEvaluation({ ...provisionalEvaluation });
+            }
+        }).finally(() => {
+            engine.terminate();
+        });
 
         return () => {
             cancelled = true;
+            evaluationRequestRef.current++;
+            engine.terminate();
         };
     }, [
         currentFen,
-        puzzle?.id,
-        settings.analysis.engine.depth,
-        settings.analysis.engine.version
+        puzzle?.id
     ]);
 
     const profileStats = showRatedProfile ? (
@@ -1807,7 +1849,13 @@ function Puzzles() {
                             flipped={puzzleBoardOrientation == "black"}
                         />
 
-                        <div className={styles.boardShell}>
+                        <div
+                            ref={puzzleBoardShellRef}
+                            className={styles.boardShell}
+                            onMouseDownCapture={beginManualArrow}
+                            onMouseUpCapture={finishManualArrow}
+                            onContextMenu={event => event.preventDefault()}
+                        >
                             <Chessboard
                                 position={currentFen}
                                 boardOrientation={puzzleBoardOrientation}
@@ -1826,8 +1874,7 @@ function Puzzles() {
                                     playExpectedMove(from, to)
                                 )}
                                 onSquareClick={selectBoardSquare}
-                                customArrowColor="rgba(0,0,0,0)"
-                                onArrowsChange={setManualArrows}
+                                areArrowsAllowed={false}
                                 customPieces={customPieces}
                                 customSquare={
                                     PuzzleBoardSquare as unknown as NonNullable<
@@ -1865,10 +1912,13 @@ function Puzzles() {
                                                 arrow[2] || "#78a7ff"
                                             )
                                         })),
-                                        ...manualArrows.map(([from, to]) => ({
+                                        ...manualArrows.map(([from, to, colour]) => ({
                                             from,
                                             to,
-                                            colour: "#78a7ff"
+                                            colour: String(
+                                                colour
+                                                || settings.analysis.arrowStyle.manualColour
+                                            )
                                         }))
                                     ]}
                                     flipped={
