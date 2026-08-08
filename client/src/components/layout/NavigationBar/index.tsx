@@ -114,12 +114,20 @@ interface NavigationItemProps {
     current?: boolean;
     icon: IconName;
     url: string;
+    onClick?: React.MouseEventHandler<HTMLAnchorElement>;
 }
 
-function NavigationItem({ children, current = false, icon, url }: NavigationItemProps) {
+function NavigationItem({
+    children,
+    current = false,
+    icon,
+    url,
+    onClick
+}: NavigationItemProps) {
     return <a
         className={`${styles.navItem} ${current ? styles.active : ""}`}
         href={url}
+        onClick={onClick}
         aria-current={current ? "page" : undefined}
     >
         <NavIcon name={icon} />
@@ -161,7 +169,6 @@ function NavigationBar() {
 
     const showFlipAction = onAnalysisPage || onPuzzlesPage;
     const showShareAction = onAnalysisPage;
-    const analysisHref = currentLanguageHref("/analysis?nexo-nav=1");
 
     useEffect(() => {
         if (status == "success") {
@@ -207,6 +214,20 @@ function NavigationBar() {
         });
     }
 
+    function openAnalysis(event: React.MouseEvent<HTMLAnchorElement>) {
+        if (
+            event.defaultPrevented
+            || event.button != 0
+            || event.metaKey
+            || event.ctrlKey
+            || event.shiftKey
+            || event.altKey
+        ) return;
+
+        event.preventDefault();
+        window.location.assign(currentLanguageHref("/analysis?nexo-nav=1"));
+    }
+
     async function signOut() {
         const { default: authClient } = await import("@/lib/auth");
         await authClient.signOut();
@@ -245,7 +266,7 @@ function NavigationBar() {
             className={styles.primaryNavigation}
             aria-label={t("navigationBar.primaryNavigation", { ns: "common" })}
         >
-            <NavigationItem icon="analysis" url={analysisHref} current={onAnalysisPage}>
+            <NavigationItem icon="analysis" url="/analysis" current={onAnalysisPage} onClick={openAnalysis}>
                 {t("sidebar.analysis", { ns: "common" })}
             </NavigationItem>
             <NavigationItem icon="archive" url="/archive" current={onArchivePage}>
@@ -266,7 +287,7 @@ function NavigationBar() {
                 void openShareDialog();
             }}>
                 {t("navigationBar.share", { ns: "common" })}
-            </NavigationAction>}
+            </NavigationItem>}
         </nav>
 
         <div className={styles.rightArea}>
