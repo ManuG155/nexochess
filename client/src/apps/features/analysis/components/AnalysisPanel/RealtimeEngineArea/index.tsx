@@ -4,10 +4,8 @@ import { uniqWith } from "lodash-es";
 
 import { getNodeParentChain } from "shared/types/game/position/StateTreeNode";
 import { isEngineLineEqual } from "shared/types/game/position/EngineLine";
-import AnalysisTab from "@analysis/constants/AnalysisTab";
 import useRealtimeAnalyser from "@analysis/hooks/useRealtimeAnalyser";
 import useSettingsStore from "@/stores/SettingsStore";
-import useAnalysisTabStore from "@analysis/stores/AnalysisTabStore";
 import useAnalysisGameStore from "@analysis/stores/AnalysisGameStore";
 import useAnalysisBoardStore from "@analysis/stores/AnalysisBoardStore";
 import useRealtimeEngineStore from "@analysis/stores/RealtimeEngineStore";
@@ -15,8 +13,6 @@ import RealtimeEngine from "@analysis/components/RealtimeEngine";
 
 function RealtimeEngineArea() {
     const { settings } = useSettingsStore();
-
-    const { activeTab } = useAnalysisTabStore();
 
     const initialPosition = useAnalysisGameStore(
         state => state.analysisGame.initialPosition
@@ -49,8 +45,7 @@ function RealtimeEngineArea() {
 
     useEffect(() => {
         if (
-            activeTab == AnalysisTab.REPORT
-            || !settings.analysis.engine.enabled
+            !settings.analysis.engine.enabled
             || !currentStateTreeNode.parent
             || currentStateTreeNode.state.classification
             || currentEngineLines.length == 0
@@ -58,16 +53,12 @@ function RealtimeEngineArea() {
 
         void considerRealtimeAnalyse(currentStateTreeNode);
     }, [
-        activeTab,
         currentStateTreeNode,
         currentEngineLines.length,
         settings.analysis.engine.enabled
     ]);
 
-    if (
-        activeTab == AnalysisTab.REPORT
-        || !settings.analysis.engine.enabled
-    ) {
+    if (!settings.analysis.engine.enabled) {
         return null;
     }
 

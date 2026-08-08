@@ -13,16 +13,22 @@ const uciEvaluationTypes: Record<string, string | undefined> = {
 class Engine {
     private worker: Worker;
     private version: EngineVersion;
+    private uciReady: Promise<void>;
 
     private position = STARTING_FEN;
     private evaluating = false;
     private terminated = false;
+    private evaluationGeneration = 0;
 
     constructor(version: EngineVersion) {
         this.worker = new Worker("/engines/" + version);
         this.version = version;
 
-        this.worker.postMessage("uci");
+        this.uciReady = this.consumeLogs(
+            "uci",
+            log => log.trim() == "uciok"
+        ).then(() => undefined);
+
         this.setPosition(this.position);
     }
 
@@ -64,6 +70,21 @@ class Engine {
         });
     }
 
+    /**
+     * UCI no permite asumir que el motor acepta opciones o posiciones antes
+     * de responder a `uci`. Conservamos la API síncrona/encadenable, pero la
+     * orden real queda encolada hasta `uciok`. Las callbacks de una Promise se
+     * ejecutan en orden de registro, por lo que setoption/position mantienen
+     * exactamente el orden en que el llamador las configuró antes de evaluate.
+     */
+    private postWhenUciReady(command: string) {
+        void this.uciReady.then(() => {
+            if (!this.terminated) {
+                this.worker.postMessage(command);
+            }
+        });
+    }
+
     onMessage(handler: (message: string) => void) {
         this.worker.addEventListener("message", event => {
             handler(String(event.data));
@@ -83,6 +104,7 @@ class Engine {
     terminate() {
         if (this.terminated) return;
 
+        this.evaluationGeneration++;
         this.evaluating = false;
         this.terminated = true;
 
@@ -96,7 +118,7 @@ class Engine {
     }
 
     setOption(option: string, value: string) {
-        this.worker.postMessage(
+        this.postWhenUciReady(
             `setoption name ${option} value ${value}`
         );
 
@@ -117,7 +139,7 @@ class Engine {
 
     setPosition(fen: string, uciMoves?: string[]) {
         if (uciMoves?.length) {
-            this.worker.postMessage(
+            this.postWhenUciReady(
                 `position fen ${fen} moves ${uciMoves.join(" ")}`
             );
 
@@ -131,7 +153,7 @@ class Engine {
             return this;
         }
 
-        this.worker.postMessage(`position fen ${fen}`);
+        this.postWhenUciReady(`position fen ${fen}`);
         this.position = fen;
 
         return this;
@@ -143,9 +165,28 @@ class Engine {
         onEngineLine?: (line: EngineLine) => void;
     }): Promise<EngineLine[]> {
         const engineLines: EngineLine[] = [];
+        const generation = ++this.evaluationGeneration;
 
         const maxTimeArgument = options.timeLimit
             ? `movetime ${options.timeLimit}` : "";
+
+        /*
+         * Todos los setoption/position registrados antes de esta llamada se
+         * vacían al resolver uciReady. Después `isready` funciona como barrera
+         * UCI: `go` no sale hasta que Stockfish confirma que procesó todo.
+         */
+        await this.uciReady;
+        if (this.terminated || generation != this.evaluationGeneration) {
+            return [];
+        }
+
+        await this.consumeLogs(
+            "isready",
+            log => log.trim() == "readyok"
+        );
+        if (this.terminated || generation != this.evaluationGeneration) {
+            return [];
+        }
 
         this.evaluating = true;
 
@@ -208,6 +249,13 @@ class Engine {
                 }
             );
 
+            if (
+                this.terminated
+                || generation != this.evaluationGeneration
+            ) {
+                return [];
+            }
+
             return engineLines;
         } finally {
             this.evaluating = false;
@@ -215,6 +263,7 @@ class Engine {
     }
 
     async stopEvaluation() {
+        this.evaluationGeneration++;
         if (!this.evaluating || this.terminated) return;
 
         await this.consumeLogs(

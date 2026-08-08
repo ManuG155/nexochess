@@ -193,8 +193,14 @@ function NavigationBar() {
             ) return;
 
             event.preventDefault();
+            /*
+             * /analysis tuvo redirects permanentes durante el cambio de
+             * portada. Entramos por una ruta técnica que sirve el mismo HTML,
+             * limpia esa caché y cambia la URL a /analysis antes de montar
+             * React. Así no dependemos del redirect cacheado del navegador.
+             */
             window.location.assign(
-                currentLanguageHref("/analysis?nexo-nav=1")
+                currentLanguageHref("/analysis-entry")
             );
         }
 
