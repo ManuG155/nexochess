@@ -11,6 +11,8 @@ import useAnalysisBoardStore from "@analysis/stores/AnalysisBoardStore";
 import useRealtimeEngineStore from "@analysis/stores/RealtimeEngineStore";
 import RealtimeEngine from "@analysis/components/RealtimeEngine";
 
+const REVIEW_CLASSIFICATION_DEPTH = 12;
+
 function RealtimeEngineArea() {
     const { settings } = useSettingsStore();
 
@@ -78,6 +80,37 @@ function RealtimeEngineArea() {
                 currentStateTreeNode.state.fen,
                 lines
             );
+
+            /*
+             * Review variations must not wait for the complete configured
+             * Stockfish depth (often 60-75) before receiving a classification.
+             * As soon as the live engine has a complete, useful line set we
+             * persist that snapshot on the node. The effect above then runs the
+             * existing reporter/classification logic while Stockfish continues
+             * refining the visible evaluation in the background.
+             */
+            if (
+                !currentStateTreeNode.parent
+                || currentStateTreeNode.state.classification
+                || currentStateTreeNode.state.engineLines.length > 0
+            ) return;
+
+            const classificationDepth = Math.min(
+                settings.analysis.engine.depth,
+                REVIEW_CLASSIFICATION_DEPTH
+            );
+            const usableLines = lines.filter(
+                line => line.depth >= classificationDepth
+            );
+
+            if (usableLines.length == 0) return;
+
+            currentStateTreeNode.state.engineLines = uniqWith(
+                currentStateTreeNode.state.engineLines.concat(usableLines),
+                isEngineLineEqual
+            );
+
+            dispatchCurrentNodeUpdate();
         }}
         onEvaluationComplete={lines => {
             currentStateTreeNode.state.engineLines = uniqWith(
@@ -86,7 +119,10 @@ function RealtimeEngineArea() {
             );
 
             dispatchCurrentNodeUpdate();
-            void considerRealtimeAnalyse(currentStateTreeNode);
+
+            if (!currentStateTreeNode.state.classification) {
+                void considerRealtimeAnalyse(currentStateTreeNode);
+            }
         }}
     />;
 }
