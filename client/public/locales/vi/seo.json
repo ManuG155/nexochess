@@ -1,13 +1,46 @@
 {
-  "home": {"title": "NexoChess — Hiểu từng nước đi", "description": "Phân tích ván cờ, hiểu từng thời điểm quan trọng, xem lại các bài phân tích đã lưu và luyện tập với hơn sáu triệu bài tập trên NexoChess."},
-  "about": {"title": "Giới thiệu NexoChess — Công cụ cờ vua độc lập", "description": "Tìm hiểu lý do NexoChess ra đời, cách các công cụ độc lập được xây dựng và những nguyên tắc định hướng phân tích, luyện tập và phát triển mã nguồn mở."},
-  "faq": {"title": "Câu hỏi NexoChess — Tài khoản, phân tích và riêng tư", "description": "Tìm câu trả lời rõ ràng về tài khoản, phân tích ván cờ, ván đã lưu, bài tập, ngôn ngữ hỗ trợ, quyền riêng tư và các câu hỏi thường gặp."},
-  "analysis": {"title": "Phân tích ván cờ miễn phí bằng Stockfish — NexoChess", "description": "Phân tích ván cờ với Stockfish, xem lại thời điểm quan trọng, phân loại nước đi, độ chính xác và hiệu suất ước tính trên bàn cờ tương tác rõ ràng."},
-  "academy": {"title": "Học viện NexoChess — Học ký hiệu cờ vua", "description": "Học ký hiệu cờ vua, cách di chuyển quân và phân loại nước đi của NexoChess qua các bài học tương tác ngắn, tập trung vào thực hành."},
-  "puzzles": {"title": "Bài tập cờ vua và luyện chiến thuật — NexoChess", "description": "Luyện chiến thuật bằng bài tập từ các ván đã phân tích hoặc lọc hơn sáu triệu thế cờ theo chủ đề và độ khó phù hợp."},
-  "guides": {"title": "Hướng dẫn phân tích và chiến thuật cờ vua — NexoChess", "description": "Hướng dẫn thực tế về phân tích ván cờ, độ chính xác, sai lầm, Stockfish 17 và luyện chiến thuật bằng bài tập NexoChess."},
-  "help": {"title": "Trung tâm trợ giúp NexoChess — Hướng dẫn và xử lý lỗi", "description": "Tìm hiểu cách phân tích ván, dùng Lưu trữ, luyện bài tập, quản lý tài khoản và giải quyết các vấn đề NexoChess thường gặp bằng hướng dẫn thực tế."},
-  "terms": {"title": "Điều khoản dịch vụ NexoChess", "description": "Đọc các điều khoản điều chỉnh quyền truy cập NexoChess, việc phân tích cờ vua, tài khoản, ván đã lưu, bài tập và những dịch vụ hiện có khác."},
-  "privacy": {"title": "Chính sách quyền riêng tư NexoChess", "description": "Tìm hiểu dữ liệu NexoChess xử lý, lý do sử dụng, cách quản lý thông tin tài khoản và trình duyệt cùng những lựa chọn quyền riêng tư hiện có."},
-  "source": {"title": "Mã nguồn và giấy phép NexoChess", "description": "Xem mã nguồn NexoChess, giấy phép mã nguồn mở, thành phần bên thứ ba, thông tin về động cơ cờ vua và các ghi công dữ liệu bắt buộc."}
+  "home": {
+    "title": "NexoChess — Hiểu từng nước đi",
+    "description": "Phân tích ván cờ, hiểu từng thời điểm quan trọng, xem lại các bài phân tích đã lưu và luyện tập với hơn sáu triệu bài tập trên NexoChess."
+  },
+  "about": {
+    "title": "Giới thiệu NexoChess — Công cụ cờ vua độc lập",
+    "description": "Tìm hiểu lý do NexoChess ra đời, cách các công cụ độc lập được xây dựng và những nguyên tắc định hướng phân tích, luyện tập và phát triển mã nguồn mở."
+  },
+  "faq": {
+    "title": "Câu hỏi NexoChess — Tài khoản, phân tích và riêng tư",
+    "description": "Tìm câu trả lời rõ ràng về tài khoản, phân tích ván cờ, ván đã lưu, bài tập, ngôn ngữ hỗ trợ, quyền riêng tư và các câu hỏi thường gặp."
+  },
+  "analysis": {
+    "title": "Phân tích ván cờ miễn phí bằng Stockfish — NexoChess",
+    "description": "Phân tích ván cờ với Stockfish, xem lại thời điểm quan trọng, phân loại nước đi, độ chính xác và hiệu suất ước tính trên bàn cờ tương tác rõ ràng."
+  },
+  "academy": {
+    "title": "Học viện NexoChess — Học ký hiệu cờ vua",
+    "description": "Học ký hiệu cờ vua, cách di chuyển quân và phân loại nước đi của NexoChess qua các bài học tương tác ngắn, tập trung vào thực hành."
+  },
+  "puzzles": {
+    "title": "Bài tập cờ vua và luyện chiến thuật — NexoChess",
+    "description": "Luyện chiến thuật bằng bài tập từ các ván đã phân tích hoặc lọc hơn sáu triệu thế cờ theo chủ đề và độ khó phù hợp."
+  },
+  "guides": {
+    "title": "Hướng dẫn phân tích và chiến thuật cờ vua — NexoChess",
+    "description": "Hướng dẫn thực tế về phân tích ván cờ, độ chính xác, sai lầm, Stockfish 17 và luyện chiến thuật bằng bài tập NexoChess."
+  },
+  "help": {
+    "title": "Trung tâm trợ giúp NexoChess — Hướng dẫn và xử lý lỗi",
+    "description": "Tìm hiểu cách phân tích ván, dùng Lưu trữ, luyện bài tập, quản lý tài khoản và giải quyết các vấn đề NexoChess thường gặp bằng hướng dẫn thực tế."
+  },
+  "terms": {
+    "title": "Điều khoản dịch vụ NexoChess",
+    "description": "Đọc các điều khoản điều chỉnh quyền truy cập NexoChess, việc phân tích cờ vua, tài khoản, ván đã lưu, bài tập và những dịch vụ hiện có khác."
+  },
+  "privacy": {
+    "title": "Chính sách quyền riêng tư NexoChess",
+    "description": "Tìm hiểu dữ liệu NexoChess xử lý, lý do sử dụng, cách quản lý thông tin tài khoản và trình duyệt cùng những lựa chọn quyền riêng tư hiện có."
+  },
+  "source": {
+    "title": "Mã nguồn và giấy phép NexoChess",
+    "description": "Xem mã nguồn NexoChess, giấy phép mã nguồn mở, thành phần bên thứ ba, thông tin về động cơ cờ vua và các ghi công dữ liệu bắt buộc."
+  }
 }
