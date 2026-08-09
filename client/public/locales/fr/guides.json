@@ -1,0 +1,69 @@
+{
+  "navigationTitle": "Guides",
+  "page": {
+    "hero": {
+      "eyebrow": "Guides NexoChess",
+      "title": "Des guides pratiques pour mieux analyser et mieux s'entraîner aux échecs",
+      "introduction": "Apprenez à revoir une partie, interpréter les retours du moteur, utiliser Stockfish avec du contexte et transformer vos erreurs tactiques en entraînement utile. Ces guides s'appuient sur les outils déjà disponibles dans NexoChess.",
+      "primaryAction": "Analyser une partie",
+      "secondaryAction": "S'entraîner aux puzzles"
+    },
+    "editorial": {"byline": "Préparé par NexoChess", "updated": "Mis à jour en août 2026"},
+    "contents": {"title": "Commencez ici", "description": "Quatre guides centrés sur les parties les plus utiles de l'analyse post-partie et de l'entraînement tactique."},
+    "sections": {
+      "analyze": {
+        "title": "Comment analyser une partie d'échecs",
+        "summary": "Une méthode simple pour comprendre vos décisions au lieu de seulement lire les scores du moteur.",
+        "paragraphs": [
+          "Commencez par rejouer la partie sans moteur. Repérez les moments où vous avez hésité, ceux où la position a changé brutalement ou ceux où votre plan n'était plus clair. L'analyse du moteur répond alors à des questions concrètes au lieu de devenir une simple liste de coups informatiques.",
+          "Importez ensuite le PGN, chargez une partie publique ou partez d'une position FEN. Utilisez Stockfish pour identifier les moments critiques, comparer votre coup à la meilleure continuation et déterminer si le problème était tactique, positionnel ou une occasion manquée. La valeur utile n'est pas seulement le chiffre d'évaluation, mais la compréhension de ce qui a changé et pourquoi.",
+          "Terminez en revoyant quelques positions décisives. Si un motif tactique revient, transformez-le en entraînement plutôt que d'essayer de mémoriser toute une variante du moteur."
+        ],
+        "checklistTitle": "Une bonne boucle d'analyse",
+        "checklist": ["Rejouez la partie une fois sans moteur.","Marquez les moments incertains ou critiques.","Comparez votre coup aux alternatives de Stockfish.","Notez la cause réelle de l'erreur.","Entraînez ensuite les motifs qui reviennent."],
+        "takeaway": "Le but de l'analyse est de repartir avec une ou deux idées applicables à vos prochaines parties, pas de retenir toutes les variantes du moteur.",
+        "action": "Ouvrir l'analyseur"
+      },
+      "accuracy": {
+        "title": "Comment interpréter la précision, les erreurs et les gaffes",
+        "summary": "Utilisez les classifications comme des indices pour comprendre la position, pas comme un substitut au raisonnement.",
+        "paragraphs": [
+          "La précision résume à quel point vos coups se rapprochent de choix forts du moteur, mais elle ne raconte pas toute la partie. Une seule gaffe décisive peut compter davantage que plusieurs imprécisions sans conséquence, et une position difficile peut produire une précision plus faible malgré des décisions raisonnables.",
+          "Quand NexoChess classe un coup comme imprécision, erreur, occasion manquée ou gaffe, revenez à la position précédente et demandez-vous ce que l'adversaire pouvait faire. Comparez la meilleure alternative, l'évaluation obtenue et l'idée tactique ou stratégique qui l'explique.",
+          "Cherchez des tendances plutôt que des pourcentages isolés. Manquer régulièrement des fourchettes, des pièces non protégées, la sécurité du roi ou des idées simples de finale donne un objectif d'amélioration bien plus utile."
+        ],
+        "checklistTitle": "Lire les classifications avec contexte",
+        "checklist": ["Vérifiez combien la position a changé après le coup.","Regardez la meilleure réponse adverse.","Comparez la meilleure alternative à votre idée.","Nommez la raison tactique ou positionnelle.","Repérez les motifs répétés sur plusieurs parties."],
+        "takeaway": "La précision sert de repère ; le progrès vient de la compréhension des causes récurrentes derrière vos coups faibles.",
+        "action": "Revoir une partie"
+      },
+      "stockfish": {
+        "title": "Comment utiliser Stockfish pour analyser les échecs",
+        "summary": "Comprenez l'évaluation, la profondeur, les variantes et le meilleur coup, ainsi que leurs limites pédagogiques.",
+        "paragraphs": [
+          "Stockfish évalue les positions et calcule des continuations candidates. Une évaluation positive favorise les Blancs, une négative les Noirs, et une valeur proche de zéro indique souvent une position plus équilibrée. Le chiffre est un signal ; la vraie question est l'idée concrète qui le fait monter ou descendre.",
+          "La profondeur indique jusqu'où le moteur a cherché techniquement et plusieurs lignes permettent de comparer différents coups. Une recherche plus profonde peut stabiliser une position complexe, mais elle ne rend pas automatiquement l'analyse plus instructive.",
+          "Utilisez le moteur pour tester des hypothèses : le sacrifice était-il correct ? ce coup pouvait-il être puni ? existait-il une séquence forcée ? Rejouez ensuite la variante jusqu'à rendre la raison visible."
+        ],
+        "checklistTitle": "Utiliser le moteur comme outil",
+        "checklist": ["Lisez l'évaluation dans le contexte de la position.","Comparez au moins votre coup au meilleur coup.","Suivez la variante principale jusqu'à comprendre l'idée.","Augmentez la profondeur seulement si nécessaire.","Expliquez ensuite la ligne avec vos propres mots."],
+        "takeaway": "Stockfish trouve des coups très forts ; votre travail consiste à les transformer en idées compréhensibles et réutilisables.",
+        "action": "Analyser avec Stockfish 17"
+      },
+      "tactics": {
+        "title": "Comment entraîner la tactique avec des puzzles",
+        "summary": "Développez la reconnaissance des motifs avec mats, fourchettes, clouages, enfilades, attaques à la découverte et positions issues de vos parties.",
+        "paragraphs": [
+          "L'entraînement tactique fonctionne mieux si vous calculez avant de jouer. Commencez par les coups forcés : échecs, captures et menaces directes. Cherchez ensuite les pièces vulnérables, les défenseurs surchargés, la sécurité du roi et les alignements qui créent clouages, enfilades ou attaques à la découverte.",
+          "Utilisez des puzzles thématiques pour apprendre un motif précis et des séries mélangées pour vérifier si vous le reconnaissez sans connaître le thème à l'avance. La difficulté doit demander du calcul sans transformer chaque position en devinette.",
+          "Les puzzles créés à partir des erreurs de vos propres parties sont particulièrement utiles. Utilisez un indice après un vrai essai, révélez la solution si nécessaire et rejouez toute la ligne pour comprendre l'idée tactique."
+        ],
+        "checklistTitle": "Une meilleure routine de puzzles",
+        "checklist": ["Calculez les coups forcés avant de bouger.","Nommez le motif après avoir résolu le puzzle.","Utilisez les thèmes pour apprendre et les mélanges pour tester.","Revoyez les puzzles ratés au lieu de les passer immédiatement.","Priorisez les erreurs récurrentes de vos parties."],
+        "takeaway": "Le but n'est pas de résoudre le plus de puzzles possible, mais de reconnaître les motifs plus vite et de les calculer plus précisément en partie réelle.",
+        "action": "Ouvrir l'entraînement de puzzles"
+      }
+    },
+    "closing": {"title": "Transformez la lecture en pratique", "description": "Une guide devient vraiment utile lorsqu'elle est suivie d'une analyse de partie ou d'une séance ciblée. Appliquez immédiatement les idées dans NexoChess.", "analysisAction": "Analyser une partie", "puzzlesAction": "Entraîner la tactique"}
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "navigationTitle": "Guias",
+  "page": {
+    "hero": {
+      "eyebrow": "Guias NexoChess",
+      "title": "Guias práticos de xadrez para analisar melhor e treinar com propósito",
+      "introduction": "Aprenda a revisar uma partida, interpretar o feedback do motor, usar o Stockfish com contexto e transformar erros táticos em treino útil. Estes guias usam as ferramentas que já existem no NexoChess.",
+      "primaryAction": "Analisar uma partida",
+      "secondaryAction": "Treinar puzzles"
+    },
+    "editorial": {"byline": "Preparado pelo NexoChess", "updated": "Atualizado em agosto de 2026"},
+    "contents": {"title": "Comece aqui", "description": "Quatro guias focados nas partes mais úteis da revisão de partidas e do treino tático."},
+    "sections": {
+      "analyze": {
+        "title": "Como analisar uma partida de xadrez",
+        "summary": "Um processo simples para entender decisões, e não apenas colecionar números do motor.",
+        "paragraphs": [
+          "Primeiro reproduza a partida sem motor. Marque os momentos em que teve dúvidas, quando a posição mudou de forma brusca ou quando o plano deixou de fazer sentido. Assim a análise posterior responde perguntas concretas em vez de virar uma lista de lances de computador.",
+          "Depois importe o PGN, carregue uma partida pública ou comece de uma posição FEN. Use o Stockfish para localizar momentos críticos, comparar seu lance com a melhor continuação e descobrir se o problema foi tático, posicional ou uma oportunidade perdida.",
+          "No final, volte a poucas posições realmente decisivas. Se um padrão tático aparecer várias vezes, transforme-o em treino em vez de tentar decorar toda a variante do motor."
+        ],
+        "checklistTitle": "Um bom ciclo de revisão",
+        "checklist": ["Reproduza a partida uma vez sem motor.","Marque momentos incertos ou críticos.","Compare seu lance com alternativas do Stockfish.","Identifique a causa real do erro.","Treine depois os padrões recorrentes."],
+        "takeaway": "O objetivo da análise é sair com uma ou duas ideias úteis para as próximas partidas, não memorizar todas as linhas do motor.",
+        "action": "Abrir o analisador"
+      },
+      "accuracy": {
+        "title": "Como interpretar precisão, erros e erros graves",
+        "summary": "Use as classificações como pistas para entender a posição, não como substituto do raciocínio.",
+        "paragraphs": [
+          "A precisão resume o quanto seus lances se aproximaram de escolhas fortes do motor, mas não conta a história inteira. Um único erro grave decisivo pode pesar mais que várias imprecisões pequenas, e posições difíceis podem produzir precisão menor mesmo com decisões razoáveis.",
+          "Quando o NexoChess marca um lance como imprecisão, erro, oportunidade perdida ou erro grave, volte à posição anterior e veja o que o adversário podia fazer. Compare a melhor alternativa, a avaliação e a ideia tática ou estratégica por trás dela.",
+          "Procure padrões, não porcentagens isoladas. Falhar repetidamente em garfos, peças soltas, segurança do rei ou ideias simples de final oferece um objetivo de treino muito mais útil."
+        ],
+        "checklistTitle": "Leia classificações com contexto",
+        "checklist": ["Veja quanto a posição mudou após o lance.","Analise a resposta mais forte do adversário.","Compare a melhor alternativa com sua ideia.","Dê nome à causa tática ou posicional.","Procure padrões em várias partidas."],
+        "takeaway": "A precisão orienta; a melhora vem de entender as causas recorrentes por trás dos seus lances mais fracos.",
+        "action": "Revisar uma partida"
+      },
+      "stockfish": {
+        "title": "Como usar Stockfish para analisar xadrez",
+        "summary": "Entenda avaliação, profundidade, variantes e melhores lances, além dos limites do que o motor explica sozinho.",
+        "paragraphs": [
+          "O Stockfish avalia posições e calcula continuações. Avaliações positivas favorecem as brancas e negativas as pretas; valores próximos de zero costumam indicar uma posição mais equilibrada. O número é um sinal, mas o mais importante é descobrir a ideia concreta que faz a avaliação mudar.",
+          "A profundidade indica tecnicamente até onde o motor pesquisou, e várias linhas permitem comparar diferentes lances candidatos. Mais profundidade pode estabilizar posições complexas, mas não torna automaticamente a análise mais educativa.",
+          "Use o motor para testar hipóteses: o sacrifício funcionava? o adversário podia punir este lance? havia uma sequência forçada? Reproduza a variante no tabuleiro até que a razão fique clara."
+        ],
+        "checklistTitle": "Use o motor como ferramenta",
+        "checklist": ["Leia a avaliação no contexto da posição.","Compare pelo menos seu lance com o melhor lance.","Siga a linha principal até entender a ideia.","Aumente a profundidade só quando necessário.","Explique depois a variante com suas próprias palavras."],
+        "takeaway": "O Stockfish encontra lances muito fortes; seu trabalho é transformá-los em ideias que você consiga entender e reutilizar.",
+        "action": "Analisar com Stockfish 17"
+      },
+      "tactics": {
+        "title": "Como treinar tática de xadrez com puzzles",
+        "summary": "Desenvolva reconhecimento de padrões com mates, garfos, cravadas, espetadas, ataques descobertos e posições das suas próprias partidas.",
+        "paragraphs": [
+          "Treino tático funciona melhor quando você calcula antes de mover. Comece por lances forçantes: xeques, capturas e ameaças diretas. Depois procure peças vulneráveis, defensores sobrecarregados, segurança do rei e alinhamentos que criem cravadas, espetadas ou ataques descobertos.",
+          "Use puzzles temáticos para aprender um motivo específico e conjuntos mistos para testar se você consegue reconhecê-lo sem saber previamente o tema. A dificuldade deve exigir cálculo sem transformar toda posição em adivinhação.",
+          "Puzzles criados a partir de erros das suas partidas analisadas são especialmente úteis porque ligam o treino a problemas que você já enfrentou. Use uma dica só depois de tentar de verdade e reproduza toda a solução."
+        ],
+        "checklistTitle": "Uma rotina melhor de puzzles",
+        "checklist": ["Calcule lances forçantes antes de mover.","Dê nome ao motivo tático depois de resolver.","Use temas para aprender e mistos para testar.","Revise puzzles errados em vez de pular imediatamente.","Priorize erros recorrentes das suas partidas."],
+        "takeaway": "O objetivo não é resolver o maior número possível, e sim reconhecer padrões mais rápido e calculá-los com mais precisão em partidas reais.",
+        "action": "Abrir treino de puzzles"
+      }
+    },
+    "closing": {"title": "Transforme a leitura em prática", "description": "Um guia ajuda mais quando vem seguido de uma revisão real ou de uma sessão de treino focada. Aplique as ideias imediatamente no NexoChess.", "analysisAction": "Analisar uma partida", "puzzlesAction": "Treinar tática"}
+  }
+}

@@ -23,6 +23,10 @@
     "title": "国际象棋战术题与训练 — NexoChess",
     "description": "练习来自已分析对局的战术题，或从六百多万个局面中按主题和难度筛选适合自己的训练内容。"
   },
+  "guides": {
+    "title": "国际象棋分析与战术指南 — NexoChess",
+    "description": "实用国际象棋指南：学习棋局分析、准确率与错误、Stockfish 17 使用方法，以及通过 NexoChess 谜题训练战术。"
+  },
   "help": {
     "title": "NexoChess 帮助中心 — 指南与故障排除",
     "description": "了解如何分析棋局、使用存档、练习战术题、管理账户，并通过实用指南解决 NexoChess 的常见问题。"

@@ -23,6 +23,10 @@
     "title": "Chess Puzzles and Tactics Training — NexoChess",
     "description": "Train chess tactics with puzzles created from your analysed games or filtered by theme and difficulty from a database of more than six million positions."
   },
+  "guides": {
+    "title": "Chess Analysis and Tactics Guides — NexoChess",
+    "description": "Practical chess guides on game analysis, accuracy, mistakes, Stockfish 17 and tactical puzzle training, with direct links to free NexoChess tools."
+  },
   "help": {
     "title": "NexoChess Help Center — Guides and Troubleshooting",
     "description": "Learn how to analyse games, use the Archive, train with puzzles, manage your account and solve common NexoChess problems with practical guides."
