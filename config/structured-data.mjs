@@ -77,6 +77,7 @@ const PAGE_SCHEMA_TYPES = Object.freeze({
     "/analysis": "WebPage",
     "/academy": "WebPage",
     "/puzzles": "WebPage",
+    "/guides": "CollectionPage",
     "/help": "WebPage",
     "/terms": "WebPage",
     "/privacy": "WebPage",
