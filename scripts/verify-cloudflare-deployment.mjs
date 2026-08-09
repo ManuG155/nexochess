@@ -22,6 +22,8 @@ const ENVIRONMENTS = {
     }
 };
 const EXPECTED_PUZZLES = 6_057_356;
+const SEARCH_PROPAGATION_ATTEMPTS = 8;
+const SEARCH_PROPAGATION_DELAY_MS = 1_500;
 
 function argument(name) {
     const index = process.argv.indexOf(name);
@@ -50,6 +52,50 @@ async function request(path, options = {}) {
         signal: AbortSignal.timeout(20_000),
         ...options
     });
+}
+
+function delay(milliseconds) {
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
+}
+
+async function requestSearchDocument(pathname, {
+    expectedStatus,
+    expectedContentType,
+    expectedBody
+}) {
+    let lastResponse = null;
+    let lastBody = "";
+
+    for (let attempt = 1; attempt <= SEARCH_PROPAGATION_ATTEMPTS; attempt += 1) {
+        const nonce = `${Date.now()}-${attempt}`;
+        const response = await request(`${pathname}?verify=${nonce}`);
+        const body = await response.text();
+        const contentType = response.headers.get("content-type") || "";
+
+        lastResponse = response;
+        lastBody = body;
+
+        if (
+            response.status === expectedStatus
+            && contentType.includes(expectedContentType)
+            && body === expectedBody
+        ) {
+            if (attempt > 1) {
+                console.log(`OK ${pathname}: current deployment observed after ${attempt} attempts`);
+            }
+            return { response, body };
+        }
+
+        if (attempt < SEARCH_PROPAGATION_ATTEMPTS) {
+            console.warn(
+                `Waiting for ${pathname} deployment propagation `
+                + `(${attempt}/${SEARCH_PROPAGATION_ATTEMPTS})...`
+            );
+            await delay(SEARCH_PROPAGATION_DELAY_MS);
+        }
+    }
+
+    return { response: lastResponse, body: lastBody };
 }
 
 function assertSecurityHeaders(response, path) {
@@ -122,16 +168,21 @@ async function assertJavaScript(path, { immutable = false } = {}) {
 }
 
 async function assertSearchFiles() {
-    const nonce = Date.now();
     const indexingEnabled = isCanonicalProductionSearchRequest(
         new URL(origin),
         environmentName
     );
-
-    const robotsPath = `/robots.txt?verify=${nonce}`;
-    const robotsResponse = await request(robotsPath);
-    const robotsBody = await robotsResponse.text();
     const expectedRobots = renderRobotsTxt({ indexingEnabled });
+    const expectedSitemap = indexingEnabled ? renderSitemapXml() : "Not Found\n";
+
+    const { response: robotsResponse, body: robotsBody } = await requestSearchDocument(
+        "/robots.txt",
+        {
+            expectedStatus: 200,
+            expectedContentType: "text/plain",
+            expectedBody: expectedRobots
+        }
+    );
 
     assert(robotsResponse.status === 200, "robots.txt did not return HTTP 200.");
     assert(
@@ -144,9 +195,14 @@ async function assertSearchFiles() {
         `robots.txt does not match the ${environmentName} indexing policy.`
     );
 
-    const sitemapPath = `/sitemap.xml?verify=${nonce}`;
-    const sitemapResponse = await request(sitemapPath);
-    const sitemapBody = await sitemapResponse.text();
+    const { response: sitemapResponse, body: sitemapBody } = await requestSearchDocument(
+        "/sitemap.xml",
+        {
+            expectedStatus: indexingEnabled ? 200 : 404,
+            expectedContentType: indexingEnabled ? "application/xml" : "text/plain",
+            expectedBody: expectedSitemap
+        }
+    );
     assertSecurityHeaders(sitemapResponse, "/sitemap.xml");
 
     if (indexingEnabled) {
@@ -156,8 +212,8 @@ async function assertSearchFiles() {
             "Production sitemap has an unexpected Content-Type."
         );
         assert(
-            sitemapBody === renderSitemapXml(),
-            "Production sitemap does not match the central indexing policy."
+            sitemapBody === expectedSitemap,
+            `Production sitemap does not match the central indexing policy after ${SEARCH_PROPAGATION_ATTEMPTS} propagation checks.`
         );
     } else {
         assert(
@@ -165,7 +221,7 @@ async function assertSearchFiles() {
             `Non-production sitemap returned HTTP ${sitemapResponse.status} instead of 404.`
         );
         assert(
-            sitemapBody === "Not Found\n",
+            sitemapBody === expectedSitemap,
             "Non-production sitemap returned unexpected content."
         );
     }
