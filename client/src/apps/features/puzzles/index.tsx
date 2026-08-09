@@ -1,8 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import ReactDOM from "react-dom/client";
+import { useTranslation } from "react-i18next";
 
 import I18nGate from "@/components/layout/I18nGate";
 import PageWrapper from "@/components/layout/PageWrapper";
+import SemanticDiscoverySection from
+    "@/components/SemanticDiscoverySection/SemanticDiscoverySection";
+import { getSemanticDiscoveryCopy } from "@/i18n/semanticDiscoveryCopy";
 import { removeDefaultConsentLink } from "@/lib/consent";
 
 import Puzzles from "./pages/Puzzles";
@@ -18,12 +22,23 @@ const root = ReactDOM.createRoot(
 );
 
 function App() {
+    const { i18n } = useTranslation();
+    const semanticCopy = useMemo(
+        () => getSemanticDiscoveryCopy(i18n.resolvedLanguage).puzzles,
+        [i18n.resolvedLanguage]
+    );
+
     useEffect(() => {
         removeDefaultConsentLink();
     }, []);
 
     return <PageWrapper contentClassName={styles.content}>
         <Puzzles/>
+        <SemanticDiscoverySection
+            copy={semanticCopy}
+            relatedHref="/analysis"
+            helpHref="/help"
+        />
     </PageWrapper>;
 }
 
