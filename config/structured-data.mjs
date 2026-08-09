@@ -112,6 +112,7 @@ function createOrganization() {
         "@type": "Organization",
         "@id": STRUCTURED_DATA_IDS.organization,
         name: "NexoChess",
+        alternateName: "Nexo Chess",
         url: productionUrl("/"),
         logo: reference(STRUCTURED_DATA_IDS.image),
         email: "contact@nexochess.com",
@@ -133,6 +134,10 @@ function createWebsite(homeDescription) {
         "@id": STRUCTURED_DATA_IDS.website,
         url: productionUrl("/"),
         name: "NexoChess",
+        alternateName: Object.freeze([
+            "Nexo Chess",
+            "nexochess.com"
+        ]),
         description: homeDescription,
         publisher: reference(STRUCTURED_DATA_IDS.organization),
         inLanguage: STRUCTURED_DATA_LANGUAGE_CODES
@@ -144,12 +149,14 @@ function createApplication(homeDescription, language) {
         "@type": "SoftwareApplication",
         "@id": STRUCTURED_DATA_IDS.application,
         name: "NexoChess",
+        alternateName: "Nexo Chess",
         url: productionUrl("/"),
         description: homeDescription,
         applicationCategory: "EducationalApplication",
         applicationSubCategory: "Chess analysis and training",
         operatingSystem: "Any",
         browserRequirements: "Requires JavaScript and a modern web browser.",
+        softwareVersion: "1.1",
         image: reference(STRUCTURED_DATA_IDS.image),
         publisher: reference(STRUCTURED_DATA_IDS.organization),
         isAccessibleForFree: true,
