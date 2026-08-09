@@ -16,7 +16,7 @@ import FooterProps from "./FooterProps";
 import * as styles from "./Footer.module.css";
 
 function Footer({ className, style }: FooterProps) {
-    const { t, i18n } = useTranslation(["common", "helpCenter"]);
+    const { t, i18n } = useTranslation(["common", "helpCenter", "guides"]);
     const [languagesOpen, setLanguagesOpen] = useState(false);
 
     const copyrightYear = useMemo(
@@ -65,6 +65,10 @@ function Footer({ className, style }: FooterProps) {
             <div className={styles.linkGroup}>
                 <a href="/help">
                     {t("navigationTitle", { ns: "helpCenter" })}
+                </a>
+
+                <a href="/guides">
+                    {t("navigationTitle", { ns: "guides" })}
                 </a>
 
                 <button
