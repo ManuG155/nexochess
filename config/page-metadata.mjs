@@ -57,6 +57,7 @@ export const SEO_PAGE_KEYS = Object.freeze({
     "/analysis": "analysis",
     "/academy": "academy",
     "/puzzles": "puzzles",
+    "/guides": "guides",
     "/help": "help",
     "/terms": "terms",
     "/privacy": "privacy",
