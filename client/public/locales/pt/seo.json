@@ -1,42 +1,13 @@
 {
-  "home": {
-    "title": "NexoChess — Entenda cada lance",
-    "description": "Analise suas partidas de xadrez, entenda cada momento crítico, reveja análises salvas e treine com mais de seis milhões de problemas no NexoChess."
-  },
-  "about": {
-    "title": "Sobre o NexoChess — Ferramentas de xadrez independentes",
-    "description": "Descubra por que o NexoChess existe, como suas ferramentas independentes são criadas e quais princípios orientam análise, treino e desenvolvimento de código aberto."
-  },
-  "faq": {
-    "title": "Perguntas frequentes do NexoChess — Análise e privacidade",
-    "description": "Encontre respostas claras sobre contas, análise de partidas, jogos salvos, problemas, idiomas disponíveis, privacidade e outras dúvidas frequentes."
-  },
-  "analysis": {
-    "title": "Análise gratuita de partidas com Stockfish — NexoChess",
-    "description": "Analise partidas com Stockfish e reveja momentos críticos, classificações de lances, precisão e desempenho estimado em um tabuleiro interativo e claro."
-  },
-  "academy": {
-    "title": "Academia NexoChess — Aprenda notação de xadrez",
-    "description": "Aprenda notação, movimento das peças e classificações de lances do NexoChess em lições curtas e interativas voltadas para a prática."
-  },
-  "puzzles": {
-    "title": "Problemas de xadrez e treino tático — NexoChess",
-    "description": "Treine tática com problemas das suas partidas analisadas ou filtre por tema e dificuldade em uma base com mais de seis milhões de posições."
-  },
-  "help": {
-    "title": "Central de ajuda do NexoChess — Guias e soluções",
-    "description": "Aprenda a analisar partidas, usar o Arquivo, treinar com problemas, gerenciar sua conta e resolver dificuldades comuns com guias práticos."
-  },
-  "terms": {
-    "title": "Termos de serviço do NexoChess",
-    "description": "Leia os termos que regem o acesso ao NexoChess, a análise de xadrez, as contas, as partidas salvas, os problemas e os demais serviços disponíveis."
-  },
-  "privacy": {
-    "title": "Política de privacidade do NexoChess",
-    "description": "Saiba quais dados o NexoChess processa, por que são usados, como as informações da conta e do navegador são tratadas e quais opções de privacidade existem."
-  },
-  "source": {
-    "title": "Código-fonte e licenças do NexoChess",
-    "description": "Consulte o código-fonte do NexoChess, licenças de software livre, componentes de terceiros, informações do motor e atribuições de dados obrigatórias."
-  }
+  "home": {"title": "NexoChess — Entenda cada lance", "description": "Analise suas partidas de xadrez, entenda cada momento crítico, reveja análises salvas e treine com mais de seis milhões de problemas no NexoChess."},
+  "about": {"title": "Sobre o NexoChess — Ferramentas de xadrez independentes", "description": "Descubra por que o NexoChess existe, como suas ferramentas independentes são criadas e quais princípios orientam análise, treino e desenvolvimento de código aberto."},
+  "faq": {"title": "Perguntas frequentes do NexoChess — Análise e privacidade", "description": "Encontre respostas claras sobre contas, análise de partidas, jogos salvos, problemas, idiomas disponíveis, privacidade e outras dúvidas frequentes."},
+  "analysis": {"title": "Análise gratuita de partidas com Stockfish — NexoChess", "description": "Analise partidas com Stockfish e reveja momentos críticos, classificações de lances, precisão e desempenho estimado em um tabuleiro interativo e claro."},
+  "academy": {"title": "Academia NexoChess — Aprenda notação de xadrez", "description": "Aprenda notação, movimento das peças e classificações de lances do NexoChess em lições curtas e interativas voltadas para a prática."},
+  "puzzles": {"title": "Problemas de xadrez e treino tático — NexoChess", "description": "Treine tática com problemas das suas partidas analisadas ou filtre por tema e dificuldade em uma base com mais de seis milhões de posições."},
+  "guides": {"title": "Guias de análise e tática de xadrez — NexoChess", "description": "Guias práticos para analisar partidas, entender precisão e erros, usar Stockfish 17 e treinar tática e puzzles grátis no NexoChess."},
+  "help": {"title": "Central de ajuda do NexoChess — Guias e soluções", "description": "Aprenda a analisar partidas, usar o Arquivo, treinar com problemas, gerenciar sua conta e resolver dificuldades comuns com guias práticos."},
+  "terms": {"title": "Termos de serviço do NexoChess", "description": "Leia os termos que regem o acesso ao NexoChess, a análise de xadrez, as contas, as partidas salvas, os problemas e os demais serviços disponíveis."},
+  "privacy": {"title": "Política de privacidade do NexoChess", "description": "Saiba quais dados o NexoChess processa, por que são usados, como as informações da conta e do navegador são tratadas e quais opções de privacidade existem."},
+  "source": {"title": "Código-fonte e licenças do NexoChess", "description": "Consulte o código-fonte do NexoChess, licenças de software livre, componentes de terceiros, informações do motor e atribuições de dados obrigatórias."}
 }
