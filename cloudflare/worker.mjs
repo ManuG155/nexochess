@@ -31,6 +31,7 @@ const PAGE_ROUTES = new Map([
     ["/archive", "features/archive.html"],
     ["/academy", "features/academy.html"],
     ["/puzzles", "features/puzzles.html"],
+    ["/guides", "guides.html"],
     ["/help", "footer/helpCenter.html"],
     ["/signin", "account/signin.html"],
     ["/signup", "account/signin.html"],
@@ -179,219 +180,170 @@ function withStaticAssetCaching(response, request) {
 function withApiHeaders(headers, contentType) {
     const nextHeaders = new Headers(headers);
     if (contentType) nextHeaders.set("Content-Type", contentType);
-    nextHeaders.set("Cache-Control", "no-cache, no-store, must-revalidate");
-    nextHeaders.set("Pragma", "no-cache");
-    nextHeaders.set("Expires", "0");
-    nextHeaders.set("X-Robots-Tag", "noindex, nofollow, noarchive");
+    nextHeaders.set("Cache-Control", "no-store");
     return nextHeaders;
 }
 
-function textDocument(request, env, body, contentType, status = 200) {
-    return new Response(request.method === "HEAD" ? null : body, {
+function jsonResponse(body, status = 200, headers = {}) {
+    return new Response(JSON.stringify(body), {
         status,
-        headers: withPageHeaders({}, contentType, env)
+        headers: withApiHeaders(new Headers(headers), "application/json; charset=utf-8")
     });
 }
 
-async function renderPage(request, env, filepath, replacements = {}, status = 200) {
-    const assetUrl = new URL(`/apps/${filepath}`, request.url);
-    const assetResponse = await env.ASSETS.fetch(new Request(assetUrl, {
-        method: "GET",
-        headers: request.headers
-    }));
+function methodNotAllowedResponse(allowedMethods) {
+    return jsonResponse({ error: "Method not allowed." }, 405, {
+        Allow: allowedMethods.join(", ")
+    });
+}
+
+function isJsonContentType(request) {
+    const contentType = request.headers.get("Content-Type") || "";
+    return contentType.toLowerCase().split(";", 1)[0].trim() === "application/json";
+}
+
+async function serveAsset(env, request, assetPath, replacements = {}) {
+    const assetUrl = new URL(`/apps/${assetPath}`, request.url);
+    const assetResponse = await env.ASSETS.fetch(assetUrl);
     if (!assetResponse.ok) return assetResponse;
 
-    const html = injectRuntimeMetadata(
-        replacePlaceholders(await assetResponse.text(), replacements),
-        env
-    );
-    return new Response(request.method === "HEAD" ? null : html, {
-        status,
+    const contentType = assetResponse.headers.get("Content-Type") || "";
+    if (!contentType.toLowerCase().includes("text/html")) return assetResponse;
+
+    let html = await assetResponse.text();
+    html = replacePlaceholders(html, replacements);
+    html = injectRuntimeMetadata(html, env);
+
+    return new Response(html, {
+        status: assetResponse.status,
+        statusText: assetResponse.statusText,
         headers: withPageHeaders(assetResponse.headers, "text/html; charset=utf-8", env)
     });
 }
 
-async function renderHomepageRecovery(request, env, language) {
-    const localizedRoot = localizePathname("/", language);
-    const pageResponse = await renderPage(
-        request,
+async function servePage(env, request, pathname, languageRoute) {
+    const assetPath = PAGE_ROUTES.get(pathname);
+    if (!assetPath) return null;
+
+    return serveAsset(
         env,
-        "home.html",
-        metadataFor(localizedRoot, "/", language)
+        request,
+        assetPath,
+        metadataFor(languageRoute.localizedPathname, pathname, languageRoute.language)
     );
-    const headers = new Headers(pageResponse.headers);
-    headers.set("Clear-Site-Data", '"cache"');
+}
 
-    if (!pageResponse.ok || request.method === "HEAD") {
-        return new Response(pageResponse.body, {
-            status: pageResponse.status,
-            statusText: pageResponse.statusText,
-            headers
-        });
-    }
-
-    const recoveryScript = `<script>(async()=>{const root=${JSON.stringify(localizedRoot)};try{const response=await fetch(root,{cache:"reload",credentials:"same-origin",redirect:"follow"});if(response.ok&&new URL(response.url,location.href).pathname===root){history.replaceState(history.state,"",root);}}catch{}})();</script>`;
-    const html = (await pageResponse.text()).replace(
-        "</head>",
-        `${recoveryScript}\n</head>`
+async function serveGeneratedSearchAsset(env, request, pathname) {
+    const indexingEnabled = isCanonicalProductionSearchRequest(
+        request.url,
+        env.NEXOCHESS_ENV
     );
+    const body = pathname === "/robots.txt"
+        ? renderRobotsTxt({ indexingEnabled })
+        : renderSitemapXml();
+    const contentType = pathname === "/robots.txt"
+        ? "text/plain; charset=utf-8"
+        : "application/xml; charset=utf-8";
 
-    return new Response(html, {
-        status: pageResponse.status,
-        statusText: pageResponse.statusText,
+    return new Response(body, {
+        status: 200,
+        headers: withPageHeaders(new Headers(), contentType, env)
+    });
+}
+
+async function handleRootRecoveryRoute(env, request, languageRoute) {
+    const response = await servePage(env, request, "/", languageRoute);
+    if (!response) return null;
+
+    const headers = new Headers(response.headers);
+    headers.set("X-Robots-Tag", "noindex, follow, noarchive");
+    headers.set("Link", `<${productionUrl(languageRoute.localizedPathname)}>; rel="canonical"`);
+    return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
         headers
     });
 }
 
-async function renderAnalysisRecovery(request, env, language) {
-    const localizedAnalysis = localizePathname("/analysis", language);
-    const pageResponse = await renderPage(
-        request,
-        env,
-        "features/analysis.html",
-        metadataFor(localizedAnalysis, "/analysis", language)
-    );
-    const headers = new Headers(pageResponse.headers);
+async function handleAnalysisRecoveryRoute(env, request, languageRoute) {
+    const response = await servePage(env, request, "/analysis", languageRoute);
+    if (!response) return null;
 
-    // Elimina redirects HTTP permanentes antiguos que algunos navegadores
-    // conservaron durante la transición de la portada.
-    headers.set("Clear-Site-Data", '"cache"');
-    headers.set("Cache-Control", "no-store");
-
-    if (!pageResponse.ok || request.method === "HEAD") {
-        return new Response(pageResponse.body, {
-            status: pageResponse.status,
-            statusText: pageResponse.statusText,
-            headers
-        });
-    }
-
-    /*
-     * La ruta técnica nunca solicita /analysis: cambia la URL antes de que
-     * arranque el bundle. BrowserRouter ve así la ruta canónica correcta y
-     * un redirect cacheado no puede secuestrar la navegación.
-     */
-    const recoveryScript = `<script>history.replaceState(history.state,"",${JSON.stringify(localizedAnalysis)});</script>`;
-    const html = (await pageResponse.text()).replace(
-        "</head>",
-        `${recoveryScript}\n</head>`
-    );
-
-    return new Response(html, {
-        status: pageResponse.status,
-        statusText: pageResponse.statusText,
+    const headers = new Headers(response.headers);
+    headers.set("X-Robots-Tag", "noindex, follow, noarchive");
+    headers.set("Link", `<${productionUrl(languageRoute.localizedPathname)}>; rel="canonical"`);
+    return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
         headers
     });
 }
 
-function json(payload, status = 200) {
-    return new Response(JSON.stringify(payload), {
-        status,
-        headers: withApiHeaders({ "Content-Type": "application/json; charset=utf-8" })
-    });
-}
-
-async function getCloudflareBackend(request, env) {
-    try {
-        const auth = getCloudflareAuth(env, request);
-        await ensureCloudflareData(auth, env);
-        return auth;
-    } catch (error) {
-        console.error("Cloudflare backend initialisation failed", error);
-        return null;
-    }
-}
-
-function redirectToCanonicalProductionOrigin(request, env) {
-    const target = getProductionCanonicalRedirect(request.url, env);
-    return target ? Response.redirect(target, PERMANENT_CANONICAL_REDIRECT_STATUS) : null;
-}
-
-async function handleRequest(request, env) {
-    const canonicalRedirect = redirectToCanonicalProductionOrigin(request, env);
-    if (canonicalRedirect) return canonicalRedirect;
-
+async function routeRequest(env, request) {
     const url = new URL(request.url);
-    const rawPathname = normalisePathname(url.pathname);
-
-    if (rawPathname === AUTH_PATH || rawPathname.startsWith(`${AUTH_PATH}/`)) {
-        const auth = await getCloudflareBackend(request, env);
-        return auth
-            ? auth.handler(request)
-            : json({ error: "Cloudflare authentication is not configured yet." }, 503);
+    const canonicalRedirect = getProductionCanonicalRedirect(url, env.NEXOCHESS_ENV);
+    if (canonicalRedirect) {
+        return new Response(null, {
+            status: PERMANENT_CANONICAL_REDIRECT_STATUS,
+            headers: { Location: canonicalRedirect }
+        });
     }
 
-    if (rawPathname.startsWith("/api/")) {
-        const auth = await getCloudflareBackend(request, env);
-        return auth
-            ? handleCloudflareApi(request, env, auth)
-            : json({ error: "The Cloudflare data service is not configured yet." }, 503);
+    const defaultLanguageRedirect = getDefaultLanguageAliasRedirect(url);
+    if (defaultLanguageRedirect) {
+        return new Response(null, {
+            status: PERMANENT_CANONICAL_REDIRECT_STATUS,
+            headers: { Location: defaultLanguageRedirect }
+        });
     }
 
-    if (request.method !== "GET" && request.method !== "HEAD") {
-        return new Response("Method Not Allowed", { status: 405, headers: { Allow: "GET, HEAD" } });
+    const pathname = normalisePathname(url.pathname);
+    if (pathname === "/robots.txt" || pathname === "/sitemap.xml") {
+        return serveGeneratedSearchAsset(env, request, pathname);
     }
-
-    const indexingEnabled = isCanonicalProductionSearchRequest(url, env.NEXOCHESS_ENV);
-    if (rawPathname === "/robots.txt") {
-        return textDocument(request, env, renderRobotsTxt({ indexingEnabled }), "text/plain; charset=utf-8");
-    }
-    if (rawPathname === "/sitemap.xml") {
-        return indexingEnabled
-            ? textDocument(request, env, renderSitemapXml(), "application/xml; charset=utf-8")
-            : textDocument(request, env, "Not Found\n", "text/plain; charset=utf-8", 404);
-    }
-
-    const englishAlias = getDefaultLanguageAliasRedirect(url);
-    if (englishAlias) return Response.redirect(englishAlias, 308);
-
-    const languageRoute = parseLocalizedPathname(rawPathname);
-    const pathname = languageRoute.basePathname;
-    const localizedPathname = languageRoute.localizedPathname;
 
     if (pathname === "/home") {
-        return renderHomepageRecovery(request, env, languageRoute.language);
+        const languageRoute = parseLocalizedPathname(pathname);
+        languageRoute.localizedPathname = localizePathname("/", languageRoute.language);
+        return handleRootRecoveryRoute(env, request, languageRoute);
     }
 
     if (pathname === "/analysis-entry") {
-        return renderAnalysisRecovery(request, env, languageRoute.language);
+        const languageRoute = parseLocalizedPathname(pathname);
+        languageRoute.localizedPathname = localizePathname("/analysis", languageRoute.language);
+        return handleAnalysisRecoveryRoute(env, request, languageRoute);
     }
 
-    if (pathname.startsWith("/news")) {
-        return Response.redirect(
-            new URL(localizePathname("/analysis", languageRoute.language), request.url),
-            308
-        );
+    if (pathname.startsWith(AUTH_PATH)) {
+        const auth = await getCloudflareAuth(env);
+        return auth.handler(request);
     }
 
-    if (pathname === "/settings" || pathname.startsWith("/settings/")) {
-        return renderPage(
-            request,
-            env,
-            "settings.html",
-            metadataFor(localizedPathname, "/settings", languageRoute.language)
-        );
+    if (pathname.startsWith("/api/")) {
+        if (!["GET", "HEAD", "OPTIONS"].includes(request.method) && !isJsonContentType(request)) {
+            return jsonResponse({ error: "Content-Type must be application/json." }, 415);
+        }
+        const apiResponse = await handleCloudflareApi(env, request);
+        if (apiResponse) return apiResponse;
     }
 
-    const filepath = PAGE_ROUTES.get(pathname);
-    if (filepath) {
-        return renderPage(
-            request,
-            env,
-            filepath,
-            metadataFor(localizedPathname, pathname, languageRoute.language)
-        );
-    }
+    const languageRoute = parseLocalizedPathname(pathname);
+    const pageResponse = await servePage(
+        env,
+        request,
+        languageRoute.basePathname,
+        languageRoute
+    );
+    if (pageResponse) return pageResponse;
 
-    const assetResponse = await env.ASSETS.fetch(request);
-    if (assetResponse.status !== 404) {
-        return withStaticAssetCaching(assetResponse, request);
-    }
-    return renderPage(request, env, "unfound.html", {}, 404);
+    return env.ASSETS.fetch(request);
 }
 
 export default {
     async fetch(request, env) {
-        return secureResponse(await handleRequest(request, env), env, request);
+        await ensureCloudflareData(env);
+        const response = await routeRequest(env, request);
+        const secured = secureResponse(response, env, request);
+        return withStaticAssetCaching(secured, request);
     }
 };
