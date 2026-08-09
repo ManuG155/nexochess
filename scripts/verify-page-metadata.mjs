@@ -51,13 +51,13 @@ function validateLength(language, pathname, title, description) {
 }
 
 assert(SUPPORTED_LANGUAGE_CODES.length === 11, "Eleven languages are required.");
-assert(basePaths.length === 10, "Ten public base pages are required.");
-assert(INDEXABLE_PAGE_ROUTES.length === 110, "Exactly 110 localized routes are required.");
-assert(Object.keys(INDEXABLE_PAGE_METADATA).length === 110, "Metadata must cover all 110 routes.");
+assert(basePaths.length === 11, "Eleven public base pages are required.");
+assert(INDEXABLE_PAGE_ROUTES.length === 121, "Exactly 121 localized routes are required.");
+assert(Object.keys(INDEXABLE_PAGE_METADATA).length === 121, "Metadata must cover all 121 routes.");
 assert(Object.keys(LOCALIZED_PAGE_METADATA).length === 11, "Localized metadata must cover eleven languages.");
 assert(Object.keys(SEO_DOCUMENTS).length === 11, "Eleven seo.json documents are required.");
-assert(Object.keys(SEO_PAGE_KEYS).length === 10 && new Set(seoKeys).size === 10,
-    "SEO page keys must describe ten unique pages.");
+assert(Object.keys(SEO_PAGE_KEYS).length === 11 && new Set(seoKeys).size === 11,
+    "SEO page keys must describe eleven unique pages.");
 assert(Object.keys(OPEN_GRAPH_LOCALES).length === 11
     && new Set(Object.values(OPEN_GRAPH_LOCALES)).size === 11,
     "Open Graph locales must cover eleven unique locales.");
@@ -73,13 +73,13 @@ for (const language of SUPPORTED_LANGUAGE_CODES) {
     assert(document && pages, `${language} SEO metadata is missing.`);
     if (!document || !pages) continue;
 
-    assert(documentKeys.length === 10
+    assert(documentKeys.length === 11
         && seoKeys.every(key => documentKeys.includes(key))
         && documentKeys.every(key => seoKeys.includes(key)),
-    `${language}/seo.json must contain exactly the ten page keys.`);
-    assert(pagePaths.length === 10
+    `${language}/seo.json must contain exactly the eleven page keys.`);
+    assert(pagePaths.length === 11
         && basePaths.every(pathname => pagePaths.includes(pathname)),
-    `${language} normalized metadata must cover ten pages.`);
+    `${language} normalized metadata must cover eleven pages.`);
     assert(/^[a-z]{2}_[A-Z]{2}$/.test(OPEN_GRAPH_LOCALES[language]),
         `${language} Open Graph locale is invalid.`);
 
@@ -157,4 +157,4 @@ if (failures.length) {
     process.exit(1);
 }
 
-console.log("Verified 110 localized titles, descriptions, social metadata and HTML languages.");
+console.log("Verified 121 localized titles, descriptions, social metadata and HTML languages.");
