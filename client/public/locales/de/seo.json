@@ -1,42 +1,13 @@
 {
-  "home": {
-    "title": "NexoChess — Verstehe jeden Zug",
-    "description": "Analysiere deine Schachpartien, verstehe kritische Momente, öffne gespeicherte Auswertungen erneut und trainiere mit über sechs Millionen Aufgaben in NexoChess."
-  },
-  "about": {
-    "title": "Über NexoChess — Unabhängige Schachwerkzeuge",
-    "description": "Erfahre, warum NexoChess existiert, wie die unabhängigen Werkzeuge entstehen und welche Grundsätze Analyse, Training und Open-Source-Entwicklung leiten."
-  },
-  "faq": {
-    "title": "NexoChess FAQ — Konten, Analyse und Datenschutz",
-    "description": "Finde klare Antworten zu Konten, Partieanalyse, gespeicherten Partien, Aufgaben, unterstützten Sprachen, Datenschutz und weiteren häufigen Fragen."
-  },
-  "analysis": {
-    "title": "Kostenlose Schachanalyse mit Stockfish — NexoChess",
-    "description": "Analysiere Partien mit Stockfish und prüfe kritische Momente, Zugklassifizierungen, Genauigkeit und geschätzte Leistung auf einem übersichtlichen Brett."
-  },
-  "academy": {
-    "title": "NexoChess Akademie — Schachnotation lernen",
-    "description": "Lerne Schachnotation, Figurenbewegungen und die NexoChess-Zugklassifizierungen in kurzen interaktiven Lektionen mit praktischem Schwerpunkt."
-  },
-  "puzzles": {
-    "title": "Schachaufgaben und Taktiktraining — NexoChess",
-    "description": "Trainiere Taktik mit Aufgaben aus deinen analysierten Partien oder filtere mehr als sechs Millionen Stellungen nach Thema und Schwierigkeitsgrad."
-  },
-  "help": {
-    "title": "NexoChess Hilfezentrum — Anleitungen und Lösungen",
-    "description": "Lerne Partien zu analysieren, das Archiv zu nutzen, Aufgaben zu trainieren, dein Konto zu verwalten und häufige Probleme mit praktischen Anleitungen zu lösen."
-  },
-  "terms": {
-    "title": "Nutzungsbedingungen von NexoChess",
-    "description": "Lies die Bedingungen für den Zugriff auf NexoChess, die Schachanalyse, Konten, gespeicherte Partien, Aufgaben und weitere verfügbare Dienste."
-  },
-  "privacy": {
-    "title": "Datenschutzerklärung von NexoChess",
-    "description": "Erfahre, welche Daten NexoChess verarbeitet, warum sie verwendet werden, wie Konto- und Browserinformationen behandelt werden und welche Datenschutzoptionen bestehen."
-  },
-  "source": {
-    "title": "Quellcode und Lizenzen von NexoChess",
-    "description": "Prüfe den NexoChess-Quellcode, freie Softwarelizenzen, Drittanbieterkomponenten, Informationen zur Schachengine und erforderliche Quellenangaben."
-  }
+  "home": {"title": "NexoChess — Verstehe jeden Zug", "description": "Analysiere deine Schachpartien, verstehe kritische Momente, öffne gespeicherte Auswertungen erneut und trainiere mit über sechs Millionen Aufgaben in NexoChess."},
+  "about": {"title": "Über NexoChess — Unabhängige Schachwerkzeuge", "description": "Erfahre, warum NexoChess existiert, wie die unabhängigen Werkzeuge entstehen und welche Grundsätze Analyse, Training und Open-Source-Entwicklung leiten."},
+  "faq": {"title": "NexoChess FAQ — Konten, Analyse und Datenschutz", "description": "Finde klare Antworten zu Konten, Partieanalyse, gespeicherten Partien, Aufgaben, unterstützten Sprachen, Datenschutz und weiteren häufigen Fragen."},
+  "analysis": {"title": "Kostenlose Schachanalyse mit Stockfish — NexoChess", "description": "Analysiere Partien mit Stockfish und prüfe kritische Momente, Zugklassifizierungen, Genauigkeit und geschätzte Leistung auf einem übersichtlichen Brett."},
+  "academy": {"title": "NexoChess Akademie — Schachnotation lernen", "description": "Lerne Schachnotation, Figurenbewegungen und die NexoChess-Zugklassifizierungen in kurzen interaktiven Lektionen mit praktischem Schwerpunkt."},
+  "puzzles": {"title": "Schachaufgaben und Taktiktraining — NexoChess", "description": "Trainiere Taktik mit Aufgaben aus deinen analysierten Partien oder filtere mehr als sechs Millionen Stellungen nach Thema und Schwierigkeitsgrad."},
+  "guides": {"title": "Schachanalyse- und Taktik-Ratgeber — NexoChess", "description": "Praktische Ratgeber zu Partieanalyse, Genauigkeit, Fehlern, Stockfish 17 und Schachtaktik mit den kostenlosen Werkzeugen von NexoChess."},
+  "help": {"title": "NexoChess Hilfezentrum — Anleitungen und Lösungen", "description": "Lerne Partien zu analysieren, das Archiv zu nutzen, Aufgaben zu trainieren, dein Konto zu verwalten und häufige Probleme mit praktischen Anleitungen zu lösen."},
+  "terms": {"title": "Nutzungsbedingungen von NexoChess", "description": "Lies die Bedingungen für den Zugriff auf NexoChess, die Schachanalyse, Konten, gespeicherte Partien, Aufgaben und weitere verfügbare Dienste."},
+  "privacy": {"title": "Datenschutzerklärung von NexoChess", "description": "Erfahre, welche Daten NexoChess verarbeitet, warum sie verwendet werden, wie Konto- und Browserinformationen behandelt werden und welche Datenschutzoptionen bestehen."},
+  "source": {"title": "Quellcode und Lizenzen von NexoChess", "description": "Prüfe den NexoChess-Quellcode, freie Softwarelizenzen, Drittanbieterkomponenten, Informationen zur Schachengine und erforderliche Quellenangaben."}
 }
