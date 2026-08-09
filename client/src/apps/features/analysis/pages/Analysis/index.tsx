@@ -1,7 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import ads from "@/constants/advertisements";
 import Advertisement from "@/components/Advertisement";
+import SemanticDiscoverySection from
+    "@/components/SemanticDiscoverySection/SemanticDiscoverySection";
+import { getSemanticDiscoveryCopy } from "@/i18n/semanticDiscoveryCopy";
 import useGameLoader from "@analysis/hooks/useGameLoader";
 import AnalysisPanel from "@analysis/components/AnalysisPanel";
 
@@ -10,6 +14,11 @@ import * as styles from "./Analysis.module.css";
 
 function Analysis() {
     useGameLoader();
+    const { i18n } = useTranslation();
+    const semanticCopy = useMemo(
+        () => getSemanticDiscoveryCopy(i18n.resolvedLanguage).analysis,
+        [i18n.resolvedLanguage]
+    );
 
     useEffect(() => {
         const url = new URL(window.location.href);
@@ -41,6 +50,12 @@ function Analysis() {
                 width: "100%", height: "100px"
             }}/>
         </div>
+
+        <SemanticDiscoverySection
+            copy={semanticCopy}
+            relatedHref="/puzzles"
+            helpHref="/help"
+        />
     </div>;
 }
 
