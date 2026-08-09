@@ -1,4 +1,4 @@
-import { ADSENSE_ACCOUNT_ID } from "../config/adsense.mjs";
+import { ADSENSE_ACCOUNT_ID, ADSENSE_ADS_TXT_CONTENT } from "../config/adsense.mjs";
 import { getPageMetadataReplacements } from "../config/page-metadata.mjs";
 import {
     getSearchIndexingPolicy,
@@ -345,6 +345,11 @@ async function handleRequest(request, env) {
     if (rawPathname === "/sitemap.xml") {
         return indexingEnabled
             ? textDocument(request, env, renderSitemapXml(), "application/xml; charset=utf-8")
+            : textDocument(request, env, "Not Found\n", "text/plain; charset=utf-8", 404);
+    }
+    if (rawPathname === "/ads.txt") {
+        return isProduction(env)
+            ? textDocument(request, env, ADSENSE_ADS_TXT_CONTENT, "text/plain; charset=utf-8")
             : textDocument(request, env, "Not Found\n", "text/plain; charset=utf-8", 404);
     }
 
