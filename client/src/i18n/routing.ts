@@ -7,7 +7,7 @@ export type SupportedLanguage = typeof SUPPORTED_LANGUAGES[number];
 
 const LOCALIZABLE_PATHS = new Set([
     "/", "/home", "/about", "/faq", "/analysis", "/archive", "/academy",
-    "/puzzles", "/help", "/signin", "/signup", "/settings",
+    "/puzzles", "/guides", "/help", "/signin", "/signup", "/settings",
     "/terms", "/privacy", "/source"
 ]);
 
@@ -103,11 +103,6 @@ export function currentLanguageHref(
     href: string,
     fallback: SupportedLanguage = DEFAULT_LANGUAGE
 ): string {
-    /*
-     * /analysis-entry was a temporary cache-recovery route. Any legacy caller
-     * must now resolve to the real public route so navigation never exposes or
-     * depends on that implementation detail.
-     */
     const canonicalHref = href == "/analysis-entry"
         ? "/analysis"
         : href;
