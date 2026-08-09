@@ -23,6 +23,10 @@
     "title": "Bài tập cờ vua và luyện chiến thuật — NexoChess",
     "description": "Luyện chiến thuật bằng bài tập từ các ván đã phân tích hoặc lọc hơn sáu triệu thế cờ theo chủ đề và độ khó phù hợp."
   },
+  "guides": {
+    "title": "Hướng dẫn phân tích và chiến thuật cờ vua — NexoChess",
+    "description": "Hướng dẫn thực tế về phân tích ván cờ, độ chính xác, sai lầm, Stockfish 17 và luyện chiến thuật bằng bài tập NexoChess."
+  },
   "help": {
     "title": "Trung tâm trợ giúp NexoChess — Hướng dẫn và xử lý lỗi",
     "description": "Tìm hiểu cách phân tích ván, dùng Lưu trữ, luyện bài tập, quản lý tài khoản và giải quyết các vấn đề NexoChess thường gặp bằng hướng dẫn thực tế."

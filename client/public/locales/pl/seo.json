@@ -23,6 +23,10 @@
     "title": "Zadania szachowe i trening taktyki — NexoChess",
     "description": "Trenuj taktykę na zadaniach z analizowanych partii lub filtruj ponad sześć milionów pozycji według motywu i poziomu trudności."
   },
+  "guides": {
+    "title": "Poradniki analizy i taktyki szachowej — NexoChess",
+    "description": "Praktyczne poradniki o analizie partii, dokładności, błędach, Stockfishu 17 i treningu taktycznym z zadaniami NexoChess."
+  },
   "help": {
     "title": "Centrum pomocy NexoChess — Poradniki i rozwiązania",
     "description": "Dowiedz się, jak analizować partie, korzystać z Archiwum, ćwiczyć zadania, zarządzać kontem i rozwiązywać typowe problemy dzięki praktycznym poradnikom."

@@ -1,0 +1,69 @@
+{
+  "navigationTitle": "Ratgeber",
+  "page": {
+    "hero": {
+      "eyebrow": "NexoChess Ratgeber",
+      "title": "Praktische Schachleitfäden für bessere Analyse und gezieltes Training",
+      "introduction": "Lerne, Partien sinnvoll nachzubereiten, Engine-Feedback einzuordnen, Stockfish mit Kontext zu nutzen und taktische Fehler in nützliches Training zu verwandeln. Die Leitfäden bauen auf den vorhandenen NexoChess-Werkzeugen auf.",
+      "primaryAction": "Partie analysieren",
+      "secondaryAction": "Aufgaben trainieren"
+    },
+    "editorial": {"byline": "Erstellt von NexoChess", "updated": "Aktualisiert im August 2026"},
+    "contents": {"title": "Hier beginnen", "description": "Vier kompakte Leitfäden zu den wichtigsten Teilen der Partieanalyse und des Taktiktrainings."},
+    "sections": {
+      "analyze": {
+        "title": "Wie analysiert man eine Schachpartie?",
+        "summary": "Ein einfacher Ablauf, der Entscheidungen verständlich macht, statt nur Engine-Zahlen zu sammeln.",
+        "paragraphs": [
+          "Spiele die Partie zunächst ohne Engine nach. Markiere Stellen, an denen du unsicher warst, die Stellung plötzlich kippte oder dein Plan unklar wurde. Dadurch beantwortet die spätere Engine-Analyse konkrete Fragen, statt nur Computerzüge aufzulisten.",
+          "Importiere anschließend das PGN, lade eine öffentliche Partie oder starte aus einer FEN-Stellung. Nutze Stockfish, um kritische Momente zu finden, deinen Zug mit der besten Fortsetzung zu vergleichen und zu erkennen, ob der Fehler taktisch, positionell oder eine verpasste Chance war.",
+          "Konzentriere dich am Ende auf wenige Wendepunkte. Wiederkehrende taktische Motive solltest du gezielt trainieren, anstatt lange Engine-Varianten auswendig zu lernen."
+        ],
+        "checklistTitle": "Ein sinnvoller Analyseablauf",
+        "checklist": ["Partie einmal ohne Engine nachspielen.","Unsichere und kritische Momente markieren.","Eigenen Zug mit Stockfish-Alternativen vergleichen.","Die eigentliche Fehlerursache benennen.","Wiederkehrende Muster anschließend trainieren."],
+        "takeaway": "Gute Analyse liefert ein oder zwei Ideen für die nächsten Partien – nicht möglichst viele auswendig gelernte Engine-Züge.",
+        "action": "Analysator öffnen"
+      },
+      "accuracy": {
+        "title": "Genauigkeit, Fehler und Patzer richtig einordnen",
+        "summary": "Nutze Zugklassifikationen als Hinweise und nicht als Ersatz für das Verständnis der Stellung.",
+        "paragraphs": [
+          "Die Genauigkeit fasst zusammen, wie nahe deine Züge an starken Engine-Entscheidungen lagen. Sie erzählt aber nicht die ganze Partie. Ein einzelner entscheidender Patzer kann wichtiger sein als mehrere harmlose Ungenauigkeiten, und schwierige Stellungen führen oft auch bei vernünftigen Entscheidungen zu niedrigeren Werten.",
+          "Wenn NexoChess einen Zug als Ungenauigkeit, Fehler, verpasste Chance oder Patzer markiert, gehe zur Stellung davor zurück. Prüfe die stärkste gegnerische Antwort, die beste Alternative und die taktische oder strategische Idee dahinter.",
+          "Achte auf wiederkehrende Ursachen statt auf einzelne Prozentwerte: Gabeln, ungeschützte Figuren, Königssicherheit oder einfache Endspielideen sind konkrete Trainingsziele."
+        ],
+        "checklistTitle": "Klassifikationen im Kontext lesen",
+        "checklist": ["Bewertungsänderung nach dem Zug prüfen.","Stärkste gegnerische Antwort ansehen.","Beste Alternative mit der eigenen Idee vergleichen.","Taktischen oder positionellen Grund benennen.","Muster über mehrere Partien suchen."],
+        "takeaway": "Genauigkeit dient zur Orientierung; Fortschritt entsteht durch das Verständnis wiederkehrender Fehlerursachen.",
+        "action": "Partie überprüfen"
+      },
+      "stockfish": {
+        "title": "Stockfish für die Schachanalyse nutzen",
+        "summary": "Verstehe Bewertung, Tiefe, Varianten und beste Züge – und die Grenzen dessen, was die Engine allein erklärt.",
+        "paragraphs": [
+          "Stockfish bewertet Stellungen und berechnet mögliche Fortsetzungen. Positive Werte bevorzugen Weiß, negative Schwarz; Werte nahe null deuten meist auf eine ausgeglichenere Stellung hin. Die Zahl ist ein Signal – entscheidend ist die konkrete Idee dahinter.",
+          "Die Tiefe beschreibt technisch, wie weit die Suche fortgeschritten ist. Mehrere Linien erlauben den Vergleich verschiedener Kandidatenzüge. Mehr Tiefe kann komplizierte Stellungen stabilisieren, macht eine Analyse aber nicht automatisch lehrreicher.",
+          "Nutze die Engine für konkrete Fragen: War das Opfer korrekt? Konnte der Gegner den Zug bestrafen? Gab es eine erzwungene Folge? Spiele die Variante anschließend auf dem Brett nach, bis die Idee klar ist."
+        ],
+        "checklistTitle": "Die Engine als Werkzeug verwenden",
+        "checklist": ["Bewertung im Stellungskontext lesen.","Mindestens eigenen Zug und besten Zug vergleichen.","Hauptvariante bis zur erkennbaren Idee verfolgen.","Tiefe nur bei Bedarf erhöhen.","Variante danach in eigenen Worten erklären."],
+        "takeaway": "Stockfish findet starke Züge; beim Lernen musst du daraus verständliche und wiederverwendbare Ideen machen.",
+        "action": "Mit Stockfish 17 analysieren"
+      },
+      "tactics": {
+        "title": "Schachtaktik mit Aufgaben trainieren",
+        "summary": "Erkenne Mattmotive, Gabeln, Fesselungen, Spieße, Abzugsangriffe und Muster aus deinen eigenen Partien schneller.",
+        "paragraphs": [
+          "Berechne vor dem ersten Zug. Suche zuerst nach erzwingenden Zügen: Schachs, Schlagzügen und direkten Drohungen. Prüfe danach ungeschützte Figuren, überlastete Verteidiger, Königssicherheit und Linien für Fesselungen, Spieße oder Abzugsangriffe.",
+          "Thematische Aufgaben eignen sich zum Erlernen eines Motivs. Gemischte Aufgaben testen, ob du das Motiv auch ohne Hinweis erkennst. Die Schwierigkeit sollte Berechnung verlangen, ohne jede Stellung zum Ratespiel zu machen.",
+          "Aufgaben aus Fehlern deiner analysierten Partien sind besonders wertvoll, weil sie Training mit eigenen Schwachstellen verbinden. Nutze Hinweise erst nach einem echten Versuch und spiele die Lösung vollständig nach."
+        ],
+        "checklistTitle": "Eine bessere Aufgabenroutine",
+        "checklist": ["Erzwingende Züge vor dem Ziehen berechnen.","Motiv nach der Lösung benennen.","Themen zum Lernen, Mischungen zum Testen verwenden.","Fehlversuche erneut ansehen statt sofort weiterzugehen.","Wiederkehrende Fehler aus eigenen Partien priorisieren."],
+        "takeaway": "Ziel ist nicht die maximale Anzahl gelöster Aufgaben, sondern schnellere Mustererkennung und genauere Berechnung in echten Partien.",
+        "action": "Aufgabentraining öffnen"
+      }
+    },
+    "closing": {"title": "Aus Wissen wird Training", "description": "Ein Leitfaden hilft am meisten, wenn direkt eine echte Partieanalyse oder eine gezielte Trainingseinheit folgt. Setze die Ideen sofort in NexoChess um.", "analysisAction": "Partie analysieren", "puzzlesAction": "Taktik trainieren"}
+  }
+}

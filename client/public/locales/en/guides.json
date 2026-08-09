@@ -1,0 +1,104 @@
+{
+  "navigationTitle": "Guides",
+  "page": {
+    "hero": {
+      "eyebrow": "NexoChess guides",
+      "title": "Practical chess guides for better analysis and training",
+      "introduction": "Learn how to review a game, understand engine feedback, use Stockfish with context and turn tactical mistakes into useful training. These guides are designed around the tools already available in NexoChess.",
+      "primaryAction": "Analyse a game",
+      "secondaryAction": "Train puzzles"
+    },
+    "editorial": {
+      "byline": "Prepared by NexoChess",
+      "updated": "Updated August 2026"
+    },
+    "contents": {
+      "title": "Start here",
+      "description": "Four focused guides covering the most useful parts of post-game review and tactical training."
+    },
+    "sections": {
+      "analyze": {
+        "title": "How to analyse a chess game",
+        "summary": "A simple review process that helps you understand decisions instead of only collecting engine scores.",
+        "paragraphs": [
+          "Begin by replaying the game without an engine. Mark the moments where you were unsure, where the evaluation seemed to change, or where your plan stopped making sense. This gives the later engine analysis a question to answer instead of turning the review into a list of computer moves.",
+          "Then import the PGN, load a public game or start from a FEN position. Use Stockfish to identify critical moments, compare your move with the best continuation and check whether the mistake was tactical, positional or simply a missed opportunity. The useful part of analysis is not the number beside the position; it is understanding what changed and why.",
+          "Finish by revisiting a small number of turning points. If a recurring tactical pattern appears, turn that pattern into training rather than trying to memorise an entire engine line."
+        ],
+        "checklistTitle": "A useful review loop",
+        "checklist": [
+          "Replay the game once without the engine.",
+          "Mark uncertain or critical moments.",
+          "Compare your move with Stockfish alternatives.",
+          "Write down the reason for the mistake.",
+          "Train recurring tactical patterns afterwards."
+        ],
+        "takeaway": "The goal of analysis is to leave with one or two ideas you can use in your next games, not to remember every engine line.",
+        "action": "Open the analyser"
+      },
+      "accuracy": {
+        "title": "How to interpret accuracy, mistakes and blunders",
+        "summary": "Use move classifications as clues, not as a substitute for understanding the position.",
+        "paragraphs": [
+          "Accuracy is a compact summary of how closely your moves followed strong engine choices, but it does not tell the whole story of a game. A single decisive blunder can matter more than several harmless inaccuracies, while a difficult position can produce lower accuracy even when many decisions were reasonable.",
+          "When NexoChess labels a move as an inaccuracy, mistake, missed opportunity or blunder, look at the position before the move and ask what the opponent could do next. Compare the best alternative, the resulting evaluation and the tactical or strategic idea behind it. This turns a coloured label into something you can recognise later.",
+          "Track patterns rather than isolated percentages. Repeatedly missing forks, loose pieces, king safety or simple endgame ideas is more actionable than trying to force your accuracy score upward."
+        ],
+        "checklistTitle": "Read classifications in context",
+        "checklist": [
+          "Check how much the position changed after the move.",
+          "Look at the opponent's strongest reply.",
+          "Compare the best alternative with your idea.",
+          "Name the tactical or positional reason.",
+          "Look for repeated patterns across several games."
+        ],
+        "takeaway": "Accuracy is useful for orientation; improvement comes from understanding the recurring reasons behind your weaker moves.",
+        "action": "Review a game"
+      },
+      "stockfish": {
+        "title": "How to use Stockfish for chess analysis",
+        "summary": "Learn what evaluation, depth, engine lines and best moves can tell you—and what they cannot explain by themselves.",
+        "paragraphs": [
+          "Stockfish evaluates positions and searches candidate continuations. A positive evaluation favours White and a negative one favours Black, while values near zero usually indicate a more balanced position. The evaluation is useful as a signal, but the important question is what concrete idea causes it to rise or fall.",
+          "Depth indicates how far the engine has searched in a technical sense, and multiple lines let you compare more than one candidate move. A deeper search can stabilise complicated positions, but higher depth does not automatically make a review more educational. For most learning, a clear explanation of the key continuation matters more than squeezing out a tiny evaluation difference.",
+          "Use the engine to test hypotheses: Was my sacrifice sound? Could the opponent punish this move? Was there a forcing sequence? Then replay the suggested line on the board until the reason becomes visible."
+        ],
+        "checklistTitle": "Use the engine as a tool",
+        "checklist": [
+          "Read the evaluation from the side to move and position context.",
+          "Compare at least the best move with your move.",
+          "Follow the main continuation far enough to see the idea.",
+          "Increase depth only when the position genuinely needs it.",
+          "Return to the board and explain the line in your own words."
+        ],
+        "takeaway": "Stockfish is excellent at finding strong moves; your job during review is to turn those moves into ideas you can understand and reuse.",
+        "action": "Analyse with Stockfish 17"
+      },
+      "tactics": {
+        "title": "How to train chess tactics with puzzles",
+        "summary": "Build pattern recognition with checkmates, forks, pins, skewers, discovered attacks and positions from your own games.",
+        "paragraphs": [
+          "Tactical training works best when you try to calculate before moving. Start by checking forcing moves: checks, captures and direct threats. Then look for vulnerable pieces, overloaded defenders, king exposure and alignments that can create pins, skewers or discovered attacks.",
+          "Use themed puzzles when you want to learn a specific motif and mixed puzzles when you want to practise recognising the motif without being told what to search for. Difficulty should be high enough to require calculation but not so high that every position becomes a guess.",
+          "Puzzles created from mistakes in your analysed games are especially useful because they connect pattern training with positions that have already caused you problems. Use hints only after a real attempt, reveal the solution when needed, and replay the full line to understand the tactical idea."
+        ],
+        "checklistTitle": "A better puzzle routine",
+        "checklist": [
+          "Calculate forcing moves before touching a piece.",
+          "Name the tactical motif after solving the position.",
+          "Use themes to learn and mixed sets to test recognition.",
+          "Review failed puzzles instead of immediately skipping them.",
+          "Prioritise recurring mistakes from your own games."
+        ],
+        "takeaway": "The purpose of puzzles is not to solve as many as possible; it is to recognise tactical patterns faster and calculate them more accurately in real games.",
+        "action": "Open puzzle training"
+      }
+    },
+    "closing": {
+      "title": "Turn the guide into practice",
+      "description": "Reading helps most when it is followed by a real game review or a focused training session. Use NexoChess to apply the ideas immediately.",
+      "analysisAction": "Analyse a game",
+      "puzzlesAction": "Train tactics"
+    }
+  }
+}

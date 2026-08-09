@@ -23,6 +23,10 @@
     "title": "Problemas de ajedrez y entrenamiento táctico — NexoChess",
     "description": "Entrena táctica con problemas de tus partidas analizadas o filtrados por tema y dificultad dentro de una base de más de seis millones de posiciones."
   },
+  "guides": {
+    "title": "Guías de análisis y táctica de ajedrez — NexoChess",
+    "description": "Guías prácticas para analizar partidas, entender precisión y errores, usar Stockfish 17 y entrenar táctica y puzzles gratis en NexoChess."
+  },
   "help": {
     "title": "Centro de ayuda de NexoChess — Guías y soluciones",
     "description": "Aprende a analizar partidas, usar el Archivo, entrenar con problemas, gestionar tu cuenta y resolver incidencias frecuentes mediante guías prácticas."

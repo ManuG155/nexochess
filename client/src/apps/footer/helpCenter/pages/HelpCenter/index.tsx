@@ -48,7 +48,7 @@ function TopicCard({
 }
 
 function HelpCenter() {
-    const { t, i18n } = useTranslation("helpCenter");
+    const { t, i18n } = useTranslation(["helpCenter", "guides"]);
     const [copied, setCopied] = useState(false);
 
     useEffect(() => {
@@ -213,6 +213,9 @@ function HelpCenter() {
                 <p>{t("faq.subtitle")}</p>
                 <a className={styles.secondaryAction} href="/faq">
                     {t("faq.eyebrow")} →
+                </a>
+                <a className={styles.secondaryAction} href="/guides">
+                    {t("navigationTitle", { ns: "guides" })} →
                 </a>
             </div>
 

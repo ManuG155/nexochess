@@ -19,6 +19,9 @@
         <loc>https://www.nexochess.com/puzzles</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/guides</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/help</loc>
     </url>
     <url>
@@ -47,6 +50,9 @@
     </url>
     <url>
         <loc>https://www.nexochess.com/es/puzzles</loc>
+    </url>
+    <url>
+        <loc>https://www.nexochess.com/es/guides</loc>
     </url>
     <url>
         <loc>https://www.nexochess.com/es/help</loc>
@@ -79,6 +85,9 @@
         <loc>https://www.nexochess.com/fr/puzzles</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/fr/guides</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/fr/help</loc>
     </url>
     <url>
@@ -107,6 +116,9 @@
     </url>
     <url>
         <loc>https://www.nexochess.com/de/puzzles</loc>
+    </url>
+    <url>
+        <loc>https://www.nexochess.com/de/guides</loc>
     </url>
     <url>
         <loc>https://www.nexochess.com/de/help</loc>
@@ -139,6 +151,9 @@
         <loc>https://www.nexochess.com/pt/puzzles</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/pt/guides</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/pt/help</loc>
     </url>
     <url>
@@ -167,6 +182,9 @@
     </url>
     <url>
         <loc>https://www.nexochess.com/ru/puzzles</loc>
+    </url>
+    <url>
+        <loc>https://www.nexochess.com/ru/guides</loc>
     </url>
     <url>
         <loc>https://www.nexochess.com/ru/help</loc>
@@ -199,6 +217,9 @@
         <loc>https://www.nexochess.com/zh/puzzles</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/zh/guides</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/zh/help</loc>
     </url>
     <url>
@@ -227,6 +248,9 @@
     </url>
     <url>
         <loc>https://www.nexochess.com/vi/puzzles</loc>
+    </url>
+    <url>
+        <loc>https://www.nexochess.com/vi/guides</loc>
     </url>
     <url>
         <loc>https://www.nexochess.com/vi/help</loc>
@@ -259,6 +283,9 @@
         <loc>https://www.nexochess.com/hi/puzzles</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/hi/guides</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/hi/help</loc>
     </url>
     <url>
@@ -289,6 +316,9 @@
         <loc>https://www.nexochess.com/mr/puzzles</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/mr/guides</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/mr/help</loc>
     </url>
     <url>
@@ -317,6 +347,9 @@
     </url>
     <url>
         <loc>https://www.nexochess.com/pl/puzzles</loc>
+    </url>
+    <url>
+        <loc>https://www.nexochess.com/pl/guides</loc>
     </url>
     <url>
         <loc>https://www.nexochess.com/pl/help</loc>
