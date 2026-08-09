@@ -1,0 +1,104 @@
+{
+  "navigationTitle": "Guías",
+  "page": {
+    "hero": {
+      "eyebrow": "Guías NexoChess",
+      "title": "Guías prácticas de ajedrez para analizar mejor y entrenar con sentido",
+      "introduction": "Aprende a revisar una partida, interpretar el feedback del motor, usar Stockfish con contexto y convertir errores tácticos en entrenamiento útil. Estas guías se apoyan en las herramientas que ya ofrece NexoChess.",
+      "primaryAction": "Analizar una partida",
+      "secondaryAction": "Entrenar puzzles"
+    },
+    "editorial": {
+      "byline": "Preparado por NexoChess",
+      "updated": "Actualizado en agosto de 2026"
+    },
+    "contents": {
+      "title": "Empieza por aquí",
+      "description": "Cuatro guías centradas en las partes más útiles de la revisión de partidas y el entrenamiento táctico."
+    },
+    "sections": {
+      "analyze": {
+        "title": "Cómo analizar una partida de ajedrez",
+        "summary": "Un proceso sencillo para entender tus decisiones en lugar de limitarte a mirar números del motor.",
+        "paragraphs": [
+          "Empieza reproduciendo la partida sin motor. Marca los momentos en los que dudaste, aquellos en los que la posición cambió de forma brusca o cuando dejaste de tener claro el plan. Así el análisis posterior responde preguntas concretas en vez de convertirse en una lista de jugadas de ordenador.",
+          "Después importa el PGN, carga una partida pública o parte de una posición FEN. Usa Stockfish para localizar los momentos críticos, comparar tu jugada con la mejor continuación y descubrir si el problema fue táctico, posicional o una oportunidad que no viste. Lo valioso no es solo el número de evaluación, sino comprender qué cambió y por qué.",
+          "Termina revisando unas pocas posiciones decisivas. Si aparece un patrón táctico repetido, conviértelo en entrenamiento en vez de intentar memorizar toda una variante del motor."
+        ],
+        "checklistTitle": "Un buen ciclo de revisión",
+        "checklist": [
+          "Reproduce la partida una vez sin motor.",
+          "Marca dudas y momentos críticos.",
+          "Compara tu jugada con las alternativas de Stockfish.",
+          "Escribe la causa real del error.",
+          "Entrena después los patrones que se repitan."
+        ],
+        "takeaway": "El objetivo del análisis es salir con una o dos ideas aplicables a tus próximas partidas, no recordar todas las líneas del motor.",
+        "action": "Abrir el analizador"
+      },
+      "accuracy": {
+        "title": "Cómo interpretar la precisión, los errores y los errores graves",
+        "summary": "Usa las clasificaciones como pistas para comprender la posición, no como sustituto del razonamiento.",
+        "paragraphs": [
+          "La precisión resume hasta qué punto tus jugadas se acercaron a opciones fuertes del motor, pero no cuenta por sí sola toda la historia. Un único error grave decisivo puede importar más que varias imprecisiones inocuas, y una posición difícil puede producir una precisión menor incluso cuando muchas decisiones fueron razonables.",
+          "Cuando NexoChess marca una jugada como imprecisión, error, oportunidad perdida o error grave, vuelve a la posición anterior y pregunta qué podía hacer el rival. Compara la mejor alternativa, la evaluación resultante y la idea táctica o estratégica que la sostiene. Así una etiqueta de color se convierte en un patrón reconocible.",
+          "Busca tendencias, no porcentajes aislados. Fallar repetidamente dobles ataques, piezas sueltas, seguridad del rey o ideas sencillas de final te da un objetivo de mejora mucho más útil que perseguir un número concreto de precisión."
+        ],
+        "checklistTitle": "Lee las clasificaciones con contexto",
+        "checklist": [
+          "Comprueba cuánto cambió la posición tras la jugada.",
+          "Mira la respuesta más fuerte del rival.",
+          "Compara la mejor alternativa con tu idea.",
+          "Pon nombre a la causa táctica o posicional.",
+          "Busca patrones repetidos en varias partidas."
+        ],
+        "takeaway": "La precisión orienta; la mejora llega cuando entiendes las causas que se repiten detrás de tus peores jugadas.",
+        "action": "Revisar una partida"
+      },
+      "stockfish": {
+        "title": "Cómo usar Stockfish para analizar ajedrez",
+        "summary": "Entiende qué significan la evaluación, la profundidad, las líneas y la mejor jugada, y qué no explica el motor por sí solo.",
+        "paragraphs": [
+          "Stockfish evalúa posiciones y calcula continuaciones candidatas. Una evaluación positiva favorece a las blancas y una negativa a las negras; los valores cercanos a cero suelen indicar una posición más equilibrada. La evaluación es una señal, pero la pregunta importante es qué idea concreta hace que suba o baje.",
+          "La profundidad indica hasta dónde ha buscado el motor en términos técnicos y las líneas múltiples permiten comparar varias jugadas candidatas. Una búsqueda más profunda puede estabilizar posiciones complejas, pero no convierte automáticamente el análisis en algo más educativo. Para aprender suele ser más útil entender la continuación clave que perseguir una diferencia mínima de evaluación.",
+          "Usa el motor para comprobar hipótesis: ¿era correcto el sacrificio?, ¿podía castigarse esta jugada?, ¿existía una secuencia forzada? Reproduce después la variante en el tablero hasta que la razón sea visible."
+        ],
+        "checklistTitle": "Usa el motor como herramienta",
+        "checklist": [
+          "Interpreta la evaluación con el contexto de la posición.",
+          "Compara al menos tu jugada con la mejor del motor.",
+          "Sigue la continuación principal hasta entender la idea.",
+          "Aumenta la profundidad solo cuando la posición lo necesite.",
+          "Vuelve al tablero y explica la variante con tus palabras."
+        ],
+        "takeaway": "Stockfish encuentra jugadas muy fuertes; durante la revisión tu trabajo es convertirlas en ideas que puedas comprender y reutilizar.",
+        "action": "Analizar con Stockfish 17"
+      },
+      "tactics": {
+        "title": "Cómo entrenar táctica de ajedrez con puzzles",
+        "summary": "Desarrolla reconocimiento de patrones con mates, dobles ataques, clavadas, enfiladas, ataques descubiertos y posiciones de tus propias partidas.",
+        "paragraphs": [
+          "El entrenamiento táctico funciona mejor cuando calculas antes de mover. Empieza buscando jugadas forzantes: jaques, capturas y amenazas directas. Después revisa piezas vulnerables, defensores sobrecargados, seguridad del rey y alineaciones que puedan generar clavadas, enfiladas o ataques descubiertos.",
+          "Usa puzzles temáticos cuando quieras aprender un motivo concreto y puzzles mezclados cuando quieras practicar su reconocimiento sin saber de antemano qué buscar. La dificultad debe obligarte a calcular, pero no ser tan alta que cada posición termine siendo una adivinanza.",
+          "Los puzzles creados a partir de errores de tus partidas analizadas son especialmente útiles porque conectan el entrenamiento de patrones con posiciones que ya te han causado problemas. Pide una pista solo después de intentarlo de verdad, revela la solución cuando sea necesario y reproduce toda la línea para comprender la idea."
+        ],
+        "checklistTitle": "Una rutina de puzzles mejor",
+        "checklist": [
+          "Calcula jugadas forzantes antes de mover una pieza.",
+          "Pon nombre al motivo táctico después de resolverlo.",
+          "Usa temas para aprender y mezclas para comprobar reconocimiento.",
+          "Revisa los puzzles fallados en vez de saltarlos inmediatamente.",
+          "Prioriza errores que se repiten en tus propias partidas."
+        ],
+        "takeaway": "El objetivo de los puzzles no es resolver la mayor cantidad posible, sino reconocer patrones más rápido y calcularlos con más precisión en partidas reales.",
+        "action": "Abrir entrenamiento de puzzles"
+      }
+    },
+    "closing": {
+      "title": "Convierte la guía en práctica",
+      "description": "Leer sirve mucho más cuando después revisas una partida real o haces una sesión de entrenamiento enfocada. Aplica las ideas directamente en NexoChess.",
+      "analysisAction": "Analizar una partida",
+      "puzzlesAction": "Entrenar táctica"
+    }
+  }
+}
