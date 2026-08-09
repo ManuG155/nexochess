@@ -30,6 +30,7 @@ export const BASE_INDEXABLE_PAGE_ROUTES = Object.freeze([
     freezeRoute({ pathname: "/analysis", assetPath: "apps/features/analysis.html" }),
     freezeRoute({ pathname: "/academy", assetPath: "apps/features/academy.html" }),
     freezeRoute({ pathname: "/puzzles", assetPath: "apps/features/puzzles.html" }),
+    freezeRoute({ pathname: "/guides", assetPath: "apps/guides.html" }),
     freezeRoute({ pathname: "/help", assetPath: "apps/footer/helpCenter.html" }),
     freezeRoute({ pathname: "/terms", assetPath: "apps/footer/legal.html" }),
     freezeRoute({ pathname: "/privacy", assetPath: "apps/footer/legal.html" }),
