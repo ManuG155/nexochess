@@ -29,6 +29,7 @@ module.exports = {
         archive: "./src/apps/features/archive/index.tsx",
         academy: "./src/apps/features/academy/index.tsx",
         puzzles: "./src/apps/features/puzzles/index.tsx",
+        guides: "./src/apps/guides/index.tsx",
         news: "./src/apps/features/news/index.tsx",
 
         signin: "./src/apps/account/signin/index.tsx",
