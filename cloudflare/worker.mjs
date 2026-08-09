@@ -1,3 +1,4 @@
+import { ADSENSE_ACCOUNT_ID } from "../config/adsense.mjs";
 import { getPageMetadataReplacements } from "../config/page-metadata.mjs";
 import {
     getSearchIndexingPolicy,
@@ -90,14 +91,18 @@ function runtimeMetadata(env) {
     const environmentMeta = `<meta name="nexochess-environment" content="${env.NEXOCHESS_ENV || "unknown"}">`;
     if (!isProduction(env)) return environmentMeta;
 
+    const metadata = [
+        environmentMeta,
+        `<meta name="google-adsense-account" content="${ADSENSE_ACCOUNT_ID}">`
+    ];
     const measurementId = String(env.GOOGLE_ANALYTICS_MEASUREMENT_ID || "")
         .trim()
         .toUpperCase();
-    if (!ANALYTICS_MEASUREMENT_ID_PATTERN.test(measurementId)) {
-        return environmentMeta;
+    if (ANALYTICS_MEASUREMENT_ID_PATTERN.test(measurementId)) {
+        metadata.push(`<meta name="nexochess-analytics-measurement-id" content="${measurementId}">`);
     }
 
-    return `${environmentMeta}\n<meta name="nexochess-analytics-measurement-id" content="${measurementId}">`;
+    return metadata.join("\n");
 }
 
 function injectRuntimeMetadata(html, env) {
