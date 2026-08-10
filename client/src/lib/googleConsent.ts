@@ -34,7 +34,7 @@ type TcfApi = (
     callback: (data: { gdprApplies?: boolean } | null, success: boolean) => void
 ) => void;
 
-type PrivacyWindow = Window & typeof globalThis & {
+type PrivacyRuntime = {
     googlefc?: GoogleFcApi;
     __tcfapi?: TcfApi;
 };
@@ -48,8 +48,8 @@ let currentState: GooglePrivacyState = {
     advertising: "unknown"
 };
 
-function privacyWindow() {
-    return window as PrivacyWindow;
+function privacyRuntime() {
+    return window as unknown as PrivacyRuntime;
 }
 
 function hasGooglePublisherTag() {
@@ -100,7 +100,7 @@ function combineAdvertising(values: GoogleConsentDecision[]) {
 }
 
 function readConsentModeValues() {
-    const values = privacyWindow().googlefc?.getGoogleConsentModeValues?.();
+    const values = privacyRuntime().googlefc?.getGoogleConsentModeValues?.();
     if (!values) return;
 
     const adStorage = mapConsentModeStatus(values.adStoragePurposeConsentStatus);
@@ -122,14 +122,15 @@ function readConsentModeValues() {
 }
 
 function queueGoogleCallback(key: string, callback: () => void) {
-    const target = privacyWindow();
-    target.googlefc ||= { callbackQueue: [] };
-    target.googlefc.callbackQueue ||= [];
-    target.googlefc.callbackQueue.push({ [key]: callback });
+    const target = privacyRuntime();
+    const googlefc = target.googlefc || { callbackQueue: [] };
+    googlefc.callbackQueue ||= [];
+    googlefc.callbackQueue.push({ [key]: callback });
+    target.googlefc = googlefc;
 }
 
 function detectGdprApplicability() {
-    const tcfApi = privacyWindow().__tcfapi;
+    const tcfApi = privacyRuntime().__tcfapi;
     if (!tcfApi) return;
 
     tcfApi("addEventListener", 0, (tcData, success) => {
@@ -201,7 +202,7 @@ export function requestGooglePrivacySettings() {
     }
 
     queueGoogleCallback("CONSENT_API_READY", () => {
-        privacyWindow().googlefc?.showRevocationMessage?.();
+        privacyRuntime().googlefc?.showRevocationMessage?.();
     });
     return true;
 }
