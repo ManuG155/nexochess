@@ -1,7 +1,9 @@
 const ads = {
     analysis: {
-        inline: "6032766700",
         side: "7734244071"
+    },
+    content: {
+        inline: "6032766700"
     },
     news: {
         article: {
