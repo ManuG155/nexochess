@@ -6,6 +6,10 @@ const preparer = await readFile(
     resolve("scripts", "prepare-cloudflare-production.mjs"),
     "utf8"
 );
+const stagingWrangler = await readFile(
+    resolve("wrangler.jsonc"),
+    "utf8"
+);
 const refresher = await readFile(
     resolve("scripts", "ensure-cloudflare-production-config.mjs"),
     "utf8"
@@ -17,6 +21,7 @@ for (const fragment of [
     'pattern: `${PRODUCTION_APEX_HOST}/*`',
     "zone_name: PRODUCTION_APEX_HOST",
     '"/*.bundle.js"',
+    '"/ads.txt"',
     'DEFAULT_ANALYTICS_MEASUREMENT_ID = "G-V4227TJCDB"'
 ]) {
     assert.ok(
@@ -24,6 +29,11 @@ for (const fragment of [
         `Production Wrangler generator is missing: ${fragment}`
     );
 }
+
+assert.ok(
+    stagingWrangler.includes('"/ads.txt"'),
+    "Staging Wrangler must route /ads.txt through the Worker so staging returns the deliberate 404 instead of the empty static placeholder."
+);
 
 assert.ok(
     !preparer.includes("custom_domain"),
@@ -76,5 +86,5 @@ assert.ok(
 );
 
 console.log(
-    "Production routing verification passed: existing DNS is preserved, Workers Routes are canonical, and local Wrangler config auto-refreshes."
+    "Production routing verification passed: existing DNS is preserved, Workers Routes are canonical, ads.txt is Worker-routed, and local Wrangler config auto-refreshes."
 );
