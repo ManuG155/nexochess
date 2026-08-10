@@ -24,12 +24,14 @@ function LegalPage() {
         case "/privacy":
             return <>
                 <PrivacyPolicy/>
-                <PageAdvertisement/>
+                <PageAdvertisement afterSelector="main article > section:nth-of-type(6)"/>
+                <PageAdvertisement afterSelector="main article > section:nth-of-type(11)"/>
             </>;
         case "/terms":
             return <>
                 <Terms/>
-                <PageAdvertisement/>
+                <PageAdvertisement afterSelector="main article > section:nth-of-type(6)"/>
+                <PageAdvertisement afterSelector="main article > section:nth-of-type(11)"/>
             </>;
         case "/source":
             return <SourceCode/>;
