@@ -5,9 +5,9 @@ import Advertisement from ".";
 
 function PageAdvertisement() {
     return <div style={{
-        width: "min(970px, calc(100% - 40px))",
+        width: "min(1180px, calc(100% - 64px))",
         minHeight: "90px",
-        margin: "24px auto 40px"
+        margin: "22px auto"
     }}>
         <Advertisement
             adUnitId={ads.content.inline}
