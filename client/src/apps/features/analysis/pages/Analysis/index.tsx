@@ -33,22 +33,39 @@ function Analysis() {
     }, []);
 
     return <div className={styles.wrapper}>
-        <div className={styles.advertisement}>
-            <Advertisement adUnitId={ads.analysis.top} style={{
-                width: "100%", height: "100px"
-            }}/>
+        <div className={styles.inlineAdvertisement}>
+            <Advertisement
+                adUnitId={ads.analysis.inline}
+                format="horizontal"
+                fullWidthResponsive={false}
+                style={{ width: "100%" }}
+            />
         </div>
 
-        <div className={styles.analysisSection}>
-            <BoardArea/>
+        <div className={styles.analysisStage}>
+            <div className={`${styles.sideAdvertisement} ${styles.sideAdvertisementLeft}`}>
+                <Advertisement
+                    adUnitId={ads.analysis.side}
+                    format="vertical"
+                    fullWidthResponsive={false}
+                    style={{ width: "100%" }}
+                />
+            </div>
 
-            <AnalysisPanel className={styles.panel} />
-        </div>
+            <div className={styles.analysisSection}>
+                <BoardArea/>
 
-        <div className={styles.advertisement}>
-            <Advertisement adUnitId={ads.analysis.bottom} style={{
-                width: "100%", height: "100px"
-            }}/>
+                <AnalysisPanel className={styles.panel} />
+            </div>
+
+            <div className={`${styles.sideAdvertisement} ${styles.sideAdvertisementRight}`}>
+                <Advertisement
+                    adUnitId={ads.analysis.side}
+                    format="vertical"
+                    fullWidthResponsive={false}
+                    style={{ width: "100%" }}
+                />
+            </div>
         </div>
 
         <SemanticDiscoverySection
