@@ -28,7 +28,7 @@
     position: absolute;
     top: 50%;
     z-index: 2;
-    width: clamp(72px, calc((100vw - 1220px) / 2), 120px);
+    width: clamp(64px, calc((100vw - 1150px) / 2), 120px);
     min-height: 420px;
     transform: translateY(-50%);
 }
@@ -47,7 +47,7 @@
     right: 8px;
 }
 
-@media (min-width: 1360px) {
+@media (min-width: 1280px) {
     .sideAdvertisement {
         display: block;
     }
