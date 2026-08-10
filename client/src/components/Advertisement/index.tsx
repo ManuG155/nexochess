@@ -3,6 +3,23 @@ import React, { useEffect } from "react";
 import AdvertisementProps from "./AdvertisementProps";
 import * as styles from "./Advertisement.module.css";
 
+const BLOCKED_PATH_SEGMENTS = new Set([
+    "puzzles",
+    "academy",
+    "archive",
+    "language",
+    "languages",
+    "contact",
+    "source",
+    "licenses",
+    "licences",
+    "about",
+    "settings",
+    "signin",
+    "login",
+    "share"
+]);
+
 function readPublisherIdFromPage() {
     if (typeof document === "undefined") return "";
 
@@ -10,6 +27,16 @@ function readPublisherIdFromPage() {
         .querySelector<HTMLMetaElement>('meta[name="google-adsense-account"]')
         ?.content
         .trim() || "";
+}
+
+function isAdvertisingBlockedOnCurrentPage() {
+    if (typeof window === "undefined") return false;
+
+    return window.location.pathname
+        .toLowerCase()
+        .split("/")
+        .filter(Boolean)
+        .some(segment => BLOCKED_PATH_SEGMENTS.has(segment));
 }
 
 function Advertisement({
@@ -20,13 +47,14 @@ function Advertisement({
     format = "auto",
     fullWidthResponsive = true
 }: AdvertisementProps) {
+    const blocked = isAdvertisingBlockedOnCurrentPage();
     const pubId = publisherId
         || readPublisherIdFromPage()
         || process.env.ADS_PUBLISHER_ID
         || "";
 
     useEffect(() => {
-        if (!pubId || !adUnitId) return;
+        if (blocked || !pubId || !adUnitId) return;
 
         try {
             window.adsbygoogle ??= [];
@@ -34,11 +62,11 @@ function Advertisement({
         } catch {
             console.warn("advertisement duplicate load cancelled.");
         }
-    }, [pubId, adUnitId]);
+    }, [blocked, pubId, adUnitId]);
 
-    // Staging intentionally has no AdSense account meta tag. Rendering nothing
-    // there avoids blank inventory and keeps real ad requests production-only.
-    if (!pubId || !adUnitId) return null;
+    // These surfaces are intentionally ad-free. Staging also lacks the
+    // AdSense account meta tag, so it never makes real ad requests.
+    if (blocked || !pubId || !adUnitId) return null;
 
     const devClassName = process.env.NODE_ENV == "development"
         ? styles.dev : "";
