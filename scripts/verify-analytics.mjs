@@ -10,6 +10,10 @@ const consent = await readFile(
     resolve("client", "src", "lib", "consent.ts"),
     "utf8"
 );
+const googleConsent = await readFile(
+    resolve("client", "src", "lib", "googleConsent.ts"),
+    "utf8"
+);
 const pageWrapper = await readFile(
     resolve("client", "src", "components", "layout", "PageWrapper", "index.tsx"),
     "utf8"
@@ -28,6 +32,13 @@ const privacyAnalyticsRevision = await readFile(
     ),
     "utf8"
 );
+const privacyAdvertisingRevision = await readFile(
+    resolve(
+        "client", "src", "apps", "footer", "legal", "pages",
+        "PrivacyPolicy", "advertisingPrivacyRevision.ts"
+    ),
+    "utf8"
+);
 const worker = await readFile(resolve("cloudflare", "worker.mjs"), "utf8");
 const stagingWrangler = await readFile(resolve("wrangler.jsonc"), "utf8");
 const productionPreparer = await readFile(
@@ -40,18 +51,31 @@ const packageJson = JSON.parse(await readFile(resolve("package.json"), "utf8"));
 for (const fragment of [
     'const PRODUCTION_ENVIRONMENT = "production"',
     "environment !== PRODUCTION_ENVIRONMENT",
-    "preferences?.analytics === true",
+    "effectiveConsent()",
+    "googlePrivacy.applies === true",
     "https://www.googletagmanager.com/gtag/js?id=",
-    'gtag("consent", "default", consentState(false))',
-    'gtag("consent", "update", consentState(true))',
-    'analytics_storage: analytics ? "granted" : "denied"',
-    'ad_storage: "denied"',
-    'ad_user_data: "denied"',
-    'ad_personalization: "denied"',
+    'gtag("consent", "default", consentState({',
+    'analytics_storage: consent.analytics ? "granted" : "denied"',
+    'ad_storage: consent.advertising ? "granted" : "denied"',
+    'ad_user_data: consent.advertising ? "granted" : "denied"',
+    'ad_personalization: consent.advertising ? "granted" : "denied"',
     "allow_google_signals: false",
     "allow_ad_personalization_signals: false"
 ]) {
     assert.ok(analytics.includes(fragment), `Analytics safeguard is missing: ${fragment}`);
+}
+
+for (const fragment of [
+    "CONSENT_API_READY",
+    "CONSENT_MODE_DATA_READY",
+    "getGoogleConsentModeValues",
+    "analyticsStoragePurposeConsentStatus",
+    "showRevocationMessage"
+]) {
+    assert.ok(
+        googleConsent.includes(fragment),
+        `Google CMP integration is missing: ${fragment}`
+    );
 }
 
 assert.ok(
@@ -68,9 +92,10 @@ for (const fragment of [
     "GOOGLE_ANALYTICS_MEASUREMENT_ID",
     'meta name="nexochess-environment"',
     'meta name="nexochess-analytics-measurement-id"',
-    "if (!isProduction(env)) return environmentMeta"
+    "if (!isProduction(env)) return environmentMeta",
+    "pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
 ]) {
-    assert.ok(worker.includes(fragment), `Worker analytics runtime metadata is missing: ${fragment}`);
+    assert.ok(worker.includes(fragment), `Worker analytics/CMP metadata is missing: ${fragment}`);
 }
 
 assert.ok(
@@ -94,11 +119,20 @@ assert.ok(
     privacyPage.includes("applyAnalyticsPrivacyRevision"),
     "The Privacy Policy must apply the GA4-specific revision."
 );
+assert.ok(
+    privacyPage.includes("applyAdvertisingPrivacyRevision"),
+    "The Privacy Policy must apply the AdSense/CMP-specific revision."
+);
 for (const language of ["en", "es", "fr", "de", "pt", "ru", "zh", "vi", "hi", "mr", "pl"]) {
     assert.match(
         privacyAnalyticsRevision,
         new RegExp(`\\n\\s{4}${language}: \\{`),
         `Missing GA4 privacy revision for language: ${language}`
+    );
+    assert.match(
+        privacyAdvertisingRevision,
+        new RegExp(`\\n\\s{4}${language}: \\{`),
+        `Missing AdSense/CMP privacy revision for language: ${language}`
     );
 }
 for (const fragment of [
@@ -113,6 +147,17 @@ for (const fragment of [
     assert.ok(
         privacyAnalyticsRevision.includes(fragment),
         `GA4 Privacy Policy disclosure is missing: ${fragment}`
+    );
+}
+for (const fragment of [
+    "Google AdSense",
+    "Google Consent Mode",
+    "providerBullet",
+    "rightsParagraph"
+]) {
+    assert.ok(
+        privacyAdvertisingRevision.includes(fragment),
+        `AdSense/CMP Privacy Policy disclosure is missing: ${fragment}`
     );
 }
 
@@ -130,4 +175,4 @@ assert.ok(ci.includes("npm run verify:analytics"));
 assert.ok(!ci.includes("G-NEXOCHESSTEST"));
 
 console.log("Analytics installation verification passed.");
-console.log("GA4 is production-only, consent-gated, advertising-disabled, configured with G-V4227TJCDB and disclosed in 11 languages for Step 32.");
+console.log("GA4 remains production-only and basic-consent-gated; Google CMP supplies the effective EEA/UK/CH consent state while the NexoChess CMP remains the fallback elsewhere.");

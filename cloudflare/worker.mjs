@@ -93,7 +93,8 @@ function runtimeMetadata(env) {
 
     const metadata = [
         environmentMeta,
-        `<meta name="google-adsense-account" content="${ADSENSE_ACCOUNT_ID}">`
+        `<meta name="google-adsense-account" content="${ADSENSE_ACCOUNT_ID}">`,
+        `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_ACCOUNT_ID}" crossorigin="anonymous"></script>`
     ];
     const measurementId = String(env.GOOGLE_ANALYTICS_MEASUREMENT_ID || "")
         .trim()

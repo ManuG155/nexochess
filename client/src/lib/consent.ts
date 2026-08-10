@@ -1,3 +1,8 @@
+import {
+    getGooglePrivacyState,
+    requestGooglePrivacySettings
+} from "@/lib/googleConsent";
+
 export type OptionalConsentCategory = "analytics" | "advertising";
 
 export interface ConsentPreferences {
@@ -67,6 +72,12 @@ export function hasConsent(category: OptionalConsentCategory) {
 
 export function manageDataConsent() {
     if (typeof window == "undefined") return;
+
+    if (
+        getGooglePrivacyState().applies === true
+        && requestGooglePrivacySettings()
+    ) return;
+
     window.dispatchEvent(new Event(CONSENT_OPEN_EVENT));
 }
 
@@ -91,18 +102,10 @@ export function onConsentChanged(
     return () => window.removeEventListener(CONSENT_CHANGE_EVENT, handleChange);
 }
 
+/**
+ * Compatibilidad con código histórico. La CMP actual no debe eliminar
+ * controles de revocación proporcionados por una CMP certificada.
+ */
 export function removeDefaultConsentLink() {
-    if (typeof document == "undefined") return;
-
-    const removeLegacyControl = () => document.querySelector(
-        "div[style^=\"color-scheme: initial\"]"
-        + "[style$=\"z-index: initial !important;\"]"
-    )?.remove();
-
-    removeLegacyControl();
-
-    const observer = new MutationObserver(removeLegacyControl);
-    observer.observe(document.body, { childList: true });
-
-    window.setTimeout(() => observer.disconnect(), 5000);
+    // Deliberadamente vacío.
 }
