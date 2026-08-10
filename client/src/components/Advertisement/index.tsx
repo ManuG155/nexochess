@@ -16,7 +16,9 @@ function Advertisement({
     className,
     style,
     publisherId,
-    adUnitId
+    adUnitId,
+    format = "auto",
+    fullWidthResponsive = true
 }: AdvertisementProps) {
     const pubId = publisherId
         || readPublisherIdFromPage()
@@ -49,8 +51,8 @@ function Advertisement({
         style={{ display: "block", ...style }}
         data-ad-client={pubId}
         data-ad-slot={adUnitId}
-        data-ad-format="auto"
-        data-full-width-responsive="true"
+        data-ad-format={format}
+        data-full-width-responsive={fullWidthResponsive ? "true" : "false"}
     />;
 }
 
