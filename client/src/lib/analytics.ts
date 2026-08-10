@@ -1,8 +1,12 @@
 import {
     onConsentChanged,
-    readConsentPreferences,
-    type ConsentPreferences
+    readConsentPreferences
 } from "@/lib/consent";
+import {
+    getGooglePrivacyState,
+    initialiseGooglePrivacyMessaging,
+    onGooglePrivacyStateChanged
+} from "@/lib/googleConsent";
 
 const ANALYTICS_META_NAME = "nexochess-analytics-measurement-id";
 const ENVIRONMENT_META_NAME = "nexochess-environment";
@@ -58,8 +62,14 @@ interface PendingAuthAnalytics {
     createdAt: number;
 }
 
+interface EffectiveGoogleConsent {
+    analytics: boolean;
+    advertising: boolean;
+}
+
 let activeMeasurementId: string | null = null;
 let stopConsentListener: (() => void) | null = null;
+let stopGoogleConsentListener: (() => void) | null = null;
 
 function analyticsWindow() {
     return window as AnalyticsWindow;
@@ -82,6 +92,28 @@ function readRuntimeMeasurementId() {
         : null;
 }
 
+function effectiveConsent(): EffectiveGoogleConsent {
+    const googlePrivacy = getGooglePrivacyState();
+
+    if (googlePrivacy.applies === true) {
+        return {
+            analytics: googlePrivacy.analytics === "granted",
+            advertising: googlePrivacy.advertising === "granted"
+        };
+    }
+
+    if (googlePrivacy.applies === false) {
+        const local = readConsentPreferences();
+        return {
+            analytics: local?.analytics === true,
+            advertising: local?.advertising === true
+        };
+    }
+
+    // Mientras Google determina si el marco europeo aplica no se carga GA4.
+    return { analytics: false, advertising: false };
+}
+
 function ensureGtag() {
     const target = analyticsWindow();
     target.dataLayer ||= [];
@@ -91,29 +123,40 @@ function ensureGtag() {
     return target.gtag;
 }
 
-function consentState(analytics: boolean) {
+function consentState(consent: EffectiveGoogleConsent) {
     return {
-        analytics_storage: analytics ? "granted" : "denied",
-        ad_storage: "denied",
-        ad_user_data: "denied",
-        ad_personalization: "denied"
+        analytics_storage: consent.analytics ? "granted" : "denied",
+        ad_storage: consent.advertising ? "granted" : "denied",
+        ad_user_data: consent.advertising ? "granted" : "denied",
+        ad_personalization: consent.advertising ? "granted" : "denied"
     } as const;
 }
 
-function updateLoadedTagConsent(analytics: boolean) {
+function updateLoadedTagConsent(consent: EffectiveGoogleConsent) {
     if (!activeMeasurementId) return;
-    ensureGtag()("consent", "update", consentState(analytics));
+    ensureGtag()("consent", "update", consentState(consent));
 }
 
-function loadGoogleAnalytics(measurementId: string) {
+function loadGoogleAnalytics(
+    measurementId: string,
+    consent: EffectiveGoogleConsent
+) {
+    if (!consent.analytics) {
+        updateLoadedTagConsent(consent);
+        return;
+    }
+
     if (activeMeasurementId === measurementId) {
-        updateLoadedTagConsent(true);
+        updateLoadedTagConsent(consent);
         return;
     }
 
     const gtag = ensureGtag();
-    gtag("consent", "default", consentState(false));
-    gtag("consent", "update", consentState(true));
+    gtag("consent", "default", consentState({
+        analytics: false,
+        advertising: false
+    }));
+    gtag("consent", "update", consentState(consent));
     gtag("js", new Date());
     gtag("config", measurementId, {
         allow_google_signals: false,
@@ -132,21 +175,22 @@ function loadGoogleAnalytics(measurementId: string) {
     activeMeasurementId = measurementId;
 }
 
-function applyPreferences(preferences: ConsentPreferences | null) {
+function applyCurrentConsent() {
     const measurementId = readRuntimeMeasurementId();
     if (!measurementId) return;
 
-    if (preferences?.analytics === true) {
-        loadGoogleAnalytics(measurementId);
+    const consent = effectiveConsent();
+    if (consent.analytics) {
+        loadGoogleAnalytics(measurementId, consent);
     } else {
-        updateLoadedTagConsent(false);
+        updateLoadedTagConsent(consent);
     }
 }
 
 function analyticsEligible() {
     return Boolean(
         readRuntimeMeasurementId()
-        && readConsentPreferences()?.analytics === true
+        && effectiveConsent().analytics
     );
 }
 
@@ -156,7 +200,7 @@ function emitAnalyticsEvent(event: AnalyticsEvent) {
     const measurementId = readRuntimeMeasurementId();
     if (!measurementId) return false;
 
-    loadGoogleAnalytics(measurementId);
+    loadGoogleAnalytics(measurementId, effectiveConsent());
 
     const parameters: Record<string, string> = {};
 
@@ -230,16 +274,24 @@ export function initialiseAnalytics() {
         return () => undefined;
     }
 
-    applyPreferences(readConsentPreferences());
+    initialiseGooglePrivacyMessaging();
+    applyCurrentConsent();
 
     stopConsentListener?.();
-    stopConsentListener = onConsentChanged(preferences => {
-        applyPreferences(preferences);
+    stopConsentListener = onConsentChanged(() => {
+        applyCurrentConsent();
+    });
+
+    stopGoogleConsentListener?.();
+    stopGoogleConsentListener = onGooglePrivacyStateChanged(() => {
+        applyCurrentConsent();
     });
 
     return () => {
         stopConsentListener?.();
         stopConsentListener = null;
+        stopGoogleConsentListener?.();
+        stopGoogleConsentListener = null;
     };
 }
 
