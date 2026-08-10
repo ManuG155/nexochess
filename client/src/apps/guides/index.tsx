@@ -18,7 +18,8 @@ root.render(
     <I18nGate>
         <PageWrapper>
             <Guides/>
-            <PageAdvertisement/>
+            <PageAdvertisement afterSelector="main > section:nth-of-type(2)"/>
+            <PageAdvertisement afterSelector="main > div:has(> article)"/>
         </PageWrapper>
     </I18nGate>
 );
