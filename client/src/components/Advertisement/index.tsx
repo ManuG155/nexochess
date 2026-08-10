@@ -13,7 +13,6 @@ const BLOCKED_PATH_SEGMENTS = new Set([
     "source",
     "licenses",
     "licences",
-    "about",
     "settings",
     "signin",
     "login",

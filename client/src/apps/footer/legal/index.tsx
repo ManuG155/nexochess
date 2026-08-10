@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 
 import I18nGate from "@/components/layout/I18nGate";
+import PageAdvertisement from "@/components/Advertisement/PageAdvertisement";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { parseLanguagePathname } from "@/i18n/routing";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -21,9 +22,15 @@ function LegalPage() {
 
     switch (basePathname) {
         case "/privacy":
-            return <PrivacyPolicy/>;
+            return <>
+                <PrivacyPolicy/>
+                <PageAdvertisement/>
+            </>;
         case "/terms":
-            return <Terms/>;
+            return <>
+                <Terms/>
+                <PageAdvertisement/>
+            </>;
         case "/source":
             return <SourceCode/>;
         default:
