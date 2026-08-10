@@ -88,6 +88,7 @@ const configuration = {
             "/*.bundle.js",
             "/robots.txt",
             "/sitemap.xml",
+            "/ads.txt",
             "/analysis",
             "/archive",
             "/academy",
