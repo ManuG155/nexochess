@@ -33,15 +33,6 @@ function Analysis() {
     }, []);
 
     return <div className={styles.wrapper}>
-        <div className={styles.inlineAdvertisement}>
-            <Advertisement
-                adUnitId={ads.analysis.inline}
-                format="horizontal"
-                fullWidthResponsive={false}
-                style={{ width: "100%" }}
-            />
-        </div>
-
         <div className={styles.analysisStage}>
             <div className={`${styles.sideAdvertisement} ${styles.sideAdvertisementLeft}`}>
                 <Advertisement
