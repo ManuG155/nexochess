@@ -17,7 +17,8 @@ const root = ReactDOM.createRoot(
 function App() {
     return <PageWrapper>
         <HelpCenter/>
-        <PageAdvertisement/>
+        <PageAdvertisement afterSelector="main > section:nth-of-type(2)"/>
+        <PageAdvertisement afterSelector="main > section:nth-of-type(4)"/>
     </PageWrapper>;
 }
 
