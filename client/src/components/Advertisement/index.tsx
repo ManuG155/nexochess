@@ -39,6 +39,16 @@ function isAdvertisingBlockedOnCurrentPage() {
         .some(segment => BLOCKED_PATH_SEGMENTS.has(segment));
 }
 
+function isAdvertisementPreviewHost() {
+    if (typeof window === "undefined") return false;
+
+    const hostname = window.location.hostname.toLowerCase();
+
+    return hostname === "localhost"
+        || hostname.startsWith("127.")
+        || hostname.startsWith("nexochess-staging.");
+}
+
 function Advertisement({
     className,
     style,
@@ -48,13 +58,14 @@ function Advertisement({
     fullWidthResponsive = true
 }: AdvertisementProps) {
     const blocked = isAdvertisingBlockedOnCurrentPage();
+    const previewHost = isAdvertisementPreviewHost();
     const pubId = publisherId
         || readPublisherIdFromPage()
         || process.env.ADS_PUBLISHER_ID
         || "";
 
     useEffect(() => {
-        if (blocked || !pubId || !adUnitId) return;
+        if (blocked || previewHost || !pubId || !adUnitId) return;
 
         try {
             window.adsbygoogle ??= [];
@@ -62,11 +73,30 @@ function Advertisement({
         } catch {
             console.warn("advertisement duplicate load cancelled.");
         }
-    }, [blocked, pubId, adUnitId]);
+    }, [blocked, previewHost, pubId, adUnitId]);
 
-    // These surfaces are intentionally ad-free. Staging also lacks the
-    // AdSense account meta tag, so it never makes real ad requests.
-    if (blocked || !pubId || !adUnitId) return null;
+    if (blocked || !adUnitId) return null;
+
+    if (previewHost) {
+        const previewClasses = [
+            className,
+            styles.preview,
+            format === "vertical" ? styles.previewVertical : ""
+        ].filter(Boolean).join(" ");
+
+        return <div
+            className={previewClasses}
+            style={style}
+            aria-label="Vista previa de espacio publicitario"
+        >
+            <span>ESPACIO PUBLICITARIO</span>
+            <small>Vista previa · staging</small>
+        </div>;
+    }
+
+    // Production renders nothing when the account or slot is unavailable.
+    // This prevents blank inventory and avoids accidental requests elsewhere.
+    if (!pubId) return null;
 
     const devClassName = process.env.NODE_ENV == "development"
         ? styles.dev : "";
