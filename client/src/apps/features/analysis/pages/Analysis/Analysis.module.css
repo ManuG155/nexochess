@@ -6,19 +6,23 @@
     width: 100%;
 }
 
-.advertisement {
-    padding: 0 30px;
+.inlineAdvertisement {
+    width: min(760px, calc(100% - 60px));
+    min-height: 90px;
+    margin: 0 auto;
 }
 
-@media (max-width: 500px) {
-    .wrapper {
-        gap: 0;
-        padding: 0;
-    }
+.inlineAdvertisement:empty {
+    display: none;
+}
 
-    .advertisement {
-        padding: 0;
-    }
+.inlineAdvertisement ins {
+    min-height: 90px;
+}
+
+.analysisStage {
+    position: relative;
+    width: 100%;
 }
 
 .analysisSection {
@@ -29,7 +33,40 @@
     padding: 0 30px;
     box-sizing: border-box;
     width: 100%;
+    max-width: 1520px;
     height: calc(100vh - 125px);
+    margin: 0 auto;
+}
+
+.sideAdvertisement {
+    display: none;
+    position: absolute;
+    top: 50%;
+    width: 120px;
+    min-height: 250px;
+    transform: translateY(-50%);
+}
+
+.sideAdvertisement:empty {
+    display: none;
+}
+
+.sideAdvertisement ins {
+    min-height: 250px;
+}
+
+.sideAdvertisementLeft {
+    left: 10px;
+}
+
+.sideAdvertisementRight {
+    right: 10px;
+}
+
+@media (min-width: 1800px) {
+    .sideAdvertisement:not(:empty) {
+        display: block;
+    }
 }
 
 @media (max-width: 900px) {
@@ -37,13 +74,6 @@
         flex-direction: column;
         justify-content: start;
         height: auto;
-    }
-}
-
-@media (max-width: 500px) {
-    .analysisSection {
-        gap: 0;
-        padding: 0;
     }
 }
 
@@ -59,9 +89,28 @@
 }
 
 @media (max-width: 500px) {
+    .wrapper {
+        gap: 0;
+        padding: 0;
+    }
+
+    .inlineAdvertisement {
+        width: calc(100% - 20px);
+        min-height: 50px;
+        margin: 12px auto;
+    }
+
+    .inlineAdvertisement ins {
+        min-height: 50px;
+    }
+
+    .analysisSection {
+        gap: 0;
+        padding: 0;
+    }
+
     .panel {
         padding-top: 0;
-        
         border-radius: 0;
     }
 }
