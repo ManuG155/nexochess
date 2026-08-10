@@ -1,4 +1,4 @@
-import { ADSENSE_ACCOUNT_ID } from "../config/adsense.mjs";
+import { ADSENSE_ACCOUNT_ID, ADSENSE_ADS_TXT_CONTENT } from "../config/adsense.mjs";
 import { getPageMetadataReplacements } from "../config/page-metadata.mjs";
 import {
     getSearchIndexingPolicy,
@@ -93,7 +93,8 @@ function runtimeMetadata(env) {
 
     const metadata = [
         environmentMeta,
-        `<meta name="google-adsense-account" content="${ADSENSE_ACCOUNT_ID}">`
+        `<meta name="google-adsense-account" content="${ADSENSE_ACCOUNT_ID}">`,
+        `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_ACCOUNT_ID}" crossorigin="anonymous"></script>`
     ];
     const measurementId = String(env.GOOGLE_ANALYTICS_MEASUREMENT_ID || "")
         .trim()
@@ -345,6 +346,11 @@ async function handleRequest(request, env) {
     if (rawPathname === "/sitemap.xml") {
         return indexingEnabled
             ? textDocument(request, env, renderSitemapXml(), "application/xml; charset=utf-8")
+            : textDocument(request, env, "Not Found\n", "text/plain; charset=utf-8", 404);
+    }
+    if (rawPathname === "/ads.txt") {
+        return isProduction(env)
+            ? textDocument(request, env, ADSENSE_ADS_TXT_CONTENT, "text/plain; charset=utf-8")
             : textDocument(request, env, "Not Found\n", "text/plain; charset=utf-8", 404);
     }
 

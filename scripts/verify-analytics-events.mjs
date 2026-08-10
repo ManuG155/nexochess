@@ -52,12 +52,12 @@ for (const fragment of [
     "type AnalyticsEvent =",
     "function emitAnalyticsEvent(event: AnalyticsEvent)",
     'ensureGtag()("event", event.name, parameters)',
-    "readConsentPreferences()?.analytics === true",
+    "effectiveConsent().analytics",
     "readRuntimeMeasurementId()",
     'const PRODUCTION_ENVIRONMENT = "production"',
-    'ad_storage: "denied"',
-    'ad_user_data: "denied"',
-    'ad_personalization: "denied"'
+    'ad_storage: consent.advertising ? "granted" : "denied"',
+    'ad_user_data: consent.advertising ? "granted" : "denied"',
+    'ad_personalization: consent.advertising ? "granted" : "denied"'
 ]) {
     assert.ok(
         analytics.includes(fragment),
@@ -195,4 +195,4 @@ assert.ok(ci.includes("npm run verify:analytics-events"));
 assert.ok(ci.includes("node --check scripts/verify-analytics-events.mjs"));
 
 console.log("Analytics event verification passed.");
-console.log("Nine consent-gated product events are typed, privacy-limited and wired into CI for Step 33.");
+console.log("Nine product events remain consent-gated and privacy-limited; the effective consent source is Google CMP where applicable and NexoChess consent elsewhere.");

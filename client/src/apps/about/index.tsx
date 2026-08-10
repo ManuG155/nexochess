@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 
 import I18nGate from "@/components/layout/I18nGate";
 import PageWrapper from "@/components/layout/PageWrapper";
+import PageAdvertisement from "@/components/Advertisement/PageAdvertisement";
 import { removeDefaultConsentLink } from "@/lib/consent";
 
 import About from "./About";
@@ -21,6 +22,8 @@ function App() {
 
     return <PageWrapper>
         <About/>
+        <PageAdvertisement afterSelector="main > section:nth-of-type(2)"/>
+        <PageAdvertisement afterSelector="main > section:nth-of-type(4)"/>
     </PageWrapper>;
 }
 

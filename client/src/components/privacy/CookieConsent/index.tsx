@@ -6,6 +6,12 @@ import {
     readConsentPreferences,
     saveConsentPreferences
 } from "@/lib/consent";
+import {
+    getGooglePrivacyState,
+    initialiseGooglePrivacyMessaging,
+    onGooglePrivacyStateChanged,
+    type GooglePrivacyState
+} from "@/lib/googleConsent";
 
 import { getConsentCopy } from "./copy";
 import * as styles from "./CookieConsent.module.css";
@@ -23,25 +29,54 @@ function CookieConsent() {
     const [hasSavedChoice, setHasSavedChoice] = useState(false);
     const [analytics, setAnalytics] = useState(false);
     const [advertising, setAdvertising] = useState(false);
+    const [googlePrivacy, setGooglePrivacy] = useState<GooglePrivacyState>(
+        getGooglePrivacyState()
+    );
 
-    useEffect(() => {
+    function restoreCustomConsent() {
         const saved = readConsentPreferences();
 
         if (saved) {
             setAnalytics(saved.analytics);
             setAdvertising(saved.advertising);
             setHasSavedChoice(true);
+            setView("hidden");
         } else {
+            setHasSavedChoice(false);
             setView("banner");
         }
+    }
 
-        return onConsentSettingsRequested(() => {
+    useEffect(() => {
+        initialiseGooglePrivacyMessaging();
+
+        const initialGoogleState = getGooglePrivacyState();
+        setGooglePrivacy(initialGoogleState);
+        if (initialGoogleState.applies === false) restoreCustomConsent();
+
+        const stopGoogleListener = onGooglePrivacyStateChanged(next => {
+            setGooglePrivacy(next);
+            if (next.applies === true || next.applies === null) {
+                setView("hidden");
+            } else {
+                restoreCustomConsent();
+            }
+        });
+
+        const stopSettingsListener = onConsentSettingsRequested(() => {
+            if (getGooglePrivacyState().applies === true) return;
+
             const current = readConsentPreferences();
             setAnalytics(current?.analytics || false);
             setAdvertising(current?.advertising || false);
             setHasSavedChoice(Boolean(current));
             setView("settings");
         });
+
+        return () => {
+            stopGoogleListener();
+            stopSettingsListener();
+        };
     }, []);
 
     useEffect(() => {
@@ -61,7 +96,10 @@ function CookieConsent() {
         setView("hidden");
     }
 
-    if (view == "hidden") return null;
+    // La CMP certificada de Google es la única capa de consentimiento cuando
+    // el RGPD aplica. Mientras Google determina la jurisdicción también se
+    // oculta la CMP propia para impedir un destello o dos banners simultáneos.
+    if (googlePrivacy.applies !== false || view == "hidden") return null;
 
     const settingsOpen = view == "settings";
 

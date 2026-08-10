@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import LegalDocument from "../../components/LegalDocument";
+import { applyAdvertisingPrivacyRevision } from "./advertisingPrivacyRevision";
 import { applyAnalyticsPrivacyRevision } from "./analyticsPrivacyRevision";
 import { getPrivacyRevisionCopy } from "./privacyRevisionCopy";
 
@@ -27,8 +28,11 @@ function PrivacyPolicy() {
     const { i18n } = useTranslation("legal");
     const language = i18n.resolvedLanguage || i18n.language;
     const copy = useMemo(
-        () => applyAnalyticsPrivacyRevision(
-            getPrivacyRevisionCopy(language),
+        () => applyAdvertisingPrivacyRevision(
+            applyAnalyticsPrivacyRevision(
+                getPrivacyRevisionCopy(language),
+                language
+            ),
             language
         ),
         [language]
