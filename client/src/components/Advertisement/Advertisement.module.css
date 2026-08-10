@@ -2,3 +2,32 @@
     border: 2px solid var(--ui-blue);
     background-color: var(--ui-shade-6);
 }
+
+.preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 90px;
+    box-sizing: border-box;
+    border: 1px dashed color-mix(in srgb, var(--ui-blue) 55%, transparent);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--ui-shade-6) 82%, transparent);
+    color: var(--ui-shade-1);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-align: center;
+}
+
+.preview small {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0;
+    opacity: 0.65;
+}
+
+.previewVertical {
+    min-height: 250px;
+}
