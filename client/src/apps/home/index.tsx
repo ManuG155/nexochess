@@ -22,7 +22,8 @@ function App() {
 
     return <PageWrapper>
         <Home/>
-        <PageAdvertisement/>
+        <PageAdvertisement afterSelector="main > section:nth-of-type(2)"/>
+        <PageAdvertisement afterSelector="main > section:nth-of-type(3)"/>
     </PageWrapper>;
 }
 
