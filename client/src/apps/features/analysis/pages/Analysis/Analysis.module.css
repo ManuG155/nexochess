@@ -33,7 +33,6 @@
     padding: 0 30px;
     box-sizing: border-box;
     width: 100%;
-    max-width: 1520px;
     height: calc(100vh - 125px);
     margin: 0 auto;
 }
@@ -64,6 +63,10 @@
 }
 
 @media (min-width: 1800px) {
+    .analysisSection {
+        max-width: 1520px;
+    }
+
     .sideAdvertisement:not(:empty) {
         display: block;
     }
