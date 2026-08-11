@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 
 const files = {
     client: "client/src/apps/features/puzzles/lib/sources.ts",
+    multiSelection: "client/src/apps/features/puzzles/lib/multiSelection.ts",
     page: "client/src/apps/features/puzzles/pages/Puzzles/index.tsx",
     types: "client/src/apps/features/puzzles/types.ts",
     build: "scripts/build-cloudflare.mjs",
@@ -60,12 +61,18 @@ requireFragments("client", "The static puzzle client", [
     "unpackStaticPuzzle"
 ]);
 
+requireFragments("multiSelection", "The multi-selection puzzle bridge", [
+    'import { loadNextLichessPuzzleRecord } from "./sources"',
+    "export async function loadNextLichessPuzzleFromSelections(",
+    "const record = await loadNextLichessPuzzleRecord("
+]);
+
 requireFragments("page", "The Puzzles page connection", [
     "loadPuzzleCatalogue",
-    "loadNextLichessPuzzleRecord",
+    "loadNextLichessPuzzleFromSelections",
     "normaliseLichessPuzzle",
     "const lichessPromise = loadPuzzleCatalogue()",
-    "const record = await loadNextLichessPuzzleRecord("
+    "const record = await loadNextLichessPuzzleFromSelections("
 ]);
 
 requireFragments("types", "The static puzzle catalogue types", [
@@ -148,6 +155,6 @@ if (errors.length > 0) {
 
 console.log(
     "Puzzle backend audit passed: atomic Mongo import, static Cloudflare "
-    + "catalogue, indexed shards, data packs and environment-specific origins "
-    + "are connected."
+    + "catalogue, indexed shards, data packs, multi-selection routing and "
+    + "environment-specific origins are connected."
 );
