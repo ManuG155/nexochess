@@ -646,12 +646,11 @@
 .moveSquare::after {
     content: "";
     position: absolute;
-    width: 28%;
-    height: 28%;
+    width: 30%;
+    height: 30%;
 
     border-radius: 50%;
-    background: rgba(44, 96, 205, 0.62);
-    box-shadow: 0 0 0 4px rgba(44, 96, 205, 0.12);
+    background: rgba(0, 0, 0, 0.15);
 }
 
 .captureSquare::after {
