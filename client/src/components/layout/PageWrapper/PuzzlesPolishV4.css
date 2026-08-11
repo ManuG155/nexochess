@@ -1,0 +1,462 @@
+/* Puzzles polish V4: setup centrado, coach estable y controles sin solapes. */
+
+/* ---------- Coach bubble: white bubble, tail lower and stable ---------- */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-coach-card > div:first-child::after {
+    content: "" !important;
+    position: absolute !important;
+    top: 70% !important;
+    right: -7px !important;
+    width: 12px !important;
+    height: 12px !important;
+    margin: 0 !important;
+    border-right: 1px solid rgba(72, 112, 173, 0.3) !important;
+    border-bottom: 1px solid rgba(72, 112, 173, 0.3) !important;
+    background: #ffffff !important;
+    transform: translateY(-50%) rotate(-45deg) !important;
+}
+
+/* ---------- Setup: full useful width, coach fixed only in the top area ---------- */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-shell {
+    position: relative !important;
+    display: block !important;
+    width: min(1320px, calc(100vw - 64px)) !important;
+    max-width: 1320px !important;
+    margin: 0 auto !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main {
+    width: 100% !important;
+    max-height: calc(100dvh - 132px) !important;
+    padding: 28px 34px 30px !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main > header,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main > header + div {
+    box-sizing: border-box !important;
+    width: calc(100% - 350px) !important;
+    max-width: 900px !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-shell > .nexo-puzzle-coach-card {
+    position: absolute !important;
+    top: 30px !important;
+    right: 34px !important;
+    z-index: 5 !important;
+    width: 310px !important;
+    grid-template-columns: minmax(0, 1fr) 96px !important;
+    align-items: center !important;
+    padding: 0 !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-shell > .nexo-puzzle-coach-card > button {
+    width: 104px !important;
+    height: 142px !important;
+    margin: 0 !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-shell > .nexo-puzzle-coach-card > div:first-child {
+    min-height: 0 !important;
+    font-size: 0.9rem !important;
+    line-height: 1.42 !important;
+}
+
+/* Selector and all lower setup controls share the same centered visual axis. */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-picker,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-picker + div,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-picker + div + div,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main > button:last-of-type {
+    box-sizing: border-box !important;
+    width: min(1120px, calc(100% - 54px)) !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-picker {
+    margin-top: 26px !important;
+    padding-top: 22px !important;
+}
+
+/* ---------- Theme picker: tabs + one central panel, no accordions ---------- */
+.nexo-puzzle-theme-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.nexo-puzzle-theme-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 7px;
+}
+
+.nexo-puzzle-theme-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 38px;
+    padding: 7px 12px;
+    color: rgba(244, 247, 252, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.025);
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 680;
+    cursor: pointer;
+}
+
+.nexo-puzzle-theme-tab:hover,
+.nexo-puzzle-theme-tab.nexo-current {
+    color: #e8f0ff;
+    border-color: rgba(110, 156, 255, 0.3);
+    background: rgba(70, 125, 232, 0.09);
+}
+
+.nexo-puzzle-theme-tab.nexo-has-selection {
+    border-color: rgba(110, 156, 255, 0.42);
+}
+
+.nexo-puzzle-theme-tab.nexo-active {
+    color: #edf4ff;
+    border-color: rgba(110, 156, 255, 0.52);
+    background: rgba(70, 125, 232, 0.16);
+}
+
+.nexo-puzzle-theme-tab small {
+    display: grid;
+    place-items: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: rgba(103, 151, 244, 0.17);
+    color: #a9c5ff;
+    font-size: 0.65rem;
+}
+
+.nexo-puzzle-theme-panel {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.075);
+    border-radius: 12px;
+    background: rgba(10, 14, 20, 0.22);
+}
+
+.nexo-puzzle-theme-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding-bottom: 11px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+.nexo-puzzle-theme-panel-head > div {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.nexo-puzzle-theme-panel-head strong {
+    font-size: 0.95rem;
+}
+
+.nexo-puzzle-theme-panel-head span {
+    color: rgba(244, 247, 252, 0.48);
+    font-size: 0.76rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nexo-puzzle-theme-panel-head > button {
+    flex: 0 0 auto;
+    min-width: 74px;
+    min-height: 34px;
+    padding: 6px 10px;
+    color: #a9c5ff;
+    border: 1px solid rgba(110, 156, 255, 0.18);
+    border-radius: 8px;
+    background: transparent;
+    font: inherit;
+    font-size: 0.76rem;
+    cursor: pointer;
+}
+
+.nexo-puzzle-theme-panel-head > button:hover,
+.nexo-puzzle-theme-panel-head > button.nexo-active {
+    border-color: rgba(110, 156, 255, 0.42);
+    background: rgba(70, 125, 232, 0.13);
+}
+
+.nexo-puzzle-theme-search {
+    box-sizing: border-box;
+    width: min(520px, 100%);
+    height: 38px;
+    margin: 12px auto 0;
+    padding: 0 11px;
+    color: inherit;
+    border: 1px solid rgba(121, 164, 241, 0.16);
+    border-radius: 8px;
+    outline: 0;
+    background: rgba(7, 10, 15, 0.32);
+    font: inherit;
+    font-size: 0.8rem;
+}
+
+.nexo-puzzle-theme-options-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    max-height: 250px;
+    margin-top: 12px;
+    padding-right: 5px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+}
+
+.nexo-puzzle-theme-options-grid > button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-width: 0;
+    min-height: 38px;
+    padding: 7px 9px;
+    color: rgba(244, 247, 252, 0.76);
+    text-align: left;
+    border: 0;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.018);
+    font: inherit;
+    font-size: 0.76rem;
+    cursor: pointer;
+}
+
+.nexo-puzzle-theme-options-grid > button:hover,
+.nexo-puzzle-theme-options-grid > button.nexo-active {
+    color: #edf4ff;
+    background: rgba(70, 125, 232, 0.14);
+}
+
+.nexo-puzzle-theme-options-grid > button > span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.nexo-puzzle-theme-options-grid > button > small {
+    flex: 0 0 auto;
+    color: rgba(244, 247, 252, 0.35);
+    font-size: 0.64rem;
+}
+
+/* Keep difficulty and start action centered instead of left-heavy. */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-picker + div > div:last-child {
+    justify-content: center !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main > button:last-of-type {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 52px !important;
+}
+
+/* ---------- Left rail cleanup ---------- */
+/* Remove duplicated per-puzzle rating below the large puzzle Elo. */
+.nexo-puzzle-score-card > small {
+    display: none !important;
+}
+
+/* Evaluation visibility switch removed; evaluation remains visible. */
+.nexo-puzzle-back-link + .nexo-puzzle-left-control {
+    display: none !important;
+}
+
+/* Difficulty caret: same coordinates open or closed, rotation only. */
+.nexo-puzzle-difficulty-menu > summary {
+    position: relative !important;
+    padding-right: 34px !important;
+}
+
+.nexo-puzzle-difficulty-menu > summary::after,
+.nexo-puzzle-difficulty-menu[open] > summary::after {
+    content: "" !important;
+    position: absolute !important;
+    top: 50% !important;
+    right: 13px !important;
+    width: 7px !important;
+    height: 7px !important;
+    margin: 0 !important;
+    border-right: 1.5px solid #8fb2f9 !important;
+    border-bottom: 1.5px solid #8fb2f9 !important;
+    transform-origin: center !important;
+}
+
+.nexo-puzzle-difficulty-menu > summary::after {
+    transform: translateY(-65%) rotate(45deg) !important;
+}
+
+.nexo-puzzle-difficulty-menu[open] > summary::after {
+    transform: translateY(-35%) rotate(225deg) !important;
+}
+
+/* ---------- Board tools: fixed at the top regardless of orientation ---------- */
+.nexo-puzzle-board-tools,
+.nexo-puzzle-board-white .nexo-puzzle-board-tools,
+.nexo-puzzle-board-black .nexo-puzzle-board-tools {
+    top: 0 !important;
+    bottom: auto !important;
+    justify-content: flex-start !important;
+}
+
+/* ---------- Right rail: content determines coach height; nothing may overlap ---------- */
+.nexo-puzzle-right-rail {
+    gap: 10px !important;
+    overflow: visible !important;
+}
+
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card {
+    flex: 0 0 auto !important;
+    grid-template-columns: minmax(0, 1fr) 104px !important;
+    align-items: center !important;
+    min-height: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+}
+
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card > div:first-child {
+    align-self: center !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 14px 15px !important;
+    font-size: 0.86rem !important;
+    line-height: 1.38 !important;
+}
+
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card > button {
+    align-self: center !important;
+    width: 108px !important;
+    height: 150px !important;
+    margin: 0 !important;
+}
+
+.nexo-puzzle-objective {
+    position: relative !important;
+    z-index: 1 !important;
+    flex: 0 0 auto !important;
+    margin: 0 !important;
+}
+
+.nexo-puzzle-actions > button {
+    align-content: center !important;
+}
+
+.nexo-puzzle-actions > button > strong,
+.nexo-puzzle-actions > button > small {
+    text-align: center !important;
+}
+
+/* ---------- Light theme ---------- */
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-tab {
+    color: #30415a;
+    border-color: rgba(39, 72, 109, 0.12);
+    background: rgba(247, 250, 254, 0.8);
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-tab:hover,
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-tab.nexo-current,
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-tab.nexo-active {
+    color: #17345f;
+    background: rgba(70, 125, 232, 0.1);
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-panel {
+    border-color: rgba(39, 72, 109, 0.12);
+    background: rgba(247, 250, 254, 0.8);
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-panel-head {
+    border-bottom-color: rgba(39, 72, 109, 0.1);
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-panel-head span,
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-options-grid > button > small {
+    color: #6a7c92;
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-options-grid > button {
+    color: #26364d;
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-options-grid > button:hover,
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-options-grid > button.nexo-active {
+    color: #17345f;
+    background: rgba(70, 125, 232, 0.1);
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-search {
+    background: #ffffff;
+    border-color: rgba(39, 72, 109, 0.15);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1120px) {
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-shell {
+        width: min(900px, calc(100vw - 32px)) !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main > header,
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main > header + div {
+        width: 100% !important;
+        max-width: none !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-shell > .nexo-puzzle-coach-card {
+        position: static !important;
+        width: min(100%, 560px) !important;
+        margin: 14px auto 0 !important;
+    }
+
+    .nexo-puzzle-theme-options-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 760px) {
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main {
+        padding: 18px !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-picker,
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-picker + div,
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-picker + div + div,
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main > button:last-of-type {
+        width: 100% !important;
+    }
+
+    .nexo-puzzle-theme-tabs {
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 4px;
+    }
+
+    .nexo-puzzle-theme-tab {
+        flex: 0 0 auto;
+    }
+
+    .nexo-puzzle-theme-options-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .nexo-puzzle-theme-panel-head span {
+        white-space: normal;
+    }
+}
