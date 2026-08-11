@@ -1,0 +1,48 @@
+.infoButton {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+
+    color: #9fbcf7;
+    border: 1px solid rgba(122, 164, 245, 0.32);
+    border-radius: 50%;
+    background: transparent;
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 760;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.infoButton:hover,
+.infoButton:focus-visible,
+.infoButton[aria-expanded="true"] {
+    color: #ffffff;
+    border-color: rgba(138, 178, 255, 0.68);
+    background: rgba(70, 125, 232, 0.1);
+}
+
+.infoButton:focus-visible {
+    outline: 2px solid rgba(111, 159, 255, 0.7);
+    outline-offset: 2px;
+}
+
+.discovery {
+    width: 100%;
+}
+
+:global([data-nexo-shell][data-theme="light"]) .infoButton {
+    color: #315d9d;
+    border-color: rgba(49, 93, 157, 0.28);
+}
+
+:global([data-nexo-shell][data-theme="light"]) .infoButton:hover,
+:global([data-nexo-shell][data-theme="light"]) .infoButton:focus-visible,
+:global([data-nexo-shell][data-theme="light"])
+.infoButton[aria-expanded="true"] {
+    color: #183d73;
+    border-color: rgba(49, 93, 157, 0.5);
+    background: rgba(70, 125, 232, 0.08);
+}
