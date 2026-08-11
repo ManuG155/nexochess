@@ -281,6 +281,7 @@ function Puzzles() {
     const [coachExpression, setCoachExpression] =
         useState<CoachExpression>("thinking");
     const [coachPickerOpen, setCoachPickerOpen] = useState(false);
+    const [puzzleElapsedSeconds, setPuzzleElapsedSeconds] = useState(0);
 
     const settings = useSettingsStore(state => state.settings);
     const setSettings = useSettingsStore(state => state.setSettings);
@@ -306,6 +307,7 @@ function Puzzles() {
     const puzzleBoardShellRef = useRef<HTMLDivElement | null>(null);
     const setupRevealedRef = useRef(false);
     const requestingPuzzleRef = useRef(false);
+    const puzzleStartedAtRef = useRef(0);
 
     useEffect(() => {
         profileRef.current = profile;
@@ -323,6 +325,23 @@ function Puzzles() {
 
         if (!autoNext) window.clearTimeout(autoNextTimer.current);
     }, [autoNext]);
+
+    useEffect(() => {
+        if (!puzzle || pageState != "playing") return undefined;
+
+        const updateElapsed = () => {
+            const elapsed = Math.max(
+                0,
+                Math.floor((Date.now() - puzzleStartedAtRef.current) / 1000)
+            );
+            setPuzzleElapsedSeconds(elapsed);
+        };
+
+        updateElapsed();
+        const intervalId = window.setInterval(updateElapsed, 1000);
+
+        return () => window.clearInterval(intervalId);
+    }, [puzzle?.id, pageState]);
 
     useEffect(() => {
         let cancelled = false;
@@ -401,6 +420,9 @@ function Puzzles() {
         window.clearTimeout(wrongMoveTimer.current);
         window.clearTimeout(moveFeedbackTimer.current);
         window.clearTimeout(autoNextTimer.current);
+
+        puzzleStartedAtRef.current = Date.now();
+        setPuzzleElapsedSeconds(0);
 
         const history = nextPuzzle.previousFen
             ? [nextPuzzle.previousFen, nextPuzzle.startFen]
@@ -573,6 +595,8 @@ function Puzzles() {
         window.clearTimeout(autoNextTimer.current);
         window.clearTimeout(replyTimer.current);
         setPuzzle(undefined);
+        puzzleStartedAtRef.current = 0;
+        setPuzzleElapsedSeconds(0);
         setPageState("setup");
         setPendingReply(false);
         setWrongMovePreview(undefined);
@@ -1569,40 +1593,31 @@ function Puzzles() {
                         </div>
                     )}
 
-                    <button
-                        type="button"
-                        className="nexo-puzzle-back-link"
-                        onClick={returnToSetup}
-                    >
-                        <span aria-hidden="true">‹</span>
-                        {t("actions.changeFilters")}
-                    </button>
+                    <div className="nexo-puzzle-session-card">
+                        <button
+                            type="button"
+                            className="nexo-puzzle-back-link"
+                            onClick={returnToSetup}
+                        >
+                            <span aria-hidden="true">‹</span>
+                            {t("actions.changeFilters")}
+                        </button>
 
-                    <div className="nexo-puzzle-left-control">
-                        <div className="nexo-puzzle-control-row">
-                            <strong>{t("puzzle.evaluation")}</strong>
-                            <button
-                                type="button"
-                                role="switch"
-                                aria-checked={evaluationVisible}
-                                aria-label={t("puzzle.evaluation")}
-                                className="nexo-puzzle-switch"
-                                onClick={() => setEvaluationVisible(value => !value)}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="nexo-puzzle-left-control">
-                        <div className="nexo-puzzle-control-row">
-                            <strong>{t("actions.autoNext")}</strong>
-                            <button
-                                type="button"
-                                role="switch"
-                                aria-checked={autoNext}
-                                aria-label={t("actions.autoNext")}
-                                className="nexo-puzzle-switch"
-                                onClick={() => setAutoNext(value => !value)}
-                            />
+                        <div className={[
+                            "nexo-puzzle-left-control",
+                            "nexo-puzzle-auto-next-control"
+                        ].join(" ")}>
+                            <div className="nexo-puzzle-control-row">
+                                <strong>{t("actions.autoNext")}</strong>
+                                <button
+                                    type="button"
+                                    role="switch"
+                                    aria-checked={autoNext}
+                                    aria-label={t("actions.autoNext")}
+                                    className="nexo-puzzle-switch"
+                                    onClick={() => setAutoNext(value => !value)}
+                                />
+                            </div>
                         </div>
                     </div>
 
@@ -1635,6 +1650,36 @@ function Puzzles() {
                             </div>
                         </details>
                     )}
+
+                    <div
+                        className="nexo-puzzle-timer"
+                        role="timer"
+                        aria-live="off"
+                    >
+                        <span aria-hidden="true">
+                            <svg
+                                viewBox="0 0 24 24"
+                                width="20"
+                                height="20"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.8"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <circle cx="12" cy="13" r="8" />
+                                <path d="M12 9v4l2.5 1.5" />
+                                <path d="M9 3h6" />
+                            </svg>
+                        </span>
+                        <strong>
+                            {String(Math.floor(puzzleElapsedSeconds / 60))
+                                .padStart(2, "0")}
+                            :
+                            {String(puzzleElapsedSeconds % 60)
+                                .padStart(2, "0")}
+                        </strong>
+                    </div>
 
                     {showRatedProfile && (
                         <div className="nexo-puzzle-left-history">
