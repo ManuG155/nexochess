@@ -105,14 +105,46 @@
     overflow: visible !important;
 }
 
-/* Cola en la zona baja: apunta a la cara del retrato, no al pecho. */
+/*
+ * La cola usa dos triángulos superpuestos: el de detrás crea el borde azul y
+ * el blanco lo rellena. Ambos se anclan desde la base del retrato, no desde
+ * un porcentaje del texto, por lo que siguen apuntando a la boca aunque una
+ * traducción haga crecer el bocadillo.
+ */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card > div:first-child::before,
 [data-nexo-shell][data-route="puzzles"]
 .nexo-puzzle-right-rail > .nexo-puzzle-coach-card > div:first-child::after {
-    top: 72% !important;
+    content: "" !important;
+    position: absolute !important;
+    top: auto !important;
+    left: auto !important;
+    margin: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    clip-path: polygon(0 0, 100% 50%, 0 100%) !important;
+    pointer-events: none !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card > div:first-child::before {
+    z-index: 3 !important;
+    right: -16px !important;
+    bottom: 55px !important;
+    width: 16px !important;
+    height: 26px !important;
+    background: rgba(72, 112, 173, 0.58) !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card > div:first-child::after {
+    z-index: 4 !important;
     right: -14px !important;
+    bottom: 57px !important;
     width: 14px !important;
-    height: 24px !important;
-    transform: translateY(-50%) !important;
+    height: 22px !important;
+    background: #ffffff !important;
 }
 
 /* El entrenador baja hasta el fondo del bocadillo. */
@@ -164,7 +196,12 @@
     }
 
     [data-nexo-shell][data-route="puzzles"]
+    .nexo-puzzle-right-rail > .nexo-puzzle-coach-card > div:first-child::before {
+        bottom: 48px !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"]
     .nexo-puzzle-right-rail > .nexo-puzzle-coach-card > div:first-child::after {
-        top: 70% !important;
+        bottom: 50px !important;
     }
 }
