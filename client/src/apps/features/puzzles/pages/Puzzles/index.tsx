@@ -166,7 +166,6 @@ const difficulties: PuzzleDifficulty[] = [
 ];
 
 const AUTO_NEXT_STORAGE_KEY = "nexochess-puzzle-auto-next-v1";
-const PUZZLES_FLIP_EVENT = "nexochess:puzzles:flip-board"; // NEXO_PUZZLES_NAV_FLIP
 
 function getAutoNextPreference() {
     if (typeof window == "undefined") return false;
@@ -251,6 +250,9 @@ function Puzzles() {
         () => getPuzzlePageCopy(t),
         [i18n.resolvedLanguage, t]
     );
+    const flipBoardLabel = t("optionsToolbar.flipBoard", {
+        ns: "analysis"
+    });
 
     const [ pageState, setPageState ] =
         useState<PageState>("loading");
@@ -347,24 +349,6 @@ function Puzzles() {
     const puzzleBoardShellRef = useRef<HTMLDivElement | null>(null);
     const setupRevealedRef = useRef(false);
     const requestingPuzzleRef = useRef(false);
-
-    useEffect(() => {
-        const flipBoard = () => {
-            setBoardFlipped(flipped => !flipped);
-        };
-
-        window.addEventListener(
-            PUZZLES_FLIP_EVENT,
-            flipBoard
-        );
-
-        return () => {
-            window.removeEventListener(
-                PUZZLES_FLIP_EVENT,
-                flipBoard
-            );
-        };
-    }, []);
 
     useEffect(() => {
         profileRef.current = profile;
@@ -1832,12 +1816,57 @@ function Puzzles() {
                 </header>
 
                 <div className={styles.boardColumn}>
-                    <div className={[
-                        styles.boardStage,
-                        settings.themes.board.coordinates == "outside"
-                            ? styles.boardStageWithOutsideCoordinates
-                            : ""
-                    ].filter(Boolean).join(" ")}>
+                    <div
+                        className={[
+                            styles.boardStage,
+                            settings.themes.board.coordinates == "outside"
+                                ? styles.boardStageWithOutsideCoordinates
+                                : ""
+                        ].filter(Boolean).join(" ")}
+                        style={{ position: "relative" }}
+                    >
+                        <button
+                            type="button"
+                            onClick={() => setBoardFlipped(flipped => !flipped)}
+                            title={flipBoardLabel}
+                            aria-label={flipBoardLabel}
+                            style={{
+                                display: "grid",
+                                placeItems: "center",
+                                position: "absolute",
+                                top: "-34px",
+                                right: "0",
+                                zIndex: 10,
+                                boxSizing: "border-box",
+                                width: "30px",
+                                height: "30px",
+                                padding: 0,
+                                color: "#e6efff",
+                                border: "1px solid rgba(126, 169, 255, 0.58)",
+                                borderRadius: "50%",
+                                background: "rgba(24, 35, 54, 0.96)",
+                                boxShadow: "0 6px 16px rgba(0, 0, 0, 0.28)",
+                                cursor: "pointer"
+                            }}
+                        >
+                            <svg
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                                width="17"
+                                height="17"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="1.8"
+                            >
+                                <path d="M7 7h10l-2.5-2.5" />
+                                <path d="M17 17H7l2.5 2.5" />
+                                <path d="M19 9.5A7 7 0 0 1 17 17" />
+                                <path d="M5 14.5A7 7 0 0 1 7 7" />
+                            </svg>
+                        </button>
+
                         <EvaluationBar
                             className={styles.evaluationBar}
                             evaluation={boardEvaluation}
