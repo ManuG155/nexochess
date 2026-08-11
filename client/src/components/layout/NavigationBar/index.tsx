@@ -16,7 +16,6 @@ import { completePendingAuthAnalytics } from "@/lib/analytics";
 import HoverDropdown from "./HoverDropdown";
 import * as styles from "./NavigationBar.module.css";
 
-const PUZZLES_FLIP_EVENT = "nexochess:puzzles:flip-board";
 const loadSidebar = () => import("@/components/layout/sidebar/Sidebar");
 const loadShareDialog = () => import("@analysis/components/ShareDialog");
 const Sidebar = lazy(loadSidebar);
@@ -26,7 +25,6 @@ type IconName =
     | "academy"
     | "analysis"
     | "archive"
-    | "flip"
     | "login"
     | "menu"
     | "puzzle"
@@ -62,12 +60,6 @@ function NavIcon({ name }: NavIconProps) {
             <path d="M21 9v6" />
         </>,
         puzzle: <path d="M9.5 4H4v5.5a2.5 2.5 0 1 1 0 5V20h5.5a2.5 2.5 0 1 0 5 0H20v-5.5a2.5 2.5 0 1 0 0-5V4h-5.5a2.5 2.5 0 1 1-5 0Z" />,
-        flip: <>
-            <path d="M7 7h10l-2.5-2.5" />
-            <path d="M17 17H7l2.5 2.5" />
-            <path d="M19 9.5A7 7 0 0 1 17 17" />
-            <path d="M5 14.5A7 7 0 0 1 7 7" />
-        </>,
         share: <>
             <circle cx="18" cy="5" r="2.5" />
             <circle cx="6" cy="12" r="2.5" />
@@ -159,7 +151,6 @@ function NavigationBar() {
     const onPuzzlesPage = currentPathname.startsWith("/puzzles");
     void onSettingsPage;
 
-    const showFlipAction = onAnalysisPage || onPuzzlesPage;
     const showShareAction = onAnalysisPage;
 
     useEffect(() => {
@@ -223,21 +214,6 @@ function NavigationBar() {
         requestAnimationFrame(() => setSidebarOpen(true));
     }
 
-    async function flipVisibleBoard() {
-        if (onPuzzlesPage) {
-            window.dispatchEvent(new Event(PUZZLES_FLIP_EVENT));
-            return;
-        }
-
-        if (!onAnalysisPage) return;
-
-        const { default: useAnalysisBoardStore } = await import(
-            "@analysis/stores/AnalysisBoardStore"
-        );
-        const { boardFlipped, setBoardFlipped } = useAnalysisBoardStore.getState();
-        setBoardFlipped(!boardFlipped);
-    }
-
     async function openShareDialog() {
         if (!onAnalysisPage) return;
 
@@ -297,11 +273,6 @@ function NavigationBar() {
             <NavigationItem icon="archive" url="/archive" current={onArchivePage}>
                 {t("sidebar.archive", { ns: "common" })}
             </NavigationItem>
-            {showFlipAction && <NavigationAction icon="flip" onClick={() => {
-                void flipVisibleBoard();
-            }}>
-                {t("optionsToolbar.flipBoard", { ns: "analysis" })}
-            </NavigationAction>}
             <NavigationItem icon="academy" url="/academy" current={onAcademyPage}>
                 {t("navigationBar.academy", { ns: "common" })}
             </NavigationItem>
@@ -316,17 +287,12 @@ function NavigationBar() {
         </nav>
 
         <div className={styles.rightArea}>
-            {(showFlipAction || showShareAction) && <div className={styles.analysisActions}>
-                {showFlipAction && <NavigationAction icon="flip" onClick={() => {
-                    void flipVisibleBoard();
-                }}>
-                    {t("optionsToolbar.flipBoard", { ns: "analysis" })}
-                </NavigationAction>}
-                {showShareAction && <NavigationAction icon="share" onClick={() => {
+            {showShareAction && <div className={styles.analysisActions}>
+                <NavigationAction icon="share" onClick={() => {
                     void openShareDialog();
                 }}>
                     {t("navigationBar.share", { ns: "common" })}
-                </NavigationAction>}
+                </NavigationAction>
             </div>}
 
             <div className={styles.accountArea}>
