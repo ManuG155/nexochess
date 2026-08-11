@@ -1,0 +1,170 @@
+/* Puzzles V6: correcciones de geometría y flujo en resolución. */
+
+/* Todo el lateral se mueve con el documento; nada queda anclado. */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-left-rail,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-right-rail {
+    position: relative !important;
+    top: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-left-rail {
+    overflow: visible !important;
+}
+
+/* Botón de información: fuera del panel, en su esquina inferior izquierda. */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-left-rail > button[data-puzzle-info-toggle="true"] {
+    position: absolute !important;
+    z-index: 12 !important;
+    left: -42px !important;
+    bottom: 10px !important;
+    margin: 0 !important;
+}
+
+/* Cambiar sesión + siguiente automático se leen como un único bloque. */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-back-link {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-height: 40px !important;
+    margin: 0 0 -10px !important;
+    padding: 10px 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    border-bottom: 0 !important;
+    border-radius: 10px 10px 0 0 !important;
+    background: rgba(7, 10, 15, 0.26) !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-back-link + .nexo-puzzle-left-control {
+    border-radius: 0 0 10px 10px !important;
+    border-top-color: rgba(255, 255, 255, 0.055) !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"]
+.nexo-puzzle-back-link {
+    border-color: rgba(39, 72, 109, 0.1) !important;
+    background: rgba(247, 250, 254, 0.85) !important;
+}
+
+/* Dificultad: chevron dibujado con bordes, sin glifo raro. */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-difficulty-menu > summary::after {
+    content: "" !important;
+    position: absolute !important;
+    top: 50% !important;
+    right: 14px !important;
+    width: 7px !important;
+    height: 7px !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-right: 1.7px solid #8fb2f9 !important;
+    border-bottom: 1.7px solid #8fb2f9 !important;
+    background: transparent !important;
+    transform: translateY(-65%) rotate(45deg) !important;
+    transform-origin: 50% 50% !important;
+    transition: transform 0.15s ease !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-difficulty-menu[open] > summary::after {
+    transform: translateY(-35%) rotate(225deg) !important;
+}
+
+/* El rail derecho crece por contenido y nunca recorta traducciones. */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-right-rail {
+    height: auto !important;
+    min-height: var(--nexo-puzzle-stage) !important;
+    overflow: visible !important;
+}
+
+/* Entrenador + bocadillo forman una única fila cuyo alto lo manda el texto. */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 102px !important;
+    align-items: stretch !important;
+    gap: 4px !important;
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card > div:first-child {
+    align-self: stretch !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 13px 14px !important;
+    overflow: visible !important;
+}
+
+/* Cola en la zona baja: apunta a la cara del retrato, no al pecho. */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card > div:first-child::after {
+    top: 72% !important;
+    right: -14px !important;
+    width: 14px !important;
+    height: 24px !important;
+    transform: translateY(-50%) !important;
+}
+
+/* El entrenador baja hasta el fondo del bocadillo. */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card > button {
+    align-self: end !important;
+    justify-self: end !important;
+    width: 104px !important;
+    height: 132px !important;
+    margin: 0 -6px 2px 0 !important;
+}
+
+/* El objetivo queda pegado al bloque del entrenador, sin vacío artificial. */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-objective {
+    margin-top: 0 !important;
+}
+
+/* El rail funciona como una sola columna al hacer scroll. */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-objective,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-actions,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-next,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-secondary {
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+}
+
+/* Flip board permanece siempre arriba. */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-board-tools,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-board-white .nexo-puzzle-board-tools,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-board-black .nexo-puzzle-board-tools {
+    top: 4px !important;
+    bottom: auto !important;
+    justify-content: flex-start !important;
+}
+
+@media (max-width: 1280px) and (min-width: 1051px) {
+    [data-nexo-shell][data-route="puzzles"]
+    .nexo-puzzle-right-rail > .nexo-puzzle-coach-card {
+        grid-template-columns: minmax(0, 1fr) 88px !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"]
+    .nexo-puzzle-right-rail > .nexo-puzzle-coach-card > button {
+        width: 92px !important;
+        height: 118px !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"]
+    .nexo-puzzle-right-rail > .nexo-puzzle-coach-card > div:first-child::after {
+        top: 70% !important;
+    }
+}
