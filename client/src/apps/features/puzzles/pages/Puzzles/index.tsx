@@ -1815,6 +1815,166 @@ function Puzzles() {
                     </div>
                 </header>
 
+                <aside className="nexo-puzzle-left-rail">
+                    {showRatedProfile && (
+                        <div className="nexo-puzzle-left-performance">
+                            {profileStats}
+                            {sessionRatingTrail}
+                        </div>
+                    )}
+
+                    <div className="nexo-puzzle-quick-filters">
+                        <strong>{t("setup.kicker")}</strong>
+
+                        <label>
+                            <span>{t("setup.title")}</span>
+                            <select
+                                value={source}
+                                onChange={event => (
+                                    setSource(event.target.value as PuzzleSource)
+                                )}
+                            >
+                                <option value="archive">
+                                    {t("sources.archive.title")}
+                                </option>
+                                <option value="lichess">
+                                    {pageCopy.trainingTitle}
+                                </option>
+                            </select>
+                        </label>
+
+                        {source == "lichess" && (
+                            <>
+                                <label>
+                                    <span>{t("filters.theme")}</span>
+                                    <select
+                                        value={themeSelection.category}
+                                        onChange={event => {
+                                            setThemeSelection({
+                                                category: event.target.value as
+                                                    PuzzleThemeSelection["category"]
+                                            });
+                                            setOpeningSearch("");
+                                        }}
+                                    >
+                                        {puzzleThemeCategories.map(value => (
+                                            <option key={value} value={value}>
+                                                {t(
+                                                    `themeCategories.${value}`
+                                                )}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </label>
+
+                                {filterOptions.length > 0 && (
+                                    <label>
+                                        <span>
+                                            {t("filters.subtheme", {
+                                                theme: t(
+                                                    "themeCategories."
+                                                    + themeSelection.category
+                                                )
+                                            })}
+                                        </span>
+                                        <select
+                                            value={
+                                                themeSelection.kind
+                                                && themeSelection.value
+                                                    ? themeSelection.kind
+                                                        + ":::"
+                                                        + themeSelection.value
+                                                    : ""
+                                            }
+                                            onChange={event => {
+                                                const encoded =
+                                                    event.target.value;
+
+                                                if (!encoded) {
+                                                    setThemeSelection({
+                                                        category:
+                                                            themeSelection
+                                                                .category
+                                                    });
+                                                    return;
+                                                }
+
+                                                const [kind, ...parts] =
+                                                    encoded.split(":::");
+
+                                                setThemeSelection({
+                                                    category:
+                                                        themeSelection.category,
+                                                    kind: kind as NonNullable<
+                                                        PuzzleThemeSelection[
+                                                            "kind"
+                                                        ]
+                                                    >,
+                                                    value: parts.join(":::")
+                                                });
+                                            }}
+                                        >
+                                            <option value="">
+                                                {t("filters.clearSubtheme")}
+                                            </option>
+                                            {filterOptions.map(option => (
+                                                <option
+                                                    key={
+                                                        option.kind + ":"
+                                                        + option.value
+                                                    }
+                                                    value={
+                                                        option.kind + ":::"
+                                                        + option.value
+                                                    }
+                                                >
+                                                    {option.kind == "opening"
+                                                        ? formatOpeningTag(
+                                                            option.value,
+                                                            i18n.resolvedLanguage
+                                                                || "en"
+                                                        )
+                                                        : formatPuzzleTheme(
+                                                            option.value,
+                                                            i18n.resolvedLanguage
+                                                                || "en"
+                                                        )
+                                                    }
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </label>
+                                )}
+
+                                <label>
+                                    <span>{t("filters.difficulty")}</span>
+                                    <select
+                                        value={difficulty}
+                                        onChange={event => (
+                                            setDifficulty(
+                                                event.target.value as
+                                                    PuzzleDifficulty
+                                            )
+                                        )}
+                                    >
+                                        {difficulties.map(value => (
+                                            <option key={value} value={value}>
+                                                {t(
+                                                    `difficulties.${value}.title`
+                                                )}
+                                                {" · "}
+                                                {t(
+                                                    `difficulties.${value}.range`
+                                                )}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </label>
+                            </>
+                        )}
+                    </div>
+                </aside>
+
                 <div className={styles.boardColumn}>
                     <div
                         className={[
@@ -2086,13 +2246,6 @@ function Puzzles() {
                             ))}
                         </div>
                     </div>
-
-                    {showRatedProfile && (
-                        <div className={styles.performancePanel}>
-                            {profileStats}
-                            {sessionRatingTrail}
-                        </div>
-                    )}
 
                     {pageState == "playing" && (
                         <div className={styles.puzzleActions}>
