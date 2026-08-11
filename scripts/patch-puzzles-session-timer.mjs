@@ -3,6 +3,21 @@ import { readFileSync, writeFileSync, unlinkSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 const target = "client/src/apps/features/puzzles/pages/Puzzles/index.tsx";
+const self = fileURLToPath(import.meta.url);
+const selfRelative = "scripts/patch-puzzles-session-timer.mjs";
+
+const initialStatus = execFileSync(
+    "git",
+    ["status", "--porcelain"],
+    { encoding: "utf8" }
+).trim();
+
+if (initialStatus) {
+    throw new Error(
+        "Worktree is not clean. Commit, stash or discard local changes before running this patch."
+    );
+}
+
 let source = readFileSync(target, "utf8");
 
 function replaceOnce(label, before, after) {
@@ -186,10 +201,13 @@ const npm = process.platform === "win32" ? "npm.cmd" : "npm";
 execFileSync(npm, ["run", "check", "-w", "client"], { stdio: "inherit" });
 execFileSync("git", ["diff", "--check"], { stdio: "inherit" });
 
-const self = fileURLToPath(import.meta.url);
 unlinkSync(self);
 
-execFileSync("git", ["add", "-A"], { stdio: "inherit" });
+execFileSync(
+    "git",
+    ["add", "-A", "--", target, selfRelative],
+    { stdio: "inherit" }
+);
 execFileSync(
     "git",
     ["commit", "-m", "Puzzles: unify session controls and add puzzle timer"],
