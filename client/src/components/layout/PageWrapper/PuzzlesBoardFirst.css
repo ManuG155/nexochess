@@ -1,0 +1,427 @@
+/*
+ * Resolución de Puzzles: el tablero es el elemento principal.
+ * Esta capa se carga al final del bundle de Puzzles para condensar la UI
+ * existente sin alterar su lógica, estado, rating, navegación ni backend.
+ */
+
+/* Bocadillos de entrenador: una convención visual única y legible. */
+[data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+div:has(> div + button[title][aria-label]) > div:first-child {
+    position: relative !important;
+    overflow: visible !important;
+
+    border: 1px solid rgba(72, 112, 173, 0.34) !important;
+    background: #ffffff !important;
+    color: #282b30 !important;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14) !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+div:has(> div + button[title][aria-label]) > div:first-child::before {
+    background: rgba(72, 112, 173, 0.52) !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+div:has(> div + button[title][aria-label]) > div:first-child::after {
+    background: #ffffff !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+div:has(> div + button[title][aria-label]) > div:first-child > span {
+    color: #315b9a !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+div:has(> div + button[title][aria-label]) > div:first-child > p {
+    color: #30343a !important;
+}
+
+@media (min-width: 1101px) {
+    /*
+     * Tres columnas equilibradas. Las laterales tienen el mismo ancho para
+     * que el centro geométrico del tablero coincida con el de la página.
+     * La anchura del tablero también queda limitada por la altura visible.
+     */
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) {
+        --nexo-puzzle-stage-size: min(
+            760px,
+            calc(100dvh - 108px),
+            calc(100vw - 600px)
+        );
+
+        display: grid !important;
+        grid-template-columns:
+            minmax(210px, 260px)
+            var(--nexo-puzzle-stage-size)
+            minmax(210px, 260px) !important;
+        grid-template-areas:
+            ". heading ."
+            "performance board coach"
+            "performance board objective"
+            "performance board actions"
+            "secondary board auto-next"
+            "secondary board next" !important;
+        align-items: start !important;
+        justify-content: center !important;
+        gap: 8px 18px !important;
+
+        box-sizing: border-box !important;
+        width: 100% !important;
+        max-width: 1320px !important;
+        min-height: 0 !important;
+        margin: 0 auto !important;
+        padding: 2px 10px 10px !important;
+
+        border: 0 !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        overflow: visible !important;
+    }
+
+    /* Solo “X to move” sobre el tablero. La etiqueta redundante desaparece. */
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > header {
+        grid-area: heading !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        min-height: 34px !important;
+        padding: 0 0 4px !important;
+        border: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        text-align: center !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > header > div {
+        align-items: center !important;
+        text-align: center !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > header > div > span {
+        display: none !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > header h2 {
+        margin: 0 !important;
+        font-size: clamp(1.42rem, 1.7vw, 1.82rem) !important;
+        line-height: 1.05 !important;
+    }
+
+    /* Tablero: centro absoluto, sin tarjeta exterior y limitado por viewport. */
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > div:nth-child(2) {
+        grid-area: board !important;
+        display: flex !important;
+        align-items: flex-start !important;
+        justify-content: center !important;
+
+        box-sizing: border-box !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        padding: 0 0 18px !important;
+        overflow: visible !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > div:nth-child(2) > div {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        overflow: visible !important;
+    }
+
+    /*
+     * El aside deja de ser una gran tarjeta. Sus controles pasan a ser
+     * elementos directos de la rejilla para poder equilibrar ambos lados.
+     */
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside {
+        display: contents !important;
+    }
+
+    /* Entrenador compacto a la derecha. */
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside
+    > div:has(> div + button[title][aria-label]) {
+        grid-area: coach !important;
+        position: static !important;
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) 84px !important;
+        align-items: end !important;
+
+        min-height: 96px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+
+        border: 0 !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        overflow: visible !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside
+    > div:has(> div + button[title][aria-label]) > div:first-child {
+        align-self: center !important;
+        margin: 0 0 7px !important;
+        padding: 11px 12px !important;
+        border-radius: 13px 13px 4px 13px !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside
+    > div:has(> div + button[title][aria-label]) > div:first-child > span {
+        font-size: 0.67rem !important;
+        line-height: 1.2 !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside
+    > div:has(> div + button[title][aria-label]) > div:first-child > p {
+        margin-top: 4px !important;
+        font-size: 0.82rem !important;
+        line-height: 1.34 !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside
+    > div:has(> div + button[title][aria-label]) > button[title][aria-label] {
+        align-self: end !important;
+        width: 94px !important;
+        height: 94px !important;
+        margin-left: -9px !important;
+        padding: 0 !important;
+        border: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    /* Objetivo: conserva lo útil, elimina texto repetitivo y chips temáticos. */
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside > div:has(> h3) {
+        grid-area: objective !important;
+        min-width: 0 !important;
+        padding: 12px 13px !important;
+        border: 1px solid rgba(121, 164, 241, 0.12) !important;
+        border-radius: 12px !important;
+        background: rgba(12, 16, 23, 0.34) !important;
+        box-shadow: none !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside > div:has(> h3) > span {
+        display: none !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside > div:has(> h3) > h3 {
+        margin: 0 !important;
+        font-size: 1rem !important;
+        line-height: 1.2 !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside > div:has(> h3) > p {
+        display: none !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside > div:has(> h3)
+    > div:has(> i) {
+        margin-top: 9px !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside > div:has(> h3)
+    > div:has(> button) {
+        margin-top: 9px !important;
+        padding-top: 9px !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside > div:has(> h3)
+    > div:last-child:not(:has(> button)) {
+        gap: 5px !important;
+        margin-top: 8px !important;
+        padding-top: 8px !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside > div:has(> h3)
+    > div:last-child:not(:has(> button)) > span {
+        display: none !important;
+        padding: 4px 7px !important;
+        font-size: 0.7rem !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside > div:has(> h3)
+    > div:last-child:not(:has(> button)) > span:first-child {
+        display: inline-flex !important;
+    }
+
+    /* Pista y solución pasan a dos botones simples y rápidos. */
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside > div:has(> button > strong) {
+        grid-area: actions !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 7px !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside
+    > div:has(> button > strong) > button {
+        display: grid !important;
+        grid-template-columns: 27px minmax(0, 1fr) !important;
+        align-items: center !important;
+        column-gap: 7px !important;
+        min-height: 46px !important;
+        padding: 8px 9px !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside
+    > div:has(> button > strong) > button > span {
+        grid-row: 1 !important;
+        width: 27px !important;
+        height: 27px !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside
+    > div:has(> button > strong) > button > strong {
+        align-self: center !important;
+        font-size: 0.78rem !important;
+        line-height: 1.15 !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside
+    > div:has(> button > strong) > button > small {
+        display: none !important;
+    }
+
+    /* Auto-next y siguiente problema, una sola línea cada uno. */
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside
+    > div:has(> span + button[role="switch"]) {
+        grid-area: auto-next !important;
+        min-height: 44px !important;
+        padding: 7px 9px !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside
+    > div:has(> span + button[role="switch"]) small {
+        display: none !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside > button {
+        grid-area: next !important;
+        align-self: start !important;
+        min-height: 44px !important;
+        margin: 0 !important;
+        font-size: 0.83rem !important;
+    }
+
+    /* Estadísticas a la izquierda: visibles, pero ya no invaden la partida. */
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside
+    > div:has(> div > div > strong):not(:has(> h3)):not(:has(> button)) {
+        grid-area: performance !important;
+        display: flex !important;
+        align-self: start !important;
+        flex-direction: column !important;
+        gap: 7px !important;
+        min-width: 0 !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside
+    > div:has(> div > div > strong):not(:has(> h3)):not(:has(> button))
+    > div:first-child {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 6px !important;
+        width: 100% !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside
+    > div:has(> div > div > strong):not(:has(> h3)):not(:has(> button))
+    > div:first-child > div {
+        min-height: 54px !important;
+        padding: 7px 9px !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside
+    > div:has(> div > div > strong):not(:has(> h3)):not(:has(> button))
+    > div:first-child small {
+        display: none !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside
+    > div:has(> div > div > strong):not(:has(> h3)):not(:has(> button))
+    > div:last-child {
+        min-height: 48px !important;
+        padding: 8px 9px !important;
+    }
+
+    /* Cambiar sesión y enlace de origen permanecen, discretos, a la izquierda. */
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside > div:last-child {
+        grid-area: secondary !important;
+        align-self: end !important;
+        display: flex !important;
+        align-items: flex-start !important;
+        flex-direction: column !important;
+        gap: 7px !important;
+        padding: 0 !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > aside > div:last-child > * {
+        font-size: 0.74rem !important;
+        text-align: left !important;
+    }
+}
+
+/* Tema claro: las superficies auxiliares siguen siendo sutiles. */
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main
+> section:has(> header + div + aside) > aside > div:has(> h3),
+[data-nexo-shell][data-theme="light"][data-route="puzzles"] [data-nexo-content] > main
+> section:has(> header + div + aside) > aside > div:has(> span + button[role="switch"]) {
+    border-color: rgba(39, 72, 109, 0.12) !important;
+    background: rgba(255, 255, 255, 0.68) !important;
+    color: #172334 !important;
+}
+
+/* En pantallas más estrechas conservamos el flujo actual, pero el entrenador
+ * mantiene el bocadillo blanco y el tablero sigue usando toda la anchura útil. */
+@media (max-width: 1100px) {
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) {
+        border: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
+    > section:has(> header + div + aside) > div:nth-child(2) > div {
+        width: min(100%, 760px) !important;
+        margin-inline: auto !important;
+    }
+}
