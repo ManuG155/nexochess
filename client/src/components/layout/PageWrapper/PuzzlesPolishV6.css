@@ -23,7 +23,7 @@
     margin: 0 !important;
 }
 
-/* Cambiar sesión + siguiente automático son una única tarjeta. */
+/* Cambiar sesión + siguiente automático son una única tarjeta real. */
 [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-session-card {
     flex: 0 0 auto !important;
     overflow: hidden !important;
@@ -38,9 +38,8 @@
     width: 100% !important;
     min-height: 43px !important;
     margin: 0 !important;
-    padding: 9px 12px !important;
+    padding: 9px 12px 5px !important;
     border: 0 !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
     border-radius: 0 !important;
     background: transparent !important;
 }
@@ -48,7 +47,7 @@
 [data-nexo-shell][data-route="puzzles"]
 .nexo-puzzle-session-card .nexo-puzzle-auto-next-control {
     margin: 0 !important;
-    padding: 11px 12px !important;
+    padding: 7px 12px 11px !important;
     border: 0 !important;
     border-radius: 0 !important;
     background: transparent !important;
@@ -59,11 +58,6 @@
 .nexo-puzzle-session-card {
     border-color: rgba(39, 72, 109, 0.11) !important;
     background: rgba(247, 250, 254, 0.86) !important;
-}
-
-[data-nexo-shell][data-theme="light"][data-route="puzzles"]
-.nexo-puzzle-session-card .nexo-puzzle-back-link {
-    border-bottom-color: rgba(39, 72, 109, 0.1) !important;
 }
 
 /* Dificultad: chevron dibujado con bordes, sin glifo raro. */
@@ -90,7 +84,7 @@
     transform: translateY(-35%) rotate(225deg) !important;
 }
 
-/* Cronómetro por problema: compacto, estable y numérico. */
+/* Cronómetro por problema: bloque separado, compacto y numérico. */
 [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-timer {
     display: flex !important;
     align-items: center !important;
@@ -159,12 +153,7 @@
     overflow: visible !important;
 }
 
-/*
- * La cola usa dos triángulos superpuestos: el de detrás crea el borde azul y
- * el blanco lo rellena. Ambos se anclan desde la base del retrato, no desde
- * un porcentaje del texto, por lo que siguen apuntando a la boca aunque una
- * traducción haga crecer el bocadillo.
- */
+/* Cola del bocadillo: dos triángulos perfectamente superpuestos. */
 [data-nexo-shell][data-route="puzzles"]
 .nexo-puzzle-right-rail > .nexo-puzzle-coach-card > div:first-child::before,
 [data-nexo-shell][data-route="puzzles"]
@@ -212,10 +201,9 @@
 }
 
 /*
- * La boca animada se desplaza solo en Puzzles. `translate` es independiente
- * del `transform` usado por la propia animación, así que no rompe apertura,
- * ondas ni transiciones. El tercer hijo es la capa de boca para los cuatro
- * entrenadores animados: SVG en Foxy/Pixie, span en Cybe e img en Max Rooks.
+ * Boca animada: ajuste EXCLUSIVO de Puzzles. En el resto de secciones no se
+ * modifica. La bajamos más porque el escalado compacto del retrato hacía que
+ * el overlay quedara visualmente demasiado cerca de la nariz.
  */
 [data-nexo-shell][data-route="puzzles"]
 .nexo-puzzle-coach-card > button > span > svg,
@@ -223,7 +211,7 @@
 .nexo-puzzle-coach-card > button > span > span:last-child,
 [data-nexo-shell][data-route="puzzles"]
 .nexo-puzzle-coach-card > button > span > img:nth-child(3) {
-    translate: 0 4px !important;
+    translate: 0 9px !important;
 }
 
 /* El objetivo queda pegado al bloque del entrenador, sin vacío artificial. */
