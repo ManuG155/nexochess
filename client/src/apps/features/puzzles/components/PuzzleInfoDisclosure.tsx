@@ -24,7 +24,7 @@ function PuzzleInfoDisclosure({
     useEffect(() => {
         const resolveHost = () => {
             const next = document.querySelector<HTMLElement>(
-                ".nexo-puzzle-left-history"
+                ".nexo-puzzle-left-rail"
             );
 
             setHost(current => current === next ? current : next);
