@@ -15,8 +15,7 @@ import "@/i18n";
 import "@/index.css";
 import "@/components/layout/PageWrapper/PuzzlesLightRepair.css";
 import "@/components/layout/PageWrapper/PuzzlesSetupPolish.css";
-import "@/components/layout/PageWrapper/PuzzlesBoardFirst.css";
-import "@/components/layout/PageWrapper/PuzzlesWorkspaceRails.css";
+import "@/components/layout/PageWrapper/PuzzlesFinalLayout.css";
 import * as styles from "./index.module.css";
 
 const root = ReactDOM.createRoot(
