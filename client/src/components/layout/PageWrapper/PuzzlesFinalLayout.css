@@ -1,0 +1,946 @@
+/*
+ * Puzzles final workspace.
+ * Esta capa usa clases explícitas para evitar solapes por selectores heurísticos.
+ */
+
+/* ---------- Shared coach bubble ---------- */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-coach-card {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: start !important;
+    gap: 8px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-coach-card > div:first-child {
+    position: relative !important;
+    z-index: 2 !important;
+    box-sizing: border-box !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 14px 16px !important;
+    color: #292d33 !important;
+    border: 1px solid rgba(72, 112, 173, 0.3) !important;
+    border-radius: 14px !important;
+    background: #ffffff !important;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14) !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-coach-card > div:first-child::after {
+    background: #ffffff !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-coach-card > div:first-child > span {
+    color: #315b9a !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-coach-card > div:first-child > p {
+    color: #30343a !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-coach-card > button {
+    align-self: start !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* ---------- Setup ---------- */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-shell {
+    display: grid !important;
+    grid-template-columns: minmax(0, 820px) 260px !important;
+    align-items: start !important;
+    justify-content: center !important;
+    gap: 18px !important;
+    box-sizing: border-box !important;
+    width: min(1100px, calc(100vw - 72px)) !important;
+    max-width: 1100px !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-height: calc(100dvh - 150px) !important;
+    padding: 22px !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-shell > .nexo-puzzle-coach-card {
+    position: sticky !important;
+    top: 16px !important;
+    grid-template-columns: minmax(0, 1fr) 92px !important;
+    align-items: start !important;
+    padding-top: 8px !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-shell > .nexo-puzzle-coach-card > button {
+    width: 100px !important;
+    height: 136px !important;
+    margin-top: 18px !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-shell > .nexo-puzzle-coach-card > div:first-child {
+    font-size: 0.91rem !important;
+    line-height: 1.42 !important;
+}
+
+.nexo-puzzle-multi-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-multi-selector {
+    border-top-color: rgba(39, 72, 109, 0.12);
+}
+
+.nexo-puzzle-mixed-option,
+.nexo-puzzle-theme-section {
+    box-sizing: border-box;
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.075);
+    border-radius: 11px;
+    background: rgba(10, 14, 20, 0.26);
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-mixed-option,
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-section {
+    border-color: rgba(39, 72, 109, 0.12);
+    background: rgba(247, 250, 254, 0.78);
+}
+
+.nexo-puzzle-mixed-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 48px;
+    padding: 10px 13px;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.nexo-puzzle-mixed-option > span {
+    font-weight: 720;
+}
+
+.nexo-puzzle-mixed-option > small {
+    max-width: 64%;
+    color: rgba(244, 247, 252, 0.5);
+    text-align: right;
+    line-height: 1.3;
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-mixed-option > small {
+    color: #62748a;
+}
+
+.nexo-puzzle-mixed-option.nexo-active,
+.nexo-puzzle-theme-section:has(.nexo-active) {
+    border-color: rgba(94, 145, 242, 0.42);
+}
+
+.nexo-puzzle-mixed-option.nexo-active {
+    background: rgba(70, 125, 232, 0.12);
+}
+
+.nexo-puzzle-theme-accordions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.nexo-puzzle-theme-section > summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 9px 12px;
+    list-style: none;
+    cursor: pointer;
+}
+
+.nexo-puzzle-theme-section > summary::-webkit-details-marker {
+    display: none;
+}
+
+.nexo-puzzle-theme-section > summary::after {
+    content: "›";
+    grid-column: 2;
+    grid-row: 1;
+    color: #7fa9ff;
+    font-size: 1.2rem;
+    transform-origin: center;
+    transition: transform 0.15s ease;
+}
+
+.nexo-puzzle-theme-section[open] > summary::after {
+    transform: rotate(90deg);
+}
+
+.nexo-puzzle-theme-section > summary > span {
+    min-width: 0;
+    font-weight: 700;
+}
+
+.nexo-puzzle-theme-section > summary > small {
+    grid-column: 1 / -1;
+    min-width: 0;
+    margin-top: -5px;
+    color: rgba(244, 247, 252, 0.48);
+    font-size: 0.72rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-section > summary > small {
+    color: #62748a;
+}
+
+.nexo-puzzle-theme-section-body {
+    padding: 0 10px 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-section-body {
+    border-top-color: rgba(39, 72, 109, 0.1);
+}
+
+.nexo-puzzle-theme-section-body > input {
+    box-sizing: border-box;
+    width: 100%;
+    height: 38px;
+    margin: 9px 0 2px;
+    padding: 0 10px;
+    color: inherit;
+    border: 1px solid rgba(121, 164, 241, 0.16);
+    border-radius: 8px;
+    outline: 0;
+    background: rgba(7, 10, 15, 0.34);
+    font: inherit;
+    font-size: 0.8rem;
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-section-body > input {
+    background: #ffffff;
+    border-color: rgba(39, 72, 109, 0.15);
+}
+
+.nexo-puzzle-theme-section-body > button,
+.nexo-puzzle-theme-option-list > button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 36px;
+    padding: 7px 9px;
+    color: rgba(244, 247, 252, 0.78);
+    text-align: left;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    cursor: pointer;
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-section-body > button,
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-option-list > button {
+    color: #243247;
+}
+
+.nexo-puzzle-theme-section-body > button:hover,
+.nexo-puzzle-theme-option-list > button:hover,
+.nexo-puzzle-theme-section-body > button.nexo-active,
+.nexo-puzzle-theme-option-list > button.nexo-active {
+    background: rgba(70, 125, 232, 0.15);
+    color: #eaf1ff;
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-section-body > button:hover,
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-option-list > button:hover,
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-section-body > button.nexo-active,
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-option-list > button.nexo-active {
+    color: #17345f;
+    background: rgba(70, 125, 232, 0.11);
+}
+
+.nexo-puzzle-theme-option-list {
+    max-height: 212px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+}
+
+.nexo-puzzle-theme-option-list small {
+    flex: 0 0 auto;
+    color: rgba(244, 247, 252, 0.38);
+    font-size: 0.68rem;
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-theme-option-list small {
+    color: #73849a;
+}
+
+/* ---------- Training shell ---------- */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-training-shell {
+    --nexo-puzzle-side: clamp(270px, 16.5vw, 310px);
+    --nexo-puzzle-stage: min(
+        720px,
+        calc(100dvh - 128px),
+        calc(100vw - (2 * var(--nexo-puzzle-side)) - 138px)
+    );
+
+    display: grid !important;
+    grid-template-columns:
+        var(--nexo-puzzle-side)
+        var(--nexo-puzzle-stage)
+        var(--nexo-puzzle-side) !important;
+    grid-template-rows: 42px var(--nexo-puzzle-stage) !important;
+    grid-template-areas:
+        ". heading ."
+        "left board right" !important;
+    align-items: stretch !important;
+    justify-content: center !important;
+    gap: 6px 54px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] main:has(.nexo-puzzle-training-shell) {
+    width: 100% !important;
+    max-width: none !important;
+    min-height: calc(100dvh - 70px) !important;
+    padding: 8px 16px 0 !important;
+}
+
+.nexo-puzzle-training-shell > header {
+    grid-area: heading !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-align: center !important;
+}
+
+.nexo-puzzle-training-shell > header > div {
+    align-items: center !important;
+}
+
+.nexo-puzzle-training-shell > header span:first-child {
+    display: none !important;
+}
+
+.nexo-puzzle-training-shell > header h2 {
+    margin: 0 !important;
+    font-size: clamp(1.5rem, 2vw, 1.95rem) !important;
+    line-height: 1 !important;
+}
+
+/* ---------- Left rail ---------- */
+.nexo-puzzle-left-rail {
+    grid-area: left;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    height: var(--nexo-puzzle-stage);
+    min-height: 0;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    background: rgba(18, 23, 31, 0.72);
+    overflow: hidden;
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-left-rail {
+    border-color: rgba(39, 72, 109, 0.12);
+    background: rgba(255, 255, 255, 0.76);
+}
+
+.nexo-puzzle-back-top {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    color: #a9c4fa;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    font-size: 1.3rem;
+    cursor: pointer;
+}
+
+.nexo-puzzle-back-top:hover {
+    background: rgba(70, 125, 232, 0.1);
+}
+
+.nexo-puzzle-source-card,
+.nexo-puzzle-score-card,
+.nexo-puzzle-left-control {
+    flex: 0 0 auto;
+    padding: 11px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    background: rgba(7, 10, 15, 0.26);
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-source-card,
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-score-card,
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-left-control {
+    border-color: rgba(39, 72, 109, 0.1);
+    background: rgba(247, 250, 254, 0.85);
+}
+
+.nexo-puzzle-source-card strong,
+.nexo-puzzle-source-card span {
+    display: block;
+}
+
+.nexo-puzzle-source-card strong {
+    font-size: 0.84rem;
+}
+
+.nexo-puzzle-source-card span {
+    margin-top: 4px;
+    color: rgba(244, 247, 252, 0.52);
+    font-size: 0.74rem;
+    line-height: 1.35;
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-source-card span {
+    color: #617287;
+}
+
+.nexo-puzzle-score-head,
+.nexo-puzzle-control-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.nexo-puzzle-score-head strong,
+.nexo-puzzle-control-row strong {
+    font-size: 0.82rem;
+}
+
+.nexo-puzzle-score-value {
+    display: block;
+    margin: 8px 0 4px;
+    text-align: center;
+    font-size: clamp(2.3rem, 4vw, 3.5rem);
+    font-weight: 760;
+    line-height: 1;
+}
+
+.nexo-puzzle-mini-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+    margin-top: 9px;
+}
+
+.nexo-puzzle-mini-stats > div {
+    padding: 7px;
+    text-align: center;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.nexo-puzzle-mini-stats span,
+.nexo-puzzle-mini-stats small {
+    display: block;
+    color: rgba(244, 247, 252, 0.45);
+    font-size: 0.66rem;
+}
+
+.nexo-puzzle-mini-stats strong {
+    display: block;
+    margin: 2px 0;
+    font-size: 1rem;
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-mini-stats span,
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-mini-stats small {
+    color: #65778d;
+}
+
+.nexo-puzzle-switch {
+    position: relative;
+    flex: 0 0 auto;
+    width: 42px;
+    height: 23px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(130, 141, 160, 0.35);
+    cursor: pointer;
+}
+
+.nexo-puzzle-switch::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    background: #f8fbff;
+    transition: transform 0.15s ease;
+}
+
+.nexo-puzzle-switch[aria-checked="true"] {
+    background: #467de8;
+}
+
+.nexo-puzzle-switch[aria-checked="true"]::after {
+    transform: translateX(19px);
+}
+
+.nexo-puzzle-back-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+    padding: 4px 2px;
+    color: #79a8ff;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    font: inherit;
+    font-size: 0.82rem;
+    cursor: pointer;
+}
+
+.nexo-puzzle-difficulty-menu {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.nexo-puzzle-difficulty-menu > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-height: 42px;
+    padding: 0 11px;
+    list-style: none;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 9px;
+    background: rgba(7, 10, 15, 0.25);
+    cursor: pointer;
+}
+
+.nexo-puzzle-difficulty-menu > summary::-webkit-details-marker {
+    display: none;
+}
+
+.nexo-puzzle-difficulty-menu > summary::after {
+    content: "⌄";
+    color: #8fb2f9;
+}
+
+.nexo-puzzle-difficulty-menu[open] > summary::after {
+    content: "⌃";
+}
+
+.nexo-puzzle-difficulty-menu > summary span {
+    font-size: 0.78rem;
+    font-weight: 680;
+}
+
+.nexo-puzzle-difficulty-menu > summary small {
+    margin-left: auto;
+    color: rgba(244, 247, 252, 0.5);
+    font-size: 0.72rem;
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-difficulty-menu > summary {
+    border-color: rgba(39, 72, 109, 0.11);
+    background: #f7f9fc;
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-difficulty-menu > summary small {
+    color: #65778d;
+}
+
+.nexo-puzzle-difficulty-options {
+    position: absolute;
+    z-index: 40;
+    right: 0;
+    bottom: calc(100% + 5px);
+    left: 0;
+    padding: 5px;
+    border: 1px solid rgba(121, 164, 241, 0.17);
+    border-radius: 9px;
+    background: #141a24;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.34);
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-difficulty-options {
+    background: #ffffff;
+    border-color: rgba(39, 72, 109, 0.14);
+}
+
+.nexo-puzzle-difficulty-options button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    min-height: 34px;
+    padding: 6px 8px;
+    color: inherit;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+}
+
+.nexo-puzzle-difficulty-options button:hover,
+.nexo-puzzle-difficulty-options button.nexo-active {
+    background: rgba(70, 125, 232, 0.14);
+}
+
+.nexo-puzzle-difficulty-options small {
+    color: #8fb2f9;
+    font-size: 0.68rem;
+}
+
+.nexo-puzzle-left-history {
+    flex: 0 0 auto;
+    margin-top: auto;
+    padding-top: 9px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    min-height: 48px;
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-left-history {
+    border-top-color: rgba(39, 72, 109, 0.1);
+}
+
+.nexo-puzzle-left-history > div {
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+}
+
+.nexo-puzzle-left-history > div > span:first-child {
+    display: block;
+    margin-bottom: 6px;
+    color: rgba(244, 247, 252, 0.43);
+    font-size: 0.68rem;
+}
+
+[data-nexo-shell][data-theme="light"] .nexo-puzzle-left-history > div > span:first-child {
+    color: #65778d;
+}
+
+/* ---------- Board ---------- */
+.nexo-puzzle-board-column {
+    grid-area: board !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+}
+
+.nexo-puzzle-board-stage {
+    position: relative !important;
+    width: var(--nexo-puzzle-stage) !important;
+    max-width: var(--nexo-puzzle-stage) !important;
+    margin: 0 !important;
+    overflow: visible !important;
+}
+
+.nexo-puzzle-board-tools {
+    position: absolute;
+    top: 0;
+    right: -45px;
+    z-index: 15;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 36px;
+    height: 100%;
+    padding: 5px 0;
+    pointer-events: none;
+}
+
+.nexo-puzzle-board-white .nexo-puzzle-board-tools {
+    justify-content: flex-end;
+}
+
+.nexo-puzzle-board-black .nexo-puzzle-board-tools {
+    justify-content: flex-start;
+}
+
+.nexo-puzzle-tool-button {
+    display: grid !important;
+    place-items: center !important;
+    pointer-events: auto !important;
+    width: 30px !important;
+    height: 30px !important;
+    padding: 0 !important;
+    color: #a9c4fa !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    outline: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    cursor: pointer !important;
+}
+
+.nexo-puzzle-tool-button:hover {
+    color: #ffffff !important;
+    background: transparent !important;
+}
+
+.nexo-puzzle-board-stage > .nexo-puzzle-board-tools + * {
+    /* no-op: keeps the tool rail visually independent */
+}
+
+/* ---------- Right rail ---------- */
+.nexo-puzzle-right-rail {
+    grid-area: right !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 9px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    height: var(--nexo-puzzle-stage) !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+}
+
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card {
+    flex: 0 0 174px !important;
+    grid-template-columns: minmax(0, 1fr) 104px !important;
+    align-items: start !important;
+    min-height: 174px !important;
+    overflow: visible !important;
+}
+
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card > div:first-child {
+    min-height: 116px !important;
+    margin-top: 4px !important;
+    font-size: 0.9rem !important;
+    line-height: 1.4 !important;
+}
+
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card > button {
+    width: 112px !important;
+    height: 145px !important;
+    margin-top: 0 !important;
+}
+
+.nexo-puzzle-objective {
+    flex: 0 0 auto !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 12px 13px !important;
+    border-radius: 11px !important;
+}
+
+.nexo-puzzle-objective > span:first-child,
+.nexo-puzzle-objective > p {
+    display: none !important;
+}
+
+.nexo-puzzle-objective h3 {
+    margin: 0 0 7px !important;
+    font-size: 1rem !important;
+    line-height: 1.2 !important;
+}
+
+.nexo-puzzle-objective > div:has(> i) {
+    margin-bottom: 8px !important;
+}
+
+.nexo-puzzle-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    flex: 0 0 auto !important;
+}
+
+.nexo-puzzle-actions > button {
+    display: grid !important;
+    grid-template-columns: 34px minmax(0, 1fr) !important;
+    align-items: center !important;
+    min-height: 50px !important;
+    padding: 7px 9px !important;
+    text-align: center !important;
+}
+
+.nexo-puzzle-actions > button > span {
+    grid-row: 1 / 3;
+}
+
+.nexo-puzzle-actions > button > strong,
+.nexo-puzzle-actions > button > small {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    text-align: center !important;
+}
+
+.nexo-puzzle-actions > button > small {
+    font-size: 0.68rem !important;
+}
+
+.nexo-puzzle-next {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    min-height: 46px !important;
+    height: 46px !important;
+    margin: 0 !important;
+    padding: 0 14px !important;
+    border-radius: 9px !important;
+    font-size: 0.88rem !important;
+}
+
+.nexo-puzzle-secondary {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    flex: 0 0 auto !important;
+    margin-top: auto !important;
+    padding-top: 5px !important;
+}
+
+.nexo-puzzle-secondary > button {
+    display: none !important;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1280px) and (min-width: 1051px) {
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-training-shell {
+        --nexo-puzzle-side: 240px;
+        gap: 6px 45px !important;
+    }
+
+    .nexo-puzzle-right-rail > .nexo-puzzle-coach-card {
+        grid-template-columns: minmax(0, 1fr) 90px !important;
+    }
+
+    .nexo-puzzle-right-rail > .nexo-puzzle-coach-card > button {
+        width: 96px !important;
+        height: 126px !important;
+    }
+}
+
+@media (max-width: 1050px) {
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-training-shell {
+        --nexo-puzzle-stage: min(720px, calc(100vw - 38px));
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        grid-template-rows: auto !important;
+        grid-template-areas:
+            "heading"
+            "board"
+            "left"
+            "right" !important;
+        gap: 12px !important;
+    }
+
+    .nexo-puzzle-left-rail,
+    .nexo-puzzle-right-rail {
+        width: min(100%, 720px) !important;
+        height: auto !important;
+        justify-self: center !important;
+    }
+
+    .nexo-puzzle-right-rail {
+        overflow: visible !important;
+    }
+
+    .nexo-puzzle-left-history {
+        margin-top: 0;
+    }
+
+    .nexo-puzzle-board-tools {
+        right: 4px;
+        height: auto;
+        top: 4px;
+        bottom: auto;
+        justify-content: flex-start !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-shell {
+        grid-template-columns: minmax(0, 1fr) !important;
+        width: min(760px, calc(100vw - 32px)) !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-shell > .nexo-puzzle-coach-card {
+        position: static !important;
+        grid-template-columns: minmax(0, 1fr) 110px !important;
+    }
+}
+
+@media (max-width: 680px) {
+    .nexo-puzzle-theme-accordions {
+        grid-template-columns: 1fr;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main {
+        padding: 16px !important;
+    }
+
+    .nexo-puzzle-right-rail > .nexo-puzzle-coach-card {
+        grid-template-columns: minmax(0, 1fr) 88px !important;
+        min-height: 140px !important;
+    }
+
+    .nexo-puzzle-right-rail > .nexo-puzzle-coach-card > button {
+        width: 92px !important;
+        height: 118px !important;
+    }
+}
