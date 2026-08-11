@@ -3,6 +3,7 @@ import { readFileSync, writeFileSync, unlinkSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 const target = "client/src/apps/features/puzzles/pages/Puzzles/index.tsx";
+const cssTarget = "client/src/components/layout/PageWrapper/PuzzlesPolishV6.css";
 const self = fileURLToPath(import.meta.url);
 const selfRelative = "scripts/patch-puzzles-archive-history.mjs";
 
@@ -150,7 +151,7 @@ replaceOnce(
     ) : null;
 
     const archiveSessionTrail = puzzle?.source == "archive" ? (
-        <div className="nexo-puzzle-archive-trail">
+        <div className="nexo-puzzle-archive-trail" aria-hidden="true">
             <div className="nexo-puzzle-archive-trail-items">
                 {archiveSessionHistory.map((event, index) => (
                     <span
@@ -166,10 +167,7 @@ replaceOnce(
                     </span>
                 ))}
                 {pageState == "playing" && (
-                    <span
-                        className="nexo-puzzle-archive-current"
-                        aria-label="Current puzzle"
-                    />
+                    <span className="nexo-puzzle-archive-current" />
                 )}
             </div>
         </div>
@@ -198,6 +196,24 @@ replaceOnce(
 
 writeFileSync(target, source, "utf8");
 
+let css = readFileSync(cssTarget, "utf8");
+const mouthBefore = "    translate: 0 13px !important;";
+const mouthAfter = "    translate: 0 15px !important;";
+
+if (!css.includes(mouthBefore)) {
+    throw new Error("Puzzle mouth offset anchor not found");
+}
+css = css.replace(mouthBefore, mouthAfter);
+
+const archiveMarker = "/* Archive left rail: compact, centered and session-history aware. */";
+if (css.includes(archiveMarker)) {
+    throw new Error("Archive rail styles already present");
+}
+
+css += `\n\n${archiveMarker}\n[data-nexo-shell][data-route="puzzles"]\n.nexo-puzzle-left-rail:has(.nexo-puzzle-source-card) {\n    align-self: center !important;\n    height: min(460px, var(--nexo-puzzle-stage)) !important;\n    padding: 14px !important;\n    gap: 12px !important;\n    overflow: visible !important;\n}\n\n[data-nexo-shell][data-route="puzzles"]\n.nexo-puzzle-left-rail:has(.nexo-puzzle-source-card) .nexo-puzzle-source-card {\n    padding: 12px 13px !important;\n}\n\n[data-nexo-shell][data-route="puzzles"]\n.nexo-puzzle-left-rail:has(.nexo-puzzle-source-card) .nexo-puzzle-session-card {\n    flex: 0 0 auto !important;\n}\n\n[data-nexo-shell][data-route="puzzles"]\n.nexo-puzzle-left-rail:has(.nexo-puzzle-source-card) .nexo-puzzle-timer {\n    min-height: 76px !important;\n    margin-top: 0 !important;\n}\n\n[data-nexo-shell][data-route="puzzles"]\n.nexo-puzzle-left-rail:has(.nexo-puzzle-source-card) .nexo-puzzle-left-history {\n    min-height: 42px !important;\n    margin-top: 0 !important;\n    padding-top: 10px !important;\n}\n\n.nexo-puzzle-archive-trail-items {\n    display: flex;\n    align-items: center;\n    justify-content: flex-start;\n    flex-wrap: wrap;\n    gap: 7px;\n}\n\n.nexo-puzzle-archive-result,\n.nexo-puzzle-archive-current {\n    display: inline-grid;\n    place-items: center;\n    width: 34px;\n    height: 34px;\n    box-sizing: border-box;\n    border-radius: 9px;\n    font-size: 1rem;\n    font-weight: 800;\n    line-height: 1;\n}\n\n.nexo-puzzle-archive-success {\n    color: #f5fff0;\n    background: #4d991f;\n}\n\n.nexo-puzzle-archive-failure {\n    color: #fff4f4;\n    background: #d64545;\n}\n\n.nexo-puzzle-archive-current {\n    background: #a87512;\n    box-shadow: inset 0 0 0 1px rgba(255, 218, 117, 0.18);\n}\n`;
+
+writeFileSync(cssTarget, css, "utf8");
+
 const npm = process.platform === "win32" ? "npm.cmd" : "npm";
 execFileSync(npm, ["run", "check", "-w", "client"], { stdio: "inherit" });
 execFileSync("git", ["diff", "--check"], { stdio: "inherit" });
@@ -206,14 +222,14 @@ unlinkSync(self);
 
 execFileSync(
     "git",
-    ["add", "-A", "--", target, selfRelative],
+    ["add", "-A", "--", target, cssTarget, selfRelative],
     { stdio: "inherit" }
 );
 execFileSync(
     "git",
-    ["commit", "-m", "Puzzles: add archive session history"],
+    ["commit", "-m", "Puzzles: refine archive rail and history"],
     { stdio: "inherit" }
 );
 execFileSync("git", ["push", "origin", "develop"], { stdio: "inherit" });
 
-console.log("Archive session history patched on develop.");
+console.log("Archive puzzle rail refined on develop.");
