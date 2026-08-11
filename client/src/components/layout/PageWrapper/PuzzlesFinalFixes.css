@@ -1,0 +1,40 @@
+/* Remates pequeños sobre PuzzlesFinalLayout. */
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-board-stage.nexo-eval-hidden > div:last-child {
+    width: 100% !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card {
+    flex-basis: 190px !important;
+    min-height: 190px !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card > button {
+    align-self: start !important;
+    margin-top: 0 !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-actions > button > strong,
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-actions > button > small {
+    justify-self: center !important;
+    text-align: center !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-tool-button,
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-tool-button:hover,
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-tool-button:focus,
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-tool-button:active {
+    border: 0 !important;
+    outline: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
