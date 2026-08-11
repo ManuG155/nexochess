@@ -1826,150 +1826,235 @@ function Puzzles() {
                     <div className="nexo-puzzle-quick-filters">
                         <strong>{t("setup.kicker")}</strong>
 
-                        <label>
-                            <span>{t("setup.title")}</span>
-                            <select
-                                value={source}
-                                onChange={event => (
-                                    setSource(event.target.value as PuzzleSource)
-                                )}
-                            >
-                                <option value="archive">
-                                    {t("sources.archive.title")}
-                                </option>
-                                <option value="lichess">
-                                    {pageCopy.trainingTitle}
-                                </option>
-                            </select>
-                        </label>
+                        <details className="nexo-puzzle-filter-section" open>
+                            <summary>
+                                <span>{t("setup.title")}</span>
+                                <small>
+                                    {source == "archive"
+                                        ? t("sources.archive.title")
+                                        : pageCopy.trainingTitle
+                                    }
+                                </small>
+                            </summary>
+                            <div className="nexo-puzzle-filter-body">
+                                <div className="nexo-puzzle-filter-options">
+                                    <button
+                                        type="button"
+                                        className={source == "archive"
+                                            ? "nexo-active"
+                                            : ""
+                                        }
+                                        onClick={() => setSource("archive")}
+                                    >
+                                        {t("sources.archive.title")}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={source == "lichess"
+                                            ? "nexo-active"
+                                            : ""
+                                        }
+                                        onClick={() => setSource("lichess")}
+                                    >
+                                        {pageCopy.trainingTitle}
+                                    </button>
+                                </div>
+                            </div>
+                        </details>
 
                         {source == "lichess" && (
                             <>
-                                <label>
-                                    <span>{t("filters.theme")}</span>
-                                    <select
-                                        value={themeSelection.category}
-                                        onChange={event => {
-                                            setThemeSelection({
-                                                category: event.target.value as
-                                                    PuzzleThemeSelection["category"]
-                                            });
-                                            setOpeningSearch("");
-                                        }}
-                                    >
-                                        {puzzleThemeCategories.map(value => (
-                                            <option key={value} value={value}>
-                                                {t(
-                                                    `themeCategories.${value}`
-                                                )}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </label>
+                                <details className="nexo-puzzle-filter-section" open>
+                                    <summary>
+                                        <span>{t("filters.theme")}</span>
+                                        <small>
+                                            {t(
+                                                "themeCategories."
+                                                + themeSelection.category
+                                            )}
+                                        </small>
+                                    </summary>
+                                    <div className="nexo-puzzle-filter-body">
+                                        <div className="nexo-puzzle-filter-options">
+                                            {puzzleThemeCategories.map(value => (
+                                                <button
+                                                    type="button"
+                                                    key={value}
+                                                    className={
+                                                        themeSelection.category
+                                                        == value
+                                                            ? "nexo-active"
+                                                            : ""
+                                                    }
+                                                    onClick={() => {
+                                                        setThemeSelection({
+                                                            category: value
+                                                        });
+                                                        setOpeningSearch("");
+                                                    }}
+                                                >
+                                                    {t(
+                                                        "themeCategories."
+                                                        + value
+                                                    )}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </details>
 
                                 {filterOptions.length > 0 && (
-                                    <label>
-                                        <span>
-                                            {t("filters.subtheme", {
-                                                theme: t(
-                                                    "themeCategories."
-                                                    + themeSelection.category
-                                                )
-                                            })}
-                                        </span>
-                                        <select
-                                            value={
-                                                themeSelection.kind
-                                                && themeSelection.value
-                                                    ? themeSelection.kind
-                                                        + ":::"
-                                                        + themeSelection.value
-                                                    : ""
-                                            }
-                                            onChange={event => {
-                                                const encoded =
-                                                    event.target.value;
-
-                                                if (!encoded) {
-                                                    setThemeSelection({
-                                                        category:
-                                                            themeSelection
-                                                                .category
-                                                    });
-                                                    return;
-                                                }
-
-                                                const [kind, ...parts] =
-                                                    encoded.split(":::");
-
-                                                setThemeSelection({
-                                                    category:
-                                                        themeSelection.category,
-                                                    kind: kind as NonNullable<
-                                                        PuzzleThemeSelection[
-                                                            "kind"
-                                                        ]
-                                                    >,
-                                                    value: parts.join(":::")
-                                                });
-                                            }}
-                                        >
-                                            <option value="">
-                                                {t("filters.clearSubtheme")}
-                                            </option>
-                                            {filterOptions.map(option => (
-                                                <option
-                                                    key={
-                                                        option.kind + ":"
-                                                        + option.value
-                                                    }
-                                                    value={
-                                                        option.kind + ":::"
-                                                        + option.value
-                                                    }
-                                                >
-                                                    {option.kind == "opening"
+                                    <details className="nexo-puzzle-filter-section">
+                                        <summary>
+                                            <span>
+                                                {t("filters.subtheme", {
+                                                    theme: t(
+                                                        "themeCategories."
+                                                        + themeSelection.category
+                                                    )
+                                                })}
+                                            </span>
+                                            <small>
+                                                {themeSelection.value
+                                                    ? themeSelection.kind == "opening"
                                                         ? formatOpeningTag(
-                                                            option.value,
-                                                            i18n.resolvedLanguage
-                                                                || "en"
+                                                            themeSelection.value,
+                                                            i18n.resolvedLanguage || "en"
                                                         )
                                                         : formatPuzzleTheme(
-                                                            option.value,
-                                                            i18n.resolvedLanguage
-                                                                || "en"
+                                                            themeSelection.value,
+                                                            i18n.resolvedLanguage || "en"
                                                         )
+                                                    : t("filters.clearSubtheme")
+                                                }
+                                            </small>
+                                        </summary>
+                                        <div className="nexo-puzzle-filter-body">
+                                            {themeSelection.category == "opening"
+                                                && filterOptions.length > 8
+                                                && (
+                                                    <input
+                                                        type="search"
+                                                        value={openingSearch}
+                                                        onChange={event => (
+                                                            setOpeningSearch(
+                                                                event.target.value
+                                                            )
+                                                        )}
+                                                        placeholder={t(
+                                                            "filters.openingSearch"
+                                                        )}
+                                                        aria-label={t(
+                                                            "filters.openingSearch"
+                                                        )}
+                                                        className="nexo-puzzle-filter-search"
+                                                    />
+                                                )
+                                            }
+
+                                            <div className="nexo-puzzle-filter-options">
+                                                <button
+                                                    type="button"
+                                                    className={
+                                                        !themeSelection.value
+                                                            ? "nexo-active"
+                                                            : ""
                                                     }
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </label>
+                                                    onClick={() => (
+                                                        setThemeSelection({
+                                                            category:
+                                                                themeSelection.category
+                                                        })
+                                                    )}
+                                                >
+                                                    {t("filters.clearSubtheme")}
+                                                </button>
+
+                                                {visibleFilterOptions.map(option => {
+                                                    const active = (
+                                                        themeSelection.kind
+                                                            == option.kind
+                                                        && themeSelection.value
+                                                            == option.value
+                                                    );
+
+                                                    return (
+                                                        <button
+                                                            type="button"
+                                                            key={
+                                                                option.kind
+                                                                + ":"
+                                                                + option.value
+                                                            }
+                                                            className={active
+                                                                ? "nexo-active"
+                                                                : ""
+                                                            }
+                                                            onClick={() => (
+                                                                setThemeSelection({
+                                                                    category:
+                                                                        themeSelection.category,
+                                                                    kind: option.kind,
+                                                                    value: option.value
+                                                                })
+                                                            )}
+                                                        >
+                                                            {option.kind == "opening"
+                                                                ? formatOpeningTag(
+                                                                    option.value,
+                                                                    i18n.resolvedLanguage || "en"
+                                                                )
+                                                                : formatPuzzleTheme(
+                                                                    option.value,
+                                                                    i18n.resolvedLanguage || "en"
+                                                                )
+                                                            }
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    </details>
                                 )}
 
-                                <label>
-                                    <span>{t("filters.difficulty")}</span>
-                                    <select
-                                        value={difficulty}
-                                        onChange={event => (
-                                            setDifficulty(
-                                                event.target.value as
-                                                    PuzzleDifficulty
-                                            )
-                                        )}
-                                    >
-                                        {difficulties.map(value => (
-                                            <option key={value} value={value}>
-                                                {t(
-                                                    `difficulties.${value}.title`
-                                                )}
-                                                {" · "}
-                                                {t(
-                                                    `difficulties.${value}.range`
-                                                )}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </label>
+                                <details className="nexo-puzzle-filter-section">
+                                    <summary>
+                                        <span>{t("filters.difficulty")}</span>
+                                        <small>
+                                            {t(
+                                                `difficulties.${difficulty}.title`
+                                            )}
+                                        </small>
+                                    </summary>
+                                    <div className="nexo-puzzle-filter-body">
+                                        <div className="nexo-puzzle-filter-options">
+                                            {difficulties.map(value => (
+                                                <button
+                                                    type="button"
+                                                    key={value}
+                                                    className={difficulty == value
+                                                        ? "nexo-active"
+                                                        : ""
+                                                    }
+                                                    onClick={() => (
+                                                        setDifficulty(value)
+                                                    )}
+                                                >
+                                                    <span>
+                                                        {t(
+                                                            `difficulties.${value}.title`
+                                                        )}
+                                                    </span>
+                                                    <small>
+                                                        {t(
+                                                            `difficulties.${value}.range`
+                                                        )}
+                                                    </small>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </details>
                             </>
                         )}
                     </div>
@@ -1981,7 +2066,10 @@ function Puzzles() {
                             styles.boardStage,
                             settings.themes.board.coordinates == "outside"
                                 ? styles.boardStageWithOutsideCoordinates
-                                : ""
+                                : "",
+                            puzzleBoardOrientation == "black"
+                                ? "nexo-puzzle-board-black"
+                                : "nexo-puzzle-board-white"
                         ].filter(Boolean).join(" ")}
                         style={{ position: "relative" }}
                     >
