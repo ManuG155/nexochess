@@ -14,7 +14,7 @@ import {
 } from "./routing";
 
 const namespaces = [
-    "common", "academy", "puzzles", "analysis", "settings",
+    "common", "academy", "puzzles", "repertoire", "analysis", "settings",
     "otherPages", "helpCenter", "coach", "legal", "guides"
 ] as const;
 
