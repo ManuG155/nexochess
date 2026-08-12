@@ -28,6 +28,7 @@ type IconName =
     | "login"
     | "menu"
     | "puzzle"
+    | "repertoire"
     | "settings"
     | "share"
     | "user";
@@ -60,6 +61,10 @@ function NavIcon({ name }: NavIconProps) {
             <path d="M21 9v6" />
         </>,
         puzzle: <path d="M9.5 4H4v5.5a2.5 2.5 0 1 1 0 5V20h5.5a2.5 2.5 0 1 0 5 0H20v-5.5a2.5 2.5 0 1 0 0-5V4h-5.5a2.5 2.5 0 1 1-5 0Z" />,
+        repertoire: <>
+            <path d="M4.5 5.5c2.7-.9 5.2-.6 7.5 1v12c-2.3-1.6-4.8-1.9-7.5-1z" />
+            <path d="M19.5 5.5c-2.7-.9-5.2-.6-7.5 1v12c2.3-1.6 4.8-1.9 7.5-1z" />
+        </>,
         share: <>
             <circle cx="18" cy="5" r="2.5" />
             <circle cx="6" cy="12" r="2.5" />
@@ -137,7 +142,7 @@ function NavigationAction({ children, icon, onClick }: NavigationActionProps) {
 }
 
 function NavigationBar() {
-    const { t } = useTranslation(["common", "analysis"]);
+    const { t } = useTranslation(["common", "analysis", "repertoire"]);
     const { profile, status } = useAuthedProfile();
     const [sidebarMounted, setSidebarMounted] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -149,6 +154,7 @@ function NavigationBar() {
     const onAcademyPage = currentPathname.startsWith("/academy");
     const onSettingsPage = currentPathname.startsWith("/settings");
     const onPuzzlesPage = currentPathname.startsWith("/puzzles");
+    const onRepertoirePage = currentPathname.startsWith("/repertoire");
     void onSettingsPage;
 
     const showShareAction = onAnalysisPage;
@@ -278,6 +284,9 @@ function NavigationBar() {
             </NavigationItem>
             <NavigationItem icon="puzzle" url="/puzzles" current={onPuzzlesPage}>
                 {t("navigationBar.puzzles", { ns: "common" })}
+            </NavigationItem>
+            <NavigationItem icon="repertoire" url="/repertoire" current={onRepertoirePage}>
+                {t("nav", { ns: "repertoire" })}
             </NavigationItem>
             {showShareAction && <NavigationAction icon="share" onClick={() => {
                 void openShareDialog();
