@@ -147,3 +147,41 @@
         margin-top: 22px !important;
     }
 }
+
+/* NEXO_SETUP_SCROLL_CHAIN_V2
+ * Toda la preparación pertenece al scroll normal de la página.
+ * El único scroll interno permitido es el texto del bocadillo, y al llegar
+ * a sus extremos encadena de nuevo con el documento.
+ */
+
+[data-nexo-shell][data-route="puzzles"] [data-nexo-content],
+[data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-shell,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-picker,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-panel,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-options-grid {
+    overscroll-behavior-y: auto !important;
+    touch-action: pan-y !important;
+}
+
+/* Ningún filtro/subtema roba la rueda a la página. */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-picker,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-panel,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-options-grid {
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+/*
+ * El bocadillo sí puede scrollear internamente.
+ * overscroll:auto hace que, al alcanzar su límite, el scroll siga en la página.
+ */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-setup-shell > .nexo-puzzle-coach-card > div:first-child {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: auto !important;
+    scrollbar-gutter: stable !important;
+}
+
