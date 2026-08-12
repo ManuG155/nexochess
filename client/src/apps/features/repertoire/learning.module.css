@@ -1,0 +1,825 @@
+.learnSection,
+.learnSection * {
+    box-sizing: border-box;
+}
+
+.learnSection {
+    width: 100%;
+    min-width: 0;
+    padding: 8px 0 48px;
+    color: var(--text-primary, #f2f5fa);
+}
+
+.eyebrow {
+    display: block;
+    margin-bottom: 8px;
+    color: #62a9ff;
+    font-size: 0.84rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.learnIntro,
+.reviewHero,
+.familyHeader,
+.courseHeader {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.6fr);
+    gap: 28px;
+    align-items: start;
+    margin-bottom: 26px;
+}
+
+.learnIntro h2,
+.reviewHero h2,
+.familyHeader h2,
+.courseHeader h2 {
+    margin: 0 0 10px;
+    font-size: clamp(2rem, 3vw, 3.1rem);
+    line-height: 1.02;
+}
+
+.learnIntro p,
+.reviewHero p,
+.familyHeader p,
+.courseHeader p {
+    margin: 0;
+    color: #aeb9ca;
+    font-size: 1.06rem;
+    line-height: 1.62;
+}
+
+.learnMethod,
+.depthGuide,
+.srsBanner,
+.reviewEmpty,
+.whyCard,
+.courseAddBox,
+.courseMoveList,
+.courseCoach,
+.courseCoachCompact,
+.reviewQueue,
+.openingSearch {
+    border: 1px solid #26364b;
+    border-radius: 14px;
+    background: #101c2b;
+}
+
+.learnMethod {
+    padding: 18px 20px;
+}
+
+.learnMethod strong,
+.depthGuide strong,
+.reviewQueueHeader strong,
+.courseMoveList > strong,
+.courseAddBox > strong,
+.whyCard > span {
+    font-size: 0.95rem;
+    font-weight: 800;
+}
+
+.learnMethod ol {
+    display: grid;
+    gap: 8px;
+    margin: 12px 0 0;
+    padding-left: 22px;
+    color: #bac5d4;
+    font-size: 0.96rem;
+    line-height: 1.45;
+}
+
+.learningStats,
+.reviewStats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 0 0 24px;
+}
+
+.learningStats > div,
+.reviewStats > div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+    padding: 14px 16px;
+    border: 1px solid #25364b;
+    border-radius: 12px;
+    background: #0f1a28;
+}
+
+.learningStats strong,
+.reviewStats strong {
+    font-size: 1.45rem;
+}
+
+.learningStats span,
+.reviewStats span {
+    color: #9eabbd;
+    font-size: 0.9rem;
+}
+
+.openingSearch {
+    display: grid;
+    gap: 8px;
+    padding: 16px;
+    margin-bottom: 22px;
+}
+
+.openingSearch > span {
+    font-size: 0.92rem;
+    font-weight: 700;
+}
+
+.openingSearch input {
+    width: 100%;
+    min-width: 0;
+    padding: 13px 15px;
+    border: 1px solid #344a67;
+    border-radius: 10px;
+    outline: none;
+    background: #09131f;
+    color: #f5f7fb;
+    font: inherit;
+    font-size: 1rem;
+}
+
+.openingSearch input:focus {
+    border-color: #4b9cff;
+    box-shadow: 0 0 0 3px rgba(75, 156, 255, 0.18);
+}
+
+.openingSearch small {
+    color: #8292a7;
+    font-size: 0.84rem;
+}
+
+.familyGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.familyCard,
+.lessonCard,
+.reviewItem,
+.courseMove,
+.courseMoveActive,
+.backButton,
+.sideButton,
+.sideActive,
+.courseControls button,
+.showMoreButton,
+.primaryButton,
+.secondaryButton {
+    font: inherit;
+}
+
+.familyCard {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+    min-height: 128px;
+    padding: 17px;
+    border: 1px solid #25374d;
+    border-radius: 13px;
+    background: #0d1825;
+    color: #edf3fb;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 140ms ease, transform 140ms ease, background 140ms ease;
+}
+
+.familyCard:hover {
+    border-color: #3978bd;
+    background: #122238;
+    transform: translateY(-1px);
+}
+
+.familyCard > span {
+    margin-bottom: 12px;
+    color: #65aaff;
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+
+.familyCard strong {
+    overflow-wrap: anywhere;
+    font-size: 1.05rem;
+    line-height: 1.3;
+}
+
+.familyCard small {
+    margin-top: 8px;
+    color: #93a2b5;
+    font-size: 0.86rem;
+}
+
+.familyCard em {
+    margin-top: auto;
+    padding-top: 12px;
+    color: #7bb8ff;
+    font-size: 0.82rem;
+    font-style: normal;
+    font-weight: 700;
+}
+
+.backButton {
+    margin: 0 0 18px;
+    padding: 8px 0;
+    border: 0;
+    background: transparent;
+    color: #78b5ff;
+    font-size: 0.96rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.familyProgress {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+    padding-top: 6px;
+}
+
+.familyProgress strong {
+    font-size: 2rem;
+}
+
+.familyProgress span {
+    color: #96a5b8;
+    font-size: 0.88rem;
+}
+
+.courseCoachCompact {
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 14px;
+    align-items: center;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+}
+
+.courseCoachPortraitSmall {
+    width: 82px !important;
+    height: 82px !important;
+}
+
+.courseCoachCompact strong,
+.coachBubble strong {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.95rem;
+}
+
+.courseCoachCompact p,
+.coachBubble p {
+    margin: 0;
+    color: #b4c0cf;
+    font-size: 0.96rem;
+    line-height: 1.48;
+}
+
+.depthGuide {
+    padding: 14px 16px;
+    margin-bottom: 14px;
+}
+
+.depthGuide p {
+    margin: 5px 0 0;
+    color: #9eadc0;
+    font-size: 0.92rem;
+    line-height: 1.5;
+}
+
+.lessonList {
+    display: grid;
+    gap: 8px;
+}
+
+.lessonCard {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    padding: 13px 14px;
+    border: 1px solid #213248;
+    border-radius: 11px;
+    background: #0c1622;
+    color: #eef3fa;
+    text-align: left;
+    cursor: pointer;
+}
+
+.lessonCard:hover {
+    border-color: #3b79bd;
+    background: #112239;
+}
+
+.lessonNumber {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #162b45;
+    color: #8bc2ff;
+    font-size: 0.86rem;
+    font-weight: 800;
+}
+
+.lessonCopy {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+.lessonCopy strong {
+    overflow-wrap: anywhere;
+    font-size: 1rem;
+}
+
+.lessonCopy small {
+    overflow: hidden;
+    color: #8998aa;
+    font-size: 0.85rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lessonStatus {
+    color: #72b4ff;
+    font-size: 0.82rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.showMoreButton {
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px;
+    border: 1px dashed #34516e;
+    border-radius: 10px;
+    background: transparent;
+    color: #8fbee9;
+    cursor: pointer;
+}
+
+.courseSidePicker {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.courseSidePicker > span {
+    color: #99a8ba;
+    font-size: 0.88rem;
+}
+
+.courseSidePicker > div {
+    display: flex;
+    gap: 8px;
+}
+
+.sideButton,
+.sideActive {
+    padding: 9px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.sideButton {
+    border: 1px solid #30445e;
+    background: transparent;
+    color: #aeb9c8;
+}
+
+.sideActive {
+    border: 1px solid #3c82d2;
+    background: #16365c;
+    color: #eef6ff;
+}
+
+.srsBanner {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: center;
+    padding: 12px 15px;
+    margin-bottom: 14px;
+}
+
+.srsBanner > div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.srsBanner strong {
+    font-size: 0.95rem;
+}
+
+.srsBanner span {
+    color: #91a4ba;
+    font-size: 0.84rem;
+}
+
+.courseGrid {
+    display: grid;
+    grid-template-columns: minmax(430px, 1.25fr) minmax(300px, 0.75fr);
+    gap: 22px;
+    align-items: start;
+    min-width: 0;
+}
+
+.courseBoardColumn,
+.coursePanel {
+    min-width: 0;
+}
+
+.courseBoardColumn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.courseBoardWrap {
+    width: min(100%, 670px);
+    min-width: 0;
+}
+
+.courseControls {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 10px;
+    align-items: center;
+    width: min(100%, 670px);
+}
+
+.courseControls button,
+.secondaryButton {
+    min-height: 42px;
+    padding: 9px 13px;
+    border: 1px solid #2c425d;
+    border-radius: 9px;
+    background: #101d2b;
+    color: #c5d0de;
+    cursor: pointer;
+}
+
+.courseControls button:last-child {
+    justify-self: stretch;
+}
+
+.courseControls button:disabled,
+.primaryButton:disabled,
+.secondaryButton:disabled {
+    opacity: 0.42;
+    cursor: default;
+}
+
+.courseControls > span {
+    color: #98a8bb;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.primaryButton {
+    min-height: 44px;
+    padding: 10px 16px;
+    border: 1px solid #3d8eee;
+    border-radius: 9px;
+    background: #287bd6;
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.courseBoardColumn > .primaryButton {
+    width: min(100%, 670px);
+}
+
+.practiceControls {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 9px;
+    align-items: center;
+    width: min(100%, 670px);
+}
+
+.practiceControls > div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.practiceControls strong {
+    font-size: 0.94rem;
+}
+
+.practiceControls span {
+    color: #94a3b6;
+    font-size: 0.84rem;
+    line-height: 1.4;
+}
+
+.coursePanel {
+    display: grid;
+    gap: 12px;
+}
+
+.courseCoach {
+    display: grid;
+    grid-template-columns: 122px minmax(0, 1fr);
+    gap: 14px;
+    align-items: center;
+    padding: 14px;
+}
+
+.courseCoachPortrait {
+    width: 112px !important;
+    height: 112px !important;
+}
+
+.whyCard,
+.courseMoveList,
+.courseAddBox {
+    padding: 15px;
+}
+
+.whyCard > span {
+    display: block;
+    color: #67adff;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.whyCard strong {
+    display: block;
+    margin: 7px 0 4px;
+    font-size: 1.2rem;
+}
+
+.whyCard p,
+.courseAddBox p,
+.courseMoveList p {
+    margin: 5px 0 0;
+    color: #aab7c7;
+    font-size: 0.92rem;
+    line-height: 1.5;
+}
+
+.courseMoveList > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 11px;
+}
+
+.courseMove,
+.courseMoveActive {
+    display: inline-flex;
+    gap: 5px;
+    padding: 7px 9px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.courseMove {
+    border: 1px solid #263a52;
+    background: #0b1622;
+    color: #c3cedc;
+}
+
+.courseMoveActive {
+    border: 1px solid #448ee0;
+    background: #163b67;
+    color: #fff;
+}
+
+.courseMove span,
+.courseMoveActive span {
+    color: #7692ad;
+    font-size: 0.78rem;
+}
+
+.courseAddBox .primaryButton {
+    width: 100%;
+    margin-top: 12px;
+}
+
+.reviewEmpty {
+    display: grid;
+    justify-items: center;
+    padding: 44px 20px;
+    text-align: center;
+}
+
+.reviewEmpty > span {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 12px;
+    border-radius: 50%;
+    background: #173d2d;
+    color: #83d7a6;
+    font-size: 1.5rem;
+}
+
+.reviewEmpty h3 {
+    margin: 0 0 7px;
+    font-size: 1.25rem;
+}
+
+.reviewEmpty p {
+    margin: 0;
+    color: #9cabbc;
+    font-size: 0.96rem;
+}
+
+.reviewQueue {
+    overflow: hidden;
+}
+
+.reviewQueueHeader {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid #26364b;
+}
+
+.reviewQueueHeader > div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.reviewQueueHeader span {
+    color: #92a3b7;
+    font-size: 0.88rem;
+}
+
+.reviewItem {
+    display: grid;
+    grid-template-columns: 54px minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+    padding: 13px 16px;
+    border: 0;
+    border-bottom: 1px solid #1f2e41;
+    background: #0d1723;
+    color: #eff4fb;
+    text-align: left;
+    cursor: pointer;
+}
+
+.reviewItem:hover {
+    background: #122239;
+}
+
+.reviewItem > span:nth-child(2) {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.reviewItem small {
+    overflow: hidden;
+    color: #8595a9;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.reviewEco {
+    color: #67adff;
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+
+.reviewSide {
+    color: #9eafc1;
+    font-size: 0.84rem;
+}
+
+@media (max-width: 1100px) {
+    .courseGrid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .coursePanel {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .courseCoach {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 820px) {
+    .learnIntro,
+    .reviewHero,
+    .familyHeader,
+    .courseHeader {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .familyProgress,
+    .courseSidePicker {
+        align-items: flex-start;
+    }
+
+    .learningStats,
+    .reviewStats {
+        grid-template-columns: repeat(3, minmax(90px, 1fr));
+    }
+
+    .coursePanel {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .practiceControls {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .practiceControls > div {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 600px) {
+    .learnSection {
+        padding-bottom: 28px;
+    }
+
+    .familyGrid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .learningStats,
+    .reviewStats {
+        grid-template-columns: 1fr;
+    }
+
+    .lessonCard,
+    .reviewItem {
+        grid-template-columns: 38px minmax(0, 1fr);
+    }
+
+    .lessonStatus,
+    .reviewSide {
+        grid-column: 2;
+        justify-self: start;
+    }
+
+    .courseCoach,
+    .courseCoachCompact {
+        grid-template-columns: 78px minmax(0, 1fr);
+    }
+
+    .courseCoachPortrait,
+    .courseCoachPortraitSmall {
+        width: 70px !important;
+        height: 70px !important;
+    }
+
+    .courseControls {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .courseControls > span {
+        grid-column: 1 / -1;
+        grid-row: 1;
+        justify-self: center;
+    }
+
+    .practiceControls {
+        grid-template-columns: 1fr;
+    }
+
+    .practiceControls > div {
+        grid-column: auto;
+    }
+
+    .srsBanner,
+    .reviewQueueHeader {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
