@@ -110,6 +110,37 @@ function pathToNode(store: RepertoireStore, nodeId: string): RepertoireNode[] {
     return result.reverse();
 }
 
+function getBoardSquareStyles(
+    fen: string,
+    selectedSquare: Square | undefined,
+    legalMoveHints: boolean
+): NonNullable<React.ComponentProps<typeof Chessboard>["customSquareStyles"]> {
+    const result: NonNullable<
+        React.ComponentProps<typeof Chessboard>["customSquareStyles"]
+    > = {};
+
+    if (!selectedSquare) return result;
+
+    result[selectedSquare] = {
+        boxShadow: "inset 0 0 0 4px rgba(96, 151, 255, 0.92)"
+    };
+
+    if (!legalMoveHints) return result;
+
+    const board = new Chess(fen);
+    const legalMoves = board.moves({ square: selectedSquare, verbose: true });
+    legalMoves.forEach(move => {
+        result[move.to] = board.get(move.to)
+            ? { boxShadow: "inset 0 0 0 5px rgba(18, 24, 34, 0.34)" }
+            : {
+                backgroundImage:
+                    "radial-gradient(circle, rgba(18, 24, 34, 0.42) 0 16%, transparent 17%)"
+            };
+    });
+
+    return result;
+}
+
 function RepertoireApp() {
     const { t } = useTranslation("repertoire");
     const settings = useSettingsStore(state => state.settings);
@@ -158,7 +189,9 @@ function RepertoireApp() {
             ? activeRepertoire.baseNodeId
             : activeRepertoire.rootNodeId
         : null;
-    const basePath = baseNodeId ? pathToNode(store, baseNodeId).filter(node => node.moveSan) : [];
+    const basePath = baseNodeId
+        ? pathToNode(store, baseNodeId).filter(node => node.moveSan)
+        : [];
 
     const visibleRepertoires = useMemo(() => Object.values(store.repertoires)
         .filter(item => filter == "all" || item.side == filter)
@@ -254,7 +287,11 @@ function RepertoireApp() {
     }
 
     function scrollEditorTop() {
-        requestAnimationFrame(() => window.scrollTo({ top: 0, left: 0, behavior: "auto" }));
+        requestAnimationFrame(() => window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "auto"
+        }));
     }
 
     function openRepertoire(repertoire: Repertoire, nodeId?: string) {
@@ -288,7 +325,9 @@ function RepertoireApp() {
             const nextRepertoires = { ...previous.repertoires };
             const nextNodes = { ...previous.nodes };
             delete nextRepertoires[repertoire.id];
-            for (const id of descendants(previous, repertoire.rootNodeId)) delete nextNodes[id];
+            for (const id of descendants(previous, repertoire.rootNodeId)) {
+                delete nextNodes[id];
+            }
             return { ...previous, repertoires: nextRepertoires, nodes: nextNodes };
         });
     }
@@ -563,8 +602,8 @@ function RepertoireApp() {
 
             {visibleRepertoires.length == 0 ? <section className={styles.emptyState}>
                 <div className={styles.emptyIcon}>♟</div>
-                <h3>{t(store && Object.keys(store.repertoires).length ? "library.noFilterTitle" : "library.emptyTitle")}</h3>
-                <p>{t(store && Object.keys(store.repertoires).length ? "library.noFilterBody" : "library.emptyBody")}</p>
+                <h3>{t(Object.keys(store.repertoires).length ? "library.noFilterTitle" : "library.emptyTitle")}</h3>
+                <p>{t(Object.keys(store.repertoires).length ? "library.noFilterBody" : "library.emptyBody")}</p>
                 {!creating && Object.keys(store.repertoires).length == 0 && <button className={styles.primaryButton} type="button" onClick={() => setCreating(true)}>{t("library.createFirst")}</button>}
             </section> : <div className={styles.cardGrid}>
                 {visibleRepertoires.map(repertoire => <article className={styles.card} key={repertoire.id}>
@@ -585,7 +624,9 @@ function RepertoireApp() {
         </main>;
     }
 
-    const children = currentNode.childIds.map(id => store.nodes[id]).filter(Boolean);
+    const children = currentNode.childIds
+        .map(id => store.nodes[id])
+        .filter((node): node is RepertoireNode => Boolean(node));
     const orientation = flipped
         ? (activeRepertoire.side == "white" ? "black" : "white")
         : activeRepertoire.side;
@@ -597,33 +638,11 @@ function RepertoireApp() {
         borderRadius: "8px",
         boxShadow: "0 18px 45px rgba(0, 0, 0, 0.24)"
     };
-    const squareStyles = useMemo<NonNullable<
-        React.ComponentProps<typeof Chessboard>["customSquareStyles"]
-    >>(() => {
-        const result: NonNullable<
-            React.ComponentProps<typeof Chessboard>["customSquareStyles"]
-        > = {};
-
-        if (selectedSquare) {
-            result[selectedSquare] = {
-                boxShadow: "inset 0 0 0 4px rgba(96, 151, 255, 0.92)"
-            };
-        }
-
-        if (!selectedSquare || !settings.themes.board.legalMoveHints) return result;
-
-        const board = new Chess(currentNode.fen);
-        const legalMoves = board.moves({ square: selectedSquare, verbose: true });
-        legalMoves.forEach(move => {
-            result[move.to] = board.get(move.to)
-                ? { boxShadow: "inset 0 0 0 5px rgba(18, 24, 34, 0.34)" }
-                : {
-                    backgroundImage:
-                        "radial-gradient(circle, rgba(18, 24, 34, 0.42) 0 16%, transparent 17%)"
-                };
-        });
-        return result;
-    }, [currentNode.fen, selectedSquare, settings.themes.board.legalMoveHints]);
+    const squareStyles = getBoardSquareStyles(
+        currentNode.fen,
+        selectedSquare,
+        settings.themes.board.legalMoveHints
+    );
 
     return <main className={styles.editor}>
         <header className={styles.editorHeader}>
@@ -720,6 +739,8 @@ function RepertoireApp() {
                             position={currentNode.fen}
                             boardOrientation={orientation}
                             onPieceDrop={(source, target) => playMove(source, target)}
+                            onPieceDragBegin={(_piece, source) => setSelectedSquare(source as Square)}
+                            onPieceDragEnd={() => setSelectedSquare(undefined)}
                             onSquareClick={onSquareClick}
                             customBoardStyle={boardStyle}
                             customDarkSquareStyle={{ backgroundColor: settings.themes.board.darkSquareColour }}
