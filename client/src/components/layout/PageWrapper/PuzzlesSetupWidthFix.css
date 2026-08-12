@@ -78,6 +78,59 @@
     max-width: none !important;
 }
 
+/*
+ * Theme lists belong to the document flow. The page, not this panel, owns
+ * vertical scrolling. This also makes wheel gestures over the list continue
+ * scrolling the full Puzzles page instead of becoming trapped in a nested
+ * scrollbar.
+ */
+[data-nexo-shell][data-route="puzzles"] [data-nexo-content]
+.nexo-puzzle-setup-shell .nexo-puzzle-multi-selector,
+[data-nexo-shell][data-route="puzzles"] [data-nexo-content]
+.nexo-puzzle-setup-shell .nexo-puzzle-theme-panel,
+[data-nexo-shell][data-route="puzzles"] [data-nexo-content]
+.nexo-puzzle-setup-shell .nexo-puzzle-theme-options-grid {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    overscroll-behavior: auto !important;
+    scrollbar-gutter: auto !important;
+}
+
+/* Theme catalogue text must remain comfortably readable at desktop size. */
+[data-nexo-shell][data-route="puzzles"] [data-nexo-content]
+.nexo-puzzle-setup-shell .nexo-puzzle-theme-panel-head strong {
+    font-size: 1.06rem !important;
+    line-height: 1.3 !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] [data-nexo-content]
+.nexo-puzzle-setup-shell .nexo-puzzle-theme-panel-head span {
+    font-size: 0.92rem !important;
+    line-height: 1.4 !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] [data-nexo-content]
+.nexo-puzzle-setup-shell .nexo-puzzle-theme-options-grid > button {
+    min-height: 46px !important;
+    padding: 9px 12px !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] [data-nexo-content]
+.nexo-puzzle-setup-shell .nexo-puzzle-theme-options-grid > button > span {
+    font-size: 0.96rem !important;
+    line-height: 1.28 !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] [data-nexo-content]
+.nexo-puzzle-setup-shell .nexo-puzzle-theme-options-grid > button > small {
+    font-size: 0.78rem !important;
+    line-height: 1.2 !important;
+    font-variant-numeric: tabular-nums !important;
+}
+
 @media (max-width: 1180px) {
     [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
     > section.nexo-puzzle-setup-shell:has(> div:first-child > header):has(> div:first-child > button:last-child)
