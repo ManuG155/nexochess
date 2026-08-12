@@ -164,7 +164,9 @@
         "changeFilters": "सत्र बदला",
         "sourceGame": "मूळ डाव",
         "autoNext": "पुढचे कोडे आपोआप",
-        "autoNextHelp": "सोडवल्यावर पुढचे कोडे उघडा"
+        "autoNextHelp": "सोडवल्यावर पुढचे कोडे उघडा",
+        "focusMode": "व्यत्ययरहित मोड",
+        "exitFocusMode": "व्यत्ययरहित मोडमधून बाहेर पडा"
     },
     "attribution": {
         "text": "स्थिती Lichess च्या सार्वजनिक CC0 कोडे डेटाबेसमधून घेतल्या आहेत. NexoChess चा Lichess शी संबंध नाही.",

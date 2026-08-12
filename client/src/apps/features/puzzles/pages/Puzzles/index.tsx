@@ -231,6 +231,8 @@ function Puzzles() {
     const flipBoardLabel = t("optionsToolbar.flipBoard", {
         ns: "analysis"
     });
+    const focusModeLabel = t("actions.focusMode");
+    const exitFocusModeLabel = t("actions.exitFocusMode");
 
     const [pageState, setPageState] = useState<PageState>("loading");
     const [source, setSource] = useState<PuzzleSource>("archive");
@@ -245,6 +247,7 @@ function Puzzles() {
     const [autoNext, setAutoNext] = useState(getAutoNextPreference);
     const [evaluationVisible, setEvaluationVisible] = useState(true);
     const [boardFlipped, setBoardFlipped] = useState(false);
+    const [focusMode, setFocusMode] = useState(false);
     const [archivePuzzles, setArchivePuzzles] =
         useState<TrainingPuzzle[]>([]);
     const [analysedGameCount, setAnalysedGameCount] = useState(0);
@@ -325,6 +328,25 @@ function Puzzles() {
 
         if (!autoNext) window.clearTimeout(autoNextTimer.current);
     }, [autoNext]);
+
+    useEffect(() => {
+        if (!focusMode) return undefined;
+
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        setCoachPickerOpen(false);
+
+        const leaveOnEscape = (event: KeyboardEvent) => {
+            if (event.key == "Escape") setFocusMode(false);
+        };
+
+        window.addEventListener("keydown", leaveOnEscape);
+
+        return () => {
+            document.body.style.overflow = previousOverflow;
+            window.removeEventListener("keydown", leaveOnEscape);
+        };
+    }, [focusMode]);
 
     useEffect(() => {
         if (!puzzle || pageState != "playing") return undefined;
@@ -564,11 +586,15 @@ function Puzzles() {
                     : "coach.solvedAfterHelp"
         });
 
-        if (!revealed && autoNext) {
+        const autoAdvanceDelay = focusMode
+            ? (revealed ? 2400 : 1500)
+            : (!revealed && autoNext ? 1500 : undefined);
+
+        if (autoAdvanceDelay != undefined) {
             window.clearTimeout(autoNextTimer.current);
             autoNextTimer.current = window.setTimeout(() => {
                 void startTraining();
-            }, 1500);
+            }, autoAdvanceDelay);
         }
     }
 
@@ -595,6 +621,7 @@ function Puzzles() {
         window.clearTimeout(autoNextTimer.current);
         window.clearTimeout(replyTimer.current);
         setPuzzle(undefined);
+        setFocusMode(false);
         puzzleStartedAtRef.current = 0;
         setPuzzleElapsedSeconds(0);
         setPageState("setup");
@@ -1130,7 +1157,7 @@ function Puzzles() {
     ]);
 
     useEffect(() => {
-        if (!puzzle || !currentFen || !evaluationVisible) return;
+        if (!puzzle || !currentFen || !evaluationVisible || focusMode) return;
 
         const requestId = ++evaluationRequestRef.current;
         const updateEvaluation = (evaluation: Evaluation) => {
@@ -1195,7 +1222,7 @@ function Puzzles() {
             evaluationRequestRef.current++;
             engine.terminate();
         };
-    }, [currentFen, evaluationVisible, puzzle?.id]);
+    }, [currentFen, evaluationVisible, focusMode, puzzle?.id]);
 
     const profileStats = showRatedProfile ? (
         <div className={styles.profileStats}>
@@ -1512,8 +1539,9 @@ function Puzzles() {
         {puzzle && trainingActive && (
             <section className={[
                 styles.trainingGrid,
-                "nexo-puzzle-training-shell"
-            ].join(" ")}>
+                "nexo-puzzle-training-shell",
+                focusMode ? "nexo-puzzle-focus-mode" : ""
+            ].filter(Boolean).join(" ")}>
                 <header className={styles.workspaceHeader}>
                     <div className={styles.workspaceIdentity}>
                         <span className={styles.workspaceSource}>
@@ -1702,7 +1730,9 @@ function Puzzles() {
                             puzzleBoardOrientation == "black"
                                 ? "nexo-puzzle-board-black"
                                 : "nexo-puzzle-board-white",
-                            evaluationVisible ? "" : "nexo-eval-hidden"
+                            evaluationVisible && !focusMode
+                                ? ""
+                                : "nexo-eval-hidden"
                         ].filter(Boolean).join(" ")}
                     >
                         <div className="nexo-puzzle-board-tools">
@@ -1735,9 +1765,62 @@ function Puzzles() {
                                     <path d="M5 14.5A7 7 0 0 1 7 7" />
                                 </svg>
                             </button>
+
+                            <button
+                                type="button"
+                                className={[
+                                    "nexo-puzzle-tool-button",
+                                    "nexo-puzzle-tool-focus"
+                                ].join(" ")}
+                                onClick={() => setFocusMode(value => !value)}
+                                title={focusMode
+                                    ? exitFocusModeLabel
+                                    : focusModeLabel
+                                }
+                                aria-label={focusMode
+                                    ? exitFocusModeLabel
+                                    : focusModeLabel
+                                }
+                            >
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                    width="20"
+                                    height="20"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="1.8"
+                                >
+                                    {focusMode ? (
+                                        <>
+                                            <path d="M4 4l6 6" />
+                                            <path d="M6 10h4V6" />
+                                            <path d="M20 4l-6 6" />
+                                            <path d="M14 6v4h4" />
+                                            <path d="M4 20l6-6" />
+                                            <path d="M6 14h4v4" />
+                                            <path d="M20 20l-6-6" />
+                                            <path d="M14 18v-4h4" />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <path d="M10 10 4 4" />
+                                            <path d="M4 9V4h5" />
+                                            <path d="m14 10 6-6" />
+                                            <path d="M15 4h5v5" />
+                                            <path d="m10 14-6 6" />
+                                            <path d="M4 15v5h5" />
+                                            <path d="m14 14 6 6" />
+                                            <path d="M15 20h5v-5" />
+                                        </>
+                                    )}
+                                </svg>
+                            </button>
                         </div>
 
-                        {evaluationVisible && (
+                        {evaluationVisible && !focusMode && (
                             <EvaluationBar
                                 className={styles.evaluationBar}
                                 evaluation={boardEvaluation}

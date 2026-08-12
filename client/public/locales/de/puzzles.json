@@ -164,7 +164,9 @@
         "changeFilters": "Training ändern",
         "sourceGame": "Quellpartie",
         "autoNext": "Automatisch weiter",
-        "autoNextHelp": "Nach dem Lösen zum nächsten Puzzle"
+        "autoNextHelp": "Nach dem Lösen zum nächsten Puzzle",
+        "focusMode": "Ablenkungsfreier Modus",
+        "exitFocusMode": "Ablenkungsfreien Modus beenden"
     },
     "attribution": {
         "text": "Die Stellungen stammen aus der öffentlichen CC0-Datenbank von Lichess. NexoChess ist nicht mit Lichess verbunden.",

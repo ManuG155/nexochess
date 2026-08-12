@@ -164,7 +164,9 @@
         "changeFilters": "Đổi buổi luyện",
         "sourceGame": "Ván nguồn",
         "autoNext": "Tự động chuyển",
-        "autoNextHelp": "Mở bài tiếp theo sau khi giải xong"
+        "autoNextHelp": "Mở bài tiếp theo sau khi giải xong",
+        "focusMode": "Chế độ không xao nhãng",
+        "exitFocusMode": "Thoát chế độ không xao nhãng"
     },
     "attribution": {
         "text": "Các thế cờ đến từ cơ sở câu đố công khai CC0 của Lichess. NexoChess không liên kết với Lichess.",

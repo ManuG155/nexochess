@@ -164,7 +164,9 @@
         "changeFilters": "Change session",
         "sourceGame": "Source game",
         "autoNext": "Auto-next",
-        "autoNextHelp": "Open the next puzzle after solving"
+        "autoNextHelp": "Open the next puzzle after solving",
+        "focusMode": "Distraction-free mode",
+        "exitFocusMode": "Exit distraction-free mode"
     },
     "attribution": {
         "text": "Positions come from the public CC0 Lichess Puzzle Database. NexoChess is not affiliated with Lichess.",

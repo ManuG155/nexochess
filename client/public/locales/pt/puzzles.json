@@ -164,7 +164,9 @@
         "changeFilters": "Mudar sessão",
         "sourceGame": "Partida de origem",
         "autoNext": "Avanço automático",
-        "autoNextHelp": "Passa ao puzzle seguinte ao resolver"
+        "autoNextHelp": "Passa ao puzzle seguinte ao resolver",
+        "focusMode": "Modo sem distrações",
+        "exitFocusMode": "Sair do modo sem distrações"
     },
     "attribution": {
         "text": "As posições vêm da base pública CC0 de puzzles do Lichess. A NexoChess não é afiliada ao Lichess.",
