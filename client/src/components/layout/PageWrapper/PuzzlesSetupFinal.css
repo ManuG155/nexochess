@@ -188,12 +188,14 @@
 [data-nexo-shell][data-route="puzzles"]
 .nexo-puzzle-focus-mode > header {
     display: block !important;
-    grid-column: 2 !important;
+    grid-column: 3 !important;
     grid-row: 1 !important;
     align-self: start !important;
-    justify-self: stretch !important;
-    width: 100% !important;
-    margin: 0 0 10px !important;
+    justify-self: end !important;
+    box-sizing: border-box !important;
+    width: min(420px, calc(100% - 64px)) !important;
+    max-width: 420px !important;
+    margin: 24px 32px 0 0 !important;
     padding: 0 !important;
 }
 
@@ -216,12 +218,6 @@
 [data-nexo-shell][data-theme="light"][data-route="puzzles"]
 .nexo-puzzle-focus-mode > header h2 {
     color: #172334 !important;
-}
-
-/* Right rail stays centred as a unit; title sits immediately above it. */
-[data-nexo-shell][data-route="puzzles"]
-.nexo-puzzle-focus-mode .nexo-puzzle-right-rail {
-    margin-top: 36px !important;
 }
 
 @media (max-width: 1180px) {
@@ -250,5 +246,11 @@
     [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main > .nexo-puzzle-theme-picker + div {
         width: 100% !important;
         max-width: 100% !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"]
+    .nexo-puzzle-focus-mode > header {
+        width: min(360px, calc(100% - 36px)) !important;
+        margin-right: 18px !important;
     }
 }
