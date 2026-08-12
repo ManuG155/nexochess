@@ -1,11 +1,15 @@
 /*
  * Puzzles setup final pass.
- * Keeps the setup header/source/options/start area stable while training
- * filters live below it, and restores the translated side-to-move label in
- * distraction-free mode.
+ * The setup is intentionally split in three visual levels:
+ * 1) title/subtitle + fixed coach,
+ * 2) source selection + session options,
+ * 3) filters + start action.
+ *
+ * Keep this file last in the Puzzles CSS import chain so old experimental
+ * rules cannot move these blocks again.
  */
 
-/* ---------- Setup: fixed upper composition ---------- */
+/* ---------- Setup shell ---------- */
 [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-shell {
     position: relative !important;
     display: block !important;
@@ -16,40 +20,93 @@
     overflow: visible !important;
 }
 
+/*
+ * Two centred columns for the second level:
+ * left = Learn from my games / Training
+ * right = Rated / Hints / Solution
+ */
 [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
+    display: grid !important;
+    grid-template-columns: minmax(360px, 540px) minmax(430px, 650px) !important;
+    grid-auto-rows: auto !important;
+    justify-content: center !important;
+    align-items: start !important;
+    column-gap: 20px !important;
+    row-gap: 20px !important;
+    box-sizing: border-box !important;
     width: 100% !important;
     min-width: 0 !important;
     max-width: none !important;
     padding: 0 !important;
 }
 
-/* Reserve the coach column only for the stable upper controls. */
-[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main > :not(.nexo-puzzle-theme-picker) {
+/* ---------- Level 1: title/subtitle + coach ---------- */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main > header {
+    grid-column: 1 / -1 !important;
+    grid-row: 1 !important;
+    justify-self: stretch !important;
+    align-self: start !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-height: 224px !important;
     max-width: calc(100% - 360px) !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
-/* Theme + difficulty move below the frozen upper block. */
-[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main > .nexo-puzzle-theme-picker {
-    order: 20 !important;
+/* ---------- Level 2: source selector + session toggles ---------- */
+/* The source selector is the first direct div after the setup header. */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-setup-main > header + div {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    align-self: center !important;
+    justify-self: stretch !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+}
+
+/* OptionToggle buttons expose aria-pressed, which uniquely identifies this row. */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-setup-main > div:has(> button[aria-pressed]) {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    align-self: center !important;
+    justify-self: stretch !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+}
+
+/* ---------- Level 3: filters ---------- */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-setup-main > .nexo-puzzle-theme-picker {
+    grid-column: 1 / -1 !important;
+    grid-row: 3 !important;
     box-sizing: border-box !important;
     width: min(1120px, calc(100% - 48px)) !important;
     max-width: 1120px !important;
-    margin: 34px auto 0 !important;
+    margin: 14px auto 0 !important;
+    justify-self: center !important;
 }
 
 [data-nexo-shell][data-route="puzzles"]
 .nexo-puzzle-setup-main > .nexo-puzzle-theme-picker + div {
-    order: 21 !important;
+    grid-column: 1 / -1 !important;
+    grid-row: 4 !important;
     box-sizing: border-box !important;
     width: min(1120px, calc(100% - 48px)) !important;
     max-width: 1120px !important;
-    margin: 18px auto 0 !important;
+    margin: 0 auto !important;
+    justify-self: center !important;
 }
 
-/* Category row and the active category panel are genuinely centred. */
+/* Category row and active category panel are centred on the giant container. */
 [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-tabs {
     display: flex !important;
     flex-wrap: wrap !important;
@@ -59,7 +116,8 @@
     gap: 8px !important;
 }
 
-[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-panel {
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-panel,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-options-grid {
     box-sizing: border-box !important;
     width: 100% !important;
     max-width: 100% !important;
@@ -67,11 +125,24 @@
     margin-right: auto !important;
 }
 
-[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-options-grid {
-    width: 100% !important;
+/* Any setup empty/no-match message spans the centred composition. */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-setup-main > div:not(.nexo-puzzle-theme-picker):not(:has(> button[aria-pressed])):not(header + div) {
+    min-width: 0;
 }
 
-/* ---------- Setup coach: fixed portrait, bounded readable bubble ---------- */
+/* Start is always the final centred action, below every optional filter. */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-setup-main > button:last-child {
+    grid-column: 1 / -1 !important;
+    justify-self: center !important;
+    box-sizing: border-box !important;
+    width: min(960px, 100%) !important;
+    max-width: 960px !important;
+    margin: 4px auto 0 !important;
+}
+
+/* ---------- Fixed setup coach ---------- */
 [data-nexo-shell][data-route="puzzles"]
 .nexo-puzzle-setup-shell > .nexo-puzzle-coach-card {
     position: absolute !important;
@@ -97,14 +168,15 @@
     border-left-color: rgba(39, 72, 109, 0.12) !important;
 }
 
+/* Bubble is moved left so its tail finishes before the fixed portrait begins. */
 [data-nexo-shell][data-route="puzzles"]
 .nexo-puzzle-setup-shell > .nexo-puzzle-coach-card > div:first-child {
     position: absolute !important;
     z-index: 4 !important;
     top: 5px !important;
-    left: 28px !important;
+    left: 0 !important;
     box-sizing: border-box !important;
-    width: 218px !important;
+    width: 214px !important;
     height: 190px !important;
     min-height: 190px !important;
     max-height: 190px !important;
@@ -124,6 +196,7 @@
     margin: 0 0 7px !important;
 }
 
+/* Only the spoken text scrolls; portrait/title/tail never move. */
 [data-nexo-shell][data-route="puzzles"]
 .nexo-puzzle-setup-shell > .nexo-puzzle-coach-card > div:first-child > p {
     box-sizing: border-box !important;
@@ -136,14 +209,13 @@
     overscroll-behavior: contain !important;
 }
 
-/* One clean bubble tail: border and fill stay superimposed. */
+/* One clean tail, ending immediately before the portrait. */
 [data-nexo-shell][data-route="puzzles"]
 .nexo-puzzle-setup-shell > .nexo-puzzle-coach-card > div:first-child::before,
 [data-nexo-shell][data-route="puzzles"]
 .nexo-puzzle-setup-shell > .nexo-puzzle-coach-card > div:first-child::after {
     content: "" !important;
     position: absolute !important;
-    top: 112px !important;
     left: auto !important;
     margin: 0 !important;
     border: 0 !important;
@@ -156,8 +228,9 @@
 [data-nexo-shell][data-route="puzzles"]
 .nexo-puzzle-setup-shell > .nexo-puzzle-coach-card > div:first-child::before {
     z-index: 3 !important;
-    right: -18px !important;
-    width: 18px !important;
+    top: 112px !important;
+    right: -14px !important;
+    width: 14px !important;
     height: 28px !important;
     background: rgba(72, 112, 173, 0.58) !important;
 }
@@ -166,12 +239,13 @@
 .nexo-puzzle-setup-shell > .nexo-puzzle-coach-card > div:first-child::after {
     z-index: 4 !important;
     top: 114px !important;
-    right: -16px !important;
-    width: 16px !important;
+    right: -12px !important;
+    width: 12px !important;
     height: 24px !important;
     background: #ffffff !important;
 }
 
+/* Portrait is completely fixed in the top row. */
 [data-nexo-shell][data-route="puzzles"]
 .nexo-puzzle-setup-shell > .nexo-puzzle-coach-card > button {
     position: absolute !important;
@@ -184,7 +258,17 @@
     padding: 0 !important;
 }
 
-/* ---------- Distraction-free: show the already-translated side to move ---------- */
+/* Mouth overlay: setup only, exactly 2 px lower than the current Puzzles value. */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-setup-shell > .nexo-puzzle-coach-card > button > span > svg,
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-setup-shell > .nexo-puzzle-coach-card > button > span > span:last-child,
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-setup-shell > .nexo-puzzle-coach-card > button > span > img:nth-child(3) {
+    translate: 0 16px !important;
+}
+
+/* ---------- Distraction-free: translated side to move ---------- */
 [data-nexo-shell][data-route="puzzles"]
 .nexo-puzzle-focus-mode > header {
     display: block !important;
@@ -220,13 +304,37 @@
     color: #172334 !important;
 }
 
+/* ---------- Responsive fallback ---------- */
 @media (max-width: 1180px) {
     [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-shell {
         padding: 22px !important;
     }
 
-    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main > :not(.nexo-puzzle-theme-picker) {
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main {
+        grid-template-columns: 1fr !important;
+        row-gap: 18px !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main > header {
+        grid-column: 1 !important;
+        min-height: 0 !important;
         max-width: none !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"]
+    .nexo-puzzle-setup-main > header + div,
+    [data-nexo-shell][data-route="puzzles"]
+    .nexo-puzzle-setup-main > div:has(> button[aria-pressed]),
+    [data-nexo-shell][data-route="puzzles"]
+    .nexo-puzzle-setup-main > .nexo-puzzle-theme-picker,
+    [data-nexo-shell][data-route="puzzles"]
+    .nexo-puzzle-setup-main > .nexo-puzzle-theme-picker + div,
+    [data-nexo-shell][data-route="puzzles"]
+    .nexo-puzzle-setup-main > button:last-child {
+        grid-column: 1 !important;
+        grid-row: auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
     }
 
     [data-nexo-shell][data-route="puzzles"]
@@ -240,12 +348,6 @@
         padding-left: 0 !important;
         border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
         border-left: 0 !important;
-    }
-
-    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main > .nexo-puzzle-theme-picker,
-    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main > .nexo-puzzle-theme-picker + div {
-        width: 100% !important;
-        max-width: 100% !important;
     }
 
     [data-nexo-shell][data-route="puzzles"]
