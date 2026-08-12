@@ -1,13 +1,20 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import ReactDOM from "react-dom/client";
 import { useTranslation } from "react-i18next";
-import { Chess } from "chess.js";
+import { Chess, Square } from "chess.js";
 import { Chessboard } from "react-chessboard";
+
+import EngineVersion from "shared/constants/EngineVersion";
+import PieceColour from "shared/constants/PieceColour";
+import Evaluation from "shared/types/game/position/Evaluation";
 
 import I18nGate from "@/components/layout/I18nGate";
 import PageWrapper from "@/components/layout/PageWrapper";
 import useSettingsStore from "@/stores/SettingsStore";
 import { removeDefaultConsentLink } from "@/lib/consent";
+import { createCustomPieces } from "@/lib/chessAppearance";
+import EvaluationBar from "@analysis/components/EvaluationBar";
+import Engine from "@analysis/lib/engine";
 
 import "@/i18n";
 import "@/index.css";
@@ -21,6 +28,7 @@ interface Repertoire {
     name: string;
     side: RepertoireSide;
     rootNodeId: string;
+    baseNodeId?: string;
     createdAt: string;
     updatedAt: string;
 }
@@ -105,6 +113,11 @@ function pathToNode(store: RepertoireStore, nodeId: string): RepertoireNode[] {
 function RepertoireApp() {
     const { t } = useTranslation("repertoire");
     const settings = useSettingsStore(state => state.settings);
+    const customPieces = useMemo(
+        () => createCustomPieces(settings.themes.piece),
+        [settings.themes.piece]
+    );
+
     const [store, setStore] = useState<RepertoireStore>(() => readStore());
     const [filter, setFilter] = useState<Filter>("all");
     const [creating, setCreating] = useState(false);
@@ -113,8 +126,15 @@ function RepertoireApp() {
     const [activeRepertoireId, setActiveRepertoireId] = useState<string | null>(null);
     const [currentNodeId, setCurrentNodeId] = useState<string | null>(null);
     const [flipped, setFlipped] = useState(false);
-    const [selectedSquare, setSelectedSquare] = useState<string | null>(null);
+    const [selectedSquare, setSelectedSquare] = useState<Square>();
     const [saved, setSaved] = useState(true);
+    const [boardEvaluation, setBoardEvaluation] = useState<Evaluation>({
+        type: "centipawn",
+        value: 0
+    });
+
+    const evaluationCacheRef = useRef(new Map<string, Evaluation>());
+    const evaluationRequestRef = useRef(0);
 
     useEffect(() => {
         removeDefaultConsentLink();
@@ -133,10 +153,62 @@ function RepertoireApp() {
     const currentNode = currentNodeId ? store.nodes[currentNodeId] : null;
     const currentPath = currentNodeId ? pathToNode(store, currentNodeId) : [];
     const movePath = currentPath.filter(node => node.moveSan);
+    const baseNodeId = activeRepertoire
+        ? activeRepertoire.baseNodeId && store.nodes[activeRepertoire.baseNodeId]
+            ? activeRepertoire.baseNodeId
+            : activeRepertoire.rootNodeId
+        : null;
+    const basePath = baseNodeId ? pathToNode(store, baseNodeId).filter(node => node.moveSan) : [];
 
     const visibleRepertoires = useMemo(() => Object.values(store.repertoires)
         .filter(item => filter == "all" || item.side == filter)
         .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)), [store, filter]);
+
+    useEffect(() => {
+        if (!currentNode) return;
+
+        const currentFen = currentNode.fen;
+        const requestId = ++evaluationRequestRef.current;
+        const cached = evaluationCacheRef.current.get(currentFen);
+        if (cached) {
+            setBoardEvaluation({ ...cached });
+        } else {
+            setBoardEvaluation({ type: "centipawn", value: 0 });
+        }
+
+        const engine = new Engine(EngineVersion.STOCKFISH_17_LITE);
+        let cancelled = false;
+
+        function updateEvaluation(evaluation: Evaluation) {
+            if (cancelled || requestId != evaluationRequestRef.current) return;
+            evaluationCacheRef.current.set(currentFen, evaluation);
+            setBoardEvaluation({ ...evaluation });
+        }
+
+        engine
+            .setThreadCount(1)
+            .setLineCount(1)
+            .setPosition(currentFen);
+
+        void engine.evaluate({
+            depth: 16,
+            timeLimit: 1200,
+            onEngineLine: line => {
+                if (line.index == 1 && line.depth >= 1) {
+                    updateEvaluation(line.evaluation);
+                }
+            }
+        }).then(lines => {
+            const finalLine = lines.filter(line => line.index == 1).at(-1);
+            if (finalLine) updateEvaluation(finalLine.evaluation);
+        }).catch(() => undefined).finally(() => engine.terminate());
+
+        return () => {
+            cancelled = true;
+            evaluationRequestRef.current++;
+            engine.terminate();
+        };
+    }, [currentNode?.fen]);
 
     function createRepertoire(event: React.FormEvent) {
         event.preventDefault();
@@ -151,6 +223,7 @@ function RepertoireApp() {
             name: cleanName,
             side,
             rootNodeId,
+            baseNodeId: rootNodeId,
             createdAt: timestamp,
             updatedAt: timestamp
         };
@@ -180,17 +253,33 @@ function RepertoireApp() {
         openRepertoire(repertoire, rootNodeId);
     }
 
-    function openRepertoire(repertoire: Repertoire, nodeId = repertoire.rootNodeId) {
+    function scrollEditorTop() {
+        requestAnimationFrame(() => window.scrollTo({ top: 0, left: 0, behavior: "auto" }));
+    }
+
+    function openRepertoire(repertoire: Repertoire, nodeId?: string) {
+        const preferredStart = nodeId
+            || (repertoire.baseNodeId && store.nodes[repertoire.baseNodeId]
+                ? repertoire.baseNodeId
+                : repertoire.rootNodeId);
         setActiveRepertoireId(repertoire.id);
-        setCurrentNodeId(nodeId);
+        setCurrentNodeId(preferredStart);
         setFlipped(false);
-        setSelectedSquare(null);
+        setSelectedSquare(undefined);
+        scrollEditorTop();
     }
 
     function closeEditor() {
         setActiveRepertoireId(null);
         setCurrentNodeId(null);
-        setSelectedSquare(null);
+        setSelectedSquare(undefined);
+        scrollEditorTop();
+    }
+
+    function goToNode(nodeId: string) {
+        if (!store.nodes[nodeId]) return;
+        setCurrentNodeId(nodeId);
+        setSelectedSquare(undefined);
     }
 
     function deleteRepertoire(repertoire: Repertoire) {
@@ -220,8 +309,7 @@ function RepertoireApp() {
             .map(id => store.nodes[id])
             .find(node => node?.moveUci == uci);
         if (existing) {
-            setCurrentNodeId(existing.id);
-            setSelectedSquare(null);
+            goToNode(existing.id);
             return true;
         }
 
@@ -264,46 +352,65 @@ function RepertoireApp() {
             }
         }));
         setCurrentNodeId(childId);
-        setSelectedSquare(null);
+        setSelectedSquare(undefined);
         return true;
     }
 
-    function onSquareClick(square: string) {
+    function onSquareClick(squareName: string) {
         if (!currentNode) return;
+        const square = squareName as Square;
+        const game = new Chess(currentNode.fen);
+
         if (!selectedSquare) {
-            const game = new Chess(currentNode.fen);
-            const piece = game.get(square as never);
+            const piece = game.get(square);
             if (piece && piece.color == game.turn()) setSelectedSquare(square);
             return;
         }
         if (selectedSquare == square) {
-            setSelectedSquare(null);
+            setSelectedSquare(undefined);
             return;
         }
         if (!playMove(selectedSquare, square)) {
-            const game = new Chess(currentNode.fen);
-            const piece = game.get(square as never);
-            setSelectedSquare(piece && piece.color == game.turn() ? square : null);
+            const piece = game.get(square);
+            setSelectedSquare(piece && piece.color == game.turn() ? square : undefined);
         }
     }
 
     function goBack() {
         if (!currentNode?.parentId) return;
-        setCurrentNodeId(currentNode.parentId);
-        setSelectedSquare(null);
+        goToNode(currentNode.parentId);
     }
 
     function goForward() {
         if (!currentNode || currentNode.childIds.length == 0) return;
         const nextId = currentNode.preferredChildId
             || (currentNode.childIds.length == 1 ? currentNode.childIds[0] : null);
-        if (nextId) setCurrentNodeId(nextId);
+        if (nextId) goToNode(nextId);
     }
 
     function goStart() {
         if (!activeRepertoire) return;
-        setCurrentNodeId(activeRepertoire.rootNodeId);
-        setSelectedSquare(null);
+        goToNode(activeRepertoire.rootNodeId);
+    }
+
+    function goBase() {
+        if (baseNodeId) goToNode(baseNodeId);
+    }
+
+    function setCurrentAsBase() {
+        if (!activeRepertoire || !currentNode) return;
+        const timestamp = now();
+        setStore(previous => ({
+            ...previous,
+            repertoires: {
+                ...previous.repertoires,
+                [activeRepertoire.id]: {
+                    ...previous.repertoires[activeRepertoire.id],
+                    baseNodeId: currentNode.id,
+                    updatedAt: timestamp
+                }
+            }
+        }));
     }
 
     function setPreferred(childId: string) {
@@ -370,12 +477,17 @@ function RepertoireApp() {
                     : parent.preferredChildId,
                 updatedAt: timestamp
             };
+            const previousRepertoire = previous.repertoires[activeRepertoire.id];
             return {
                 ...previous,
                 repertoires: {
                     ...previous.repertoires,
                     [activeRepertoire.id]: {
-                        ...previous.repertoires[activeRepertoire.id],
+                        ...previousRepertoire,
+                        baseNodeId: previousRepertoire.baseNodeId
+                            && doomed.includes(previousRepertoire.baseNodeId)
+                            ? parent.id
+                            : previousRepertoire.baseNodeId,
                         updatedAt: timestamp
                     }
                 },
@@ -383,6 +495,7 @@ function RepertoireApp() {
             };
         });
         setCurrentNodeId(parent.id);
+        setSelectedSquare(undefined);
     }
 
     if (!activeRepertoire || !currentNode) {
@@ -477,14 +590,40 @@ function RepertoireApp() {
         ? (activeRepertoire.side == "white" ? "black" : "white")
         : activeRepertoire.side;
     const moveNumber = Math.floor(currentNode.ply / 2) + 1;
-    const turnText = currentNode.ply % 2 == 0 ? t("side.white") : t("side.black");
+    const turnColour = new Chess(currentNode.fen).turn();
+    const turnText = turnColour == "w" ? t("side.white") : t("side.black");
+    const moveColour = turnColour == "w" ? PieceColour.WHITE : PieceColour.BLACK;
     const boardStyle = {
-        borderRadius: "10px",
+        borderRadius: "8px",
         boxShadow: "0 18px 45px rgba(0, 0, 0, 0.24)"
     };
-    const squareStyles = selectedSquare ? {
-        [selectedSquare]: { boxShadow: "inset 0 0 0 4px rgba(76, 155, 255, .9)" }
-    } : {};
+    const squareStyles = useMemo<NonNullable<
+        React.ComponentProps<typeof Chessboard>["customSquareStyles"]
+    >>(() => {
+        const result: NonNullable<
+            React.ComponentProps<typeof Chessboard>["customSquareStyles"]
+        > = {};
+
+        if (selectedSquare) {
+            result[selectedSquare] = {
+                boxShadow: "inset 0 0 0 4px rgba(96, 151, 255, 0.92)"
+            };
+        }
+
+        if (!selectedSquare || !settings.themes.board.legalMoveHints) return result;
+
+        const board = new Chess(currentNode.fen);
+        const legalMoves = board.moves({ square: selectedSquare, verbose: true });
+        legalMoves.forEach(move => {
+            result[move.to] = board.get(move.to)
+                ? { boxShadow: "inset 0 0 0 5px rgba(18, 24, 34, 0.34)" }
+                : {
+                    backgroundImage:
+                        "radial-gradient(circle, rgba(18, 24, 34, 0.42) 0 16%, transparent 17%)"
+                };
+        });
+        return result;
+    }, [currentNode.fen, selectedSquare, settings.themes.board.legalMoveHints]);
 
     return <main className={styles.editor}>
         <header className={styles.editorHeader}>
@@ -523,11 +662,27 @@ function RepertoireApp() {
                         type="button"
                         key={node.id}
                         className={node.id == currentNode.id ? styles.trailActive : styles.trailButton}
-                        onClick={() => setCurrentNodeId(node.id)}
+                        onClick={() => goToNode(node.id)}
                     >
                         <span>{index % 2 == 0 ? `${Math.floor(index / 2) + 1}.` : "…"}</span>{node.moveSan}
                     </button>)}
                 </div>
+
+                <section className={styles.baseCard}>
+                    <div>
+                        <strong>{t("editor.baseTitle")}</strong>
+                        <p>{t("editor.baseHelp")}</p>
+                        <span className={styles.baseLine}>{basePath.length ? basePath.map(node => node.moveSan).join(" ") : t("editor.startPosition")}</span>
+                    </div>
+                    <div className={styles.baseActions}>
+                        {currentNode.id == baseNodeId
+                            ? <span className={styles.baseCurrent}>✓ {t("editor.baseCurrent")}</span>
+                            : <>
+                                <button type="button" onClick={setCurrentAsBase}>{t("editor.setBase")}</button>
+                                <button type="button" onClick={goBase}>{t("editor.goBase")}</button>
+                            </>}
+                    </div>
+                </section>
 
                 <div className={styles.continuationsHeader}>
                     <div><strong>{t("editor.continuations")}</strong><span>{t("editor.continuationsHelp")}</span></div>
@@ -538,7 +693,7 @@ function RepertoireApp() {
                     <p>{t("editor.noContinuationsBody")}</p>
                 </div> : <div className={styles.continuationList}>
                     {children.map(child => <div className={styles.continuation} key={child.id}>
-                        <button type="button" className={styles.continuationMove} onClick={() => setCurrentNodeId(child.id)}>
+                        <button type="button" className={styles.continuationMove} onClick={() => goToNode(child.id)}>
                             <strong>{child.moveSan}</strong>
                             <span>{currentNode.preferredChildId == child.id ? `★ ${t("editor.main")}` : t("editor.openContinuation")}</span>
                         </button>
@@ -552,19 +707,30 @@ function RepertoireApp() {
                     <span>{t("editor.position", { move: moveNumber })}</span>
                     <strong>{t("editor.toMove", { side: turnText })}</strong>
                 </div>
-                <div className={styles.boardWrap}>
-                    <Chessboard
-                        id="repertoire-board"
-                        position={currentNode.fen}
-                        boardOrientation={orientation}
-                        onPieceDrop={(source, target) => playMove(source, target)}
-                        onSquareClick={onSquareClick}
-                        customBoardStyle={boardStyle}
-                        customDarkSquareStyle={{ backgroundColor: settings.themes.board.darkSquareColour }}
-                        customLightSquareStyle={{ backgroundColor: settings.themes.board.lightSquareColour }}
-                        customSquareStyles={squareStyles}
-                        arePiecesDraggable
+                <div className={styles.boardStage}>
+                    <EvaluationBar
+                        className={styles.evaluationBar}
+                        evaluation={boardEvaluation}
+                        moveColour={moveColour}
+                        flipped={orientation == "black"}
                     />
+                    <div className={styles.boardWrap}>
+                        <Chessboard
+                            id="repertoire-board"
+                            position={currentNode.fen}
+                            boardOrientation={orientation}
+                            onPieceDrop={(source, target) => playMove(source, target)}
+                            onSquareClick={onSquareClick}
+                            customBoardStyle={boardStyle}
+                            customDarkSquareStyle={{ backgroundColor: settings.themes.board.darkSquareColour }}
+                            customLightSquareStyle={{ backgroundColor: settings.themes.board.lightSquareColour }}
+                            customSquareStyles={squareStyles}
+                            customPieces={customPieces}
+                            showBoardNotation={settings.themes.board.coordinates == "inside"}
+                            snapToCursor
+                            arePiecesDraggable
+                        />
+                    </div>
                 </div>
                 <div className={styles.boardControls}>
                     <button type="button" onClick={goStart} disabled={currentNode.id == activeRepertoire.rootNodeId}>|← <span>{t("editor.start")}</span></button>
