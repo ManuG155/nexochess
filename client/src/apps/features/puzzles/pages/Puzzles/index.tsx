@@ -93,6 +93,11 @@ interface MoveFeedback {
     kind: "correct" | "brilliant";
 }
 
+interface PuzzlePremove {
+    from: Square;
+    to: Square;
+}
+
 interface PuzzleRatingEvent {
     id: string;
     delta: number;
@@ -268,6 +273,8 @@ function Puzzles() {
     const [historyIndex, setHistoryIndex] = useState(0);
     const [solutionIndex, setSolutionIndex] = useState(0);
     const [selectedSquare, setSelectedSquare] = useState<Square>();
+    const [hintedSquare, setHintedSquare] = useState<Square>();
+    const [queuedPremove, setQueuedPremove] = useState<PuzzlePremove>();
     const [wrongMovePreview, setWrongMovePreview] =
         useState<WrongMovePreview>();
     const [moveFeedback, setMoveFeedback] = useState<MoveFeedback>();
@@ -347,6 +354,24 @@ function Puzzles() {
             window.removeEventListener("keydown", leaveOnEscape);
         };
     }, [focusMode]);
+
+    useEffect(() => {
+        if (
+            pendingReply
+            || !queuedPremove
+            || !puzzle
+            || pageState != "playing"
+        ) return undefined;
+
+        const premove = queuedPremove;
+        const timeoutId = window.setTimeout(() => {
+            setQueuedPremove(current => current === premove ? undefined : current);
+            setSelectedSquare(undefined);
+            playExpectedMove(premove.from, premove.to);
+        }, 80);
+
+        return () => window.clearTimeout(timeoutId);
+    }, [pendingReply, queuedPremove, puzzle?.id, pageState]);
 
     useEffect(() => {
         if (!puzzle || pageState != "playing") return undefined;
@@ -456,6 +481,8 @@ function Puzzles() {
         setHistoryIndex(history.length - 1);
         setSolutionIndex(0);
         setSelectedSquare(undefined);
+        setHintedSquare(undefined);
+        setQueuedPremove(undefined);
         setWrongMovePreview(undefined);
         setMoveFeedback(undefined);
         setHintArrow([]);
@@ -587,8 +614,8 @@ function Puzzles() {
         });
 
         const autoAdvanceDelay = focusMode
-            ? (revealed ? 2400 : 1500)
-            : (!revealed && autoNext ? 1500 : undefined);
+            ? (revealed ? 450 : 320)
+            : (!revealed && autoNext ? 320 : undefined);
 
         if (autoAdvanceDelay != undefined) {
             window.clearTimeout(autoNextTimer.current);
@@ -626,6 +653,9 @@ function Puzzles() {
         setPuzzleElapsedSeconds(0);
         setPageState("setup");
         setPendingReply(false);
+        setSelectedSquare(undefined);
+        setHintedSquare(undefined);
+        setQueuedPremove(undefined);
         setWrongMovePreview(undefined);
         setMoveFeedback(undefined);
         setCoachExpression("idle");
@@ -650,6 +680,7 @@ function Puzzles() {
             || historyIndex != boardHistory.length - 1
         ) return false;
 
+        setHintedSquare(undefined);
         const attemptBoard = new Chess(liveFen.current);
         const legalMove = attemptBoard.moves({
             square: from as Square,
@@ -766,24 +797,59 @@ function Puzzles() {
 
             setCoachExpression("explaining");
             setCoachMessage({ key: "coach.yourTurnAgain" });
-        }, 680);
+        }, 220);
 
         return true;
+    }
+
+    function queuePremove(from: Square, to: Square) {
+        if (!puzzle || !pendingReply || from == to) return false;
+
+        const board = new Chess(liveFen.current);
+        const piece = board.get(from);
+        const solverColour = puzzle.solver == "white" ? "w" : "b";
+
+        if (piece?.color != solverColour) return false;
+
+        setQueuedPremove({ from, to });
+        setSelectedSquare(undefined);
+        setHintedSquare(undefined);
+        return false;
     }
 
     function selectBoardSquare(square: Square) {
         if (
             !puzzle
             || pageState != "playing"
-            || pendingReply
             || wrongMovePreview
             || historyIndex != boardHistory.length - 1
         ) return;
 
-        if (!selectedSquare) {
-            const piece = new Chess(liveFen.current).get(square);
-            const expectedColour = puzzle.solver == "white" ? "w" : "b";
+        const board = new Chess(liveFen.current);
+        const piece = board.get(square);
+        const expectedColour = puzzle.solver == "white" ? "w" : "b";
 
+        if (pendingReply) {
+            if (!selectedSquare) {
+                if (piece?.color == expectedColour) setSelectedSquare(square);
+                return;
+            }
+
+            if (square == selectedSquare) {
+                setSelectedSquare(undefined);
+                return;
+            }
+
+            if (piece?.color == expectedColour) {
+                setSelectedSquare(square);
+                return;
+            }
+
+            queuePremove(selectedSquare, square);
+            return;
+        }
+
+        if (!selectedSquare) {
             if (piece?.color == expectedColour) setSelectedSquare(square);
             return;
         }
@@ -792,10 +858,6 @@ function Puzzles() {
             setSelectedSquare(undefined);
             return;
         }
-
-        const board = new Chess(liveFen.current);
-        const piece = board.get(square);
-        const expectedColour = puzzle.solver == "white" ? "w" : "b";
 
         if (piece?.color == expectedColour) {
             setSelectedSquare(square);
@@ -827,16 +889,10 @@ function Puzzles() {
         if (!expected) return;
 
         failedAttempt.current = true;
-        setHintArrow([[
-            expected.slice(0, 2) as Square,
-            expected.slice(2, 4) as Square,
-            "#78a7ff"
-        ]]);
+        setHintArrow([]);
+        setHintedSquare(expected.slice(0, 2) as Square);
         setCoachExpression("explaining");
-        setCoachMessage({
-            key: "coach.hint",
-            values: { move: getMoveSAN(liveFen.current, expected) }
-        });
+        setCoachMessage({ key: "coach.hint" });
     }
 
     function revealSolution() {
@@ -877,6 +933,8 @@ function Puzzles() {
         setSolutionIndex(puzzle.solution.length);
         setPendingReply(false);
         setSelectedSquare(undefined);
+        setHintedSquare(undefined);
+        setQueuedPremove(undefined);
         setHintArrow([]);
         void finishPuzzle(true);
     }
@@ -1110,6 +1168,27 @@ function Puzzles() {
             };
         }
 
+        if (queuedPremove) {
+            squareStyles[queuedPremove.from] = {
+                backgroundImage:
+                    "linear-gradient(rgba(242, 132, 132, 0.48), "
+                    + "rgba(242, 132, 132, 0.48))",
+                boxShadow: "inset 0 0 0 3px rgba(255, 171, 171, 0.78)"
+            };
+            squareStyles[queuedPremove.to] = {
+                backgroundImage:
+                    "linear-gradient(rgba(207, 56, 43, 0.66), "
+                    + "rgba(207, 56, 43, 0.66))",
+                boxShadow: "inset 0 0 0 3px rgba(232, 75, 59, 0.92)"
+            };
+        }
+
+        if (hintedSquare) {
+            squareStyles[hintedSquare] = {
+                boxShadow: "inset 0 0 0 5px rgba(120, 167, 255, 0.95)"
+            };
+        }
+
         if (selectedSquare) {
             squareStyles[selectedSquare] = {
                 boxShadow: "inset 0 0 0 4px rgba(96, 151, 255, 0.9)"
@@ -1148,9 +1227,11 @@ function Puzzles() {
     }, [
         atLivePosition,
         currentFen,
+        hintedSquare,
         moveFeedback,
         pageState,
         pendingReply,
+        queuedPremove,
         selectedSquare,
         settings.themes.board.legalMoveHints,
         wrongMovePreview
@@ -1846,15 +1927,34 @@ function Puzzles() {
                                 showBoardNotation={
                                     settings.themes.board.coordinates == "inside"
                                 }
-                                animationDuration={165}
+                                animationDuration={70}
                                 arePiecesDraggable={
                                     pageState == "playing"
-                                    && !pendingReply
                                     && !wrongMovePreview
                                     && atLivePosition
                                 }
-                                onPieceDrop={(from, to) => playExpectedMove(from, to)}
+                                isDraggablePiece={({ piece }) => {
+                                    const solverColour = puzzle.solver == "white"
+                                        ? "w"
+                                        : "b";
+                                    return piece[0] == solverColour;
+                                }}
+                                onPieceDragBegin={(_, square) => {
+                                    setSelectedSquare(square);
+                                }}
+                                onPieceDragEnd={() => {
+                                    setSelectedSquare(undefined);
+                                }}
+                                onPieceDrop={(from, to) => pendingReply
+                                    ? queuePremove(from, to)
+                                    : playExpectedMove(from, to)
+                                }
                                 onSquareClick={selectBoardSquare}
+                                snapToCursor={true}
+                                customDropSquareStyle={{
+                                    boxShadow:
+                                        "inset 0 0 0 3px rgba(120, 167, 255, 0.62)"
+                                }}
                                 areArrowsAllowed={false}
                                 customPieces={customPieces}
                                 customSquare={

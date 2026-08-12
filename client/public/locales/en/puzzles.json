@@ -85,7 +85,7 @@
         },
         "hints": {
             "title": "Hints",
-            "body": "Allow the coach to show a move"
+            "body": "Allow the coach to highlight the piece"
         },
         "solution": {
             "title": "Solution",
@@ -102,7 +102,7 @@
         "wrong": "Not this one. The move is legal, but it lets the key opportunity slip. Recheck checks, captures and threats.",
         "correctContinue": "Good move. Watch the reply; the idea is not finished yet.",
         "yourTurnAgain": "That was the expected defence. Continue the combination.",
-        "hint": "A useful clue: examine {{move}}. Work out why it is stronger before playing it.",
+        "hint": "The piece that should move is highlighted. Find the destination yourself.",
         "solvedClean": "Excellent. You found the whole idea without help.",
         "solvedAfterHelp": "Solved. Repeat the pattern mentally once more so the idea sticks.",
         "solutionShown": "Here is the complete line. Use the controls in the objective card to review every position.",
@@ -156,7 +156,7 @@
     },
     "actions": {
         "hint": "Hint",
-        "hintHelp": "Show the key move",
+        "hintHelp": "Highlight the piece",
         "solution": "Solution",
         "solutionHelp": "Reveal the line",
         "disabled": "Disabled for this session",

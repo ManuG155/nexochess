@@ -85,7 +85,7 @@
         },
         "hints": {
             "title": "Hinweise",
-            "body": "Trainer darf einen Zug zeigen"
+            "body": "Der Trainer darf die richtige Figur hervorheben"
         },
         "solution": {
             "title": "Lösung",
@@ -102,7 +102,7 @@
         "wrong": "Nicht dieser Zug. Er ist legal, lässt aber die entscheidende Chance aus. Prüfe erneut Schachs, Schlagzüge und Drohungen.",
         "correctContinue": "Guter Zug. Beachte die Antwort; die Idee ist noch nicht beendet.",
         "yourTurnAgain": "Das war die erwartete Verteidigung. Setze die Kombination fort.",
-        "hint": "Ein Hinweis: Untersuche {{move}} und finde heraus, warum er stärker ist.",
+        "hint": "Die Figur, die ziehen soll, ist markiert. Finde selbst das Zielfeld.",
         "solvedClean": "Ausgezeichnet. Du hast die ganze Idee ohne Hilfe gefunden.",
         "solvedAfterHelp": "Gelöst. Wiederhole das Muster noch einmal im Kopf.",
         "solutionShown": "Hier ist die vollständige Variante. Mit den Steuerelementen im Zielbereich kannst du jede Stellung prüfen.",
@@ -156,7 +156,7 @@
     },
     "actions": {
         "hint": "Hinweis",
-        "hintHelp": "Schlüsselzug zeigen",
+        "hintHelp": "Figur hervorheben",
         "solution": "Lösung",
         "solutionHelp": "Variante aufdecken",
         "disabled": "Für dieses Training deaktiviert",

@@ -85,7 +85,7 @@
         },
         "hints": {
             "title": "提示",
-            "body": "允许教练显示一步棋"
+            "body": "允许教练高亮正确的棋子"
         },
         "solution": {
             "title": "答案",
@@ -102,7 +102,7 @@
         "wrong": "不是这步。它虽然合法，却错过了关键机会。再检查将军、吃子和威胁。",
         "correctContinue": "好棋。注意对方的回应，战术还没有结束。",
         "yourTurnAgain": "这是预期的防守。继续完成组合。",
-        "hint": "一个提示：研究 {{move}}，先理解它为什么更强。",
+        "hint": "需要移动的棋子已高亮。请自己找出目标格。",
         "solvedClean": "非常好。你没有帮助就找到了完整思路。",
         "solvedAfterHelp": "已解决。再在脑中重复一次这个模式。",
         "solutionShown": "这是完整变化。使用目标卡片中的控件查看每个局面。",
@@ -156,7 +156,7 @@
     },
     "actions": {
         "hint": "提示",
-        "hintHelp": "显示关键着",
+        "hintHelp": "高亮棋子",
         "solution": "答案",
         "solutionHelp": "显示整条变化",
         "disabled": "本次训练已关闭",

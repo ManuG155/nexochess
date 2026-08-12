@@ -85,7 +85,7 @@
         },
         "hints": {
             "title": "Indices",
-            "body": "Autoriser l'entraîneur à montrer un coup"
+            "body": "Autoriser l’entraîneur à mettre la bonne pièce en évidence"
         },
         "solution": {
             "title": "Solution",
@@ -102,7 +102,7 @@
         "wrong": "Pas ce coup. Il est légal, mais laisse passer l'occasion clé. Revérifiez échecs, prises et menaces.",
         "correctContinue": "Bon coup. Regardez la réponse : l'idée n'est pas terminée.",
         "yourTurnAgain": "C'était la défense attendue. Continuez la combinaison.",
-        "hint": "Un indice : étudiez {{move}} et comprenez pourquoi ce coup est plus fort.",
+        "hint": "La pièce qui doit jouer est mise en évidence. Trouve toi-même la case d’arrivée.",
         "solvedClean": "Excellent. Vous avez trouvé toute l'idée sans aide.",
         "solvedAfterHelp": "Résolu. Répétez encore le motif mentalement pour le retenir.",
         "solutionShown": "Voici la variante complète. Utilisez les commandes de l’objectif pour revoir chaque position.",
@@ -156,7 +156,7 @@
     },
     "actions": {
         "hint": "Indice",
-        "hintHelp": "Montrer le coup clé",
+        "hintHelp": "Mettre la pièce en évidence",
         "solution": "Solution",
         "solutionHelp": "Révéler la variante",
         "disabled": "Désactivé pour cette séance",

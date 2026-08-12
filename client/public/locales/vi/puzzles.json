@@ -85,7 +85,7 @@
         },
         "hints": {
             "title": "Gợi ý",
-            "body": "Cho phép huấn luyện viên chỉ một nước"
+            "body": "Cho phép huấn luyện viên tô sáng quân cờ đúng"
         },
         "solution": {
             "title": "Lời giải",
@@ -102,7 +102,7 @@
         "wrong": "Không phải nước này. Nó hợp lệ nhưng bỏ lỡ cơ hội chính. Hãy xem lại chiếu, bắt quân và đe dọa.",
         "correctContinue": "Nước tốt. Hãy xem lời đáp; ý tưởng chưa kết thúc.",
         "yourTurnAgain": "Đó là phòng thủ dự kiến. Tiếp tục tổ hợp.",
-        "hint": "Một gợi ý: nghiên cứu {{move}} và hiểu vì sao nó mạnh hơn.",
+        "hint": "Quân cờ cần di chuyển đã được tô sáng. Hãy tự tìm ô đích.",
         "solvedClean": "Xuất sắc. Bạn tìm ra toàn bộ ý tưởng mà không cần giúp.",
         "solvedAfterHelp": "Đã giải. Hãy nhẩm lại mô-típ một lần nữa.",
         "solutionShown": "Đây là toàn bộ biến. Dùng các nút trong thẻ mục tiêu để xem từng thế cờ.",
@@ -156,7 +156,7 @@
     },
     "actions": {
         "hint": "Gợi ý",
-        "hintHelp": "Hiện nước then chốt",
+        "hintHelp": "Tô sáng quân cờ",
         "solution": "Lời giải",
         "solutionHelp": "Hiện toàn bộ biến",
         "disabled": "Đã tắt trong buổi này",
