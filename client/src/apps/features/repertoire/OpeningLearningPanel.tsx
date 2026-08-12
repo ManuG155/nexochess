@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Chess, Move, Square } from "chess.js";
 import { Chessboard } from "react-chessboard";
@@ -17,12 +17,25 @@ import {
     getFallbackOpeningCatalogue,
     loadOpeningCatalogue
 } from "./openingCatalogue";
-import * as styles from "./index.module.css";
+import {
+    CourseProgressStore,
+    LessonProgress,
+    createLessonId,
+    getDueLessons,
+    getLearnedCount,
+    getMasteredCount,
+    readCourseProgress,
+    recordLessonReview,
+    writeCourseProgress
+} from "./courseProgress";
+import * as styles from "./learning.module.css";
 
 type RepertoireSide = "white" | "black";
 type CourseMode = "learn" | "practice";
+type PanelMode = "learn" | "review";
 
 interface OpeningLearningPanelProps {
+    mode?: PanelMode;
     onAddToRepertoire: (
         opening: OpeningCatalogueEntry,
         side: RepertoireSide
@@ -32,23 +45,6 @@ interface OpeningLearningPanelProps {
 interface OpeningFamily {
     name: string;
     lines: OpeningCatalogueEntry[];
-}
-
-const COURSE_PROGRESS_KEY = "nexochess.repertoire.course-progress.v1";
-
-function readCompletedLessons() {
-    try {
-        const value = JSON.parse(
-            localStorage.getItem(COURSE_PROGRESS_KEY) || "[]"
-        );
-        return new Set<string>(Array.isArray(value) ? value : []);
-    } catch {
-        return new Set<string>();
-    }
-}
-
-function lessonId(opening: OpeningCatalogueEntry) {
-    return `${opening.eco}|${opening.name}|${opening.pgn}`;
 }
 
 function getCourseMoves(opening?: OpeningCatalogueEntry) {
@@ -80,7 +76,26 @@ function inferSide(opening: OpeningCatalogueEntry): RepertoireSide {
         : "white";
 }
 
+function openingFromProgress(progress: LessonProgress): OpeningCatalogueEntry {
+    return {
+        eco: progress.eco,
+        name: progress.openingName,
+        pgn: progress.pgn,
+        family: progress.family
+    };
+}
+
+function dueLabel(progress: LessonProgress) {
+    const due = new Date(progress.dueAt);
+    if (!Number.isFinite(due.getTime())) return "";
+    return new Intl.DateTimeFormat(undefined, {
+        dateStyle: "medium",
+        timeStyle: "short"
+    }).format(due);
+}
+
 function OpeningLearningPanel({
+    mode = "learn",
     onAddToRepertoire
 }: OpeningLearningPanelProps) {
     const { t } = useTranslation("repertoire");
@@ -107,12 +122,18 @@ function OpeningLearningPanel({
     const [practiceIndex, setPracticeIndex] = useState(0);
     const [selectedSquare, setSelectedSquare] = useState<Square>();
     const [showHint, setShowHint] = useState(false);
+    const [sessionMistakes, setSessionMistakes] = useState(0);
+    const [sessionRecorded, setSessionRecorded] = useState(false);
+    const [lessonLimit, setLessonLimit] = useState(14);
     const [coachExpression, setCoachExpression] =
         useState<CoachExpression>("explaining");
     const [coachMessageKey, setCoachMessageKey] =
         useState("learn.coach.welcome");
-    const [completedLessons, setCompletedLessons] =
-        useState<Set<string>>(() => readCompletedLessons());
+    const [progress, setProgress] = useState<CourseProgressStore>(
+        () => readCourseProgress()
+    );
+
+    const autoAdvanceRef = useRef<number>();
 
     useEffect(() => {
         let cancelled = false;
@@ -128,11 +149,20 @@ function OpeningLearningPanel({
     }, []);
 
     useEffect(() => {
-        localStorage.setItem(
-            COURSE_PROGRESS_KEY,
-            JSON.stringify(Array.from(completedLessons))
-        );
-    }, [completedLessons]);
+        writeCourseProgress(progress);
+    }, [progress]);
+
+    useEffect(() => {
+        setSelectedOpening(undefined);
+        setSelectedFamily(undefined);
+        setCourseMode("learn");
+        setPracticeIndex(0);
+        setLearnStep(0);
+        setSelectedSquare(undefined);
+        setShowHint(false);
+        setSessionMistakes(0);
+        setSessionRecorded(false);
+    }, [mode]);
 
     const families = useMemo<OpeningFamily[]>(() => {
         const grouped = new Map<string, OpeningCatalogueEntry[]>();
@@ -161,7 +191,7 @@ function OpeningLearningPanel({
             ))
             : families.filter(family => getFallbackOpeningCatalogue()
                 .some(opening => opening.family == family.name));
-        return source.slice(0, normalisedQuery ? 80 : 24);
+        return source.slice(0, normalisedQuery ? 100 : 24);
     }, [families, normalisedQuery]);
 
     const family = selectedFamily
@@ -175,31 +205,51 @@ function OpeningLearningPanel({
     const practiceFen = getFenAtStep(courseMoves, practiceIndex);
     const expectedMove = courseMoves[practiceIndex];
     const learnerColour = side == "white" ? "w" : "b";
-    const lessonComplete = Boolean(
-        selectedOpening
-        && completedLessons.has(lessonId(selectedOpening))
-    );
+    const currentLessonId = selectedOpening
+        ? createLessonId(
+            selectedOpening.eco,
+            selectedOpening.name,
+            selectedOpening.pgn
+        )
+        : "";
+    const currentProgress = currentLessonId
+        ? progress[currentLessonId]
+        : undefined;
+    const dueLessons = useMemo(() => getDueLessons(progress), [progress]);
+    const learnedCount = useMemo(() => getLearnedCount(progress), [progress]);
+    const masteredCount = useMemo(() => getMasteredCount(progress), [progress]);
 
     const completedInFamily = family?.lines.filter(line => (
-        completedLessons.has(lessonId(line))
+        Boolean(progress[createLessonId(line.eco, line.name, line.pgn)])
     )).length || 0;
 
     useEffect(() => {
+        if (autoAdvanceRef.current != undefined) {
+            window.clearTimeout(autoAdvanceRef.current);
+            autoAdvanceRef.current = undefined;
+        }
+
         if (
             courseMode != "practice"
             || !selectedOpening
             || practiceIndex >= courseMoves.length
             || expectedMove?.color == learnerColour
-        ) return;
+        ) return undefined;
 
         setCoachExpression("explaining");
         setCoachMessageKey("learn.coach.opponent");
-        const timer = window.setTimeout(() => {
+        autoAdvanceRef.current = window.setTimeout(() => {
             setPracticeIndex(index => Math.min(index + 1, courseMoves.length));
             setSelectedSquare(undefined);
             setShowHint(false);
-        }, 560);
-        return () => window.clearTimeout(timer);
+        }, 520);
+
+        return () => {
+            if (autoAdvanceRef.current != undefined) {
+                window.clearTimeout(autoAdvanceRef.current);
+                autoAdvanceRef.current = undefined;
+            }
+        };
     }, [
         courseMode,
         courseMoves.length,
@@ -215,35 +265,64 @@ function OpeningLearningPanel({
             || !selectedOpening
             || courseMoves.length == 0
             || practiceIndex < courseMoves.length
+            || sessionRecorded
         ) return;
 
-        setCompletedLessons(previous => new Set(previous).add(
-            lessonId(selectedOpening)
-        ));
+        setProgress(previous => recordLessonReview(previous, {
+            id: currentLessonId,
+            openingName: selectedOpening.name,
+            family: selectedOpening.family,
+            eco: selectedOpening.eco,
+            pgn: selectedOpening.pgn,
+            side
+        }, sessionMistakes));
+        setSessionRecorded(true);
         setCoachExpression("celebrating");
         setCoachMessageKey("learn.coach.completed");
-    }, [courseMode, courseMoves.length, practiceIndex, selectedOpening]);
+    }, [
+        courseMode,
+        courseMoves.length,
+        currentLessonId,
+        practiceIndex,
+        selectedOpening,
+        sessionMistakes,
+        sessionRecorded,
+        side
+    ]);
 
     function selectFamily(name: string) {
         setSelectedFamily(name);
         setSelectedOpening(undefined);
         setQuery("");
         setCourseMode("learn");
+        setLessonLimit(14);
         setCoachExpression("explaining");
         setCoachMessageKey("learn.coach.family");
         window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     }
 
-    function selectOpening(opening: OpeningCatalogueEntry) {
+    function selectOpening(
+        opening: OpeningCatalogueEntry,
+        preferredSide?: RepertoireSide,
+        startInPractice = false
+    ) {
+        setSelectedFamily(opening.family);
         setSelectedOpening(opening);
-        setSide(inferSide(opening));
-        setCourseMode("learn");
+        setSide(preferredSide || inferSide(opening));
+        setCourseMode(startInPractice ? "practice" : "learn");
         setLearnStep(0);
         setPracticeIndex(0);
         setSelectedSquare(undefined);
         setShowHint(false);
-        setCoachExpression("explaining");
-        setCoachMessageKey("learn.coach.lineStart");
+        setSessionMistakes(0);
+        setSessionRecorded(false);
+        setCoachExpression(startInPractice ? "thinking" : "explaining");
+        setCoachMessageKey(
+            startInPractice
+                ? "learn.coach.practiceStart"
+                : "learn.coach.lineStart"
+        );
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     }
 
     function startPractice() {
@@ -251,6 +330,8 @@ function OpeningLearningPanel({
         setPracticeIndex(0);
         setSelectedSquare(undefined);
         setShowHint(false);
+        setSessionMistakes(0);
+        setSessionRecorded(false);
         setCoachExpression("thinking");
         setCoachMessageKey("learn.coach.practiceStart");
     }
@@ -273,6 +354,7 @@ function OpeningLearningPanel({
 
         const correct = expectedMove.from == from && expectedMove.to == to;
         if (!correct) {
+            setSessionMistakes(value => value + 1);
             setCoachExpression("worried");
             setCoachMessageKey("learn.coach.tryAgain");
             setShowHint(false);
@@ -292,6 +374,14 @@ function OpeningLearningPanel({
                 : "learn.coach.correct"
         );
         return true;
+    }
+
+    function requestHint() {
+        if (!expectedMove || expectedMove.color != learnerColour) return;
+        if (!showHint) setSessionMistakes(value => value + 1);
+        setShowHint(true);
+        setCoachExpression("explaining");
+        setCoachMessageKey("learn.coach.hint");
     }
 
     function onPracticeSquareClick(squareName: string) {
@@ -314,6 +404,21 @@ function OpeningLearningPanel({
             const piece = board.get(square);
             setSelectedSquare(piece?.color == learnerColour ? square : undefined);
         }
+    }
+
+    function explainMove(move?: Move) {
+        if (!move) return t("learn.explanations.start");
+        if (move.san.includes("O-O")) return t("learn.explanations.castle");
+        if (move.san.includes("+")) return t("learn.explanations.check");
+        if (move.san.includes("x")) return t("learn.explanations.capture");
+        if (move.piece == "n") return t("learn.explanations.knight");
+        if (move.piece == "b") return t("learn.explanations.bishop");
+        if (move.piece == "q") return t("learn.explanations.queen");
+        if (move.piece == "p" && ["d4", "e4", "d5", "e5"].includes(move.to)) {
+            return t("learn.explanations.centrePawn");
+        }
+        if (move.piece == "p") return t("learn.explanations.pawn");
+        return t("learn.explanations.piece");
     }
 
     const practiceSquareStyles: NonNullable<
@@ -346,6 +451,65 @@ function OpeningLearningPanel({
         tCoach
     );
 
+    if (mode == "review" && !selectedOpening) {
+        const future = Object.values(progress)
+            .filter(item => !dueLessons.includes(item))
+            .sort((a, b) => a.dueAt.localeCompare(b.dueAt))[0];
+
+        return <section className={styles.learnSection}>
+            <div className={styles.reviewHero}>
+                <div>
+                    <span className={styles.eyebrow}>{t("review.eyebrow")}</span>
+                    <h2>{t("review.title")}</h2>
+                    <p>{t("review.intro")}</p>
+                </div>
+                <div className={styles.reviewStats}>
+                    <div><strong>{dueLessons.length}</strong><span>{t("review.due")}</span></div>
+                    <div><strong>{learnedCount}</strong><span>{t("review.learned")}</span></div>
+                    <div><strong>{masteredCount}</strong><span>{t("review.mastered")}</span></div>
+                </div>
+            </div>
+
+            {dueLessons.length == 0 ? <div className={styles.reviewEmpty}>
+                <span>✓</span>
+                <h3>{t("review.emptyTitle")}</h3>
+                <p>{future
+                    ? t("review.next", { date: dueLabel(future) })
+                    : t("review.emptyBody")}</p>
+            </div> : <div className={styles.reviewQueue}>
+                <div className={styles.reviewQueueHeader}>
+                    <div>
+                        <strong>{t("review.queueTitle")}</strong>
+                        <span>{t("review.queueHelp")}</span>
+                    </div>
+                    <button
+                        type="button"
+                        className={styles.primaryButton}
+                        onClick={() => selectOpening(
+                            openingFromProgress(dueLessons[0]),
+                            dueLessons[0].side,
+                            true
+                        )}
+                    >{t("review.start")}</button>
+                </div>
+                {dueLessons.map(item => <button
+                    type="button"
+                    key={item.lessonId}
+                    className={styles.reviewItem}
+                    onClick={() => selectOpening(
+                        openingFromProgress(item),
+                        item.side,
+                        true
+                    )}
+                >
+                    <span className={styles.reviewEco}>{item.eco}</span>
+                    <span><strong>{item.openingName}</strong><small>{item.pgn}</small></span>
+                    <span className={styles.reviewSide}>{t(`side.${item.side}`)}</span>
+                </button>)}
+            </div>}
+        </section>;
+    }
+
     if (!selectedFamily) {
         return <section className={styles.learnSection}>
             <div className={styles.learnIntro}>
@@ -360,9 +524,16 @@ function OpeningLearningPanel({
                         <li>{t("learn.methodUnderstand")}</li>
                         <li>{t("learn.methodFollow")}</li>
                         <li>{t("learn.methodPractice")}</li>
+                        <li>{t("learn.methodReview")}</li>
                         <li>{t("learn.methodAdd")}</li>
                     </ol>
                 </div>
+            </div>
+
+            <div className={styles.learningStats}>
+                <div><strong>{learnedCount}</strong><span>{t("review.learned")}</span></div>
+                <div><strong>{dueLessons.length}</strong><span>{t("review.due")}</span></div>
+                <div><strong>{masteredCount}</strong><span>{t("review.mastered")}</span></div>
             </div>
 
             <label className={styles.openingSearch}>
@@ -378,7 +549,7 @@ function OpeningLearningPanel({
             <div className={styles.familyGrid}>
                 {visibleFamilies.map(item => {
                     const completed = item.lines.filter(line => (
-                        completedLessons.has(lessonId(line))
+                        Boolean(progress[createLessonId(line.eco, line.name, line.pgn)])
                     )).length;
                     return <button
                         type="button"
@@ -398,7 +569,7 @@ function OpeningLearningPanel({
 
     if (!selectedOpening && family) {
         return <section className={styles.learnSection}>
-            <button type="button" className={styles.backLibrary} onClick={() => setSelectedFamily(undefined)}>
+            <button type="button" className={styles.backButton} onClick={() => setSelectedFamily(undefined)}>
                 ← {t("learn.allOpenings")}
             </button>
             <div className={styles.familyHeader}>
@@ -418,28 +589,51 @@ function OpeningLearningPanel({
                     coach={selectedCoach}
                     baseExpression={coachExpression}
                     speechText={coachMessage}
+                    animationsEnabled={settings.coach.animations}
                     className={styles.courseCoachPortraitSmall}
                 />
                 <div><strong>{selectedCoach.name}</strong><p>{coachMessage}</p></div>
             </div>}
 
-            <div className={styles.lessonList}>
-                {family.lines.map((opening, index) => <button
-                    key={lessonId(opening)}
-                    type="button"
-                    className={styles.lessonCard}
-                    onClick={() => selectOpening(opening)}
-                >
-                    <span className={styles.lessonNumber}>{index + 1}</span>
-                    <span className={styles.lessonCopy}>
-                        <strong>{opening.name == family.name ? t("learn.fundamentals") : opening.name.replace(`${family.name}: `, "")}</strong>
-                        <small>{opening.pgn}</small>
-                    </span>
-                    <span className={styles.lessonStatus}>
-                        {completedLessons.has(lessonId(opening)) ? `✓ ${t("learn.learned")}` : t("learn.study")}
-                    </span>
-                </button>)}
+            <div className={styles.depthGuide}>
+                <strong>{t("learn.depthTitle")}</strong>
+                <p>{t("learn.depthHelp")}</p>
             </div>
+
+            <div className={styles.lessonList}>
+                {family.lines.slice(0, lessonLimit).map((opening, index) => {
+                    const itemProgress = progress[createLessonId(
+                        opening.eco,
+                        opening.name,
+                        opening.pgn
+                    )];
+                    return <button
+                        key={createLessonId(opening.eco, opening.name, opening.pgn)}
+                        type="button"
+                        className={styles.lessonCard}
+                        onClick={() => selectOpening(opening, itemProgress?.side)}
+                    >
+                        <span className={styles.lessonNumber}>{index + 1}</span>
+                        <span className={styles.lessonCopy}>
+                            <strong>{opening.name == family.name ? t("learn.fundamentals") : opening.name.replace(`${family.name}: `, "")}</strong>
+                            <small>{opening.pgn}</small>
+                        </span>
+                        <span className={styles.lessonStatus}>
+                            {itemProgress?.mastered
+                                ? `✓ ${t("learn.mastered")}`
+                                : itemProgress
+                                    ? t("learn.reviewScheduled")
+                                    : t("learn.study")}
+                        </span>
+                    </button>;
+                })}
+            </div>
+
+            {lessonLimit < family.lines.length && <button
+                type="button"
+                className={styles.showMoreButton}
+                onClick={() => setLessonLimit(limit => limit + 20)}
+            >{t("learn.showMore", { remaining: family.lines.length - lessonLimit })}</button>}
         </section>;
     }
 
@@ -448,9 +642,10 @@ function OpeningLearningPanel({
     const activeFen = courseMode == "practice" ? practiceFen : courseFen;
     const boardOrientation = side;
     const currentLearnMove = learnStep > 0 ? courseMoves[learnStep - 1] : undefined;
+    const explanation = explainMove(currentLearnMove);
 
     return <section className={styles.learnSection}>
-        <button type="button" className={styles.backLibrary} onClick={() => setSelectedOpening(undefined)}>
+        <button type="button" className={styles.backButton} onClick={() => setSelectedOpening(undefined)}>
             ← {selectedFamily}
         </button>
 
@@ -466,16 +661,26 @@ function OpeningLearningPanel({
                     {(["white", "black"] as RepertoireSide[]).map(value => <button
                         key={value}
                         type="button"
-                        className={side == value ? styles.filterActive : styles.filterButton}
+                        className={side == value ? styles.sideActive : styles.sideButton}
                         onClick={() => {
                             setSide(value);
                             setPracticeIndex(0);
+                            setSessionMistakes(0);
+                            setSessionRecorded(false);
                             setSelectedSquare(undefined);
                         }}
                     >{t(`side.${value}`)}</button>)}
                 </div>
             </div>
         </div>
+
+        {currentProgress && <div className={styles.srsBanner}>
+            <div>
+                <strong>{currentProgress.mastered ? t("learn.mastered") : t("learn.srsActive")}</strong>
+                <span>{t("learn.nextReview", { date: dueLabel(currentProgress) })}</span>
+            </div>
+            <span>{t("learn.streak", { count: currentProgress.streak })}</span>
+        </div>}
 
         <div className={styles.courseGrid}>
             <div className={styles.courseBoardColumn}>
@@ -511,19 +716,15 @@ function OpeningLearningPanel({
                         }}>{t("editor.next")} →</button>
                     </div>
                     <button type="button" className={styles.primaryButton} onClick={startPractice} disabled={courseMoves.length == 0}>
-                        {lessonComplete ? t("learn.practiceAgain") : t("learn.practice")}
+                        {currentProgress ? t("learn.practiceAgain") : t("learn.practice")}
                     </button>
                 </> : <div className={styles.practiceControls}>
                     <div>
                         <strong>{practiceIndex >= courseMoves.length ? t("learn.practiceComplete") : t("learn.practiceProgress", { current: practiceIndex, total: courseMoves.length })}</strong>
                         <span>{showHint && expectedMove ? t("learn.hintMove", { move: expectedMove.san }) : t("learn.practiceInstruction")}</span>
                     </div>
-                    <button type="button" className={styles.secondaryButton} onClick={() => {
-                        setShowHint(true);
-                        setCoachExpression("explaining");
-                        setCoachMessageKey("learn.coach.hint");
-                    }} disabled={!expectedMove || expectedMove.color != learnerColour}>{t("learn.hint")}</button>
-                    <button type="button" className={styles.secondaryButton} onClick={returnToLearn}>{t("learn.review")}</button>
+                    <button type="button" className={styles.secondaryButton} onClick={requestHint} disabled={!expectedMove || expectedMove.color != learnerColour}>{t("learn.hint")}</button>
+                    <button type="button" className={styles.secondaryButton} onClick={returnToLearn}>{t("learn.reviewLine")}</button>
                 </div>}
             </div>
 
@@ -533,12 +734,19 @@ function OpeningLearningPanel({
                         coach={selectedCoach}
                         baseExpression={coachExpression}
                         speechText={coachMessage}
+                        animationsEnabled={settings.coach.animations}
                         className={styles.courseCoachPortrait}
                     />
                     <div className={styles.coachBubble}>
                         <strong>{selectedCoach.name}</strong>
                         <p>{coachMessage}</p>
                     </div>
+                </div>}
+
+                {courseMode == "learn" && <div className={styles.whyCard}>
+                    <span>{t("learn.whyTitle")}</span>
+                    <strong>{currentLearnMove?.san || t("editor.startPosition")}</strong>
+                    <p>{explanation}</p>
                 </div>}
 
                 <div className={styles.courseMoveList}>
