@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import * as styles from "./index.module.css";
+import * as styles from "./transfer.module.css";
 
 type RepertoireSide = "white" | "black";
 
@@ -94,6 +94,7 @@ function RepertoireTransferPanel({
                 <label>
                     <span>{t("transfer.name")}</span>
                     <input
+                        type="text"
                         value={name}
                         onChange={event => setName(event.target.value)}
                         placeholder={t("transfer.namePlaceholder")}
