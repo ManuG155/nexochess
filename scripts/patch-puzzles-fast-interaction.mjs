@@ -6,18 +6,62 @@ const target = "client/src/apps/features/puzzles/pages/Puzzles/index.tsx";
 const self = fileURLToPath(import.meta.url);
 const selfRelative = "scripts/patch-puzzles-fast-interaction.mjs";
 
-const hintLines = {
-    de: "Die Figur, die ziehen soll, ist markiert. Finde selbst das Zielfeld.",
-    en: "The piece that should move is highlighted. Find the destination yourself.",
-    es: "La pieza que debe moverse está resaltada. Encuentra tú la casilla de destino.",
-    fr: "La pièce qui doit jouer est mise en évidence. Trouve toi-même la case d’arrivée.",
-    hi: "जिस मोहरे को चलना है उसे हाइलाइट किया गया है। लक्ष्य खाने को खुद खोजो।",
-    mr: "ज्या मोहऱ्याने चाल करायची आहे तो ठळक केला आहे. लक्ष्य घर स्वतः शोधा.",
-    pl: "Figura, która powinna się ruszyć, jest podświetlona. Sam znajdź pole docelowe.",
-    pt: "A peça que deve mover está destacada. Encontra tu a casa de destino.",
-    ru: "Фигура, которой нужно сходить, подсвечена. Найди поле назначения сам.",
-    vi: "Quân cờ cần di chuyển đã được tô sáng. Hãy tự tìm ô đích.",
-    zh: "需要移动的棋子已高亮。请自己找出目标格。"
+const hintCopy = {
+    de: [
+        "Die Figur, die ziehen soll, ist markiert. Finde selbst das Zielfeld.",
+        "Figur hervorheben",
+        "Der Trainer darf die richtige Figur hervorheben"
+    ],
+    en: [
+        "The piece that should move is highlighted. Find the destination yourself.",
+        "Highlight the piece",
+        "Allow the coach to highlight the piece"
+    ],
+    es: [
+        "La pieza que debe moverse está resaltada. Encuentra tú la casilla de destino.",
+        "Resalta la pieza",
+        "Permite al entrenador resaltar la pieza"
+    ],
+    fr: [
+        "La pièce qui doit jouer est mise en évidence. Trouve toi-même la case d’arrivée.",
+        "Mettre la pièce en évidence",
+        "Autoriser l’entraîneur à mettre la bonne pièce en évidence"
+    ],
+    hi: [
+        "जिस मोहरे को चलना है उसे हाइलाइट किया गया है। लक्ष्य खाने को खुद खोजो।",
+        "मोहरा हाइलाइट करें",
+        "कोच को सही मोहरा हाइलाइट करने दें"
+    ],
+    mr: [
+        "ज्या मोहऱ्याने चाल करायची आहे तो ठळक केला आहे. लक्ष्य घर स्वतः शोधा.",
+        "मोहरा ठळक करा",
+        "प्रशिक्षकाला योग्य मोहरा ठळक करू द्या"
+    ],
+    pl: [
+        "Figura, która powinna się ruszyć, jest podświetlona. Sam znajdź pole docelowe.",
+        "Podświetl figurę",
+        "Pozwól trenerowi podświetlić właściwą figurę"
+    ],
+    pt: [
+        "A peça que deve mover está destacada. Encontra tu a casa de destino.",
+        "Destacar a peça",
+        "Permitir que o treinador destaque a peça correta"
+    ],
+    ru: [
+        "Фигура, которой нужно сходить, подсвечена. Найди поле назначения сам.",
+        "Подсветить фигуру",
+        "Разрешить тренеру подсветить нужную фигуру"
+    ],
+    vi: [
+        "Quân cờ cần di chuyển đã được tô sáng. Hãy tự tìm ô đích.",
+        "Tô sáng quân cờ",
+        "Cho phép huấn luyện viên tô sáng quân cờ đúng"
+    ],
+    zh: [
+        "需要移动的棋子已高亮。请自己找出目标格。",
+        "高亮棋子",
+        "允许教练高亮正确的棋子"
+    ]
 };
 
 const status = execFileSync("git", ["status", "--porcelain"], {
@@ -401,7 +445,7 @@ replaceOnce(
                                 }
                                 onPieceDrop={(from, to) => playExpectedMove(from, to)}
                                 onSquareClick={selectBoardSquare}
-                                areArrowsAllowed={false}`, 
+                                areArrowsAllowed={false}`,
 `                                animationDuration={70}
                                 arePiecesDraggable={
                                     pageState == "playing"
@@ -435,13 +479,15 @@ replaceOnce(
 
 writeFileSync(target, source, "utf8");
 
-for (const [locale, hintLine] of Object.entries(hintLines)) {
+for (const [locale, copy] of Object.entries(hintCopy)) {
     const path = `client/public/locales/${locale}/puzzles.json`;
     const data = JSON.parse(readFileSync(path, "utf8"));
-    if (!data.coach || typeof data.coach != "object") {
-        throw new Error(`Missing coach object in ${path}`);
+    if (!data.coach || !data.actions || !data.options?.hints) {
+        throw new Error(`Missing hint copy structure in ${path}`);
     }
-    data.coach.hint = hintLine;
+    data.coach.hint = copy[0];
+    data.actions.hintHelp = copy[1];
+    data.options.hints.body = copy[2];
     writeFileSync(path, `${JSON.stringify(data, null, 4)}\n`, "utf8");
 }
 
