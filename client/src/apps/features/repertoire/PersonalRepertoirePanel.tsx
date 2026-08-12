@@ -130,11 +130,9 @@ function PersonalRepertoirePanel({
         const currentFen = currentNode.fen;
         const requestId = ++evaluationRequestRef.current;
         const cached = evaluationCacheRef.current.get(currentFen);
-        if (cached) {
-            setBoardEvaluation({ ...cached });
-        } else {
-            setBoardEvaluation({ type: "centipawn", value: 0 });
-        }
+        setBoardEvaluation(cached
+            ? { ...cached }
+            : { type: "centipawn", value: 0 });
 
         if (!settings.analysis.engine.enabled) return;
 
@@ -283,7 +281,8 @@ function PersonalRepertoirePanel({
                 [childId]: child
             }
         }));
-        goToNode(childId);
+        setSelectedSquare(undefined);
+        onOpen({ repertoireId: activeRepertoire.id, nodeId: childId });
         return true;
     }
 
@@ -424,11 +423,12 @@ function PersonalRepertoirePanel({
                 nodes: nextNodes
             };
         });
-        goToNode(parent.id);
+        setSelectedSquare(undefined);
+        onOpen({ repertoireId: activeRepertoire.id, nodeId: parent.id });
     }
 
     if (!activeRepertoire || !currentNode) {
-        return <section className={styles.personalSection}>
+        return <section className={styles.library}>
             <section className={styles.libraryHeader}>
                 <div>
                     <h2>{t("library.title")}</h2>
