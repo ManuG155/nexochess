@@ -203,7 +203,7 @@
 
 /*
  * Boca animada: ajuste EXCLUSIVO de Puzzles. En el resto de secciones no se
- * modifica. Bajada 4 px adicionales respecto al ajuste anterior.
+ * modifica. Bajada 2 px adicionales respecto al ajuste anterior.
  */
 [data-nexo-shell][data-route="puzzles"]
 .nexo-puzzle-coach-card > button > span > svg,
@@ -211,7 +211,7 @@
 .nexo-puzzle-coach-card > button > span > span:last-child,
 [data-nexo-shell][data-route="puzzles"]
 .nexo-puzzle-coach-card > button > span > img:nth-child(3) {
-    translate: 0 13px !important;
+    translate: 0 15px !important;
 }
 
 /* El objetivo queda pegado al bloque del entrenador, sin vacío artificial. */
