@@ -1,44 +1,46 @@
 /*
  * Final setup width correction.
  *
- * An older, more specific rule still turned the setup shell into a two-column
- * grid (main content + coach). Because both layers used !important, that old
- * selector kept reserving the coach column below the top band. This file is
- * loaded last and neutralises that exact layout: the coach is absolutely
- * framed in the top-right corner, while every row below the header owns the
- * full width of the setup card.
+ * PuzzlesSetupPolish.css still owns an old, very specific two-column rule:
+ * setup content + coach column. Because that selector uses two :has() clauses
+ * together with !important, a simpler later selector cannot beat it.
+ *
+ * This file is loaded last and deliberately matches that exact selector,
+ * adding the stable setup class. The coach therefore occupies only a fixed
+ * top-right frame; every row below the header uses the full card width.
  */
 
 [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
-> section.nexo-puzzle-setup-shell:has(> .nexo-puzzle-setup-main > header) {
+> section.nexo-puzzle-setup-shell:has(> div:first-child > header):has(> div:first-child > button:last-child) {
     position: relative !important;
     display: block !important;
     grid-template-columns: none !important;
     grid-template-rows: none !important;
     align-items: initial !important;
     gap: 0 !important;
+    box-sizing: border-box !important;
     width: 100% !important;
 }
 
+/* Main setup content owns the complete card width. */
 [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
-> section.nexo-puzzle-setup-shell:has(> .nexo-puzzle-setup-main > header)
-> .nexo-puzzle-setup-main {
+> section.nexo-puzzle-setup-shell:has(> div:first-child > header):has(> div:first-child > button:last-child)
+> div:first-child.nexo-puzzle-setup-main {
     grid-column: auto !important;
     grid-row: auto !important;
     box-sizing: border-box !important;
     width: 100% !important;
-    max-width: none !important;
     min-width: 0 !important;
+    max-width: none !important;
 }
 
 /*
- * The coach occupies only this fixed top-right frame. It no longer creates a
- * layout column, so the source/options/filter rows below can expand underneath
- * it once the fixed header band ends.
+ * Coach frame: fixed only in the top-right band. This rule intentionally
+ * beats the old div:nth-child(2) column styling from PuzzlesSetupPolish.css.
  */
 [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
-> section.nexo-puzzle-setup-shell:has(> .nexo-puzzle-setup-main > header)
-> .nexo-puzzle-coach-card {
+> section.nexo-puzzle-setup-shell:has(> div:first-child > header):has(> div:first-child > button:last-child)
+> div:nth-child(2).nexo-puzzle-coach-card {
     position: absolute !important;
     z-index: 8 !important;
     top: 28px !important;
@@ -53,13 +55,16 @@
     max-height: 224px !important;
     margin: 0 !important;
     padding: 0 !important;
+    padding-left: 0 !important;
     border: 0 !important;
+    border-left: 0 !important;
+    border-radius: 0 !important;
     background: transparent !important;
     box-shadow: none !important;
     overflow: visible !important;
 }
 
-/* The second row and every training filter below it use the real card width. */
+/* Every row below the top band stretches across the newly released width. */
 [data-nexo-shell][data-route="puzzles"]
 .nexo-puzzle-setup-main > header + div,
 [data-nexo-shell][data-route="puzzles"]
@@ -67,14 +72,16 @@
 [data-nexo-shell][data-route="puzzles"]
 .nexo-puzzle-setup-main > .nexo-puzzle-theme-picker,
 [data-nexo-shell][data-route="puzzles"]
-.nexo-puzzle-setup-main > .nexo-puzzle-theme-picker + div {
+.nexo-puzzle-setup-main > .nexo-puzzle-theme-picker + div,
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-setup-main > button:last-child {
     max-width: none !important;
 }
 
 @media (max-width: 1180px) {
     [data-nexo-shell][data-route="puzzles"] [data-nexo-content] > main
-    > section.nexo-puzzle-setup-shell:has(> .nexo-puzzle-setup-main > header)
-    > .nexo-puzzle-coach-card {
+    > section.nexo-puzzle-setup-shell:has(> div:first-child > header):has(> div:first-child > button:last-child)
+    > div:nth-child(2).nexo-puzzle-coach-card {
         position: relative !important;
         top: auto !important;
         right: auto !important;
