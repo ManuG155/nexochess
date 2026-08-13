@@ -1,0 +1,35 @@
+name: Repertoire Verify Temp
+
+on:
+  push:
+    branches:
+      - feat/repertoire-ux-final-pass
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Refresh safe dependency lock
+        run: npm audit fix --package-lock-only
+      - name: Install refreshed lock
+        run: npm ci
+      - name: Type-check client
+        run: npm run check -w client
+      - name: Build client
+        run: npm run build -w client
+      - name: Upload refreshed lock
+        uses: actions/upload-artifact@v4
+        with:
+          name: repertoire-refreshed-lock
+          path: package-lock.json
+          if-no-files-found: error
