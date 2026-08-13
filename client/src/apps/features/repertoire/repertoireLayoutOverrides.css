@@ -11,11 +11,12 @@ div:has(> aside + section #repertoire-board)>section:has(#repertoire-board)>p{di
 /* Board + native Nexo evaluation bar stay in the first viewport. */
 div:has(> aside + section #repertoire-board)>section:has(#repertoire-board)>div:has(#repertoire-board):not(:has(>button)){grid-column:2!important;grid-row:1/span 2!important;align-self:start!important;width:min(100%,calc(100svh - 158px),700px)!important;max-width:700px!important;margin:0 auto!important}
 
-/* Left rail holds the line tree, compact navigation and the saved-line dock. */
+/* Left rail holds the line tree and the saved-line dock. */
 div:has(> aside + section #repertoire-board)>aside:has(+ section #repertoire-board){grid-column:1!important;grid-row:1!important;min-height:0!important;height:min(610px,calc(100svh - 155px))!important;overflow:auto!important;padding-bottom:8px!important;scrollbar-width:thin}
-div:has(> aside + section #repertoire-board)>section:has(#repertoire-board)>div:has(>button){grid-column:1!important;grid-row:2!important;align-self:start!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important;width:100%!important;max-width:none!important;margin:8px 0 0!important}
+div:has(> aside + section #repertoire-board)>section:has(#repertoire-board)>div:has(>button){grid-column:1!important;grid-row:2!important;align-self:start!important;display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:7px!important;width:100%!important;max-width:none!important;margin:8px 0 0!important}
 div:has(> aside + section #repertoire-board)>section:has(#repertoire-board)>div:has(>button)>button{min-height:45px!important;padding:7px!important;font-size:1.14rem!important;border-radius:9px!important}
-div:has(> aside + section #repertoire-board)>section:has(#repertoire-board)>div:has(>button)>button span{display:none!important}
+div:has(> aside + section #repertoire-board)>section:has(#repertoire-board)>div:has(>button)>button:not(:last-child){display:none!important}
+div:has(> aside + section #repertoire-board)>section:has(#repertoire-board)>div:has(>button)>button span{display:inline!important}
 
 /* Right rail is notes + Stockfish only; it scrolls internally instead of moving the board. */
 div:has(> aside + section #repertoire-board)>section:has(#repertoire-board)+aside{grid-column:3!important;grid-row:1/span 2!important;min-height:0!important;max-height:calc(100svh - 145px)!important;overflow:auto!important;scrollbar-width:thin}
