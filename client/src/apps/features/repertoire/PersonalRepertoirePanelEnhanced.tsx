@@ -5,9 +5,10 @@ import { Chess } from "chess.js";
 
 import PersonalRepertoirePanel from "./PersonalRepertoirePanel";
 import RepertoireEngineInsight from "./RepertoireEngineInsight";
+import { appendPvToRepertoire } from "./repertoireEngine";
 import { OpeningCatalogueEntry, loadOpeningCatalogue } from "./openingCatalogue";
 import { localizeMaybeOpening, localizeOpeningName } from "./openingLocalization";
-import { OpenTarget, RepertoireStore, addMove, pathToNode } from "./repertoireStore";
+import { OpenTarget, RepertoireStore, pathToNode } from "./repertoireStore";
 import { SavedRepertoireLine, SavedRepertoireLineStore, deleteSavedRepertoireLine, linesForRepertoire, readSavedRepertoireLines, upsertSavedRepertoireLine, writeSavedRepertoireLines } from "./savedRepertoireLines";
 import { formatEnhancementCopy, useRepertoireEnhancementCopy } from "./repertoireEnhancementCopy";
 import * as styles from "./repertoirePolish.module.css";
@@ -95,18 +96,11 @@ function PersonalRepertoirePanelEnhanced({store,setStore,target,onOpen,onClose,s
     function remove(line:SavedRepertoireLine){if(!confirm(copy.deleteConfirm))return;setLineStore(previous=>deleteSavedRepertoireLine(previous,line.id));}
     function addEngineLine(pvUci:string[],name:string){
         if(!repertoire||!currentNodeId)return;
-        let next=store;
-        let parent=currentNodeId;
-        for(const uci of pvUci){
-            if(uci.length<4)break;
-            const added=addMove(next,repertoire.id,parent,{from:uci.slice(0,2),to:uci.slice(2,4),...(uci.length>4?{promotion:uci.slice(4,5)}:{})});
-            next=added.store;
-            parent=added.nodeId;
-        }
-        if(parent==currentNodeId)return;
-        setStore(next);
-        setLineStore(previous=>upsertSavedRepertoireLine(previous,{repertoireId:repertoire.id,nodeId:parent,name}));
-        onOpen({repertoireId:repertoire.id,nodeId:parent});
+        const merged=appendPvToRepertoire(store,repertoire.id,currentNodeId,pvUci,8);
+        if(merged.lastNodeId==currentNodeId)return;
+        setStore(merged.store);
+        setLineStore(previous=>upsertSavedRepertoireLine(previous,{repertoireId:repertoire.id,nodeId:merged.lastNodeId,name}));
+        onOpen({repertoireId:repertoire.id,nodeId:merged.lastNodeId});
     }
 
     const lineDock=repertoire?<section className={styles.lineDock}>
