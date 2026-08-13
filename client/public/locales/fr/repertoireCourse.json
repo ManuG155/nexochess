@@ -1,0 +1,59 @@
+{
+  "categories": {
+    "label": "Catégories de cours d'ouvertures",
+    "e4": "Jeux ouverts et 1.e4",
+    "d4": "Systèmes avec 1.d4",
+    "vsE4": "Défenses contre 1.e4",
+    "vsD4": "Défenses contre 1.d4",
+    "flank": "Ouvertures de flanc"
+  },
+  "path": {
+    "intro": "Considère cette ouverture comme un parcours d'apprentissage court. Termine une ligne à la fois ; NexoChess mémorise ta progression et t'indique l'étape utile suivante.",
+    "title": "Parcours du cours",
+    "progress": "{{completed}} / {{total}} lignes",
+    "recommended": "Continuer"
+  },
+  "practice": {
+    "autoRule": "Quand tu apprends une ligne, NexoChess l'ajoute automatiquement à ton répertoire personnel.",
+    "againCoach": "Bien. Rejoue-la encore une fois depuis le début pour fixer la séquence.",
+    "backModule": "Retour au module",
+    "studyPhase": "Étude",
+    "practicePhase": "Mémoire",
+    "completePhase": "Terminée",
+    "studyHint": "Parcours la ligne une fois, puis reproduis-la de mémoire.",
+    "start": "Commencer l'entraînement de mémoire",
+    "repetition": "Répétition {{current}} sur {{total}}",
+    "memoryBlock": "Renforcement immédiat",
+    "extra": "Comme tu as demandé un indice ou raté un coup, cette leçon reçoit une répétition supplémentaire.",
+    "repeatRule": "Une nouvelle ligne est répétée deux fois immédiatement avant d'être considérée comme apprise.",
+    "lessonComplete": "Leçon terminée",
+    "completeTitle": "Ligne apprise",
+    "completeBody": "Tu viens de la renforcer. Elle ne reviendra plus tard que lorsque le planning de répétition espacée estimera qu'une révision est utile.",
+    "autoSaved": "Ajoutée automatiquement à ton répertoire personnel.",
+    "nextLine": "Ligne suivante",
+    "moduleDone": "Terminer le module",
+    "srsExplainer": "Tu n'as pas à rejouer toutes les lignes apprises chaque fois que tu ouvres Répertoire. Seules les révisions arrivées à échéance reviennent ici."
+  },
+  "profile": {
+    "eyebrow": "Point de départ personnel",
+    "title": "Construis le cours autour des ouvertures que tu joues vraiment",
+    "intro": "Tu peux saisir un nom d'utilisateur public Chess.com ou Lichess. NexoChess examine les parties récentes, estime les familles d'ouvertures les plus fréquentes et suggère par où commencer.",
+    "optional": "Facultatif",
+    "platform": "Plateforme",
+    "username": "Nom d'utilisateur",
+    "usernamePlaceholder": "Ton nom d'utilisateur public",
+    "games": "Parties récentes",
+    "loading": "Analyse…",
+    "analyse": "Analyser mes ouvertures",
+    "error": "NexoChess n'a pas pu lire les parties publiques récentes de ce compte pour le moment. Vérifie le nom d'utilisateur ou réessaie plus tard sur l'autre plateforme.",
+    "resultTitle": "Aperçu des ouvertures de {{username}}",
+    "gamesAnalysed": "{{count}} parties récentes analysées",
+    "heuristic": "Il s'agit d'une indication d'étude fondée sur la fréquence, les résultats et la profondeur reconnue par le catalogue ; ce n'est pas un verdict du moteur sur des coups précis.",
+    "startHere": "Point de départ conseillé",
+    "recommendation": "Avec {{side}}, cette ouverture est apparue dans {{games}} parties, a obtenu {{score}} et la séquence reconnue allait en moyenne jusqu'à environ {{moves}} coups. L'étudier devrait donc servir dans beaucoup de tes parties.",
+    "train": "Entraîner cette ouverture",
+    "whiteRepertoire": "Répertoire observé avec les Blancs",
+    "blackRepertoire": "Répertoire observé avec les Noirs",
+    "noData": "Pas encore assez de parties reconnues avec cette couleur."
+  }
+}
