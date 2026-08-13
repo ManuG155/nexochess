@@ -134,37 +134,6 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
     }, []);
 
     useEffect(() => {
-        if (mode != "study") return;
-        function previous() {
-            if (customStartIndex != null) {
-                if (customMoves.length > 1) setCustomMoves(value => value.slice(0, -1));
-                else {
-                    setCustomMoves([]);
-                    setCustomStartIndex(null);
-                }
-                setSelected(undefined);
-                return;
-            }
-            setStudyIndex(value => Math.max(0, value - 1));
-            setSelected(undefined);
-        }
-        function onKeyDown(event: KeyboardEvent) {
-            const target = event.target as HTMLElement | null;
-            if (target && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)) return;
-            if (event.key == "ArrowLeft") {
-                event.preventDefault();
-                previous();
-            } else if (event.key == "ArrowRight" && customStartIndex == null) {
-                event.preventDefault();
-                setStudyIndex(value => Math.min(moves.length, value + 1));
-                setSelected(undefined);
-            }
-        }
-        window.addEventListener("keydown", onKeyDown);
-        return () => window.removeEventListener("keydown", onKeyDown);
-    }, [mode, moves.length, customMoves.length, customStartIndex]);
-
-    useEffect(() => {
         if (mode != "practice" || transitioning || !expected || expected.color == learner) return;
         if (opponentTimer.current != undefined) window.clearTimeout(opponentTimer.current);
         setExpression("explaining");
@@ -207,16 +176,6 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
         setCustomStartIndex(null);
         setCustomMoves([]);
         setStudyIndex(index);
-        setSelected(undefined);
-    }
-
-    function previousStudy() {
-        if (customStartIndex != null) {
-            if (customMoves.length > 1) setCustomMoves(value => value.slice(0, -1));
-            else resetExploration(customStartIndex);
-            return;
-        }
-        setStudyIndex(value => Math.max(0, value - 1));
         setSelected(undefined);
     }
 
@@ -264,17 +223,9 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
         if (expected.from != from || expected.to != to) {
             registerProblem();
             setExpression("worried");
-            setCoachKey("learn.coach.tryAgain");
-            setTransitioning(true);
+            setCoachKey("learn.hintMove");
             setHint(true);
-            resetTimer.current = window.setTimeout(() => {
-                setPracticeIndex(0);
-                setSelected(undefined);
-                setHint(false);
-                setTransitioning(false);
-                setExpression("thinking");
-                setCoachKey("learn.coach.practiceStart");
-            }, 1050);
+            setSelected(undefined);
             return false;
         }
         setPracticeIndex(value => Math.min(value + 1, moves.length));
@@ -344,8 +295,6 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
 
     const repetition = Math.min(runs + 1, requiredRuns);
     const currentMove = customActive ? customMoves.at(-1) : studyIndex > 0 ? moves[studyIndex - 1] : undefined;
-    const studyCanGoBack = customStartIndex != null || studyIndex > 0;
-    const studyCanGoForward = customStartIndex == null && studyIndex < moves.length;
     const draggable = mode == "study" || (mode == "practice" && !transitioning && expected?.color == learner);
 
     return <section className={styles.lessonShell}>
@@ -360,9 +309,9 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
         <div className={styles.lessonGrid}>
             <div className={styles.lessonBoardColumn}>
                 <div className={styles.lessonBoardWrap}><Chessboard id="repertoire-course-board-v3" position={activeFen} boardOrientation={side} onPieceDrop={play} onPieceDragBegin={(_piece, source) => draggable && setSelected(source as Square)} onPieceDragEnd={() => setSelected(undefined)} onSquareClick={clickSquare} arePiecesDraggable={Boolean(draggable)} customPieces={pieces} customDarkSquareStyle={{ backgroundColor: settings.themes.board.darkSquareColour }} customLightSquareStyle={{ backgroundColor: settings.themes.board.lightSquareColour }} customSquareStyles={squareStyles} showBoardNotation={settings.themes.board.coordinates == "inside"} snapToCursor/></div>
-                {mode == "study" && <div className={styles.lessonControls}><button disabled={!studyCanGoBack} onClick={previousStudy}>← {t("editor.previous")}</button><div><strong>{customActive ? customLineSuggestedName || copy.saveLine : t("learn.step", { current: studyIndex, total: moves.length })}</strong><span>{customActive ? copy.linePreview.replace("{moves}", studySequence.map(move => move.san).join(" ")) : tc("practice.studyHint")}</span></div>{customActive ? <button onClick={() => resetExploration(customStartIndex || 0)}>{t("learn.referenceLine")}</button> : studyCanGoForward ? <button onClick={() => { setStudyIndex(v => Math.min(moves.length, v + 1)); setSelected(undefined); }}>{t("editor.next")} →</button> : <button data-primary onClick={resetPractice}>{tc("practice.start")}</button>}</div>}
+                {mode == "study" && <div className={styles.lessonControls}><span aria-hidden="true"/><div><strong>{customActive ? customLineSuggestedName || copy.saveLine : t("learn.step", { current: studyIndex, total: moves.length })}</strong><span>{customActive ? copy.linePreview.replace("{moves}", studySequence.map(move => move.san).join(" ")) : tc("practice.studyHint")}</span></div>{customActive ? <button onClick={() => resetExploration(customStartIndex || 0)}>{t("learn.referenceLine")}</button> : studyIndex >= moves.length ? <button data-primary onClick={resetPractice}>{tc("practice.start")}</button> : <span aria-hidden="true"/>}</div>}
                 {mode == "practice" && <div className={styles.lessonControls}><button onClick={() => { if (expected?.color == learner) { registerProblem(); setHint(true); } }} disabled={!expected || expected.color != learner}>{t("learn.hint")}</button><div><strong>{tc("practice.repetition", { current: repetition, total: requiredRuns })}</strong><span>{transitioning ? tc("practice.repeatRule") : hint && expected ? t("learn.hintMove", { move: expected.san }) : t("learn.practiceInstruction")}</span></div>{blindPractice ? <button onClick={onBack}>{tc("practice.backModule")}</button> : <button onClick={() => { setMode("study"); resetExploration(0); }}>{t("learn.reviewLine")}</button>}</div>}
-                {mode == "complete" && <div className={styles.lessonControls}><button onClick={onBack}>{tc("practice.backModule")}</button><div><strong>{tc("practice.completeTitle")}</strong><span>{tc("practice.autoSaved")}</span></div>{onNext ? <button data-primary onClick={onNext}>{tc("practice.nextLine")} →</button> : <button data-primary onClick={onBack}>{tc("practice.moduleDone")}</button>}</div>}
+                {mode == "complete" && <div className={styles.lessonControls}><button onClick={onBack}>{tc("practice.backModule")}</button><div><strong>{tc("practice.completeTitle")}</strong><span>{tc("practice.autoSaved")}</span></div>{onNext ? <button data-primary onClick={onNext}>{tc("practice.nextLine")}</button> : <button data-primary onClick={onBack}>{tc("practice.moduleDone")}</button>}</div>}
             </div>
             <aside className={styles.lessonPanel}>
                 {mode == "study" && <RepertoireEngineInsight fen={activeFen} onAddLine={addEngineCourseLine}/>}

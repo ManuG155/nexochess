@@ -44,6 +44,8 @@ function RepertoireDrill({ store, repertoireId, mixed = false, onExit }: Props) 
     const learnerTurn = Boolean(expected) && new Chess(fen).turn() == learner;
     const coach = getCoachById(settings.appearance.selectedCoach);
     const spoken = coachText;
+    const lineComplete = Boolean(line) && moveIndex >= (line?.moves.length || 0) && !finished;
+    const hasNextLine = lineIndex < lines.length - 1;
 
     function later(action: () => void, delay: number) { if (timer.current != undefined) window.clearTimeout(timer.current); timer.current = window.setTimeout(action, delay); }
     useEffect(() => () => { if (timer.current != undefined) window.clearTimeout(timer.current); }, []);
@@ -56,24 +58,43 @@ function RepertoireDrill({ store, repertoireId, mixed = false, onExit }: Props) 
 
     useEffect(() => {
         if (!line || moveIndex < line.moves.length || locked || finished) return;
-        setLocked(true); setExpression("celebrating"); setCoachText(copy.coachLineDone);
-        later(() => {
-            if (lineIndex >= lines.length - 1) { setFinished(true); setLocked(false); return; }
-            setLineIndex(value => value + 1); setMoveIndex(0); setFeedback("idle"); setExpression("thinking"); setCoachText(copy.coachReady); setLocked(false);
-        }, 850);
-    }, [moveIndex, line?.moves.length, lineIndex, lines.length, finished]);
+        setExpression("celebrating");
+        if (lineIndex >= lines.length - 1) {
+            setCoachText(copy.studyCompleteBody);
+            setFinished(true);
+            setLocked(false);
+            return;
+        }
+        setLocked(true);
+        setCoachText(copy.nextLine);
+    }, [moveIndex, line?.moves.length, lineIndex, lines.length, finished, locked]);
 
     function chooseCoach(id: CoachId) {
         setSettings(draft => { draft.appearance.selectedCoach = id; return draft; });
         setCoachPickerOpen(false);
     }
 
+    function nextLine() {
+        if (!hasNextLine) return;
+        if (timer.current != undefined) window.clearTimeout(timer.current);
+        setLineIndex(value => Math.min(value + 1, lines.length - 1));
+        setMoveIndex(0);
+        setSelected(undefined);
+        setFeedback("idle");
+        setExpression("thinking");
+        setCoachText(copy.coachReady);
+        setLocked(false);
+    }
+
     function play(from: string, to: string) {
         if (!line || !expected || !learnerTurn || locked || finished) return false;
         const expectedUci = expected.moveUci || "";
         if (`${from}${to}` != expectedUci.slice(0, 4)) {
-            setFeedback("wrong"); setLocked(true); setSelected(undefined); setExpression("worried"); setCoachText(formatEnhancementCopy(copy.coachWrong, { move: expected.moveSan || expectedUci }));
-            later(() => { setMoveIndex(0); setFeedback("idle"); setExpression("thinking"); setCoachText(copy.coachReady); setLocked(false); }, 1250);
+            const expectedMove = expected.moveSan || expectedUci;
+            setFeedback("wrong");
+            setSelected(undefined);
+            setExpression("worried");
+            setCoachText(formatEnhancementCopy(copy.correctMove, { move: expectedMove }));
             return false;
         }
         setFeedback("correct"); setLocked(true); setExpression("approving"); setCoachText(copy.coachCorrect);
@@ -92,7 +113,7 @@ function RepertoireDrill({ store, repertoireId, mixed = false, onExit }: Props) 
         play(selected, square);
     }
 
-    if (!lines.length) return <section className={styles.emptyStudy}><button type="button" onClick={onExit}>← {copy.exitStudy}</button><div><h1>{copy.noStudyLines}</h1><p>{copy.noStudyLinesBody}</p></div></section>;
+    if (!lines.length) return <section className={styles.emptyStudy}><button type="button" onClick={onExit}>{copy.exitStudy}</button><div><h1>{copy.noStudyLines}</h1><p>{copy.noStudyLinesBody}</p></div></section>;
     if (finished) return <section className={styles.completedStudy}><div><span>✓</span><h1>{copy.studyComplete}</h1><p>{copy.studyCompleteBody}</p><button onClick={onExit}>{copy.exitStudy}</button></div></section>;
 
     const progress = formatEnhancementCopy(copy.lineCounter, { current: lineIndex + 1, total: lines.length });
@@ -102,15 +123,16 @@ function RepertoireDrill({ store, repertoireId, mixed = false, onExit }: Props) 
     const title = mixed ? copy.studyMixedTitle : formatEnhancementCopy(copy.studyTitle, { name: repertoireName });
 
     return <section className={styles.studyShell}>
-        <header className={styles.studyHeader}><button type="button" onClick={onExit}>←</button><div><span>{progress}</span><h1>{title}</h1><p>{copy.studyIntro}</p></div><div className={styles.lineChip}><strong>{savedName}</strong><span>{repertoireName}</span></div></header>
+        <header className={styles.studyHeader}><button type="button" onClick={onExit}>{copy.exitStudy}</button><div><span>{progress}</span><h1>{title}</h1><p>{copy.studyIntro}</p></div><div className={styles.lineChip}><strong>{savedName}</strong><span>{repertoireName}</span></div></header>
         <div className={styles.studyGrid}>
             <div className={styles.boardArea}>
                 <div className={styles.boardWrap}><Chessboard id="repertoire-saved-line-study" position={fen} boardOrientation={line.repertoire.side} onPieceDrop={play} onPieceDragBegin={(_piece, source) => learnerTurn && !locked && setSelected(source as Square)} onPieceDragEnd={() => setSelected(undefined)} onSquareClick={clickSquare} arePiecesDraggable={learnerTurn && !locked} customPieces={pieces} customDarkSquareStyle={{ backgroundColor: settings.themes.board.darkSquareColour }} customLightSquareStyle={{ backgroundColor: settings.themes.board.lightSquareColour }} customSquareStyles={drillSquareStyles(fen, selected, settings.themes.board.legalMoveHints)} showBoardNotation={settings.themes.board.coordinates == "inside"} snapToCursor/></div>
-                <div className={styles.boardStatus}><strong>{moveProgress}</strong><span>{learnerTurn ? copy.studyIntro : copy.coachOpponent}</span></div>
+                <div className={styles.boardStatus}><strong>{lineComplete ? `✓ ${copy.correct}` : moveProgress}</strong><span>{lineComplete ? copy.nextLine : learnerTurn ? copy.studyIntro : copy.coachOpponent}</span></div>
             </div>
             <aside className={styles.studyPanel}>
                 {settings.coach.enabled && <section className={styles.coachCard}><button type="button" className={styles.coachPortraitButton} onClick={() => setCoachPickerOpen(true)} aria-label={coach.name} title={coach.name}><CoachPortrait coach={coach} baseExpression={expression} speechText={spoken} animationsEnabled={settings.coach.animations} className={styles.coachPortrait}/></button><div><strong>{coach.name}</strong><p>{spoken}</p></div></section>}
-                <section className={styles.feedbackCard} data-feedback={feedback}><b>{feedback == "correct" ? "✓" : feedback == "wrong" ? "×" : "·"}</b><div><strong>{feedback == "correct" ? copy.correct : feedback == "wrong" ? copy.wrong : savedName}</strong><p>{feedback == "wrong" && expected ? `${formatEnhancementCopy(copy.correctMove, { move: expected.moveSan || expected.moveUci || "" })} ${copy.repeating}` : feedback == "correct" ? copy.coachCorrect : copy.studyIntro}</p></div></section>
+                {lineComplete && hasNextLine && <section className={styles.lineCompleteCard}><span>✓</span><div><strong>{copy.correct}</strong><p>{savedName}</p></div><button type="button" onClick={nextLine}>{copy.nextLine}</button></section>}
+                <section className={styles.feedbackCard} data-feedback={feedback}><b>{feedback == "correct" ? "✓" : feedback == "wrong" ? "×" : "·"}</b><div><strong>{feedback == "correct" ? copy.correct : feedback == "wrong" ? copy.wrong : savedName}</strong><p>{feedback == "wrong" && expected ? formatEnhancementCopy(copy.correctMove, { move: expected.moveSan || expected.moveUci || "" }) : feedback == "correct" ? copy.coachCorrect : copy.studyIntro}</p></div></section>
                 <section className={styles.progressCard}><strong>{progress}</strong><span>{moveProgress}</span><div><i style={{ width: `${line.moves.length ? Math.min(100, moveIndex / line.moves.length * 100) : 0}%` }}/></div></section>
             </aside>
         </div>
