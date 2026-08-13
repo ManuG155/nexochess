@@ -1,0 +1,22 @@
+.personalScale { width: 100%; min-width: 0; }
+.lineDock, .mixedDock { width: 100%; margin: 0 0 14px; padding: 14px 16px; border: 1px solid #315071; border-radius: 13px; background: #0f1d2c; color: var(--text-primary, #f2f6fb); }
+.lineDockTop, .mixedDock { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+.lineDockTop > div:first-child > span { display: block; color: #72b5ff; font-size: .9rem; font-weight: 800; text-transform: uppercase; }
+.lineDockTop strong, .mixedDock strong { display: block; margin-top: 3px; font-size: 1.18rem; }
+.lineDockTop p, .mixedDock span { margin: 4px 0 0; color: #aab7c7; font-size: 1rem; line-height: 1.42; }
+.lineDockActions { display: flex; flex-wrap: wrap; gap: 8px; }
+.lineDockActions button, .mixedDock > button { min-height: 42px; padding: 9px 14px; border: 1px solid #438fdf; border-radius: 9px; background: #287bd6; color: white; font: inherit; font-size: 1rem; font-weight: 750; cursor: pointer; }
+.lineDockActions button:first-child { background: #142e4b; color: #8fc5ff; }
+.lineDockActions button:disabled, .mixedDock > button:disabled { opacity: .42; cursor: default; }
+.savedLineRow { display: flex; gap: 8px; margin-top: 11px; overflow-x: auto; padding-bottom: 2px; color: #8192a6; font-size: .98rem; }
+.savedLineChip { display: flex; flex: 0 0 auto; overflow: hidden; border: 1px solid #2c4561; border-radius: 9px; background: #0c1825; }
+.savedLineChip button { border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.savedLineChip button:first-child { display: flex; gap: 10px; align-items: center; min-height: 40px; padding: 7px 11px; color: #eaf1f9; }
+.savedLineChip strong { font-size: .98rem; }
+.savedLineChip small { color: #72b3ff; font-size: .86rem; }
+.savedLineChip button:last-child { width: 34px; border-left: 1px solid #263d57; color: #7f8da0; font-size: 1.15rem; }
+.personalScale > section:not(.lineDock):not(.mixedDock) { font-size: 1.06rem !important; }
+.personalScale > section:not(.lineDock):not(.mixedDock) button, .personalScale > section:not(.lineDock):not(.mixedDock) textarea { font-size: 1rem !important; }
+.personalScale > section:not(.lineDock):not(.mixedDock) > div:last-child { grid-template-columns: minmax(315px, 1fr) minmax(690px, 760px) minmax(315px, 1fr) !important; gap: 18px !important; }
+@media (max-width: 1450px) { .personalScale > section:not(.lineDock):not(.mixedDock) > div:last-child { grid-template-columns: minmax(300px, .8fr) minmax(620px, 720px) !important; } }
+@media (max-width: 1050px) { .lineDockTop, .mixedDock { align-items: flex-start; flex-direction: column; } .personalScale > section:not(.lineDock):not(.mixedDock) > div:last-child { grid-template-columns: 1fr !important; } }
