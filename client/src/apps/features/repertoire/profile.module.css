@@ -1,0 +1,288 @@
+.profileCard,
+.profileCard * {
+    box-sizing: border-box;
+}
+
+.profileCard {
+    margin: 0 0 22px;
+    overflow: hidden;
+    border: 1px solid #29405c;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #101d2d, #0b1521);
+}
+
+.profileIntro {
+    display: flex;
+    justify-content: space-between;
+    gap: 22px;
+    align-items: flex-start;
+    padding: 18px 20px 12px;
+}
+
+.profileIntro > div {
+    min-width: 0;
+}
+
+.profileIntro span {
+    display: block;
+    margin-bottom: 5px;
+    color: #68adff;
+    font-size: .78rem;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.profileIntro strong {
+    display: block;
+    font-size: 1.15rem;
+}
+
+.profileIntro p {
+    max-width: 800px;
+    margin: 7px 0 0;
+    color: #a9b7c8;
+    font-size: .92rem;
+    line-height: 1.5;
+}
+
+.profileIntro em {
+    flex: 0 0 auto;
+    padding: 6px 9px;
+    border: 1px solid #315171;
+    border-radius: 999px;
+    color: #8bbef8;
+    font-size: .76rem;
+    font-style: normal;
+    font-weight: 700;
+}
+
+.profileForm {
+    display: grid;
+    grid-template-columns: 150px minmax(180px, 1fr) 110px auto;
+    gap: 10px;
+    align-items: end;
+    padding: 12px 20px 18px;
+}
+
+.profileForm label {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+}
+
+.profileForm label > span {
+    color: #8fa0b5;
+    font-size: .78rem;
+    font-weight: 700;
+}
+
+.profileForm input,
+.profileForm select,
+.profileForm button {
+    min-height: 42px;
+    border-radius: 9px;
+    font: inherit;
+}
+
+.profileForm input,
+.profileForm select {
+    width: 100%;
+    min-width: 0;
+    padding: 9px 11px;
+    border: 1px solid #314861;
+    outline: none;
+    background: #08131f;
+    color: #edf4fc;
+}
+
+.profileForm input:focus,
+.profileForm select:focus {
+    border-color: #4d9bf2;
+    box-shadow: 0 0 0 3px rgba(77, 155, 242, .14);
+}
+
+.profileForm button,
+.recommendation button {
+    padding: 9px 14px;
+    border: 1px solid #3b8ce8;
+    background: #2478d2;
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.profileForm button:disabled {
+    opacity: .48;
+    cursor: default;
+}
+
+.error {
+    margin: 0;
+    padding: 0 20px 16px;
+    color: #ff9f9f;
+    font-size: .88rem;
+}
+
+.profileResult {
+    border-top: 1px solid #25364a;
+}
+
+.resultHeader {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: center;
+    padding: 15px 20px;
+}
+
+.resultHeader > div {
+    display: grid;
+    gap: 3px;
+}
+
+.resultHeader strong {
+    font-size: 1rem;
+}
+
+.resultHeader span,
+.resultHeader small {
+    color: #8fa0b4;
+    font-size: .8rem;
+}
+
+.resultHeader small {
+    max-width: 440px;
+    text-align: right;
+    line-height: 1.35;
+}
+
+.recommendation {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 18px;
+    align-items: center;
+    margin: 0 20px 16px;
+    padding: 14px 15px;
+    border: 1px solid #315783;
+    border-radius: 12px;
+    background: #112a46;
+}
+
+.recommendation span {
+    display: block;
+    color: #7db9ff;
+    font-size: .74rem;
+    font-weight: 800;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+}
+
+.recommendation strong {
+    display: block;
+    margin-top: 4px;
+    font-size: 1.08rem;
+}
+
+.recommendation p {
+    margin: 5px 0 0;
+    color: #b3c2d4;
+    font-size: .86rem;
+    line-height: 1.45;
+}
+
+.recommendation button {
+    min-height: 40px;
+    border-radius: 9px;
+    font: inherit;
+}
+
+.observedGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    padding: 0 20px 20px;
+}
+
+.repertoireColumn {
+    min-width: 0;
+    padding: 13px;
+    border: 1px solid #26384e;
+    border-radius: 11px;
+    background: #0b1622;
+}
+
+.repertoireColumn > strong {
+    display: block;
+    margin-bottom: 9px;
+    font-size: .88rem;
+}
+
+.repertoireColumn > p {
+    margin: 0;
+    color: #8495aa;
+    font-size: .82rem;
+}
+
+.observedLine {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 7px 0;
+    border-top: 1px solid #1e2c3d;
+}
+
+.observedLine span {
+    min-width: 0;
+    overflow: hidden;
+    color: #cbd5e2;
+    font-size: .84rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.observedLine small {
+    flex: 0 0 auto;
+    color: #7890a9;
+    font-size: .77rem;
+}
+
+@media (max-width: 850px) {
+    .profileForm {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .usernameField {
+        grid-column: 1 / -1;
+    }
+
+    .profileForm button {
+        align-self: end;
+    }
+}
+
+@media (max-width: 620px) {
+    .profileIntro,
+    .resultHeader {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .profileIntro em {
+        align-self: flex-start;
+    }
+
+    .profileForm,
+    .observedGrid,
+    .recommendation {
+        grid-template-columns: 1fr;
+    }
+
+    .resultHeader small {
+        text-align: left;
+    }
+
+    .recommendation button {
+        width: 100%;
+    }
+}
