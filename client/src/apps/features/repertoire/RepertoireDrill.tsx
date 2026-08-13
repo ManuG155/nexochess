@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Chess, Square } from "chess.js";
 import { Chessboard } from "react-chessboard";
 
@@ -9,6 +10,7 @@ import CoachPortrait from "@analysis/components/AnalysisPanel/CoachPortrait";
 import { CoachExpression, CoachId, getCoachById } from "@analysis/lib/coach";
 
 import { RepertoireStore } from "./repertoireStore";
+import { localizeMaybeOpening } from "./openingLocalization";
 import { buildDrillLines, drillFen, drillSquareStyles } from "./repertoireDrillModel";
 import { formatEnhancementCopy, useRepertoireEnhancementCopy } from "./repertoireEnhancementCopy";
 import * as styles from "./repertoireDrill.module.css";
@@ -19,6 +21,8 @@ interface Props { store: RepertoireStore; repertoireId?: string; mixed?: boolean
 
 function RepertoireDrill({ store, repertoireId, mixed = false, onExit }: Props) {
     const copy = useRepertoireEnhancementCopy();
+    const { i18n } = useTranslation();
+    const language = i18n.resolvedLanguage || i18n.language || "en";
     const settings = useSettingsStore(state => state.settings);
     const setSettings = useSettingsStore(state => state.setSettings);
     const pieces = useMemo(() => createCustomPieces(settings.themes.piece), [settings.themes.piece]);
@@ -93,22 +97,24 @@ function RepertoireDrill({ store, repertoireId, mixed = false, onExit }: Props) 
 
     const progress = formatEnhancementCopy(copy.lineCounter, { current: lineIndex + 1, total: lines.length });
     const moveProgress = formatEnhancementCopy(copy.moveProgress, { current: Math.min(moveIndex + 1, line.moves.length), total: line.moves.length });
-    const title = mixed ? copy.studyMixedTitle : formatEnhancementCopy(copy.studyTitle, { name: line.repertoire.name });
+    const repertoireName = localizeMaybeOpening(line.repertoire.name, language);
+    const savedName = localizeMaybeOpening(line.saved.name, language);
+    const title = mixed ? copy.studyMixedTitle : formatEnhancementCopy(copy.studyTitle, { name: repertoireName });
 
     return <section className={styles.studyShell}>
-        <header className={styles.studyHeader}><button type="button" onClick={onExit}>←</button><div><span>{progress}</span><h1>{title}</h1><p>{copy.studyIntro}</p></div><div className={styles.lineChip}><strong>{line.saved.name}</strong><span>{line.repertoire.name}</span></div></header>
+        <header className={styles.studyHeader}><button type="button" onClick={onExit}>←</button><div><span>{progress}</span><h1>{title}</h1><p>{copy.studyIntro}</p></div><div className={styles.lineChip}><strong>{savedName}</strong><span>{repertoireName}</span></div></header>
         <div className={styles.studyGrid}>
             <div className={styles.boardArea}>
                 <div className={styles.boardWrap}><Chessboard id="repertoire-saved-line-study" position={fen} boardOrientation={line.repertoire.side} onPieceDrop={play} onPieceDragBegin={(_piece, source) => learnerTurn && !locked && setSelected(source as Square)} onPieceDragEnd={() => setSelected(undefined)} onSquareClick={clickSquare} arePiecesDraggable={learnerTurn && !locked} customPieces={pieces} customDarkSquareStyle={{ backgroundColor: settings.themes.board.darkSquareColour }} customLightSquareStyle={{ backgroundColor: settings.themes.board.lightSquareColour }} customSquareStyles={drillSquareStyles(fen, selected, settings.themes.board.legalMoveHints)} showBoardNotation={settings.themes.board.coordinates == "inside"} snapToCursor/></div>
                 <div className={styles.boardStatus}><strong>{moveProgress}</strong><span>{learnerTurn ? copy.studyIntro : copy.coachOpponent}</span></div>
             </div>
             <aside className={styles.studyPanel}>
-                <section className={styles.coachCard}><button type="button" className={styles.coachPortraitButton} onClick={() => setCoachPickerOpen(true)} aria-label={coach.name} title={coach.name}><CoachPortrait coach={coach} baseExpression={expression} speechText={spoken} animationsEnabled={settings.coach.animations} className={styles.coachPortrait}/></button><div><strong>{coach.name}</strong><p>{spoken}</p></div></section>
-                <section className={styles.feedbackCard} data-feedback={feedback}><b>{feedback == "correct" ? "✓" : feedback == "wrong" ? "×" : "·"}</b><div><strong>{feedback == "correct" ? copy.correct : feedback == "wrong" ? copy.wrong : line.saved.name}</strong><p>{feedback == "wrong" && expected ? `${formatEnhancementCopy(copy.correctMove, { move: expected.moveSan || expected.moveUci || "" })} ${copy.repeating}` : feedback == "correct" ? copy.coachCorrect : copy.studyIntro}</p></div></section>
+                {settings.coach.enabled && <section className={styles.coachCard}><button type="button" className={styles.coachPortraitButton} onClick={() => setCoachPickerOpen(true)} aria-label={coach.name} title={coach.name}><CoachPortrait coach={coach} baseExpression={expression} speechText={spoken} animationsEnabled={settings.coach.animations} className={styles.coachPortrait}/></button><div><strong>{coach.name}</strong><p>{spoken}</p></div></section>}
+                <section className={styles.feedbackCard} data-feedback={feedback}><b>{feedback == "correct" ? "✓" : feedback == "wrong" ? "×" : "·"}</b><div><strong>{feedback == "correct" ? copy.correct : feedback == "wrong" ? copy.wrong : savedName}</strong><p>{feedback == "wrong" && expected ? `${formatEnhancementCopy(copy.correctMove, { move: expected.moveSan || expected.moveUci || "" })} ${copy.repeating}` : feedback == "correct" ? copy.coachCorrect : copy.studyIntro}</p></div></section>
                 <section className={styles.progressCard}><strong>{progress}</strong><span>{moveProgress}</span><div><i style={{ width: `${line.moves.length ? Math.min(100, moveIndex / line.moves.length * 100) : 0}%` }}/></div></section>
             </aside>
         </div>
-        {coachPickerOpen && <CoachPicker selectedCoach={coach} onClose={() => setCoachPickerOpen(false)} onConfirm={chooseCoach}/>} 
+        {settings.coach.enabled && coachPickerOpen && <CoachPicker selectedCoach={coach} onClose={() => setCoachPickerOpen(false)} onConfirm={chooseCoach}/>} 
     </section>;
 }
 
