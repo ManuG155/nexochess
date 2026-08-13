@@ -14,6 +14,8 @@ import { localizeOpeningName } from "./openingLocalization";
 import { CourseProgressStore, createLessonId, recordLessonReview } from "./courseProgress";
 import { RepertoireSide, courseMoves, fenAt, inferSide } from "./courseV3Model";
 import { useRepertoireEnhancementCopy } from "./repertoireEnhancementCopy";
+import RepertoireEngineInsight from "./RepertoireEngineInsight";
+import { appendPvToPgn } from "./repertoireEngine";
 import * as styles from "./courseV3.module.css";
 
 type Mode = "study" | "practice" | "complete";
@@ -333,6 +335,13 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
         setSaveOpen(false);
     }
 
+    function addEngineCourseLine(pvUci: string[], name: string) {
+        if (mode != "study" || !onSaveCustomLine) return;
+        const pgn = appendPvToPgn(studySequence, activeFen, pvUci, 8);
+        if (!pgn) return;
+        onSaveCustomLine({ opening, side, pgn, name });
+    }
+
     const repetition = Math.min(runs + 1, requiredRuns);
     const currentMove = customActive ? customMoves.at(-1) : studyIndex > 0 ? moves[studyIndex - 1] : undefined;
     const studyCanGoBack = customStartIndex != null || studyIndex > 0;
@@ -356,6 +365,7 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
                 {mode == "complete" && <div className={styles.lessonControls}><button onClick={onBack}>{tc("practice.backModule")}</button><div><strong>{tc("practice.completeTitle")}</strong><span>{tc("practice.autoSaved")}</span></div>{onNext ? <button data-primary onClick={onNext}>{tc("practice.nextLine")} →</button> : <button data-primary onClick={onBack}>{tc("practice.moduleDone")}</button>}</div>}
             </div>
             <aside className={styles.lessonPanel}>
+                {mode == "study" && <RepertoireEngineInsight fen={activeFen} onAddLine={addEngineCourseLine}/>}
                 {settings.coach.enabled && <section className={styles.coachCard}>
                     <button type="button" className={styles.coachPortraitButton} onClick={() => setCoachPickerOpen(true)} aria-label={coach.name} title={coach.name}><CoachPortrait coach={coach} baseExpression={expression} speechText={spoken} animationsEnabled={settings.coach.animations} className={styles.coachPortrait}/></button>
                     <div><strong>{coach.name}</strong><p>{spoken}</p></div>

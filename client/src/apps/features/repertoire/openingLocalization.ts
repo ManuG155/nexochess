@@ -1,3 +1,5 @@
+import { applyOpeningSupplement } from "./openingLocalizationSupplement";
+
 const SUPPORTED = ["en","es","fr","de","pt","ru","zh","vi","hi","mr","pl"] as const;
 type Lang = typeof SUPPORTED[number];
 
@@ -61,6 +63,7 @@ export function localizeOpeningName(value: string, language?: string) {
   let result = FAMILIES[lang][head.trim()] || head.trim();
   if (tail.length) result += `: ${tail.join(":").trim()}`;
   for (const [from, to] of PHRASES[lang]) result = result.replace(new RegExp(`\\b${from.replace(/[.*+?^${}()|[\\]\\\\]/g,"\\$&")}\\b`, "g"), to);
+  result = applyOpeningSupplement(result, lang);
   return FAMILIES[lang][result] || result;
 }
 
