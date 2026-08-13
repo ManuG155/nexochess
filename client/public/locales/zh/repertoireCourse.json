@@ -1,0 +1,59 @@
+{
+  "categories": {
+    "label": "开局课程分类",
+    "e4": "开放性开局与 1.e4",
+    "d4": "1.d4 体系",
+    "vsE4": "对抗 1.e4 的防御",
+    "vsD4": "对抗 1.d4 的防御",
+    "flank": "侧翼开局"
+  },
+  "path": {
+    "intro": "把这个开局当作一条短小的学习路线。每次完成一条变化；NexoChess 会保存进度，并提示下一个值得学习的步骤。",
+    "title": "课程路线",
+    "progress": "{{completed}} / {{total}} 条线路",
+    "recommended": "继续"
+  },
+  "practice": {
+    "autoRule": "当你学会一条线路后，NexoChess 会自动把它加入你的个人开局库。",
+    "againCoach": "很好。再从头走一遍，让这组走法真正记牢。",
+    "backModule": "返回模块",
+    "studyPhase": "学习",
+    "practicePhase": "记忆",
+    "completePhase": "完成",
+    "studyHint": "先完整看一遍线路，然后凭记忆复现。",
+    "start": "开始记忆练习",
+    "repetition": "第 {{current}} / {{total}} 次重复",
+    "memoryBlock": "即时强化",
+    "extra": "因为你使用了提示或走错了一步，本课会增加一次额外重复。",
+    "repeatRule": "新线路会立即重复两次，然后才算学会。",
+    "lessonComplete": "课程完成",
+    "completeTitle": "已学会线路",
+    "completeBody": "你已经完成了即时巩固。之后只有在间隔重复计划认为值得复习时，它才会再次出现。",
+    "autoSaved": "已自动加入你的个人开局库。",
+    "nextLine": "下一条线路",
+    "moduleDone": "完成模块",
+    "srsExplainer": "每次打开开局库时，你不需要重走所有学过的线路。这里只有到期的复习内容会再次出现。"
+  },
+  "profile": {
+    "eyebrow": "个人起点",
+    "title": "围绕你真正会下的开局来安排课程",
+    "intro": "你可以选择填写公开的 Chess.com 或 Lichess 用户名。NexoChess 会查看近期对局，估算你最常进入哪些开局体系，并建议从哪里开始学习。",
+    "optional": "可选",
+    "platform": "平台",
+    "username": "用户名",
+    "usernamePlaceholder": "你的公开用户名",
+    "games": "近期对局",
+    "loading": "正在分析…",
+    "analyse": "分析我的开局",
+    "error": "NexoChess 目前无法读取该账号最近的公开对局。请检查用户名，或稍后尝试另一个平台。",
+    "resultTitle": "{{username}} 的开局概览",
+    "gamesAnalysed": "已分析 {{count}} 盘近期对局",
+    "heuristic": "这是根据出现频率、结果和开局目录能识别到的深度给出的学习建议，并不是引擎对某一步棋的判定。",
+    "startHere": "建议从这里开始",
+    "recommendation": "执 {{side}} 时，这个开局出现在 {{games}} 盘对局中，得分率为 {{score}}，目录平均能识别到约 {{moves}} 回合。学习它很可能会影响你相当多的实战。",
+    "train": "训练这个开局",
+    "whiteRepertoire": "执白时观察到的开局库",
+    "blackRepertoire": "执黑时观察到的开局库",
+    "noData": "这个颜色目前还没有足够多可识别的对局。"
+  }
+}
