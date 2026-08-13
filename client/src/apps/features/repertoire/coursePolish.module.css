@@ -1,0 +1,113 @@
+.focusSection {
+    width: 100%;
+    font-size: 1.04rem;
+}
+
+.topBar {
+    min-height: 72px;
+    margin-bottom: 12px;
+    padding: 11px 14px;
+}
+
+.titleBlock > span { font-size: .82rem; }
+.titleBlock > strong { font-size: 1.2rem; }
+.titleBlock > small { margin-top: 4px; font-size: .88rem; }
+
+.grid {
+    grid-template-columns: minmax(600px, 820px) minmax(360px, 520px);
+    justify-content: center;
+    gap: clamp(18px, 2vw, 30px);
+}
+
+.boardWrap,
+.controlBar {
+    width: min(100%, 800px, calc(100svh - 245px));
+}
+
+.controlBar { min-height: 54px; }
+.controlBar button { min-height: 46px; padding: 10px 15px; font-size: 1rem; }
+.controlStatus strong { font-size: 1rem; }
+.controlStatus span { font-size: .9rem; }
+
+.panel {
+    gap: 11px;
+    max-height: calc(100svh - 154px);
+    padding-right: 5px;
+}
+
+.coachCard {
+    grid-template-columns: 102px minmax(0, 1fr);
+    gap: 14px;
+    padding: 14px;
+}
+
+.coachPortrait {
+    width: 94px !important;
+    height: 94px !important;
+}
+
+.coachHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 7px;
+}
+
+.coachHeader strong { font-size: 1.02rem; }
+
+.coachPicker {
+    min-width: 118px;
+    max-width: 170px;
+    padding: 7px 28px 7px 9px;
+    border: 1px solid #35506d;
+    border-radius: 8px;
+    background: #0a1623;
+    color: #d9e5f3;
+    font: inherit;
+    font-size: .9rem;
+    cursor: pointer;
+}
+
+.coachBubble p { font-size: .96rem; line-height: 1.5; }
+.panelCard,
+.repetitionCard,
+.completionCard { padding: 14px 15px; }
+.panelCard > span,
+.repetitionCard > span,
+.completionCard > span { font-size: .8rem; }
+.panelCard > strong,
+.repetitionCard > strong,
+.completionCard > strong { margin-top: 6px; font-size: 1.08rem; }
+.panelCard p,
+.repetitionCard p,
+.completionCard p { margin-top: 7px; font-size: .94rem; line-height: 1.52; }
+.moveList button { padding: 7px 9px; font-size: .9rem; }
+
+@media (max-width: 1250px) {
+    .grid { grid-template-columns: minmax(520px, 720px) minmax(330px, 1fr); }
+    .boardWrap,
+    .controlBar { width: min(100%, 720px, calc(100svh - 245px)); }
+}
+
+@media (max-width: 1050px) {
+    .grid { grid-template-columns: minmax(0, 1fr); }
+    .boardWrap,
+    .controlBar { width: min(100%, 760px); }
+    .panel { max-height: none; overflow: visible; }
+}
+
+@media (max-width: 720px) {
+    .topBar { min-height: 0; }
+    .boardWrap,
+    .controlBar { width: min(100%, calc(100svh - 250px)); }
+    .coachCard { grid-template-columns: 82px minmax(0, 1fr); }
+    .coachPortrait { width: 76px !important; height: 76px !important; }
+}
+
+@media (max-width: 520px) {
+    .boardWrap,
+    .controlBar { width: 100%; }
+    .coachHeader { align-items: flex-start; flex-direction: column; }
+    .coachPicker { width: 100%; max-width: none; }
+}
