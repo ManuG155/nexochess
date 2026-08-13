@@ -1,23 +1,63 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import PlayerOpeningProfile from "./PlayerOpeningProfile";
 import { OpeningCatalogueEntry, OpeningCategory, buildCourseLessons, featuredFamiliesForCategory } from "./openingCatalogue";
-import { CourseProgressStore, createLessonId, getDueLessons, getLearnedCount, getMasteredCount } from "./courseProgress";
+import { CourseProgressStore, createLessonId, getLearnedCount, getMasteredCount } from "./courseProgress";
 import { RepertoireSide } from "./courseV3Model";
 import * as styles from "./courseV3.module.css";
+
 interface Family { name: string; lines: OpeningCatalogueEntry[]; }
-interface Props { catalogue: OpeningCatalogueEntry[]; families: Family[]; progress: CourseProgressStore; loading: boolean; query: string; category: OpeningCategory; categories: OpeningCategory[]; onQuery: (value: string) => void; onCategory: (value: OpeningCategory) => void; onFamily: (name: string, side?: RepertoireSide) => void; }
-function CourseHomeV3({ catalogue, families, progress, loading, query, category, categories, onQuery, onCategory, onFamily }: Props) {
-    const { t } = useTranslation("repertoire");
+interface Props { catalogue: OpeningCatalogueEntry[]; families: Family[]; progress: CourseProgressStore; loading: boolean; query: string; onQuery: (value: string) => void; onFamily: (name: string, side?: RepertoireSide) => void; }
+type CatalogueFilter = "all" | OpeningCategory;
+const FILTERS: OpeningCategory[] = ["e4", "d4", "vsE4", "vsD4", "flank"];
+const POPULAR = ["Italian", "Sicilian", "Ruy Lopez", "Queen's Gambit", "Caro-Kann", "French", "London", "Scotch", "King's Indian", "Nimzo-Indian", "Slav", "Catalan", "English", "Vienna", "Queen's Indian", "Grünfeld", "Pirc", "Dutch", "Réti", "Ponziani"];
+const FILTER_COPY: Record<string, { filter: string; all: string }> = {
+    en: { filter: "Filter", all: "All openings" }, es: { filter: "Filtro", all: "Todas las aperturas" }, fr: { filter: "Filtre", all: "Toutes les ouvertures" }, de: { filter: "Filter", all: "Alle Eröffnungen" }, pt: { filter: "Filtro", all: "Todas as aberturas" }, ru: { filter: "Фильтр", all: "Все дебюты" }, zh: { filter: "筛选", all: "全部开局" }, vi: { filter: "Bộ lọc", all: "Tất cả khai cuộc" }, hi: { filter: "फ़िल्टर", all: "सभी ओपनिंग" }, mr: { filter: "फिल्टर", all: "सर्व ओपनिंग" }, pl: { filter: "Filtr", all: "Wszystkie otwarcia" }
+};
+
+function popularity(name: string) {
+    const index = POPULAR.findIndex(item => name.toLocaleLowerCase().includes(item.toLocaleLowerCase()));
+    return index < 0 ? 999 : index;
+}
+
+function CourseHomeV3({ catalogue, families, progress, loading, query, onQuery, onFamily }: Props) {
+    const { t, i18n } = useTranslation("repertoire");
     const { t: tc } = useTranslation("repertoireCourse");
+    const [filter, setFilter] = useState<CatalogueFilter>("all");
+    const [filterOpen, setFilterOpen] = useState(false);
+    const language = (i18n.resolvedLanguage || i18n.language || "en").split("-")[0].toLowerCase();
+    const copy = FILTER_COPY[language] || FILTER_COPY.en;
     const q = query.trim().toLocaleLowerCase();
-    const visible = q ? families.filter(item => item.name.toLocaleLowerCase().includes(q) || item.lines.some(line => line.name.toLocaleLowerCase().includes(q) || line.eco.toLocaleLowerCase().includes(q))).slice(0, 100) : featuredFamiliesForCategory(category).map(name => families.find(item => item.name == name)).filter((item): item is Family => Boolean(item));
+    const learned = getLearnedCount(progress);
+    const sorted = useMemo(() => [...families].sort((a, b) => popularity(a.name) - popularity(b.name) || a.name.localeCompare(b.name)), [families]);
+    const visible = useMemo(() => {
+        let result = sorted;
+        if (filter != "all") {
+            const names = new Set(featuredFamiliesForCategory(filter));
+            result = result.filter(item => names.has(item.name));
+        }
+        if (q) result = result.filter(item => item.name.toLocaleLowerCase().includes(q) || item.lines.some(line => line.name.toLocaleLowerCase().includes(q) || line.eco.toLocaleLowerCase().includes(q)));
+        return result;
+    }, [filter, q, sorted]);
+
     return <section className={styles.browserShell}>
-        <div className={styles.browserHero}><div><span>{t("learn.eyebrow")}</span><h2>{t("learn.title")}</h2><p>{t("learn.intro")}</p></div><div className={styles.stats}><div><strong>{getLearnedCount(progress)}</strong><span>{t("review.learned")}</span></div><div><strong>{getDueLessons(progress).length}</strong><span>{t("review.due")}</span></div><div><strong>{getMasteredCount(progress)}</strong><span>{t("review.mastered")}</span></div></div></div>
+        <div className={styles.browserHero}><div><span>{t("learn.eyebrow")}</span><h2>{t("learn.title")}</h2><p>{t("learn.intro")}</p></div><div className={styles.stats}><div><strong>{learned}</strong><span>{t("review.learned")}</span></div><div><strong>{learned}</strong><span>{t("modes.review")}</span></div><div><strong>{getMasteredCount(progress)}</strong><span>{t("review.mastered")}</span></div></div></div>
         <PlayerOpeningProfile catalogue={catalogue} onTrainFamily={(name, side) => onFamily(name, side)}/>
-        <label className={styles.searchBox}><span>{t("learn.searchLabel")}</span><input value={query} onChange={event => onQuery(event.target.value)} placeholder={t("learn.searchPlaceholder")}/><small>{loading ? t("learn.loading") : t("learn.catalogueReady", { count: catalogue.length })}</small></label>
-        {!q && <div className={styles.categoryTabs}>{categories.map(item => <button key={item} data-active={category == item} onClick={() => onCategory(item)}>{tc(`categories.${item}`)}</button>)}</div>}
-        <div className={styles.familyGrid}>{visible.map(item => { const lessons = buildCourseLessons(item.lines); const done = lessons.filter(line => progress[createLessonId(line.eco, line.name, line.pgn)]).length; return <button key={item.name} onClick={() => onFamily(item.name)}><span>{item.lines[0]?.eco}</span><strong>{item.name}</strong><small>{t("learn.lessons", { count: lessons.length })}</small>{done > 0 && <em>{t("learn.progress", { completed: done, total: lessons.length })}</em>}</button>; })}</div>
+        <div className={styles.catalogueTools}>
+            <label className={styles.searchBox}><span>{t("learn.searchLabel")}</span><input value={query} onChange={event => onQuery(event.target.value)} placeholder={t("learn.searchPlaceholder")}/><small>{loading ? t("learn.loading") : t("learn.catalogueReady", { count: catalogue.length })}</small></label>
+            <div className={styles.filterWrap}>
+                <button type="button" className={styles.filterButton} data-active={filter != "all"} onClick={() => setFilterOpen(value => !value)} aria-expanded={filterOpen}>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>{copy.filter}
+                </button>
+                {filterOpen && <div className={styles.filterMenu}>
+                    <button type="button" data-active={filter == "all"} onClick={() => { setFilter("all"); setFilterOpen(false); }}>{copy.all}</button>
+                    {FILTERS.map(item => <button type="button" key={item} data-active={filter == item} onClick={() => { setFilter(item); setFilterOpen(false); }}>{tc(`categories.${item}`)}</button>)}
+                </div>}
+            </div>
+        </div>
+        <div className={styles.catalogueViewport}>
+            <div className={styles.familyGrid}>{visible.map(item => { const lessons = buildCourseLessons(item.lines); const done = lessons.filter(line => progress[createLessonId(line.eco, line.name, line.pgn)]).length; return <button key={item.name} onClick={() => onFamily(item.name)}><span>{item.lines[0]?.eco}</span><strong>{item.name}</strong><small>{t("learn.lessons", { count: lessons.length })}</small>{done > 0 && <em>{t("learn.progress", { completed: done, total: lessons.length })}</em>}</button>; })}</div>
+        </div>
     </section>;
 }
 export default CourseHomeV3;
