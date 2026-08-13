@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import PlayerOpeningProfile from "./PlayerOpeningProfile";
 import { OpeningCatalogueEntry, OpeningCategory, buildCourseLessons, featuredFamiliesForCategory } from "./openingCatalogue";
+import { localizeOpeningName } from "./openingLocalization";
 import { CourseProgressStore, createLessonId, getLearnedCount, getMasteredCount } from "./courseProgress";
 import { RepertoireSide } from "./courseV3Model";
 import * as styles from "./courseV3.module.css";
@@ -20,6 +21,12 @@ function popularity(name: string) {
     return index < 0 ? 999 : index;
 }
 
+function familyLessons(lines: OpeningCatalogueEntry[]) {
+    const standard = lines.filter(item => item.eco != "USR");
+    const custom = lines.filter(item => item.eco == "USR");
+    return [...buildCourseLessons(standard), ...custom];
+}
+
 function CourseHomeV3({ catalogue, families, progress, loading, query, onQuery, onFamily }: Props) {
     const { t, i18n } = useTranslation("repertoire");
     const { t: tc } = useTranslation("repertoireCourse");
@@ -29,16 +36,21 @@ function CourseHomeV3({ catalogue, families, progress, loading, query, onQuery, 
     const copy = FILTER_COPY[language] || FILTER_COPY.en;
     const q = query.trim().toLocaleLowerCase();
     const learned = getLearnedCount(progress);
-    const sorted = useMemo(() => [...families].sort((a, b) => popularity(a.name) - popularity(b.name) || a.name.localeCompare(b.name)), [families]);
+    const sorted = useMemo(() => [...families].sort((a, b) => popularity(a.name) - popularity(b.name) || localizeOpeningName(a.name, language).localeCompare(localizeOpeningName(b.name, language))), [families, language]);
     const visible = useMemo(() => {
         let result = sorted;
         if (filter != "all") {
             const names = new Set(featuredFamiliesForCategory(filter));
             result = result.filter(item => names.has(item.name));
         }
-        if (q) result = result.filter(item => item.name.toLocaleLowerCase().includes(q) || item.lines.some(line => line.name.toLocaleLowerCase().includes(q) || line.eco.toLocaleLowerCase().includes(q)));
+        if (q) result = result.filter(item => {
+            const familyDisplay = localizeOpeningName(item.name, language).toLocaleLowerCase();
+            return item.name.toLocaleLowerCase().includes(q)
+                || familyDisplay.includes(q)
+                || item.lines.some(line => line.name.toLocaleLowerCase().includes(q) || localizeOpeningName(line.name, language).toLocaleLowerCase().includes(q) || line.eco.toLocaleLowerCase().includes(q));
+        });
         return result;
-    }, [filter, q, sorted]);
+    }, [filter, language, q, sorted]);
 
     return <section className={styles.browserShell}>
         <div className={styles.browserHero}><div><span>{t("learn.eyebrow")}</span><h2>{t("learn.title")}</h2><p>{t("learn.intro")}</p></div><div className={styles.stats}><div><strong>{learned}</strong><span>{t("review.learned")}</span></div><div><strong>{learned}</strong><span>{t("modes.review")}</span></div><div><strong>{getMasteredCount(progress)}</strong><span>{t("review.mastered")}</span></div></div></div>
@@ -56,7 +68,7 @@ function CourseHomeV3({ catalogue, families, progress, loading, query, onQuery, 
             </div>
         </div>
         <div className={styles.catalogueViewport}>
-            <div className={styles.familyGrid}>{visible.map(item => { const lessons = buildCourseLessons(item.lines); const done = lessons.filter(line => progress[createLessonId(line.eco, line.name, line.pgn)]).length; return <button key={item.name} onClick={() => onFamily(item.name)}><span>{item.lines[0]?.eco}</span><strong>{item.name}</strong><small>{t("learn.lessons", { count: lessons.length })}</small>{done > 0 && <em>{t("learn.progress", { completed: done, total: lessons.length })}</em>}</button>; })}</div>
+            <div className={styles.familyGrid}>{visible.map(item => { const lessons = familyLessons(item.lines); const done = lessons.filter(line => progress[createLessonId(line.eco, line.name, line.pgn)]).length; return <button key={item.name} onClick={() => onFamily(item.name)}><span>{item.lines.find(line => line.eco != "USR")?.eco || item.lines[0]?.eco}</span><strong>{localizeOpeningName(item.name, language)}</strong><small>{t("learn.lessons", { count: lessons.length })}</small>{done > 0 && <em>{t("learn.progress", { completed: done, total: lessons.length })}</em>}</button>; })}</div>
         </div>
     </section>;
 }
