@@ -15,8 +15,8 @@ import {
 
 const namespaces = [
     "common", "academy", "puzzles", "repertoire", "repertoireCourse",
-    "analysis", "settings", "otherPages", "helpCenter", "coach", "legal",
-    "guides"
+    "repertoireEditor", "analysis", "settings", "otherPages", "helpCenter",
+    "coach", "legal", "guides"
 ] as const;
 
 function getBrowserLanguages(): string[] {

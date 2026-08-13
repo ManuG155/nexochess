@@ -1,0 +1,22 @@
+{
+  "coachPicker": "कोच",
+  "manual": {
+    "savedLines": "सहेजी गई लाइनें",
+    "savedLinesEmpty": "अभी कोई नाम वाली लाइन नहीं है। बेस स्थिति से आगे खेलें और उपयोगी लाइन को सहेजें।",
+    "saveLine": "लाइन सहेजें",
+    "updateLine": "सहेजी लाइन अपडेट करें",
+    "saveLineDisabled": "लाइन सहेजने से पहले बेस स्थिति से कम से कम एक चाल आगे खेलें।",
+    "linesSaved_one": "{{count}} सहेजी गई लाइन",
+    "linesSaved_other": "{{count}} सहेजी गई लाइनें",
+    "openLine": "लाइन खोलें",
+    "deleteLine": "सहेजी लाइन हटाएँ",
+    "deleteLineConfirm": "“{{name}}” को सहेजी लाइनों से हटाएँ? चालों की शाखा repertoire में बनी रहेगी।",
+    "modalEyebrow": "वेरिएशन सहेजें",
+    "modalTitle": "इस लाइन को नाम दें",
+    "modalBody": "NexoChess ने चालों के क्रम से एक नाम सुझाया है। इसे रखें या अपना नाम लिखें।",
+    "suggested": "सुझाया गया नाम",
+    "nameLabel": "लाइन का नाम",
+    "cancel": "रद्द करें",
+    "save": "लाइन सहेजें"
+  }
+}

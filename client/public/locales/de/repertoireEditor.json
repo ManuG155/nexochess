@@ -1,0 +1,22 @@
+{
+  "coachPicker": "Trainer",
+  "manual": {
+    "savedLines": "Gespeicherte Varianten",
+    "savedLinesEmpty": "Noch keine benannten Varianten. Spiele ab der Basisposition weiter und speichere die Linie, wenn du sie behalten möchtest.",
+    "saveLine": "Variante speichern",
+    "updateLine": "Gespeicherte Variante aktualisieren",
+    "saveLineDisabled": "Spiele mindestens einen Zug ab der Basisposition, bevor du eine Variante speicherst.",
+    "linesSaved_one": "{{count}} gespeicherte Variante",
+    "linesSaved_other": "{{count}} gespeicherte Varianten",
+    "openLine": "Variante öffnen",
+    "deleteLine": "Gespeicherte Variante löschen",
+    "deleteLineConfirm": "„{{name}}“ aus den gespeicherten Varianten entfernen? Der Zugzweig bleibt im Repertoire erhalten.",
+    "modalEyebrow": "Variante speichern",
+    "modalTitle": "Gib dieser Variante einen Namen",
+    "modalBody": "NexoChess schlägt anhand der Zugfolge einen Namen vor. Du kannst ihn behalten oder ändern.",
+    "suggested": "Vorgeschlagener Name",
+    "nameLabel": "Name der Variante",
+    "cancel": "Abbrechen",
+    "save": "Speichern"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "coachPicker": "Entraîneur",
+  "manual": {
+    "savedLines": "Lignes enregistrées",
+    "savedLinesEmpty": "Aucune ligne nommée pour l’instant. Jouez une suite depuis la position de base puis enregistrez-la.",
+    "saveLine": "Enregistrer la ligne",
+    "updateLine": "Mettre à jour la ligne",
+    "saveLineDisabled": "Jouez au moins une suite depuis la position de base avant d’enregistrer une ligne.",
+    "linesSaved_one": "{{count}} ligne enregistrée",
+    "linesSaved_other": "{{count}} lignes enregistrées",
+    "openLine": "Ouvrir la ligne",
+    "deleteLine": "Supprimer la ligne enregistrée",
+    "deleteLineConfirm": "Retirer « {{name}} » des lignes enregistrées ? La branche de coups restera dans le répertoire.",
+    "modalEyebrow": "Enregistrer la variante",
+    "modalTitle": "Donnez un nom à cette ligne",
+    "modalBody": "NexoChess propose un nom à partir de la suite de coups. Gardez-le ou remplacez-le.",
+    "suggested": "Nom proposé",
+    "nameLabel": "Nom de la ligne",
+    "cancel": "Annuler",
+    "save": "Enregistrer"
+  }
+}

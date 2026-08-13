@@ -1,0 +1,22 @@
+{
+  "coachPicker": "教练",
+  "manual": {
+    "savedLines": "已保存线路",
+    "savedLinesEmpty": "还没有命名线路。从基础局面继续走几步，并在需要时保存它。",
+    "saveLine": "保存线路",
+    "updateLine": "更新已保存线路",
+    "saveLineDisabled": "从基础局面至少走一个后续着法后才能保存线路。",
+    "linesSaved_one": "已保存 {{count}} 条线路",
+    "linesSaved_other": "已保存 {{count}} 条线路",
+    "openLine": "打开线路",
+    "deleteLine": "删除已保存线路",
+    "deleteLineConfirm": "从已保存线路中移除“{{name}}”？着法分支仍会保留在你的棋谱中。",
+    "modalEyebrow": "保存变化",
+    "modalTitle": "给这条线路命名",
+    "modalBody": "NexoChess 根据着法序列给出了建议名称。你可以保留或改成自己的名称。",
+    "suggested": "建议名称",
+    "nameLabel": "线路名称",
+    "cancel": "取消",
+    "save": "保存线路"
+  }
+}

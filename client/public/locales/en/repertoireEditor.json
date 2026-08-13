@@ -1,0 +1,22 @@
+{
+  "coachPicker": "Coach",
+  "manual": {
+    "savedLines": "Saved lines",
+    "savedLinesEmpty": "No named lines yet. Play a continuation from your base position and save it when it is worth keeping.",
+    "saveLine": "Save line",
+    "updateLine": "Update saved line",
+    "saveLineDisabled": "Play at least one continuation from the base position before saving a line.",
+    "linesSaved_one": "{{count}} saved line",
+    "linesSaved_other": "{{count}} saved lines",
+    "openLine": "Open line",
+    "deleteLine": "Delete saved line",
+    "deleteLineConfirm": "Remove “{{name}}” from your saved lines? The move branch itself will stay in the repertoire.",
+    "modalEyebrow": "Save variation",
+    "modalTitle": "Give this line a name",
+    "modalBody": "NexoChess has suggested a name from the move sequence. Keep it or replace it with your own.",
+    "suggested": "Suggested name",
+    "nameLabel": "Line name",
+    "cancel": "Cancel",
+    "save": "Save line"
+  }
+}

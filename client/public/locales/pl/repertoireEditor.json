@@ -1,0 +1,22 @@
+{
+  "coachPicker": "Trener",
+  "manual": {
+    "savedLines": "Zapisane linie",
+    "savedLinesEmpty": "Nie masz jeszcze nazwanych linii. Zagraj kontynuację od pozycji bazowej i zapisz ją, gdy warto ją zachować.",
+    "saveLine": "Zapisz linię",
+    "updateLine": "Zaktualizuj zapisaną linię",
+    "saveLineDisabled": "Zagraj co najmniej jedną kontynuację od pozycji bazowej przed zapisaniem linii.",
+    "linesSaved_one": "{{count}} zapisana linia",
+    "linesSaved_other": "{{count}} zapisanych linii",
+    "openLine": "Otwórz linię",
+    "deleteLine": "Usuń zapisaną linię",
+    "deleteLineConfirm": "Usunąć „{{name}}” z zapisanych linii? Sama gałąź ruchów pozostanie w repertuarze.",
+    "modalEyebrow": "Zapisz wariant",
+    "modalTitle": "Nazwij tę linię",
+    "modalBody": "NexoChess zaproponował nazwę na podstawie sekwencji ruchów. Możesz ją zachować lub wpisać własną.",
+    "suggested": "Proponowana nazwa",
+    "nameLabel": "Nazwa linii",
+    "cancel": "Anuluj",
+    "save": "Zapisz linię"
+  }
+}

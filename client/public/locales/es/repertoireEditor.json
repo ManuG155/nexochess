@@ -1,0 +1,22 @@
+{
+  "coachPicker": "Entrenador",
+  "manual": {
+    "savedLines": "Líneas guardadas",
+    "savedLinesEmpty": "Aún no hay líneas con nombre. Juega una continuación desde tu posición base y guárdala cuando merezca la pena conservarla.",
+    "saveLine": "Guardar línea",
+    "updateLine": "Actualizar línea guardada",
+    "saveLineDisabled": "Juega al menos una continuación desde la posición base antes de guardar una línea.",
+    "linesSaved_one": "{{count}} línea guardada",
+    "linesSaved_other": "{{count}} líneas guardadas",
+    "openLine": "Abrir línea",
+    "deleteLine": "Eliminar línea guardada",
+    "deleteLineConfirm": "¿Quitar «{{name}}» de tus líneas guardadas? La rama de jugadas seguirá dentro del repertorio.",
+    "modalEyebrow": "Guardar variante",
+    "modalTitle": "Ponle nombre a esta línea",
+    "modalBody": "NexoChess ha propuesto un nombre a partir de la secuencia. Puedes mantenerlo o escribir el tuyo.",
+    "suggested": "Nombre sugerido",
+    "nameLabel": "Nombre de la línea",
+    "cancel": "Cancelar",
+    "save": "Guardar línea"
+  }
+}

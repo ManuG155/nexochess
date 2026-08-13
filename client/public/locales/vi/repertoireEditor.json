@@ -1,0 +1,22 @@
+{
+  "coachPicker": "Huấn luyện viên",
+  "manual": {
+    "savedLines": "Các biến đã lưu",
+    "savedLinesEmpty": "Chưa có biến nào được đặt tên. Hãy chơi tiếp từ vị trí gốc rồi lưu khi bạn muốn giữ lại.",
+    "saveLine": "Lưu biến",
+    "updateLine": "Cập nhật biến đã lưu",
+    "saveLineDisabled": "Hãy chơi ít nhất một nước tiếp theo từ vị trí gốc trước khi lưu biến.",
+    "linesSaved_one": "{{count}} biến đã lưu",
+    "linesSaved_other": "{{count}} biến đã lưu",
+    "openLine": "Mở biến",
+    "deleteLine": "Xóa biến đã lưu",
+    "deleteLineConfirm": "Xóa “{{name}}” khỏi danh sách đã lưu? Nhánh nước đi vẫn được giữ trong repertoire.",
+    "modalEyebrow": "Lưu biến",
+    "modalTitle": "Đặt tên cho biến này",
+    "modalBody": "NexoChess đã gợi ý tên từ chuỗi nước đi. Bạn có thể giữ hoặc thay bằng tên riêng.",
+    "suggested": "Tên gợi ý",
+    "nameLabel": "Tên biến",
+    "cancel": "Hủy",
+    "save": "Lưu biến"
+  }
+}

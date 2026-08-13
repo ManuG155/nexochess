@@ -1,0 +1,290 @@
+.library {
+    font-size: 1.06rem;
+}
+
+.library h2 { font-size: 1.9rem; }
+.library h3 { font-size: 1.45rem; }
+.library p,
+.library button { font-size: 1rem; }
+
+.editor {
+    font-size: 1.05rem;
+}
+
+.editorGrid {
+    grid-template-columns: minmax(310px, .82fr) minmax(600px, 1.62fr) minmax(320px, .88fr);
+    gap: clamp(16px, 1.5vw, 26px);
+    justify-content: center;
+}
+
+.linePanel,
+.notesPanel {
+    min-height: 0;
+    max-height: calc(100svh - 225px);
+    overflow: auto;
+    scrollbar-width: thin;
+}
+
+.linePanel strong,
+.notesPanel strong { font-size: 1.05rem; }
+.linePanel p,
+.linePanel span,
+.linePanel button,
+.notesPanel p,
+.notesPanel span,
+.notesPanel li,
+.notesPanel button,
+.notesPanel textarea {
+    font-size: .98rem;
+}
+
+.boardStage,
+.boardControls {
+    width: min(100%, 820px, calc(100svh - 230px));
+}
+
+.boardTip {
+    max-width: 820px;
+    font-size: 1rem;
+}
+
+.savedLinesCard {
+    display: grid;
+    gap: 10px;
+    margin: 13px 14px 5px;
+    padding: 13px;
+    border: 1px solid rgba(84, 158, 247, .25);
+    border-radius: 9px;
+    background: rgba(35, 99, 173, .07);
+}
+
+.savedLinesHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.savedLinesHeader strong { color: #dce9f8; }
+.savedLinesHeader span {
+    display: grid;
+    place-items: center;
+    min-width: 26px;
+    height: 26px;
+    padding: 0 7px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.055);
+    color: #aab9ca;
+}
+
+.saveLineButton {
+    width: 100%;
+    min-height: 42px;
+    padding: 9px 12px;
+    border: 1px solid rgba(68, 151, 247, .4);
+    border-radius: 8px;
+    background: rgba(47, 136, 238, .14);
+    color: #8fc5ff;
+    font: inherit;
+    font-weight: 750;
+    cursor: pointer;
+}
+
+.saveLineButton:disabled {
+    opacity: .42;
+    cursor: default;
+}
+
+.savedLineList {
+    display: grid;
+    gap: 7px;
+}
+
+.savedLineRow {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: center;
+    padding: 9px;
+    border-radius: 8px;
+    background: rgba(5, 14, 24, .34);
+}
+
+.savedLineOpen {
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+}
+
+.savedLineOpen strong,
+.savedLineOpen small {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.savedLineOpen strong { color: #dce8f6; }
+.savedLineOpen small {
+    margin-top: 3px;
+    color: #8497ab;
+    white-space: nowrap;
+}
+
+.savedLineDelete {
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: #8796a7;
+    font: inherit;
+    font-size: 1.25rem !important;
+    cursor: pointer;
+}
+
+.savedLineDelete:hover {
+    background: rgba(197, 73, 73, .09);
+    color: #e58d8d;
+}
+
+.emptySavedLines {
+    margin: 0;
+    color: #8e9eaf;
+    line-height: 1.5;
+}
+
+.modalBackdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: grid;
+    place-items: center;
+    padding: 22px;
+    background: rgba(2, 7, 13, .74);
+    backdrop-filter: blur(5px);
+}
+
+.modal {
+    width: min(100%, 560px);
+    padding: 22px;
+    border: 1px solid rgba(88, 158, 242, .36);
+    border-radius: 14px;
+    background: #0e1a28;
+    box-shadow: 0 24px 80px rgba(0,0,0,.46);
+}
+
+.modalEyebrow {
+    color: #6fb1ff;
+    font-size: .82rem;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.modal h3 {
+    margin: 7px 0 8px;
+    font-size: 1.4rem;
+}
+
+.modal p {
+    margin: 0 0 16px;
+    color: #9fadc0;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.suggestedName {
+    display: block;
+    margin-bottom: 14px;
+    padding: 11px 12px;
+    border-radius: 9px;
+    background: rgba(55, 132, 220, .09);
+    color: #d7e8fb;
+    line-height: 1.45;
+}
+
+.nameField {
+    display: grid;
+    gap: 7px;
+    margin-bottom: 16px;
+}
+
+.nameField span { color: #aab7c7; }
+.nameField input {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #324a66;
+    border-radius: 8px;
+    background: #08131f;
+    color: #f2f6fb;
+    font: inherit;
+    font-size: 1rem;
+    outline: none;
+}
+
+.nameField input:focus {
+    border-color: #4899f4;
+    box-shadow: 0 0 0 3px rgba(72,153,244,.12);
+}
+
+.modalActions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 9px;
+}
+
+.modalActions button {
+    min-height: 42px;
+    padding: 9px 14px;
+    border-radius: 8px;
+    font: inherit;
+    cursor: pointer;
+}
+
+.modalCancel {
+    border: 1px solid #32465e;
+    background: transparent;
+    color: #afbdcd;
+}
+
+.modalPrimary {
+    border: 1px solid #438fe8;
+    background: #2d7fdc;
+    color: white;
+    font-weight: 750;
+}
+
+.lineCountMeta {
+    display: block;
+    margin-top: 4px;
+    color: #7faee6;
+}
+
+@media (max-width: 1500px) {
+    .editorGrid {
+        grid-template-columns: minmax(300px, .8fr) minmax(560px, 1.45fr);
+    }
+
+    .notesPanel {
+        grid-column: 1 / -1;
+        max-height: none;
+    }
+}
+
+@media (max-width: 1050px) {
+    .editorGrid { grid-template-columns: 1fr; }
+    .linePanel,
+    .notesPanel { max-height: none; }
+    .boardStage,
+    .boardControls { width: min(100%, 760px); }
+}
+
+@media (max-width: 820px) {
+    .boardStage,
+    .boardControls { width: 100%; }
+}
