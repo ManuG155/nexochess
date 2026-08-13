@@ -55,7 +55,17 @@ function PersonalRepertoirePanelEnhanced({store,setStore,target,onOpen,onClose,s
         return()=>{cancelAnimationFrame(frame);if(fitBoard)removeEventListener("resize",fitBoard);setDockHost(null);};
     },[repertoire?.id]);
 
-    function nextGenericName(){const language=(i18n.resolvedLanguage||i18n.language||"en").split("-")[0].toLowerCase();return`${LINE_WORD[language]||LINE_WORD.en} ${lines.length+1}`;}
+    function nextGenericName(){
+        const language=(i18n.resolvedLanguage||i18n.language||"en").split("-")[0].toLowerCase();
+        const word=LINE_WORD[language]||LINE_WORD.en;
+        const escaped=word.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+        const matcher=new RegExp(`^${escaped}\\s+(\\d+)$`,"i");
+        const highest=lines.reduce((value,line)=>{
+            const match=line.name.trim().match(matcher);
+            return match?Math.max(value,Number(match[1])||0):value;
+        },0);
+        return `${word} ${highest+1}`;
+    }
     function recognisedName(){if(!repertoire)return undefined;const sans=path.filter(node=>node.moveSan).map(node=>node.moveSan as string);let best:{name:string;length:number}|undefined;for(const opening of catalogue){const moves=pgnSans(opening);if(!moves.length||moves.length>sans.length||!moves.every((move,index)=>move==sans[index]))continue;if(!best||moves.length>best.length)best={name:opening.name,length:moves.length};}return best&&best.name.toLocaleLowerCase()!=repertoire.name.toLocaleLowerCase()?best.name:undefined;}
     function openSaveDialog(){if(!repertoire||!currentNodeId||!continuation.length)return;const fallback=nextGenericName();setFallbackName(fallback);setDraftName(existing?.name||recognisedName()||fallback);setSaveOpen(true);}
     function saveCurrentLine(event:React.FormEvent){event.preventDefault();if(!repertoire||!currentNodeId||!continuation.length)return;const name=draftName.trim()||fallbackName||nextGenericName();setLineStore(previous=>upsertSavedRepertoireLine(previous,{repertoireId:repertoire.id,nodeId:currentNodeId,name}));setSaveOpen(false);}
