@@ -1,140 +1,69 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
+import { useTranslation } from "react-i18next";
+import { Chess } from "chess.js";
 
 import PersonalRepertoirePanel from "./PersonalRepertoirePanel";
+import { OpeningCatalogueEntry, loadOpeningCatalogue } from "./openingCatalogue";
 import { OpenTarget, RepertoireStore, pathToNode } from "./repertoireStore";
-import {
-    SavedRepertoireLine,
-    SavedRepertoireLineStore,
-    deleteSavedRepertoireLine,
-    linesForRepertoire,
-    readSavedRepertoireLines,
-    upsertSavedRepertoireLine,
-    writeSavedRepertoireLines
-} from "./savedRepertoireLines";
-import {
-    formatEnhancementCopy,
-    useRepertoireEnhancementCopy
-} from "./repertoireEnhancementCopy";
+import { SavedRepertoireLine, SavedRepertoireLineStore, deleteSavedRepertoireLine, linesForRepertoire, readSavedRepertoireLines, upsertSavedRepertoireLine, writeSavedRepertoireLines } from "./savedRepertoireLines";
+import { formatEnhancementCopy, useRepertoireEnhancementCopy } from "./repertoireEnhancementCopy";
 import * as styles from "./repertoirePolish.module.css";
 
-interface Props {
-    store: RepertoireStore;
-    setStore: React.Dispatch<React.SetStateAction<RepertoireStore>>;
-    target: OpenTarget | null;
-    onOpen: (target: OpenTarget) => void;
-    onClose: () => void;
-    saved: boolean;
-    onStudyRepertoire: (repertoireId: string) => void;
-    onStudyMixed: () => void;
+interface Props { store: RepertoireStore; setStore: React.Dispatch<React.SetStateAction<RepertoireStore>>; target: OpenTarget | null; onOpen: (target: OpenTarget) => void; onClose: () => void; saved: boolean; onStudyRepertoire: (repertoireId: string) => void; onStudyMixed: () => void; }
+const LINE_WORD: Record<string,string> = { en:"Line", es:"Línea", fr:"Ligne", de:"Variante", pt:"Linha", ru:"Вариант", zh:"路线", vi:"Biến", hi:"लाइन", mr:"लाईन", pl:"Wariant" };
+function validLine(store: RepertoireStore,line:SavedRepertoireLine){return Boolean(store.repertoires[line.repertoireId]&&store.nodes[line.nodeId]);}
+function pgnSans(opening:OpeningCatalogueEntry){try{const board=new Chess();board.loadPgn(opening.pgn);return board.history();}catch{return [] as string[];}}
+
+function PersonalRepertoirePanelEnhanced({store,setStore,target,onOpen,onClose,saved,onStudyRepertoire,onStudyMixed}:Props){
+    const copy=useRepertoireEnhancementCopy();
+    const {i18n}=useTranslation();
+    const [lineStore,setLineStore]=useState<SavedRepertoireLineStore>(()=>readSavedRepertoireLines());
+    const [catalogue,setCatalogue]=useState<OpeningCatalogueEntry[]>([]);
+    const [dockHost,setDockHost]=useState<HTMLElement|null>(null);
+    const [saveOpen,setSaveOpen]=useState(false);
+    const [draftName,setDraftName]=useState("");
+    const [fallbackName,setFallbackName]=useState("");
+    useEffect(()=>writeSavedRepertoireLines(lineStore),[lineStore]);
+    useEffect(()=>{let cancelled=false;void loadOpeningCatalogue().then(items=>{if(!cancelled)setCatalogue(items);});return()=>{cancelled=true;};},[]);
+
+    const repertoire=target?store.repertoires[target.repertoireId]:undefined;
+    const baseNodeId=repertoire?(repertoire.baseNodeId&&store.nodes[repertoire.baseNodeId]?repertoire.baseNodeId:repertoire.rootNodeId):undefined;
+    const currentNodeId=target?.nodeId||baseNodeId;
+    const path=currentNodeId?pathToNode(store,currentNodeId):[];
+    const baseIndex=baseNodeId?path.findIndex(node=>node.id==baseNodeId):-1;
+    const continuation=baseIndex>=0?path.slice(baseIndex+1).filter(node=>node.moveSan):[];
+    const lines=useMemo(()=>repertoire?linesForRepertoire(lineStore,repertoire.id).filter(line=>validLine(store,line)):[],[lineStore,repertoire?.id,store]);
+    const existing=currentNodeId?lines.find(line=>line.nodeId==currentNodeId):undefined;
+    const mixedCount=Object.values(lineStore.lines).filter(line=>validLine(store,line)).length;
+
+    useEffect(()=>{
+        if(!repertoire){setDockHost(null);return;}
+        let fitBoard:(()=>void)|undefined;
+        const frame=requestAnimationFrame(()=>{
+            const board=document.getElementById("repertoire-board");
+            const wrap=board?.parentElement as HTMLElement|null;
+            const stage=wrap?.parentElement as HTMLElement|null;
+            const column=stage?.parentElement as HTMLElement|null;
+            const grid=column?.parentElement as HTMLElement|null;
+            const left=grid?.firstElementChild as HTMLElement|null;
+            const controls=stage?.nextElementSibling as HTMLElement|null;
+            if(left)setDockHost(left);
+            fitBoard=()=>{const size=Math.min(760,Math.max(440,innerHeight-280));if(stage)stage.style.width=`min(100%, ${size}px)`;if(controls)controls.style.width=`min(100%, ${size}px)`;};
+            fitBoard();addEventListener("resize",fitBoard);
+        });
+        return()=>{cancelAnimationFrame(frame);if(fitBoard)removeEventListener("resize",fitBoard);setDockHost(null);};
+    },[repertoire?.id]);
+
+    function nextGenericName(){const language=(i18n.resolvedLanguage||i18n.language||"en").split("-")[0].toLowerCase();return`${LINE_WORD[language]||LINE_WORD.en} ${lines.length+1}`;}
+    function recognisedName(){if(!repertoire)return undefined;const sans=path.filter(node=>node.moveSan).map(node=>node.moveSan as string);let best:{name:string;length:number}|undefined;for(const opening of catalogue){const moves=pgnSans(opening);if(!moves.length||moves.length>sans.length||!moves.every((move,index)=>move==sans[index]))continue;if(!best||moves.length>best.length)best={name:opening.name,length:moves.length};}return best&&best.name.toLocaleLowerCase()!=repertoire.name.toLocaleLowerCase()?best.name:undefined;}
+    function openSaveDialog(){if(!repertoire||!currentNodeId||!continuation.length)return;const fallback=nextGenericName();setFallbackName(fallback);setDraftName(existing?.name||recognisedName()||fallback);setSaveOpen(true);}
+    function saveCurrentLine(event:React.FormEvent){event.preventDefault();if(!repertoire||!currentNodeId||!continuation.length)return;const name=draftName.trim()||fallbackName||nextGenericName();setLineStore(previous=>upsertSavedRepertoireLine(previous,{repertoireId:repertoire.id,nodeId:currentNodeId,name}));setSaveOpen(false);}
+    function remove(line:SavedRepertoireLine){if(!confirm(copy.deleteConfirm))return;setLineStore(previous=>deleteSavedRepertoireLine(previous,line.id));}
+
+    const lineDock=repertoire?<section className={styles.lineDock}><div className={styles.lineDockTop}><div><span>{copy.savedLinesTitle}</span><strong>{repertoire.name}</strong><p>{copy.savedLinesHelp}</p></div><div className={styles.lineDockActions}><button type="button" onClick={openSaveDialog} disabled={!continuation.length}>{existing?copy.renameLine:copy.saveLine}</button><button type="button" onClick={()=>onStudyRepertoire(repertoire.id)} disabled={!lines.length}>{copy.studyLines}</button></div></div><div className={styles.savedLineRow}>{!lines.length?<span>{copy.noSavedLines}</span>:lines.map(line=><div key={line.id} className={styles.savedLineChip}><button type="button" onClick={()=>onOpen({repertoireId:line.repertoireId,nodeId:line.nodeId})}><strong>{line.name}</strong><small>{copy.openLine}</small></button><button type="button" onClick={()=>remove(line)} aria-label={copy.deleteLine}>×</button></div>)}</div></section>:null;
+    const dialog=saveOpen&&repertoire?<div className={styles.modalBackdrop} onMouseDown={event=>{if(event.target==event.currentTarget)setSaveOpen(false);}}><form className={styles.saveModal} role="dialog" aria-modal="true" onSubmit={saveCurrentLine}><span>{copy.saveModalTitle}</span><h3>{copy.customNameLabel}</h3><p>{formatEnhancementCopy(copy.linePreview,{moves:continuation.map(node=>node.moveSan).join(" ")})}</p><div className={styles.suggestedName}><strong>{draftName||fallbackName}</strong></div><label><span>{copy.customNameLabel}</span><input autoFocus value={draftName} onChange={event=>setDraftName(event.target.value)} maxLength={120} placeholder={fallbackName}/></label><div className={styles.modalActions}><button type="button" onClick={()=>setSaveOpen(false)}>{copy.cancel}</button><button type="submit">{copy.save}</button></div></form></div>:null;
+
+    return <div className={styles.personalScale}>{!repertoire&&<section className={styles.mixedDock}><div><strong>{copy.studyMixed}</strong><span>{copy.studyMixedHelp}</span></div><button type="button" onClick={onStudyMixed} disabled={!mixedCount}>{copy.studyMixed}{mixedCount?` · ${mixedCount}`:""}</button></section>}<PersonalRepertoirePanel store={store} setStore={setStore} target={target} onOpen={onOpen} onClose={onClose} saved={saved}/>{dockHost&&lineDock&&createPortal(lineDock,dockHost)}{dialog&&createPortal(dialog,document.body)}</div>;
 }
-
-function validLine(store: RepertoireStore, line: SavedRepertoireLine) {
-    return Boolean(store.repertoires[line.repertoireId] && store.nodes[line.nodeId]);
-}
-
-function PersonalRepertoirePanelEnhanced({
-    store,
-    setStore,
-    target,
-    onOpen,
-    onClose,
-    saved,
-    onStudyRepertoire,
-    onStudyMixed
-}: Props) {
-    const copy = useRepertoireEnhancementCopy();
-    const [lineStore, setLineStore] = useState<SavedRepertoireLineStore>(
-        () => readSavedRepertoireLines()
-    );
-
-    useEffect(() => writeSavedRepertoireLines(lineStore), [lineStore]);
-
-    const repertoire = target ? store.repertoires[target.repertoireId] : undefined;
-    const baseNodeId = repertoire
-        ? repertoire.baseNodeId && store.nodes[repertoire.baseNodeId]
-            ? repertoire.baseNodeId
-            : repertoire.rootNodeId
-        : undefined;
-    const currentNodeId = target?.nodeId || baseNodeId;
-    const path = currentNodeId ? pathToNode(store, currentNodeId) : [];
-    const baseIndex = baseNodeId ? path.findIndex(node => node.id == baseNodeId) : -1;
-    const continuation = baseIndex >= 0
-        ? path.slice(baseIndex + 1).filter(node => node.moveSan)
-        : [];
-    const lines = useMemo(() => repertoire
-        ? linesForRepertoire(lineStore, repertoire.id).filter(line => validLine(store, line))
-        : [], [lineStore, repertoire?.id, store]);
-    const existing = currentNodeId ? lines.find(line => line.nodeId == currentNodeId) : undefined;
-    const mixedCount = Object.values(lineStore.lines).filter(line => validLine(store, line)).length;
-
-    function saveCurrentLine() {
-        if (!repertoire || !currentNodeId || continuation.length == 0) return;
-        const finalMove = continuation.at(-1)?.moveSan || "";
-        const suggestion = existing?.name || formatEnhancementCopy(
-            copy.suggestedLineName,
-            { move: finalMove }
-        );
-        const moves = continuation.map(node => node.moveSan).join(" ");
-        const accept = window.confirm(
-            `${formatEnhancementCopy(copy.suggestedQuestion, { name: suggestion })}\n\n${formatEnhancementCopy(copy.linePreview, { moves })}`
-        );
-        const name = accept
-            ? suggestion
-            : window.prompt(copy.customNameLabel, suggestion)?.trim();
-        if (!name) return;
-        setLineStore(previous => upsertSavedRepertoireLine(previous, {
-            repertoireId: repertoire.id,
-            nodeId: currentNodeId,
-            name
-        }));
-    }
-
-    function remove(line: SavedRepertoireLine) {
-        if (!window.confirm(copy.deleteConfirm)) return;
-        setLineStore(previous => deleteSavedRepertoireLine(previous, line.id));
-    }
-
-    return <div className={styles.personalScale}>
-        {repertoire ? <section className={styles.lineDock}>
-            <div className={styles.lineDockTop}>
-                <div>
-                    <span>{copy.savedLinesTitle}</span>
-                    <strong>{repertoire.name}</strong>
-                    <p>{copy.savedLinesHelp}</p>
-                </div>
-                <div className={styles.lineDockActions}>
-                    <button type="button" onClick={saveCurrentLine} disabled={continuation.length == 0}>
-                        {existing ? copy.renameLine : copy.saveLine}
-                    </button>
-                    <button type="button" onClick={() => onStudyRepertoire(repertoire.id)} disabled={lines.length == 0}>
-                        {copy.studyLines}
-                    </button>
-                </div>
-            </div>
-            <div className={styles.savedLineRow}>
-                {lines.length == 0 ? <span>{copy.noSavedLines}</span> : lines.map(line => <div key={line.id} className={styles.savedLineChip}>
-                    <button type="button" onClick={() => onOpen({ repertoireId: line.repertoireId, nodeId: line.nodeId })}>
-                        <strong>{line.name}</strong><small>{copy.openLine}</small>
-                    </button>
-                    <button type="button" onClick={() => remove(line)} aria-label={copy.deleteLine}>×</button>
-                </div>)}
-            </div>
-        </section> : <section className={styles.mixedDock}>
-            <div><strong>{copy.studyMixed}</strong><span>{copy.studyMixedHelp}</span></div>
-            <button type="button" onClick={onStudyMixed} disabled={mixedCount == 0}>
-                {copy.studyMixed}{mixedCount ? ` · ${mixedCount}` : ""}
-            </button>
-        </section>}
-
-        <PersonalRepertoirePanel
-            store={store}
-            setStore={setStore}
-            target={target}
-            onOpen={onOpen}
-            onClose={onClose}
-            saved={saved}
-        />
-    </div>;
-}
-
 export default PersonalRepertoirePanelEnhanced;
