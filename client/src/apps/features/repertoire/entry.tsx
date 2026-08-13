@@ -6,7 +6,7 @@ import I18nGate from "@/components/layout/I18nGate";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { removeDefaultConsentLink } from "@/lib/consent";
 
-import OpeningLearningPanel from "./OpeningLearningPanel";
+import OpeningLearningV2 from "./OpeningLearningV2";
 import PersonalRepertoirePanel from "./PersonalRepertoirePanel";
 import RepertoireTransferPanel from "./RepertoireTransferPanel";
 import { OpeningCatalogueEntry } from "./openingCatalogue";
@@ -39,6 +39,7 @@ function RepertoireWorkspace() {
     const [mode, setMode] = useState<WorkspaceMode>("mine");
     const [target, setTarget] = useState<OpenTarget | null>(null);
     const [saved, setSaved] = useState(true);
+    const [courseFocused, setCourseFocused] = useState(false);
 
     useEffect(() => {
         removeDefaultConsentLink();
@@ -54,6 +55,7 @@ function RepertoireWorkspace() {
     function changeMode(nextMode: WorkspaceMode) {
         setMode(nextMode);
         setTarget(null);
+        setCourseFocused(false);
         requestAnimationFrame(() => window.scrollTo({
             top: 0,
             left: 0,
@@ -65,18 +67,7 @@ function RepertoireWorkspace() {
         opening: OpeningCatalogueEntry,
         side: RepertoireSide
     ) {
-        const result = mergeOpening(store, opening, side);
-        setStore(result.store);
-        setMode("mine");
-        setTarget({
-            repertoireId: result.repertoire.id,
-            nodeId: result.lastNodeId
-        });
-        requestAnimationFrame(() => window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: "auto"
-        }));
+        setStore(previous => mergeOpening(previous, opening, side).store);
     }
 
     function importPgn(
@@ -138,42 +129,44 @@ function RepertoireWorkspace() {
     }
 
     return <main className={hubStyles.page}>
-        <section className={hubStyles.hero}>
-            <div>
-                <span className={hubStyles.eyebrow}>{t("eyebrow")}</span>
-                <h1>{t("title")}</h1>
-                <p className={hubStyles.heroText}>{t("intro")}</p>
-            </div>
-            <div className={hubStyles.explainer}>
-                <strong>{t("whatIs.title")}</strong>
-                <p>{t("whatIs.body")}</p>
-                <span>{t("whatIs.reassurance")}</span>
-            </div>
-        </section>
+        {!courseFocused && <>
+            <section className={hubStyles.hero}>
+                <div>
+                    <span className={hubStyles.eyebrow}>{t("eyebrow")}</span>
+                    <h1>{t("title")}</h1>
+                    <p className={hubStyles.heroText}>{t("intro")}</p>
+                </div>
+                <div className={hubStyles.explainer}>
+                    <strong>{t("whatIs.title")}</strong>
+                    <p>{t("whatIs.body")}</p>
+                    <span>{t("whatIs.reassurance")}</span>
+                </div>
+            </section>
 
-        <nav className={hubStyles.modeNav} aria-label={t("modes.label")}>
-            {(["mine", "learn", "review", "import"] as WorkspaceMode[])
-                .map(item => <button
-                    type="button"
-                    key={item}
-                    className={mode == item
-                        ? hubStyles.modeActive
-                        : hubStyles.modeButton}
-                    onClick={() => changeMode(item)}
-                >
-                    <span className={hubStyles.modeIcon}>
-                        {item == "mine"
-                            ? "♙"
-                            : item == "learn"
-                                ? "▤"
-                                : item == "review"
-                                    ? "↻"
-                                    : "⇩"}
-                    </span>
-                    <strong>{t(`modes.${item}`)}</strong>
-                    <small>{t(`modes.${item}Help`)}</small>
-                </button>)}
-        </nav>
+            <nav className={hubStyles.modeNav} aria-label={t("modes.label")}>
+                {(["mine", "learn", "review", "import"] as WorkspaceMode[])
+                    .map(item => <button
+                        type="button"
+                        key={item}
+                        className={mode == item
+                            ? hubStyles.modeActive
+                            : hubStyles.modeButton}
+                        onClick={() => changeMode(item)}
+                    >
+                        <span className={hubStyles.modeIcon}>
+                            {item == "mine"
+                                ? "♙"
+                                : item == "learn"
+                                    ? "▤"
+                                    : item == "review"
+                                        ? "↻"
+                                        : "⇩"}
+                        </span>
+                        <strong>{t(`modes.${item}`)}</strong>
+                        <small>{t(`modes.${item}Help`)}</small>
+                    </button>)}
+            </nav>
+        </>}
 
         <div className={hubStyles.content}>
             {mode == "mine" && <PersonalRepertoirePanel
@@ -185,14 +178,16 @@ function RepertoireWorkspace() {
                 saved={saved}
             />}
 
-            {mode == "learn" && <OpeningLearningPanel
+            {mode == "learn" && <OpeningLearningV2
                 mode="learn"
                 onAddToRepertoire={addOpeningToRepertoire}
+                onFocusChange={setCourseFocused}
             />}
 
-            {mode == "review" && <OpeningLearningPanel
+            {mode == "review" && <OpeningLearningV2
                 mode="review"
                 onAddToRepertoire={addOpeningToRepertoire}
+                onFocusChange={setCourseFocused}
             />}
 
             {mode == "import" && <RepertoireTransferPanel
