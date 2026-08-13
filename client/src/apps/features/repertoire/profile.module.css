@@ -57,6 +57,25 @@
     font-weight: 700;
 }
 
+.profileExpandButton {
+    flex: 0 0 auto;
+    min-height: 38px;
+    padding: 8px 13px;
+    border: 1px solid #3c79bc;
+    border-radius: 9px;
+    background: #142f4f;
+    color: #e7f2ff;
+    font: inherit;
+    font-size: .82rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.profileExpandButton:hover {
+    border-color: #4d9bf2;
+    background: #193b64;
+}
+
 .profileForm {
     display: grid;
     grid-template-columns: 150px minmax(180px, 1fr) 110px auto;
@@ -268,7 +287,8 @@
         align-items: flex-start;
     }
 
-    .profileIntro em {
+    .profileIntro em,
+    .profileExpandButton {
         align-self: flex-start;
     }
 
