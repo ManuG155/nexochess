@@ -52,6 +52,7 @@ function PlayerOpeningProfile({
 }: PlayerOpeningProfileProps) {
     const { t } = useTranslation("repertoireCourse");
     const { t: tRepertoire } = useTranslation("repertoire");
+    const [expanded, setExpanded] = useState(false);
     const [platform, setPlatform] = useState<PlayerPlatform>("chesscom");
     const [username, setUsername] = useState("");
     const [maximum, setMaximum] = useState(20);
@@ -88,93 +89,101 @@ function PlayerOpeningProfile({
                 <strong>{t("profile.title")}</strong>
                 <p>{t("profile.intro")}</p>
             </div>
-            <em>{t("profile.optional")}</em>
+            {expanded
+                ? <em>{t("profile.optional")}</em>
+                : <button
+                    type="button"
+                    className={styles.profileExpandButton}
+                    onClick={() => setExpanded(true)}
+                >{t("profile.analyse")}</button>}
         </div>
 
-        <form className={styles.profileForm} onSubmit={analyse}>
-            <label>
-                <span>{t("profile.platform")}</span>
-                <select
-                    value={platform}
-                    onChange={event => setPlatform(event.target.value as PlayerPlatform)}
-                >
-                    <option value="chesscom">Chess.com</option>
-                    <option value="lichess">Lichess</option>
-                </select>
-            </label>
-            <label className={styles.usernameField}>
-                <span>{t("profile.username")}</span>
-                <input
-                    value={username}
-                    onChange={event => setUsername(event.target.value)}
-                    placeholder={t("profile.usernamePlaceholder")}
-                    maxLength={40}
-                />
-            </label>
-            <label>
-                <span>{t("profile.games")}</span>
-                <select
-                    value={maximum}
-                    onChange={event => setMaximum(Number(event.target.value))}
-                >
-                    {[10, 20, 50].map(value => <option key={value} value={value}>
-                        {value}
-                    </option>)}
-                </select>
-            </label>
-            <button type="submit" disabled={loading || !username.trim()}>
-                {loading ? t("profile.loading") : t("profile.analyse")}
-            </button>
-        </form>
+        {expanded && <>
+            <form className={styles.profileForm} onSubmit={analyse}>
+                <label>
+                    <span>{t("profile.platform")}</span>
+                    <select
+                        value={platform}
+                        onChange={event => setPlatform(event.target.value as PlayerPlatform)}
+                    >
+                        <option value="chesscom">Chess.com</option>
+                        <option value="lichess">Lichess</option>
+                    </select>
+                </label>
+                <label className={styles.usernameField}>
+                    <span>{t("profile.username")}</span>
+                    <input
+                        value={username}
+                        onChange={event => setUsername(event.target.value)}
+                        placeholder={t("profile.usernamePlaceholder")}
+                        maxLength={40}
+                    />
+                </label>
+                <label>
+                    <span>{t("profile.games")}</span>
+                    <select
+                        value={maximum}
+                        onChange={event => setMaximum(Number(event.target.value))}
+                    >
+                        {[10, 20, 50].map(value => <option key={value} value={value}>
+                            {value}
+                        </option>)}
+                    </select>
+                </label>
+                <button type="submit" disabled={loading || !username.trim()}>
+                    {loading ? t("profile.loading") : t("profile.analyse")}
+                </button>
+            </form>
 
-        {error && <p className={styles.error}>{error}</p>}
+            {error && <p className={styles.error}>{error}</p>}
 
-        {profile && <div className={styles.profileResult}>
-            <div className={styles.resultHeader}>
-                <div>
-                    <strong>{t("profile.resultTitle", {
-                        username: profile.username
-                    })}</strong>
-                    <span>{t("profile.gamesAnalysed", {
-                        count: profile.gamesAnalysed
-                    })}</span>
+            {profile && <div className={styles.profileResult}>
+                <div className={styles.resultHeader}>
+                    <div>
+                        <strong>{t("profile.resultTitle", {
+                            username: profile.username
+                        })}</strong>
+                        <span>{t("profile.gamesAnalysed", {
+                            count: profile.gamesAnalysed
+                        })}</span>
+                    </div>
+                    <small>{t("profile.heuristic")}</small>
                 </div>
-                <small>{t("profile.heuristic")}</small>
-            </div>
 
-            {recommendation && <div className={styles.recommendation}>
-                <div>
-                    <span>{t("profile.startHere")}</span>
-                    <strong>{recommendation.family}</strong>
-                    <p>{t("profile.recommendation", {
-                        side: tRepertoire(`side.${recommendation.side}`),
-                        games: recommendation.games,
-                        score: scoreLabel(recommendation.scoreRate),
-                        moves: recommendation.averageKnownMoves
-                    })}</p>
+                {recommendation && <div className={styles.recommendation}>
+                    <div>
+                        <span>{t("profile.startHere")}</span>
+                        <strong>{recommendation.family}</strong>
+                        <p>{t("profile.recommendation", {
+                            side: tRepertoire(`side.${recommendation.side}`),
+                            games: recommendation.games,
+                            score: scoreLabel(recommendation.scoreRate),
+                            moves: recommendation.averageKnownMoves
+                        })}</p>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => onTrainFamily(
+                            recommendation.family,
+                            recommendation.side
+                        )}
+                    >{t("profile.train")}</button>
+                </div>}
+
+                <div className={styles.observedGrid}>
+                    <ProfileList
+                        title={t("profile.whiteRepertoire")}
+                        items={profile.white}
+                        emptyLabel={t("profile.noData")}
+                    />
+                    <ProfileList
+                        title={t("profile.blackRepertoire")}
+                        items={profile.black}
+                        emptyLabel={t("profile.noData")}
+                    />
                 </div>
-                <button
-                    type="button"
-                    onClick={() => onTrainFamily(
-                        recommendation.family,
-                        recommendation.side
-                    )}
-                >{t("profile.train")}</button>
             </div>}
-
-            <div className={styles.observedGrid}>
-                <ProfileList
-                    title={t("profile.whiteRepertoire")}
-                    items={profile.white}
-                    emptyLabel={t("profile.noData")}
-                />
-                <ProfileList
-                    title={t("profile.blackRepertoire")}
-                    items={profile.black}
-                    emptyLabel={t("profile.noData")}
-                />
-            </div>
-        </div>}
+        </>}
     </section>;
 }
 
