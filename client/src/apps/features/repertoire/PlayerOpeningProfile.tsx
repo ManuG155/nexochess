@@ -8,7 +8,7 @@ import {
     PlayerPlatform,
     PlayerSide,
     analysePlayerOpenings
-} from "./playerOpeningProfile";
+} from "./playerOpeningAnalysis";
 import * as styles from "./profile.module.css";
 
 interface PlayerOpeningProfileProps {
