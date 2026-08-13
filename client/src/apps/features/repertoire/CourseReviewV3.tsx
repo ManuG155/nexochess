@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { CourseProgressStore, getLearnedCount, getMasteredCount } from "./courseProgress";
 import { RepertoireSide, openingFromProgress } from "./courseV3Model";
 import { OpeningCatalogueEntry } from "./openingCatalogue";
+import { localizeOpeningName } from "./openingLocalization";
 import * as styles from "./courseV3.module.css";
 
 interface Props {
@@ -13,7 +14,8 @@ interface Props {
 }
 
 function CourseReviewV3({ progress, onOpen, onReviewAll }: Props) {
-    const { t } = useTranslation("repertoire");
+    const { t, i18n } = useTranslation("repertoire");
+    const language = i18n.resolvedLanguage || i18n.language || "en";
     const learned = Object.values(progress);
     const openings = learned.map(openingFromProgress);
     return <section className={styles.browserShell}>
@@ -24,7 +26,7 @@ function CourseReviewV3({ progress, onOpen, onReviewAll }: Props) {
                 <button type="button" className={styles.reviewAllButton} onClick={() => onReviewAll?.(openings)} disabled={!openings.length || !onReviewAll}>{t("review.start")}</button>
             </div>
         </div>
-        {learned.length == 0 ? <div className={styles.emptyReview}><span>✓</span><h3>{t("review.emptyTitle")}</h3><p>{t("review.emptyBody")}</p></div> : <div className={styles.reviewList}>{learned.map(item => <button key={item.lessonId} onClick={() => onOpen(openingFromProgress(item), item.side, true)}><span>{item.eco}</span><div><strong>{item.openingName}</strong><small>{item.family}</small></div><em>{t("modes.review")}</em></button>)}</div>}
+        {learned.length == 0 ? <div className={styles.emptyReview}><span>✓</span><h3>{t("review.emptyTitle")}</h3><p>{t("review.emptyBody")}</p></div> : <div className={styles.reviewList}>{learned.map(item => <button key={item.lessonId} onClick={() => onOpen(openingFromProgress(item), item.side, true)}><span>{item.eco}</span><div><strong>{item.eco == "USR" ? item.openingName : localizeOpeningName(item.openingName, language)}</strong><small>{localizeOpeningName(item.family, language)}</small></div><em>{t("modes.review")}</em></button>)}</div>}
     </section>;
 }
 export default CourseReviewV3;
