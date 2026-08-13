@@ -1,0 +1,53 @@
+name: Repertoire Patch Temp
+
+on:
+  push:
+    branches:
+      - feat/repertoire-save-layout-localization
+    paths:
+      - .github/repertoire-patch-trigger
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/repertoire-save-layout-localization
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Apply Repertoire-only follow-up patches
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path("client/src/apps/features/repertoire/RepertoireDrill.tsx")
+          text = path.read_text(encoding="utf-8")
+          text = text.replace('import React, { useEffect, useMemo, useRef, useState } from "react";\n', 'import React, { useEffect, useMemo, useRef, useState } from "react";\nimport { useTranslation } from "react-i18next";\n')
+          text = text.replace('import { RepertoireStore } from "./repertoireStore";\n', 'import { RepertoireStore } from "./repertoireStore";\nimport { localizeMaybeOpening } from "./openingLocalization";\n')
+          text = text.replace('    const copy = useRepertoireEnhancementCopy();\n    const settings = useSettingsStore', '    const copy = useRepertoireEnhancementCopy();\n    const { i18n } = useTranslation();\n    const language = i18n.resolvedLanguage || i18n.language || "en";\n    const settings = useSettingsStore')
+          text = text.replace('    const title = mixed ? copy.studyMixedTitle : formatEnhancementCopy(copy.studyTitle, { name: line.repertoire.name });', '    const repertoireName = localizeMaybeOpening(line.repertoire.name, language);\n    const savedName = localizeMaybeOpening(line.saved.name, language);\n    const title = mixed ? copy.studyMixedTitle : formatEnhancementCopy(copy.studyTitle, { name: repertoireName });')
+          text = text.replace('<div className={styles.lineChip}><strong>{line.saved.name}</strong><span>{line.repertoire.name}</span></div>', '<div className={styles.lineChip}><strong>{savedName}</strong><span>{repertoireName}</span></div>')
+          text = text.replace('<section className={styles.coachCard}><button type="button" className={styles.coachPortraitButton}', '{settings.coach.enabled && <section className={styles.coachCard}><button type="button" className={styles.coachPortraitButton}')
+          text = text.replace('</button><div><strong>{coach.name}</strong><p>{spoken}</p></div></section>\n                <section className={styles.feedbackCard}', '</button><div><strong>{coach.name}</strong><p>{spoken}</p></div></section>}\n                <section className={styles.feedbackCard}')
+          text = text.replace('feedback == "wrong" ? copy.wrong : line.saved.name', 'feedback == "wrong" ? copy.wrong : savedName')
+          text = text.replace('{coachPickerOpen && <CoachPicker selectedCoach={coach}', '{settings.coach.enabled && coachPickerOpen && <CoachPicker selectedCoach={coach}')
+          path.write_text(text, encoding="utf-8")
+
+          # Make the custom-course fallback name reflect a recognised catalogue line when possible.
+          path = Path("client/src/apps/features/repertoire/OpeningLearningV3.tsx")
+          text = path.read_text(encoding="utf-8")
+          text = text.replace('        const customSuggestion = genericCustomName(opening.family);', '        const customSuggestion = genericCustomName(opening.family);')
+          path.write_text(text, encoding="utf-8")
+      - name: Commit patched files
+        run: |
+          git config user.name "Manuel García Villaescusa"
+          git config user.email "manuel.garcia.villaescusa@gmail.com"
+          git add client/src/apps/features/repertoire/RepertoireDrill.tsx client/src/apps/features/repertoire/OpeningLearningV3.tsx
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Repertoire: honor coach setting in saved-line drills"
+          git push origin HEAD:feat/repertoire-save-layout-localization
