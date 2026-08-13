@@ -22,17 +22,9 @@ export interface RepertoireMoveQuality {
     evaluation: EngineLine["evaluation"];
 }
 
-let engine: Engine | undefined;
-let serial = Promise.resolve();
-
-function ensureEngine() {
-    if (!engine) {
-        engine = new Engine(EngineVersion.STOCKFISH_17_LITE)
-            .setLineCount(1)
-            .setThreadCount(1);
-    }
-    return engine;
-}
+const ENGINE_DEPTH = 16;
+const ENGINE_MOVE_TIME_MS = 1200;
+const ENGINE_HARD_TIMEOUT_MS = 5500;
 
 function bestFinishedLine(lines: EngineLine[]) {
     return [...lines]
@@ -40,18 +32,35 @@ function bestFinishedLine(lines: EngineLine[]) {
         .sort((a, b) => b.depth - a.depth)[0];
 }
 
-function evaluate(fen: string) {
-    const run = async () => {
-        const instance = ensureEngine();
-        instance.setPosition(fen);
-        const lines = await instance.evaluate({ depth: 15, timeLimit: 950 });
+async function evaluate(fen: string) {
+    const instance = new Engine(EngineVersion.STOCKFISH_17_LITE)
+        .setLineCount(1)
+        .setThreadCount(1)
+        .setPosition(fen);
+
+    let timeoutId: number | undefined;
+
+    try {
+        const lines = await Promise.race([
+            instance.evaluate({
+                depth: ENGINE_DEPTH,
+                timeLimit: ENGINE_MOVE_TIME_MS
+            }),
+            new Promise<EngineLine[]>((_, reject) => {
+                timeoutId = window.setTimeout(() => {
+                    instance.terminate();
+                    reject(new Error("repertoire-engine-timeout"));
+                }, ENGINE_HARD_TIMEOUT_MS);
+            })
+        ]);
+
         const line = bestFinishedLine(lines);
         if (!line) throw new Error("engine-no-line");
         return line;
-    };
-    const result = serial.then(run, run);
-    serial = result.then(() => undefined, () => undefined);
-    return result;
+    } finally {
+        if (timeoutId != undefined) window.clearTimeout(timeoutId);
+        instance.terminate();
+    }
 }
 
 function uciMove(board: Chess, uci: string): Move | undefined {

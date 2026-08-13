@@ -1,255 +1,58 @@
-/* Repertoire-only layout overrides. Keep the board and primary controls in the first viewport. */
+/* Repertoire-only viewport and docking rules. */
 
-/* Manual repertoire editor: the help strip is deliberately removed from the board workspace. */
-div:has(+ div > section #repertoire-board) {
-    display: none !important;
+/* Manual editor: remove the tutorial strip from the board workspace. */
+div:has(+ div > section #repertoire-board){display:none!important}
+
+div:has(> aside + section #repertoire-board){position:relative;grid-template-columns:minmax(270px,.82fr) minmax(540px,1.5fr) minmax(285px,.88fr)!important;grid-template-rows:auto auto!important;gap:10px 18px!important;align-items:start!important}
+div:has(> aside + section #repertoire-board)>section:has(#repertoire-board){display:contents!important}
+div:has(> aside + section #repertoire-board)>section:has(#repertoire-board)>div:first-child,
+div:has(> aside + section #repertoire-board)>section:has(#repertoire-board)>p{display:none!important}
+
+/* Board + native Nexo evaluation bar stay in the first viewport. */
+div:has(> aside + section #repertoire-board)>section:has(#repertoire-board)>div:has(#repertoire-board):not(:has(>button)){grid-column:2!important;grid-row:1/span 2!important;align-self:start!important;width:min(100%,calc(100svh - 158px),700px)!important;max-width:700px!important;margin:0 auto!important}
+
+/* Left rail holds the line tree, compact navigation and the saved-line dock. */
+div:has(> aside + section #repertoire-board)>aside:has(+ section #repertoire-board){grid-column:1!important;grid-row:1!important;min-height:0!important;height:min(610px,calc(100svh - 155px))!important;overflow:auto!important;padding-bottom:8px!important;scrollbar-width:thin}
+div:has(> aside + section #repertoire-board)>section:has(#repertoire-board)>div:has(>button){grid-column:1!important;grid-row:2!important;align-self:start!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important;width:100%!important;max-width:none!important;margin:8px 0 0!important}
+div:has(> aside + section #repertoire-board)>section:has(#repertoire-board)>div:has(>button)>button{min-height:45px!important;padding:7px!important;font-size:1.14rem!important;border-radius:9px!important}
+div:has(> aside + section #repertoire-board)>section:has(#repertoire-board)>div:has(>button)>button span{display:none!important}
+
+/* Right rail is notes + Stockfish only; it scrolls internally instead of moving the board. */
+div:has(> aside + section #repertoire-board)>section:has(#repertoire-board)+aside{grid-column:3!important;grid-row:1/span 2!important;min-height:0!important;max-height:calc(100svh - 145px)!important;overflow:auto!important;scrollbar-width:thin}
+div:has(> aside + section #repertoire-board)>section:has(#repertoire-board)+aside textarea{min-height:125px!important}
+
+/* Course: the board wrapper is a positioning context for the evaluation bar. */
+section:has(#repertoire-course-board-v3)>header{margin-bottom:7px!important;padding-top:7px!important;padding-bottom:7px!important}
+section:has(#repertoire-course-board-v3) div:has(> #repertoire-course-board-v3){position:relative!important;width:min(100%,calc(100svh - 188px),700px)!important;max-width:700px!important}
+section:has(#repertoire-course-board-v3)>div{position:relative!important}
+
+/* A user-created course branch docks in the otherwise empty left rail, never in the right information stack. */
+@media(min-width:1281px){
+ body:has(#repertoire-course-board-v3) aside>section:has(>span+div+button){position:absolute!important;left:0!important;top:0!important;width:min(320px,22vw)!important;z-index:4!important;display:grid!important;grid-template-columns:auto minmax(0,1fr)!important;gap:9px 11px!important;align-items:center!important;padding:15px!important;border:1px solid rgba(67,143,228,.58)!important;border-radius:13px!important;background:linear-gradient(180deg,rgba(18,45,73,.98),rgba(12,29,45,.98))!important;box-shadow:0 16px 36px rgba(0,0,0,.22)!important;color:#edf5ff!important}
+ body:has(#repertoire-course-board-v3) aside>section:has(>span+div+button)>span{display:grid!important;place-items:center!important;width:38px!important;height:38px!important;border-radius:10px!important;background:rgba(69,148,238,.18)!important;color:#8bc5ff!important;font-size:1.35rem!important}
+ body:has(#repertoire-course-board-v3) aside>section:has(>span+div+button) strong{font-size:1.06rem!important}
+ body:has(#repertoire-course-board-v3) aside>section:has(>span+div+button) p{margin:4px 0 0!important;color:#9fb0c3!important;font-size:.94rem!important;line-height:1.4!important}
+ body:has(#repertoire-course-board-v3) aside>section:has(>span+div+button)>button{grid-column:1/-1!important;min-height:44px!important;padding:9px 13px!important;border:1px solid #4a98ec!important;border-radius:9px!important;background:#287bd6!important;color:#fff!important;font:inherit!important;font-weight:800!important;cursor:pointer!important}
+ body:has(#repertoire-course-board-v3) aside>section:has(>span+div+button)>button:hover{background:#3389e8!important}
 }
 
-/* The editor grid is identified structurally so these rules remain local to Repertoire. */
-div:has(> aside + section #repertoire-board) {
-    position: relative;
-    grid-template-columns: minmax(270px,.82fr) minmax(540px,1.5fr) minmax(285px,.88fr) !important;
-    grid-template-rows: auto auto !important;
-    gap: 10px 18px !important;
-    align-items: start !important;
-}
+/* Custom course-line modal: force the actual Nexo modal appearance even if CSS-module naming changes. */
+body:has(#repertoire-course-board-v3)>div:has(form[role="dialog"]),
+body:has(#repertoire-course-board-v3) div:has(>form[role="dialog"]){position:fixed!important;inset:0!important;z-index:10000!important;display:grid!important;place-items:center!important;padding:22px!important;background:rgba(2,7,13,.76)!important;backdrop-filter:blur(7px)!important}
+body:has(#repertoire-course-board-v3) form[role="dialog"]{width:min(100%,560px)!important;padding:22px!important;border:1px solid #36587a!important;border-radius:15px!important;background:#0e1a28!important;color:#f0f5fb!important;box-shadow:0 28px 90px rgba(0,0,0,.55)!important}
+body:has(#repertoire-course-board-v3) form[role="dialog"]>span{color:#72b5ff!important;font-size:.86rem!important;font-weight:800!important;letter-spacing:.06em!important;text-transform:uppercase!important}
+body:has(#repertoire-course-board-v3) form[role="dialog"] h3{margin:8px 0!important;font-size:1.45rem!important}
+body:has(#repertoire-course-board-v3) form[role="dialog"] p{color:#a6b4c5!important;line-height:1.5!important}
+body:has(#repertoire-course-board-v3) form[role="dialog"] label{display:grid!important;gap:7px!important;margin-top:14px!important;color:#b8c5d3!important;font-weight:700!important}
+body:has(#repertoire-course-board-v3) form[role="dialog"] input{min-height:46px!important;width:100%!important;padding:10px 12px!important;border:1px solid #324a66!important;border-radius:9px!important;background:#08131f!important;color:#f2f6fb!important;font:inherit!important;outline:none!important}
+body:has(#repertoire-course-board-v3) form[role="dialog"] input:focus{border-color:#4899f4!important;box-shadow:0 0 0 3px rgba(72,153,244,.12)!important}
+body:has(#repertoire-course-board-v3) form[role="dialog"]>div:last-child{display:flex!important;justify-content:flex-end!important;gap:9px!important;margin-top:18px!important}
+body:has(#repertoire-course-board-v3) form[role="dialog"] button{min-height:42px!important;padding:9px 15px!important;border:1px solid #3b5572!important;border-radius:9px!important;background:#142538!important;color:#d6e2ef!important;font:inherit!important;cursor:pointer!important}
+body:has(#repertoire-course-board-v3) form[role="dialog"] button[type="submit"]{border-color:#438fe8!important;background:#2d7fdc!important;color:#fff!important;font-weight:800!important}
 
-/* Let the board column children participate in the parent grid. */
-div:has(> aside + section #repertoire-board) > section:has(#repertoire-board) {
-    display: contents !important;
-}
+/* Saved-line drill. */
+div:has(> #repertoire-saved-line-study){width:min(100%,calc(100svh - 188px),700px)!important;max-width:700px!important}
 
-/* The textual turn hint and lower board tip are secondary; removing them buys vertical room. */
-div:has(> aside + section #repertoire-board) > section:has(#repertoire-board) > div:first-child,
-div:has(> aside + section #repertoire-board) > section:has(#repertoire-board) > p {
-    display: none !important;
-}
+@media(max-width:1280px){body:has(#repertoire-course-board-v3) aside>section:has(>span+div+button){position:static!important;width:auto!important;display:grid!important;gap:9px!important;padding:13px!important;border:1px solid rgba(67,143,228,.5)!important;border-radius:12px!important;background:rgba(37,111,195,.12)!important}body:has(#repertoire-course-board-v3) aside>section:has(>span+div+button)>button{min-height:42px!important;border:1px solid #438fe4!important;border-radius:9px!important;background:#287bd6!important;color:#fff!important;font:inherit!important;font-weight:800!important}}
 
-/* Board: centered, starts at the very top of the grid and is sized from viewport height. */
-div:has(> aside + section #repertoire-board) > section:has(#repertoire-board) > div:has(#repertoire-board):not(:has(> button)) {
-    grid-column: 2 !important;
-    grid-row: 1 / span 2 !important;
-    align-self: start !important;
-    width: min(100%, calc(100svh - 178px), 700px) !important;
-    max-width: 700px !important;
-    margin: 0 auto !important;
-}
-
-/* Left navigation panel and the four compact board controls directly underneath it. */
-div:has(> aside + section #repertoire-board) > aside:has(+ section #repertoire-board) {
-    grid-column: 1 !important;
-    grid-row: 1 !important;
-    min-height: 0 !important;
-    height: min(520px, calc(100svh - 260px)) !important;
-    overflow: auto !important;
-}
-
-div:has(> aside + section #repertoire-board) > section:has(#repertoire-board) > div:has(> button) {
-    grid-column: 1 !important;
-    grid-row: 2 !important;
-    align-self: start !important;
-    display: grid !important;
-    grid-template-columns: repeat(4,minmax(0,1fr)) !important;
-    gap: 7px !important;
-    width: 100% !important;
-    max-width: none !important;
-    margin: 8px 0 0 !important;
-}
-
-div:has(> aside + section #repertoire-board) > section:has(#repertoire-board) > div:has(> button) > button {
-    min-height: 45px !important;
-    padding: 7px !important;
-    font-size: 1.14rem !important;
-}
-
-div:has(> aside + section #repertoire-board) > section:has(#repertoire-board) > div:has(> button) > button span {
-    display: none !important;
-}
-
-/* Notes + save-line tools share the right rail and scroll internally if needed. */
-div:has(> aside + section #repertoire-board) > section:has(#repertoire-board) + aside {
-    grid-column: 3 !important;
-    grid-row: 1 / span 2 !important;
-    min-height: 0 !important;
-    max-height: calc(100svh - 165px) !important;
-    overflow: auto !important;
-}
-
-div:has(> aside + section #repertoire-board) > section:has(#repertoire-board) + aside textarea {
-    min-height: 135px !important;
-}
-
-div:has(> aside + section #repertoire-board) > section:has(#repertoire-board) + aside > section:last-child {
-    position: relative !important;
-    top: auto !important;
-    z-index: auto !important;
-    width: calc(100% - 30px) !important;
-    margin: 10px 15px 15px !important;
-    padding: 12px !important;
-}
-
-div:has(> aside + section #repertoire-board) > section:has(#repertoire-board) + aside > section:last-child > div:first-child {
-    display: grid !important;
-    gap: 9px !important;
-}
-
-div:has(> aside + section #repertoire-board) > section:has(#repertoire-board) + aside > section:last-child button {
-    min-height: 42px !important;
-}
-
-/* Course lessons: compact the chrome and keep the board itself in the viewport. */
-section:has(#repertoire-course-board-v3) > header {
-    margin-bottom: 7px !important;
-    padding-top: 7px !important;
-    padding-bottom: 7px !important;
-}
-
-section:has(#repertoire-course-board-v3) div:has(> #repertoire-course-board-v3) {
-    width: min(100%, calc(100svh - 205px), 700px) !important;
-    max-width: 700px !important;
-}
-
-/* The custom-course save card has a distinctive direct-child structure. */
-section:has(#repertoire-course-board-v3) aside > section:has(> span + div + button) {
-    display: grid;
-    grid-template-columns: auto minmax(0,1fr);
-    gap: 8px 11px;
-    align-items: center;
-    padding: 13px 14px;
-    border: 1px solid rgba(65,145,238,.55);
-    border-radius: 12px;
-    background: rgba(37,111,195,.12);
-}
-
-section:has(#repertoire-course-board-v3) aside > section:has(> span + div + button) > span {
-    display: grid;
-    place-items: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 9px;
-    background: rgba(55,143,245,.18);
-    color: #84beff;
-    font-size: 1.35rem;
-}
-
-section:has(#repertoire-course-board-v3) aside > section:has(> span + div + button) p {
-    margin: 4px 0 0;
-    color: #9eafc2;
-    line-height: 1.4;
-}
-
-section:has(#repertoire-course-board-v3) aside > section:has(> span + div + button) > button {
-    grid-column: 1 / -1;
-    min-height: 42px;
-    border: 1px solid #438fe4;
-    border-radius: 9px;
-    background: #287bd6;
-    color: white;
-    font: inherit;
-    font-weight: 800;
-    cursor: pointer;
-}
-
-/* Course custom-line modal: classes are intentionally not required. */
-section:has(#repertoire-course-board-v3) > div:has(> form[role="dialog"]) {
-    position: fixed;
-    inset: 0;
-    z-index: 10000;
-    display: grid;
-    place-items: center;
-    padding: 22px;
-    background: rgba(2,7,13,.72);
-    backdrop-filter: blur(6px);
-}
-
-section:has(#repertoire-course-board-v3) > div:has(> form[role="dialog"]) > form {
-    width: min(100%,560px);
-    padding: 22px;
-    border: 1px solid #36587a;
-    border-radius: 15px;
-    background: #0e1a28;
-    color: #f0f5fb;
-    box-shadow: 0 28px 90px rgba(0,0,0,.5);
-}
-
-section:has(#repertoire-course-board-v3) > div:has(> form[role="dialog"]) form > span {
-    color: #72b5ff;
-    font-size: .86rem;
-    font-weight: 800;
-    text-transform: uppercase;
-}
-
-section:has(#repertoire-course-board-v3) > div:has(> form[role="dialog"]) form label {
-    display: grid;
-    gap: 7px;
-}
-
-section:has(#repertoire-course-board-v3) > div:has(> form[role="dialog"]) form input {
-    min-height: 46px;
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #324a66;
-    border-radius: 9px;
-    background: #08131f;
-    color: #f2f6fb;
-    font: inherit;
-}
-
-section:has(#repertoire-course-board-v3) > div:has(> form[role="dialog"]) form > div:last-child {
-    display: flex;
-    justify-content: flex-end;
-    gap: 9px;
-    margin-top: 18px;
-}
-
-section:has(#repertoire-course-board-v3) > div:has(> form[role="dialog"]) form button {
-    min-height: 42px;
-    padding: 9px 15px;
-    border: 1px solid #3b5572;
-    border-radius: 9px;
-    background: #142538;
-    color: #d6e2ef;
-    font: inherit;
-    cursor: pointer;
-}
-
-section:has(#repertoire-course-board-v3) > div:has(> form[role="dialog"]) form button[type="submit"] {
-    border-color: #438fe8;
-    background: #2d7fdc;
-    color: white;
-    font-weight: 800;
-}
-
-/* Saved-line drill: reserve room for header/status and never grow beyond viewport height. */
-div:has(> #repertoire-saved-line-study) {
-    width: min(100%, calc(100svh - 205px), 700px) !important;
-    max-width: 700px !important;
-}
-
-@media (max-width: 1050px) {
-    div:has(> aside + section #repertoire-board) {
-        grid-template-columns: 1fr !important;
-        grid-template-rows: auto !important;
-    }
-    div:has(> aside + section #repertoire-board) > section:has(#repertoire-board) {
-        display: block !important;
-        grid-column: 1 !important;
-        grid-row: 1 !important;
-    }
-    div:has(> aside + section #repertoire-board) > section:has(#repertoire-board) > div:first-child {
-        display: flex !important;
-    }
-    div:has(> aside + section #repertoire-board) > section:has(#repertoire-board) > div:has(#repertoire-board):not(:has(> button)),
-    div:has(> aside + section #repertoire-board) > section:has(#repertoire-board) > div:has(> button) {
-        width: min(100%,700px) !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-    }
-    div:has(> aside + section #repertoire-board) > aside:has(+ section #repertoire-board),
-    div:has(> aside + section #repertoire-board) > section:has(#repertoire-board) + aside {
-        grid-column: 1 !important;
-        grid-row: auto !important;
-        height: auto !important;
-        max-height: none !important;
-    }
-}
+@media(max-width:1050px){div:has(> aside + section #repertoire-board){grid-template-columns:1fr!important;grid-template-rows:auto!important}div:has(> aside + section #repertoire-board)>section:has(#repertoire-board){display:block!important;grid-column:1!important;grid-row:1!important}div:has(> aside + section #repertoire-board)>section:has(#repertoire-board)>div:first-child{display:flex!important}div:has(> aside + section #repertoire-board)>section:has(#repertoire-board)>div:has(#repertoire-board):not(:has(>button)),div:has(> aside + section #repertoire-board)>section:has(#repertoire-board)>div:has(>button){width:min(100%,700px)!important;margin-left:auto!important;margin-right:auto!important}div:has(> aside + section #repertoire-board)>aside:has(+ section #repertoire-board),div:has(> aside + section #repertoire-board)>section:has(#repertoire-board)+aside{grid-column:1!important;grid-row:auto!important;height:auto!important;max-height:none!important}}
