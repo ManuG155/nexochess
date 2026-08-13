@@ -29,6 +29,23 @@ function PersonalRepertoirePanelEnhanced({store,setStore,target,onOpen,onClose,s
     useEffect(()=>writeSavedRepertoireLines(lineStore),[lineStore]);
     useEffect(()=>{let cancelled=false;void loadOpeningCatalogue().then(items=>{if(!cancelled)setCatalogue(items);});return()=>{cancelled=true;};},[]);
 
+    const localizedStore=useMemo<RepertoireStore>(()=>({
+        ...store,
+        repertoires:Object.fromEntries(Object.entries(store.repertoires).map(([id,item])=>[id,{...item,name:localizeMaybeOpening(item.name,language)}]))
+    }),[store,language]);
+    const setLocalizedStore:React.Dispatch<React.SetStateAction<RepertoireStore>>=action=>{
+        setStore(previous=>{
+            const previousView:RepertoireStore={...previous,repertoires:Object.fromEntries(Object.entries(previous.repertoires).map(([id,item])=>[id,{...item,name:localizeMaybeOpening(item.name,language)}]))};
+            const next=typeof action==="function"?action(previousView):action;
+            const repertoires=Object.fromEntries(Object.entries(next.repertoires).map(([id,item])=>{
+                const canonical=previous.repertoires[id];
+                const displayed=previousView.repertoires[id];
+                return [id,{...item,name:canonical&&displayed&&item.name===displayed.name?canonical.name:item.name}];
+            }));
+            return {...next,repertoires};
+        });
+    };
+
     const repertoire=target?store.repertoires[target.repertoireId]:undefined;
     const baseNodeId=repertoire?(repertoire.baseNodeId&&store.nodes[repertoire.baseNodeId]?repertoire.baseNodeId:repertoire.rootNodeId):undefined;
     const currentNodeId=target?.nodeId||baseNodeId;
@@ -84,6 +101,6 @@ function PersonalRepertoirePanelEnhanced({store,setStore,target,onOpen,onClose,s
     </section>:null;
     const dialog=saveOpen&&repertoire?<div className={styles.modalBackdrop} onMouseDown={event=>{if(event.target==event.currentTarget)setSaveOpen(false);}}><form className={styles.saveModal} role="dialog" aria-modal="true" onSubmit={saveCurrentLine}><span>{copy.saveModalTitle}</span><h3>{copy.customNameLabel}</h3><p>{formatEnhancementCopy(copy.linePreview,{moves:continuation.map(node=>node.moveSan).join(" ")})}</p><div className={styles.suggestedName}><strong>{draftName||fallbackName}</strong></div><label><span>{copy.customNameLabel}</span><input autoFocus value={draftName} onChange={event=>setDraftName(event.target.value)} maxLength={120} placeholder={fallbackName}/></label><div className={styles.modalActions}><button type="button" onClick={()=>setSaveOpen(false)}>{copy.cancel}</button><button type="submit">{copy.save}</button></div></form></div>:null;
 
-    return <div className={styles.personalScale}>{!repertoire&&<section className={styles.mixedDock}><div><strong>{copy.studyMixed}</strong><span>{copy.studyMixedHelp}</span></div><button type="button" onClick={onStudyMixed} disabled={!mixedCount}>{copy.studyMixed}{mixedCount?` · ${mixedCount}`:""}</button></section>}<PersonalRepertoirePanel store={store} setStore={setStore} target={target} onOpen={onOpen} onClose={onClose} saved={saved}/>{dockHost&&lineDock&&createPortal(lineDock,dockHost)}{dialog&&createPortal(dialog,document.body)}</div>;
+    return <div className={styles.personalScale}>{!repertoire&&<section className={styles.mixedDock}><div><strong>{copy.studyMixed}</strong><span>{copy.studyMixedHelp}</span></div><button type="button" onClick={onStudyMixed} disabled={!mixedCount}>{copy.studyMixed}{mixedCount?` · ${mixedCount}`:""}</button></section>}<PersonalRepertoirePanel store={localizedStore} setStore={setLocalizedStore} target={target} onOpen={onOpen} onClose={onClose} saved={saved}/>{dockHost&&lineDock&&createPortal(lineDock,dockHost)}{dialog&&createPortal(dialog,document.body)}</div>;
 }
 export default PersonalRepertoirePanelEnhanced;
