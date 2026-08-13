@@ -1,0 +1,59 @@
+{
+  "categories": {
+    "label": "Nhóm khóa học khai cuộc",
+    "e4": "Ván mở & 1.e4",
+    "d4": "Hệ thống 1.d4",
+    "vsE4": "Phòng thủ chống 1.e4",
+    "vsD4": "Phòng thủ chống 1.d4",
+    "flank": "Khai cuộc cánh"
+  },
+  "path": {
+    "intro": "Hãy coi khai cuộc này như một lộ trình học ngắn. Hoàn thành từng nhánh một; NexoChess lưu tiến độ và chỉ ra bước hữu ích tiếp theo.",
+    "title": "Lộ trình khóa học",
+    "progress": "{{completed}} / {{total}} nhánh",
+    "recommended": "Tiếp tục"
+  },
+  "practice": {
+    "autoRule": "Khi bạn học xong một nhánh, NexoChess tự động thêm nó vào repertoire cá nhân.",
+    "againCoach": "Tốt. Hãy chơi lại từ đầu thêm một lần để chuỗi nước đi bám chắc hơn.",
+    "backModule": "Quay lại mô-đun",
+    "studyPhase": "Học",
+    "practicePhase": "Ghi nhớ",
+    "completePhase": "Hoàn thành",
+    "studyHint": "Đi qua nhánh một lần, sau đó tái hiện nó bằng trí nhớ.",
+    "start": "Bắt đầu luyện trí nhớ",
+    "repetition": "Lần lặp {{current}} / {{total}}",
+    "memoryBlock": "Củng cố ngay",
+    "extra": "Vì bạn đã dùng gợi ý hoặc đi sai một nước, bài này sẽ có thêm một lần lặp.",
+    "repeatRule": "Một nhánh mới được lặp lại ngay hai lần trước khi được xem là đã học.",
+    "lessonComplete": "Hoàn thành bài học",
+    "completeTitle": "Đã học nhánh",
+    "completeBody": "Bạn vừa củng cố nó. Sau này nó chỉ xuất hiện lại khi lịch ôn ngắt quãng cho rằng việc ôn lại là hữu ích.",
+    "autoSaved": "Đã tự động thêm vào repertoire cá nhân của bạn.",
+    "nextLine": "Nhánh tiếp theo",
+    "moduleDone": "Hoàn tất mô-đun",
+    "srsExplainer": "Bạn không phải chơi lại mọi nhánh đã học mỗi khi mở Repertoire. Chỉ những lượt ôn đã đến hạn mới quay lại đây."
+  },
+  "profile": {
+    "eyebrow": "Điểm khởi đầu cá nhân",
+    "title": "Xây khóa học quanh những khai cuộc bạn thực sự chơi",
+    "intro": "Nếu muốn, hãy nhập tên người dùng công khai trên Chess.com hoặc Lichess. NexoChess xem các ván gần đây, ước lượng những họ khai cuộc xuất hiện nhiều nhất và gợi ý nên bắt đầu học ở đâu.",
+    "optional": "Tùy chọn",
+    "platform": "Nền tảng",
+    "username": "Tên người dùng",
+    "usernamePlaceholder": "Tên người dùng công khai của bạn",
+    "games": "Ván gần đây",
+    "loading": "Đang phân tích…",
+    "analyse": "Phân tích khai cuộc của tôi",
+    "error": "Hiện NexoChess không đọc được các ván công khai gần đây của tài khoản này. Hãy kiểm tra tên người dùng hoặc thử nền tảng kia sau.",
+    "resultTitle": "Tổng quan khai cuộc của {{username}}",
+    "gamesAnalysed": "Đã phân tích {{count}} ván gần đây",
+    "heuristic": "Đây là gợi ý học dựa trên tần suất, kết quả và độ sâu mà danh mục nhận diện được; không phải phán quyết của engine về từng nước đi.",
+    "startHere": "Điểm bắt đầu đề xuất",
+    "recommendation": "Khi cầm {{side}}, khai cuộc này xuất hiện trong {{games}} ván, đạt {{score}}, và chuỗi khai cuộc được nhận diện trung bình kéo dài khoảng {{moves}} nước. Học nó có khả năng giúp ích cho nhiều ván của bạn.",
+    "train": "Luyện khai cuộc này",
+    "whiteRepertoire": "Repertoire quan sát được khi cầm Trắng",
+    "blackRepertoire": "Repertoire quan sát được khi cầm Đen",
+    "noData": "Chưa có đủ ván được nhận diện với màu quân này."
+  }
+}
