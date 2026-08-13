@@ -1,0 +1,583 @@
+.focusSection,
+.focusSection * {
+    box-sizing: border-box;
+}
+
+.focusSection {
+    width: 100%;
+    min-width: 0;
+    min-height: calc(100svh - 110px);
+    padding: 0 0 12px;
+    color: var(--text-primary, #f2f5fa);
+}
+
+.topBar {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    min-height: 58px;
+    margin-bottom: 8px;
+    padding: 8px 10px;
+    border: 1px solid #24364b;
+    border-radius: 12px;
+    background: #0d1825;
+}
+
+.backButton {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 1px solid #2e4661;
+    border-radius: 9px;
+    background: #111f2f;
+    color: #86bdff;
+    font: inherit;
+    font-size: 1.15rem;
+    cursor: pointer;
+}
+
+.titleBlock {
+    min-width: 0;
+}
+
+.titleBlock > span {
+    display: block;
+    margin-bottom: 2px;
+    color: #6fb1ff;
+    font-size: .7rem;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.titleBlock strong {
+    display: block;
+    overflow: hidden;
+    font-size: 1rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.titleBlock small {
+    display: block;
+    overflow: hidden;
+    margin-top: 2px;
+    color: #8292a6;
+    font-size: .72rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.topActions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.sidePicker {
+    display: flex;
+    gap: 5px;
+}
+
+.sideButton,
+.sideActive {
+    min-height: 34px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font: inherit;
+    font-size: .78rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.sideButton {
+    border: 1px solid #30445d;
+    background: transparent;
+    color: #9caabd;
+}
+
+.sideActive {
+    border: 1px solid #448ddd;
+    background: #173a63;
+    color: #f4f8ff;
+}
+
+.progressChip {
+    min-width: 92px;
+    padding: 6px 9px;
+    border: 1px solid #2b435e;
+    border-radius: 9px;
+    background: #101f30;
+    text-align: center;
+}
+
+.progressChip strong,
+.progressChip span {
+    display: block;
+}
+
+.progressChip strong {
+    font-size: .82rem;
+}
+
+.progressChip span {
+    margin-top: 1px;
+    color: #8093a9;
+    font-size: .68rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: minmax(410px, 680px) minmax(300px, 1fr);
+    gap: 14px;
+    align-items: start;
+    min-width: 0;
+}
+
+.boardColumn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.boardWrap {
+    width: min(100%, 660px, calc(100svh - 228px));
+    min-width: 0;
+    aspect-ratio: 1;
+}
+
+.controlBar {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 8px;
+    align-items: center;
+    width: min(100%, 660px, calc(100svh - 228px));
+    min-height: 44px;
+}
+
+.controlBar button,
+.primaryButton,
+.secondaryButton {
+    min-height: 40px;
+    padding: 8px 12px;
+    border-radius: 9px;
+    font: inherit;
+    cursor: pointer;
+}
+
+.controlBar button,
+.secondaryButton {
+    border: 1px solid #2c425c;
+    background: #101d2b;
+    color: #c4cfdd;
+}
+
+.primaryButton {
+    border: 1px solid #3f8fe9;
+    background: #287bd6;
+    color: white;
+    font-weight: 800;
+}
+
+.controlBar button:disabled,
+.primaryButton:disabled,
+.secondaryButton:disabled {
+    opacity: .43;
+    cursor: default;
+}
+
+.controlStatus {
+    min-width: 0;
+    text-align: center;
+}
+
+.controlStatus strong,
+.controlStatus span {
+    display: block;
+}
+
+.controlStatus strong {
+    font-size: .84rem;
+}
+
+.controlStatus span {
+    overflow: hidden;
+    margin-top: 2px;
+    color: #8394a8;
+    font-size: .72rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.panel {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+    max-height: calc(100svh - 150px);
+    overflow: auto;
+    padding-right: 2px;
+    scrollbar-width: thin;
+}
+
+.panelCard,
+.coachCard,
+.completionCard,
+.repetitionCard {
+    border: 1px solid #26384e;
+    border-radius: 11px;
+    background: #0f1a28;
+}
+
+.coachCard {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+}
+
+.coachPortrait {
+    width: 80px !important;
+    height: 80px !important;
+}
+
+.coachBubble {
+    min-width: 0;
+}
+
+.coachBubble strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: .84rem;
+}
+
+.coachBubble p {
+    margin: 0;
+    color: #aab8c8;
+    font-size: .82rem;
+    line-height: 1.4;
+}
+
+.panelCard,
+.repetitionCard,
+.completionCard {
+    padding: 11px 12px;
+}
+
+.panelCard > span,
+.repetitionCard > span,
+.completionCard > span {
+    display: block;
+    color: #67adff;
+    font-size: .69rem;
+    font-weight: 800;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+}
+
+.panelCard > strong,
+.repetitionCard > strong,
+.completionCard > strong {
+    display: block;
+    margin-top: 5px;
+    font-size: .95rem;
+}
+
+.panelCard p,
+.repetitionCard p,
+.completionCard p {
+    margin: 5px 0 0;
+    color: #9eacbd;
+    font-size: .79rem;
+    line-height: 1.45;
+}
+
+.moveList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 9px;
+}
+
+.move,
+.moveActive {
+    display: inline-flex;
+    gap: 4px;
+    padding: 5px 7px;
+    border-radius: 7px;
+    font: inherit;
+    font-size: .75rem;
+    cursor: pointer;
+}
+
+.move {
+    border: 1px solid #263a52;
+    background: #0a1521;
+    color: #bdc8d6;
+}
+
+.moveActive {
+    border: 1px solid #438ddd;
+    background: #173c67;
+    color: white;
+}
+
+.move span,
+.moveActive span {
+    color: #748ca7;
+    font-size: .67rem;
+}
+
+.repetitionDots {
+    display: flex;
+    gap: 6px;
+    margin-top: 9px;
+}
+
+.repetitionDots i {
+    width: 10px;
+    height: 10px;
+    border: 1px solid #3d5877;
+    border-radius: 50%;
+    background: #0b1521;
+}
+
+.repetitionDots i[data-done="true"] {
+    border-color: #5fa9ff;
+    background: #3e91ef;
+}
+
+.completionCard {
+    border-color: #315e49;
+    background: #10261e;
+}
+
+.completionActions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+    margin-top: 10px;
+}
+
+.completionActions button {
+    width: 100%;
+}
+
+.autoSaved {
+    display: flex;
+    gap: 7px;
+    align-items: flex-start;
+    margin-top: 9px;
+    padding-top: 8px;
+    border-top: 1px solid #254337;
+    color: #8fd7ac;
+    font-size: .75rem;
+    line-height: 1.35;
+}
+
+.categoryTabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin: 0 0 16px;
+}
+
+.categoryButton,
+.categoryActive {
+    padding: 8px 11px;
+    border-radius: 999px;
+    font: inherit;
+    font-size: .82rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.categoryButton {
+    border: 1px solid #2d425b;
+    background: #0d1825;
+    color: #9dabbc;
+}
+
+.categoryActive {
+    border: 1px solid #438bdc;
+    background: #17395f;
+    color: #f2f7ff;
+}
+
+.modulePath {
+    margin-top: 14px;
+    padding: 15px;
+    border: 1px solid #26384d;
+    border-radius: 13px;
+    background: #0d1723;
+}
+
+.modulePathHeader {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: center;
+    margin-bottom: 11px;
+}
+
+.modulePathHeader strong {
+    font-size: .92rem;
+}
+
+.modulePathHeader span {
+    color: #8ea0b4;
+    font-size: .79rem;
+}
+
+.moduleProgressTrack {
+    height: 7px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #19283a;
+}
+
+.moduleProgressFill {
+    height: 100%;
+    border-radius: inherit;
+    background: #3d8fe9;
+}
+
+.lessonPath {
+    display: grid;
+    gap: 8px;
+}
+
+.lessonNode,
+.lessonNodeRecommended {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr) auto;
+    gap: 11px;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    padding: 11px 12px;
+    border-radius: 11px;
+    color: #edf3fb;
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+}
+
+.lessonNode {
+    border: 1px solid #22334a;
+    background: #0a141f;
+}
+
+.lessonNodeRecommended {
+    border: 1px solid #448ddd;
+    background: #112b49;
+    box-shadow: 0 0 0 1px rgba(68, 141, 221, .1) inset;
+}
+
+.lessonBadge {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid #355475;
+    border-radius: 50%;
+    background: #142941;
+    color: #88c0ff;
+    font-size: .78rem;
+    font-weight: 800;
+}
+
+.lessonCopy {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+}
+
+.lessonCopy strong {
+    overflow: hidden;
+    font-size: .88rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lessonCopy small {
+    overflow: hidden;
+    color: #8191a4;
+    font-size: .73rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lessonStatus {
+    color: #78b7ff;
+    font-size: .73rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+@media (max-width: 1050px) {
+    .grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .panel {
+        max-height: none;
+        overflow: visible;
+    }
+}
+
+@media (max-width: 720px) {
+    .focusSection {
+        min-height: 0;
+    }
+
+    .topBar {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .topActions {
+        grid-column: 1 / -1;
+        justify-content: space-between;
+    }
+
+    .boardWrap,
+    .controlBar {
+        width: min(100%, calc(100svh - 250px));
+    }
+
+    .lessonNode,
+    .lessonNodeRecommended {
+        grid-template-columns: 38px minmax(0, 1fr);
+    }
+
+    .lessonStatus {
+        grid-column: 2;
+        justify-self: start;
+    }
+}
+
+@media (max-width: 520px) {
+    .boardWrap,
+    .controlBar {
+        width: 100%;
+    }
+
+    .controlBar {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .controlStatus {
+        grid-column: 1 / -1;
+        grid-row: 1;
+    }
+
+    .completionActions {
+        grid-template-columns: 1fr;
+    }
+}
