@@ -45,17 +45,14 @@ function OpeningLearningV3({ mode = "learn", onAddToRepertoire, onFocusChange }:
     function sideFor(item: OpeningCatalogueEntry, fallback?: RepertoireSide) {
         return progress[createLessonId(item.eco, item.name, item.pgn)]?.side || fallback;
     }
-
     function openFamily(name: string, side?: RepertoireSide) {
         setFamilyName(name); setPreferredSide(side); setOpening(undefined); setReviewQueue([]); setReviewIndex(0); setBlindPractice(false); setQuery("");
         window.scrollTo({ top: 0, behavior: "auto" });
     }
-
     function openLine(item: OpeningCatalogueEntry, side?: RepertoireSide, startPractice = false, blind = false) {
         setFamilyName(item.family); setPreferredSide(sideFor(item, side)); setPractice(startPractice); setBlindPractice(blind); setReviewQueue([]); setReviewIndex(0); setOpening(item);
         window.scrollTo({ top: 0, behavior: "auto" });
     }
-
     function startReview(items: OpeningCatalogueEntry[]) {
         if (!items.length) return;
         const queue = [...items].sort(() => Math.random() - .5);
@@ -63,7 +60,6 @@ function OpeningLearningV3({ mode = "learn", onAddToRepertoire, onFocusChange }:
         setReviewQueue(queue); setReviewIndex(0); setFamilyName(first.family); setPreferredSide(sideFor(first)); setPractice(true); setBlindPractice(true); setOpening(first);
         window.scrollTo({ top: 0, behavior: "auto" });
     }
-
     function advanceReview() {
         const nextIndex = reviewIndex + 1;
         const next = reviewQueue[nextIndex];
@@ -71,7 +67,6 @@ function OpeningLearningV3({ mode = "learn", onAddToRepertoire, onFocusChange }:
         setReviewIndex(nextIndex); setFamilyName(next.family); setPreferredSide(sideFor(next)); setPractice(true); setBlindPractice(true); setOpening(next);
         window.scrollTo({ top: 0, behavior: "auto" });
     }
-
     function closeLesson() {
         setOpening(undefined); setPractice(false); setBlindPractice(false); setReviewQueue([]); setReviewIndex(0);
     }
@@ -83,7 +78,7 @@ function OpeningLearningV3({ mode = "learn", onAddToRepertoire, onFocusChange }:
         return <CourseLessonV3 key={`${createLessonId(opening.eco, opening.name, opening.pgn)}|${practice}|${blindPractice}|${reviewIndex}`} opening={opening} lineNumber={reviewing ? reviewIndex + 1 : Math.max(1, selectedIndex + 1)} lineTotal={reviewing ? reviewQueue.length : Math.max(1, lines.length)} progress={progress} setProgress={setProgress} preferredSide={preferredSide} startInPractice={practice} blindPractice={blindPractice} onLearned={onAddToRepertoire} onBack={closeLesson} onNext={hasReviewNext ? advanceReview : !blindPractice && next ? () => openLine(next, preferredSide) : undefined}/>;
     }
     if (family) return <CourseFamilyV3 name={family.name} lines={lines} progress={progress} preferredSide={preferredSide} onBack={() => { setFamilyName(undefined); setPreferredSide(undefined); }} onOpen={openLine} onReviewFamily={startReview}/>;
-    if (mode == "review") return <CourseReviewV3 progress={progress} onOpen={(item, side, startPractice) => openLine(item, side, startPractice, true)}/>;
+    if (mode == "review") return <CourseReviewV3 progress={progress} onOpen={(item, side, startPractice) => openLine(item, side, startPractice, true)} onReviewAll={startReview}/>;
     return <CourseHomeV3 catalogue={catalogue} families={families} progress={progress} loading={loading} query={query} onQuery={setQuery} onFamily={openFamily}/>;
 }
 export default OpeningLearningV3;
