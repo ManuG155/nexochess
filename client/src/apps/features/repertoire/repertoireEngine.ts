@@ -1,8 +1,11 @@
 import { Chess, Move } from "chess.js";
 
-import Engine, { EngineLine } from "@analysis/lib/engine";
+import Engine from "@analysis/lib/engine";
 import EngineVersion from "shared/constants/EngineVersion";
 import { Classification } from "shared/constants/Classification";
+import { EngineLine } from "shared/types/game/position/EngineLine";
+
+import { RepertoireStore, newId, now, positionKey } from "./repertoireStore";
 
 export interface RepertoireEngineResult {
     fen: string;
@@ -20,49 +23,31 @@ export interface RepertoireMoveQuality {
 }
 
 let engine: Engine | undefined;
-let readyPromise: Promise<void> | undefined;
-let readyResolve: (() => void) | undefined;
 let serial = Promise.resolve();
 
 function ensureEngine() {
-    if (engine) return { engine, ready: readyPromise || Promise.resolve() };
-    readyPromise = new Promise<void>(resolve => { readyResolve = resolve; });
-    engine = new Engine({
-        engine: EngineVersion.STOCKFISH_17_LITE,
-        threads: 1,
-        hash: 32,
-        depth: 15,
-        searchTime: 950,
-        lines: 1,
-        useNNUE: true
-    }, () => {
-        readyResolve?.();
-        readyResolve = undefined;
-    });
-    return { engine, ready: readyPromise };
+    if (!engine) {
+        engine = new Engine(EngineVersion.STOCKFISH_17_LITE)
+            .setLineCount(1)
+            .setThreadCount(1);
+    }
+    return engine;
+}
+
+function bestFinishedLine(lines: EngineLine[]) {
+    return [...lines]
+        .filter(line => line.index == 1 && line.moves.length > 0)
+        .sort((a, b) => b.depth - a.depth)[0];
 }
 
 function evaluate(fen: string) {
     const run = async () => {
         const instance = ensureEngine();
-        await instance.ready;
-        return new Promise<EngineLine>((resolve, reject) => {
-            let settled = false;
-            const timeout = window.setTimeout(() => {
-                if (settled) return;
-                settled = true;
-                instance.engine.stopEvaluation();
-                reject(new Error("engine-timeout"));
-            }, 6500);
-            instance.engine.evaluatePosition(fen, () => undefined, lines => {
-                if (settled) return;
-                settled = true;
-                window.clearTimeout(timeout);
-                const line = lines[0];
-                if (!line) reject(new Error("engine-no-line"));
-                else resolve(line);
-            });
-        });
+        instance.setPosition(fen);
+        const lines = await instance.evaluate({ depth: 15, timeLimit: 950 });
+        const line = bestFinishedLine(lines);
+        if (!line) throw new Error("engine-no-line");
+        return line;
     };
     const result = serial.then(run, run);
     serial = result.then(() => undefined, () => undefined);
@@ -112,6 +97,69 @@ export function appendPvToPgn(prefixMoves: Move[], fen: string, pv: string[], ma
     return board.pgn();
 }
 
+export function appendPvToRepertoire(
+    previous: RepertoireStore,
+    repertoireId: string,
+    startNodeId: string,
+    pv: string[],
+    maximum = 8
+) {
+    const repertoire = previous.repertoires[repertoireId];
+    const start = previous.nodes[startNodeId];
+    if (!repertoire || !start) return { store: previous, lastNodeId: startNodeId };
+
+    const nodes = { ...previous.nodes };
+    let current = nodes[startNodeId];
+    for (const uci of pv.slice(0, maximum)) {
+        const board = new Chess(current.fen);
+        const move = uciMove(board, uci);
+        if (!move) break;
+        const normalizedUci = `${move.from}${move.to}${move.promotion || ""}`;
+        const existing = current.childIds.map(id => nodes[id]).find(node => node?.moveUci == normalizedUci);
+        if (existing) {
+            current = existing;
+            continue;
+        }
+        const timestamp = now();
+        const childId = newId();
+        nodes[current.id] = {
+            ...current,
+            childIds: [...current.childIds, childId],
+            preferredChildId: current.preferredChildId || childId,
+            updatedAt: timestamp
+        };
+        const child = {
+            id: childId,
+            repertoireId,
+            parentId: current.id,
+            childIds: [],
+            fen: board.fen(),
+            positionKey: positionKey(board.fen()),
+            moveUci: normalizedUci,
+            moveSan: move.san,
+            ply: current.ply + 1,
+            notes: "",
+            preferredChildId: null,
+            createdAt: timestamp,
+            updatedAt: timestamp
+        };
+        nodes[childId] = child;
+        current = child;
+    }
+    const timestamp = now();
+    return {
+        store: {
+            version: 1 as const,
+            repertoires: {
+                ...previous.repertoires,
+                [repertoireId]: { ...repertoire, updatedAt: timestamp }
+            },
+            nodes
+        },
+        lastNodeId: current.id
+    };
+}
+
 function comparableScore(evaluation: EngineLine["evaluation"]) {
     if (evaluation.type == "mate") {
         if (evaluation.value == 0) return 0;
@@ -125,7 +173,7 @@ function lossForMover(fen: string, best: EngineLine["evaluation"], candidate: En
     const mover = new Chess(fen).turn();
     const bestScore = comparableScore(best);
     const candidateScore = comparableScore(candidate);
-    return Math.max(0, mover == "w" ? candidateScore - bestScore : bestScore - candidateScore);
+    return Math.max(0, mover == "w" ? bestScore - candidateScore : candidateScore - bestScore);
 }
 
 function classifyLoss(lossCp: number, isBest: boolean) {
@@ -139,15 +187,14 @@ function classifyLoss(lossCp: number, isBest: boolean) {
 
 export async function analyseRepertoirePosition(fen: string): Promise<RepertoireEngineResult> {
     const line = await evaluate(fen);
-    const pvUci = line.pv.slice(0, 8);
-    const pvSan = pvToSan(fen, pvUci, 8);
-    if (!pvUci[0] || !pvSan[0]) throw new Error("engine-no-line");
+    const moves = line.moves.slice(0, 8);
+    if (!moves[0]) throw new Error("engine-no-line");
     return {
         fen,
-        bestUci: pvUci[0],
-        bestSan: pvSan[0],
-        pvUci,
-        pvSan,
+        bestUci: moves[0].uci,
+        bestSan: moves[0].san,
+        pvUci: moves.map(move => move.uci),
+        pvSan: moves.map(move => move.san),
         evaluation: line.evaluation
     };
 }
