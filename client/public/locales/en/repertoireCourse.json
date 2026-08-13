@@ -1,0 +1,59 @@
+{
+  "categories": {
+    "label": "Opening course categories",
+    "e4": "Open games & 1.e4",
+    "d4": "1.d4 systems",
+    "vsE4": "Defences vs 1.e4",
+    "vsD4": "Defences vs 1.d4",
+    "flank": "Flank openings"
+  },
+  "path": {
+    "intro": "Treat this opening like a short learning path. Complete one line at a time; NexoChess keeps your progress and points you to the next useful step.",
+    "title": "Course path",
+    "progress": "{{completed}} / {{total}} lines",
+    "recommended": "Continue"
+  },
+  "practice": {
+    "autoRule": "When you learn a line, NexoChess adds it to your personal repertoire automatically.",
+    "againCoach": "Good. Play it once more from the start so the sequence sticks.",
+    "backModule": "Back to module",
+    "studyPhase": "Study",
+    "practicePhase": "Memory",
+    "completePhase": "Complete",
+    "studyHint": "Follow the line once, then reproduce it from memory.",
+    "start": "Start memory practice",
+    "repetition": "Repetition {{current}} of {{total}}",
+    "memoryBlock": "Immediate reinforcement",
+    "extra": "Because you needed a hint or missed a move, this lesson gets one extra repetition.",
+    "repeatRule": "A new line is repeated twice immediately before it is considered learned.",
+    "lessonComplete": "Lesson complete",
+    "completeTitle": "Line learned",
+    "completeBody": "You have reinforced it now. It will come back later only when the spaced-repetition schedule says reviewing it is useful.",
+    "autoSaved": "Added automatically to your personal repertoire.",
+    "nextLine": "Next line",
+    "moduleDone": "Finish module",
+    "srsExplainer": "You do not need to replay every learned line whenever you open Repertoire. Only reviews that are due return here."
+  },
+  "profile": {
+    "eyebrow": "Personal starting point",
+    "title": "Build a course around the openings you actually play",
+    "intro": "Optionally enter a public Chess.com or Lichess username. NexoChess looks at recent games, estimates which opening families appear most often and suggests where to start studying.",
+    "optional": "Optional",
+    "platform": "Platform",
+    "username": "Username",
+    "usernamePlaceholder": "Your public username",
+    "games": "Recent games",
+    "loading": "Analysing…",
+    "analyse": "Analyse my openings",
+    "error": "NexoChess could not read recent public games for that account right now. Check the username or try the other platform later.",
+    "resultTitle": "Opening snapshot for {{username}}",
+    "gamesAnalysed": "{{count}} recent games analysed",
+    "heuristic": "This is an opening-study heuristic based on frequency, results and how far the catalogue recognises the line; it is not an engine verdict on individual moves.",
+    "startHere": "Suggested starting point",
+    "recommendation": "With {{side}}, this appeared in {{games}} games, scored {{score}}, and the recognised opening sequence averaged about {{moves}} moves. Studying it is likely to affect many of your games.",
+    "train": "Train this opening",
+    "whiteRepertoire": "Observed repertoire as White",
+    "blackRepertoire": "Observed repertoire as Black",
+    "noData": "Not enough recognised games on this side yet."
+  }
+}
