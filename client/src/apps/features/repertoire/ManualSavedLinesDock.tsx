@@ -27,7 +27,12 @@ export default function ManualSavedLinesDock({
 }: Props) {
     const { t } = useTranslation("repertoireEditor");
     const repertoire = store.repertoires[target.repertoireId];
-    const currentNode = store.nodes[target.nodeId];
+    const currentNodeId = target.nodeId
+        || repertoire?.baseNodeId
+        || repertoire?.rootNodeId;
+    const currentNode = currentNodeId
+        ? store.nodes[currentNodeId]
+        : undefined;
     const baseNodeId = repertoire?.baseNodeId && store.nodes[repertoire.baseNodeId]
         ? repertoire.baseNodeId
         : repertoire?.rootNodeId;
@@ -36,23 +41,27 @@ export default function ManualSavedLinesDock({
             Boolean(store.nodes[line.nodeId]) && Boolean(store.nodes[line.baseNodeId])
         ))
         : [], [repertoire, store.nodes]);
-    const existing = lines.find(line => line.nodeId == target.nodeId);
+    const existing = currentNodeId
+        ? lines.find(line => line.nodeId == currentNodeId)
+        : undefined;
     const [dialogOpen, setDialogOpen] = useState(false);
     const suggested = repertoire && currentNode && baseNodeId
         ? existing?.name || suggestSavedLineName(
             store,
             repertoire,
-            target.nodeId,
+            currentNode.id,
             baseNodeId
         )
         : "";
     const [name, setName] = useState("");
     const saveEnabled = Boolean(
         repertoire && currentNode && baseNodeId
-        && canSaveLine(store, target.nodeId, baseNodeId)
+        && canSaveLine(store, currentNode.id, baseNodeId)
     );
 
     if (!repertoire || !currentNode || !baseNodeId) return null;
+    const validBaseNodeId = baseNodeId;
+    const validNodeId = currentNode.id;
 
     function openDialog() {
         if (!saveEnabled) return;
@@ -66,8 +75,8 @@ export default function ManualSavedLinesDock({
         if (!clean) return;
         setStore(previous => upsertSavedLine(previous, repertoire.id, {
             name: clean,
-            nodeId: target.nodeId,
-            baseNodeId
+            nodeId: validNodeId,
+            baseNodeId: validBaseNodeId
         }));
         setDialogOpen(false);
     }
