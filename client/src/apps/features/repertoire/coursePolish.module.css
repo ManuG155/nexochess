@@ -1,49 +1,50 @@
 .focusSection {
     width: 100%;
-    font-size: 1.04rem;
+    font-size: 1.08rem;
 }
 
 .topBar {
-    min-height: 72px;
-    margin-bottom: 12px;
-    padding: 11px 14px;
+    min-height: 70px;
+    margin-bottom: 10px;
+    padding: 10px 14px;
 }
 
-.titleBlock > span { font-size: .82rem; }
-.titleBlock > strong { font-size: 1.2rem; }
-.titleBlock > small { margin-top: 4px; font-size: .88rem; }
+.titleBlock > span { font-size: .86rem; }
+.titleBlock > strong { font-size: 1.24rem; }
+.titleBlock > small { margin-top: 4px; font-size: .92rem; }
 
 .grid {
-    grid-template-columns: minmax(600px, 820px) minmax(360px, 520px);
+    grid-template-columns: minmax(620px, 840px) minmax(380px, 540px);
     justify-content: center;
-    gap: clamp(18px, 2vw, 30px);
+    align-items: start;
+    gap: clamp(20px, 2vw, 32px);
 }
 
 .boardWrap,
 .controlBar {
-    width: min(100%, 800px, calc(100svh - 245px));
+    width: min(100%, 820px, calc(100svh - 190px));
 }
 
 .controlBar { min-height: 54px; }
-.controlBar button { min-height: 46px; padding: 10px 15px; font-size: 1rem; }
-.controlStatus strong { font-size: 1rem; }
-.controlStatus span { font-size: .9rem; }
+.controlBar button { min-height: 46px; padding: 10px 15px; font-size: 1.02rem; }
+.controlStatus strong { font-size: 1.02rem; }
+.controlStatus span { font-size: .94rem; }
 
 .panel {
     gap: 11px;
-    max-height: calc(100svh - 154px);
+    max-height: calc(100svh - 145px);
     padding-right: 5px;
 }
 
 .coachCard {
-    grid-template-columns: 102px minmax(0, 1fr);
+    grid-template-columns: 104px minmax(0, 1fr);
     gap: 14px;
     padding: 14px;
 }
 
 .coachPortrait {
-    width: 94px !important;
-    height: 94px !important;
+    width: 96px !important;
+    height: 96px !important;
 }
 
 .coachHeader {
@@ -54,55 +55,55 @@
     margin-bottom: 7px;
 }
 
-.coachHeader strong { font-size: 1.02rem; }
+.coachHeader strong { font-size: 1.05rem; }
 
 .coachPicker {
-    min-width: 118px;
-    max-width: 170px;
-    padding: 7px 28px 7px 9px;
+    min-width: 122px;
+    max-width: 180px;
+    padding: 8px 30px 8px 10px;
     border: 1px solid #35506d;
     border-radius: 8px;
     background: #0a1623;
     color: #d9e5f3;
     font: inherit;
-    font-size: .9rem;
+    font-size: .94rem;
     cursor: pointer;
 }
 
-.coachBubble p { font-size: .96rem; line-height: 1.5; }
+.coachBubble p { font-size: 1rem; line-height: 1.52; }
 .panelCard,
 .repetitionCard,
 .completionCard { padding: 14px 15px; }
 .panelCard > span,
 .repetitionCard > span,
-.completionCard > span { font-size: .8rem; }
+.completionCard > span { font-size: .84rem; }
 .panelCard > strong,
 .repetitionCard > strong,
-.completionCard > strong { margin-top: 6px; font-size: 1.08rem; }
+.completionCard > strong { margin-top: 6px; font-size: 1.1rem; }
 .panelCard p,
 .repetitionCard p,
-.completionCard p { margin-top: 7px; font-size: .94rem; line-height: 1.52; }
-.moveList button { padding: 7px 9px; font-size: .9rem; }
+.completionCard p { margin-top: 7px; font-size: .98rem; line-height: 1.54; }
+.moveList button { padding: 8px 10px; font-size: .94rem; }
 
 @media (max-width: 1250px) {
-    .grid { grid-template-columns: minmax(520px, 720px) minmax(330px, 1fr); }
+    .grid { grid-template-columns: minmax(540px, 740px) minmax(340px, 1fr); }
     .boardWrap,
-    .controlBar { width: min(100%, 720px, calc(100svh - 245px)); }
+    .controlBar { width: min(100%, 740px, calc(100svh - 190px)); }
 }
 
 @media (max-width: 1050px) {
     .grid { grid-template-columns: minmax(0, 1fr); }
     .boardWrap,
-    .controlBar { width: min(100%, 760px); }
+    .controlBar { width: min(100%, 780px); }
     .panel { max-height: none; overflow: visible; }
 }
 
 @media (max-width: 720px) {
     .topBar { min-height: 0; }
     .boardWrap,
-    .controlBar { width: min(100%, calc(100svh - 250px)); }
-    .coachCard { grid-template-columns: 82px minmax(0, 1fr); }
-    .coachPortrait { width: 76px !important; height: 76px !important; }
+    .controlBar { width: min(100%, calc(100svh - 205px)); }
+    .coachCard { grid-template-columns: 84px minmax(0, 1fr); }
+    .coachPortrait { width: 78px !important; height: 78px !important; }
 }
 
 @media (max-width: 520px) {
