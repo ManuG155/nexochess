@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import PlayerOpeningProfile from "./PlayerOpeningProfile";
-import { OpeningCatalogueEntry, OpeningCategory, buildCourseLessons, featuredFamiliesForCategory } from "./openingCatalogue";
+import { OpeningCatalogueEntry, OpeningCategory, featuredFamiliesForCategory } from "./openingCatalogue";
+import { countCourseLessonsFast } from "./courseLessonIndex";
 import { localizeOpeningName } from "./openingLocalization";
 import { CourseProgressStore, findLessonProgress, getLearnedCount, getMasteredCount } from "./courseProgress";
 import { RepertoireSide } from "./courseV3Model";
@@ -19,12 +20,6 @@ const FILTER_COPY: Record<string, { filter: string; all: string }> = {
 function popularity(name: string) {
     const index = POPULAR.findIndex(item => name.toLocaleLowerCase().includes(item.toLocaleLowerCase()));
     return index < 0 ? 999 : index;
-}
-
-function familyLessons(lines: OpeningCatalogueEntry[]) {
-    const standard = lines.filter(item => item.eco != "USR");
-    const custom = lines.filter(item => item.eco == "USR");
-    return [...buildCourseLessons(standard), ...custom];
 }
 
 function CourseHomeV3({ catalogue, families, progress, loading, query, onQuery, onFamily }: Props) {
@@ -68,7 +63,11 @@ function CourseHomeV3({ catalogue, families, progress, loading, query, onQuery, 
             </div>
         </div>
         <div className={styles.catalogueViewport}>
-            <div className={styles.familyGrid} data-repertoire-tour="family-grid">{visible.map(item => { const lessons = familyLessons(item.lines); const done = lessons.filter(line => findLessonProgress(progress, line)).length; return <button key={item.name} onClick={() => onFamily(item.name)}><span>{item.lines.find(line => line.eco != "USR")?.eco || item.lines[0]?.eco}</span><strong>{localizeOpeningName(item.name, language)}</strong><small>{t("learn.lessons", { count: lessons.length })}</small>{done > 0 && <em>{t("learn.progress", { completed: done, total: lessons.length })}</em>}</button>; })}</div>
+            <div className={styles.familyGrid} data-repertoire-tour="family-grid">{visible.map(item => {
+                const total = countCourseLessonsFast(item.lines);
+                const done = item.lines.reduce((count, line) => count + (findLessonProgress(progress, line) ? 1 : 0), 0);
+                return <button key={item.name} onClick={() => onFamily(item.name)}><span>{item.lines.find(line => line.eco != "USR")?.eco || item.lines[0]?.eco}</span><strong>{localizeOpeningName(item.name, language)}</strong><small>{t("learn.lessons", { count: total })}</small>{done > 0 && <em>{t("learn.progress", { completed: Math.min(done, total), total })}</em>}</button>;
+            })}</div>
         </div>
     </section>;
 }
