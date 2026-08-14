@@ -47,7 +47,7 @@ function CourseFamilyV3({ name, lines, progress, preferredSide, onBack, onOpen, 
         <div className={styles.pathCard}>
             <div className={styles.pathHead}><strong>{tc("path.title")}</strong><span>{percent}%</span></div>
             <div className={styles.pathTrack}><i style={{ width: `${percent}%` }}/></div>
-            <div className={styles.lessonList}>{lines.slice(0, limit).map((item, index) => {
+            <div className={styles.lessonList} data-repertoire-tour="lesson-list">{lines.slice(0, limit).map((item, index) => {
                 const learned = progress[createLessonId(item.eco, item.name, item.pgn)];
                 const display = item.eco == "USR"
                     ? item.name
