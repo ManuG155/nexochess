@@ -5,6 +5,7 @@ export interface OpeningCatalogueEntry {
     name: string;
     pgn: string;
     family: string;
+    depthCheckpoints?: number[];
 }
 
 export type OpeningCategory = "e4" | "d4" | "vsE4" | "vsD4" | "flank";
@@ -161,6 +162,30 @@ function lessonPriority(entry: OpeningCatalogueEntry) {
     return 2;
 }
 
+function branchCheckpoints(
+    mainLine: string[],
+    familyLines: OpeningCatalogueEntry[]
+) {
+    const histories = familyLines
+        .map(entry => pgnMoveKeys(entry.pgn))
+        .filter(history => history.length > 0);
+    const checkpoints: number[] = [];
+
+    for (let depth = 2; depth < mainLine.length; depth += 1) {
+        const prefix = mainLine.slice(0, depth);
+        const nextMoves = new Set(
+            histories
+                .filter(history => (
+                    history.length > depth && isMovePrefix(prefix, history)
+                ))
+                .map(history => history[depth])
+        );
+        if (nextMoves.size > 1) checkpoints.push(depth);
+    }
+
+    return checkpoints;
+}
+
 function extendLesson(
     representative: OpeningCatalogueEntry,
     familyLines: OpeningCatalogueEntry[]
@@ -168,21 +193,22 @@ function extendLesson(
     const prefix = pgnMoveKeys(representative.pgn);
     if (!prefix.length) return representative;
 
-    const deeper = familyLines
+    const candidates = familyLines
         .map(entry => ({ entry, moves: pgnMoveKeys(entry.pgn) }))
-        .filter(candidate => (
-            candidate.moves.length > prefix.length
-            && isMovePrefix(prefix, candidate.moves)
-        ))
+        .filter(candidate => isMovePrefix(prefix, candidate.moves))
         .sort((a, b) => (
             b.moves.length - a.moves.length
             || lessonPriority(a.entry) - lessonPriority(b.entry)
             || a.entry.name.localeCompare(b.entry.name)
-        ))[0];
+        ));
+    const deepest = candidates[0];
+    const mainLine = deepest?.moves || prefix;
 
-    return deeper
-        ? { ...representative, pgn: deeper.entry.pgn }
-        : representative;
+    return {
+        ...representative,
+        pgn: deepest?.entry.pgn || representative.pgn,
+        depthCheckpoints: branchCheckpoints(mainLine, familyLines)
+    };
 }
 
 export function buildCourseLessons(
