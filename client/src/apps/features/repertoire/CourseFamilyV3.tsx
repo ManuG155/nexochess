@@ -1,11 +1,18 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { OpeningCatalogueEntry } from "./openingCatalogue";
 import { localizeOpeningName } from "./openingLocalization";
-import { CourseProgressStore, createLessonId } from "./courseProgress";
+import { CourseProgressStore, findLessonProgress } from "./courseProgress";
 import { RepertoireSide } from "./courseV3Model";
+import {
+    fullMoveCount,
+    learnedDepth,
+    pgnPlyCount
+} from "./courseDepth";
+import { courseDepthCopy, formatDepthCopy } from "./courseDepthCopy";
 import * as styles from "./courseV3.module.css";
+import * as depthStyles from "./courseDepth.module.css";
 
 interface Props {
     name: string;
@@ -22,16 +29,46 @@ function CourseFamilyV3({ name, lines, progress, preferredSide, onBack, onOpen, 
     const { t: tc } = useTranslation("repertoireCourse");
     const [limit, setLimit] = useState(10);
     const language = i18n.resolvedLanguage || i18n.language || "en";
-    const learnedLines = lines.filter(item => progress[createLessonId(item.eco, item.name, item.pgn)]);
+    const depthCopy = courseDepthCopy(language);
+
+    const lineStates = useMemo(() => lines.map(item => {
+        const itemProgress = findLessonProgress(progress, item);
+        const availablePly = pgnPlyCount(item.pgn);
+        const learnedPly = learnedDepth(itemProgress, availablePly);
+        return {
+            item,
+            progress: itemProgress,
+            availablePly,
+            learnedPly,
+            complete: availablePly > 0 && learnedPly >= availablePly
+        };
+    }), [lines, progress]);
+
+    const learnedLines = lineStates
+        .filter(state => state.learnedPly > 0)
+        .map(state => state.item);
     const completed = learnedLines.length;
-    const firstUnlearned = lines.findIndex(item => !progress[createLessonId(item.eco, item.name, item.pgn)]);
-    const recommended = firstUnlearned < 0 ? -1 : firstUnlearned;
-    const percent = lines.length ? Math.round(completed / lines.length * 100) : 0;
+    const firstNew = lineStates.findIndex(state => state.learnedPly == 0);
+    const firstPartial = lineStates.findIndex(state => state.learnedPly > 0 && !state.complete);
+    const recommended = firstNew >= 0 ? firstNew : firstPartial;
+    const depthScore = lineStates.reduce((sum, state) => (
+        sum + (state.availablePly ? state.learnedPly / state.availablePly : 0)
+    ), 0);
+    const percent = lineStates.length
+        ? Math.round(depthScore / lineStates.length * 100)
+        : 0;
     const localizedFamily = localizeOpeningName(name, language);
 
     function studyNext() {
-        const item = firstUnlearned >= 0 ? lines[firstUnlearned] : lines[0];
-        if (item) onOpen(item, preferredSide);
+        const index = recommended >= 0 ? recommended : 0;
+        const state = lineStates[index];
+        if (!state) return;
+        onOpen(
+            state.item,
+            state.progress?.side || preferredSide,
+            Boolean(state.progress && state.complete),
+            Boolean(state.progress && state.complete)
+        );
     }
 
     return <section className={styles.browserShell}>
@@ -47,17 +84,30 @@ function CourseFamilyV3({ name, lines, progress, preferredSide, onBack, onOpen, 
         <div className={styles.pathCard}>
             <div className={styles.pathHead}><strong>{tc("path.title")}</strong><span>{percent}%</span></div>
             <div className={styles.pathTrack}><i style={{ width: `${percent}%` }}/></div>
-            <div className={styles.lessonList} data-repertoire-tour="lesson-list">{lines.slice(0, limit).map((item, index) => {
-                const learned = progress[createLessonId(item.eco, item.name, item.pgn)];
+            <div className={styles.lessonList} data-repertoire-tour="lesson-list">{lineStates.slice(0, limit).map((state, index) => {
+                const { item, progress: itemProgress, learnedPly, availablePly, complete } = state;
                 const display = item.eco == "USR"
                     ? item.name
                     : item.name == name
                         ? t("learn.fundamentals")
                         : localizeOpeningName(item.name, language);
-                return <button key={createLessonId(item.eco, item.name, item.pgn)} data-recommended={index == recommended} onClick={() => onOpen(item, learned?.side || preferredSide, Boolean(learned), Boolean(learned))}>
-                    <b>{learned ? "✓" : index + 1}</b>
-                    <div><strong>{display}</strong><small>{item.pgn}</small></div>
-                    <span>{learned ? t("modes.review") : index == recommended ? tc("path.recommended") : t("learn.study")}</span>
+                const learnedMoves = fullMoveCount(learnedPly);
+                const availableMoves = fullMoveCount(availablePly);
+                const depthLabel = formatDepthCopy(depthCopy.learned, {
+                    learned: learnedMoves,
+                    available: availableMoves
+                });
+                const action = complete
+                    ? t("modes.review")
+                    : itemProgress
+                        ? depthCopy.partial
+                        : index == recommended
+                            ? tc("path.recommended")
+                            : t("learn.study");
+                return <button key={`${item.eco}|${item.name}|${item.pgn}`} data-recommended={index == recommended} onClick={() => onOpen(item, itemProgress?.side || preferredSide, Boolean(itemProgress && complete), Boolean(itemProgress && complete))}>
+                    <b>{complete ? "✓" : itemProgress ? "↗" : index + 1}</b>
+                    <div><strong>{display}</strong><small>{item.pgn}</small><small className={depthStyles.depthBadge}>{depthLabel}</small></div>
+                    <span>{action}</span>
                 </button>;
             })}</div>
         </div>
