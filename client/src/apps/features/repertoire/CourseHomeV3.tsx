@@ -4,7 +4,7 @@ import PlayerOpeningProfile from "./PlayerOpeningProfile";
 import { OpeningCatalogueEntry, OpeningCategory, featuredFamiliesForCategory } from "./openingCatalogue";
 import { countCourseLessonsFast } from "./courseLessonIndex";
 import { localizeOpeningName } from "./openingLocalization";
-import { CourseProgressStore, findLessonProgress, getLearnedCount, getMasteredCount } from "./courseProgress";
+import { CourseProgressStore, getLearnedCount, getMasteredCount } from "./courseProgress";
 import { RepertoireSide } from "./courseV3Model";
 import * as styles from "./courseV3.module.css";
 
@@ -31,6 +31,9 @@ function CourseHomeV3({ catalogue, families, progress, loading, query, onQuery, 
     const copy = FILTER_COPY[language] || FILTER_COPY.en;
     const q = query.trim().toLocaleLowerCase();
     const learned = getLearnedCount(progress);
+    const learnedOpenings = useMemo(() => new Set(
+        Object.values(progress).map(item => `${item.eco}|${item.openingName}`)
+    ), [progress]);
     const sorted = useMemo(() => [...families].sort((a, b) => popularity(a.name) - popularity(b.name) || localizeOpeningName(a.name, language).localeCompare(localizeOpeningName(b.name, language))), [families, language]);
     const visible = useMemo(() => {
         let result = sorted;
@@ -65,8 +68,15 @@ function CourseHomeV3({ catalogue, families, progress, loading, query, onQuery, 
         <div className={styles.catalogueViewport}>
             <div className={styles.familyGrid} data-repertoire-tour="family-grid">{visible.map(item => {
                 const total = countCourseLessonsFast(item.lines);
-                const done = item.lines.reduce((count, line) => count + (findLessonProgress(progress, line) ? 1 : 0), 0);
-                return <button key={item.name} onClick={() => onFamily(item.name)}><span>{item.lines.find(line => line.eco != "USR")?.eco || item.lines[0]?.eco}</span><strong>{localizeOpeningName(item.name, language)}</strong><small>{t("learn.lessons", { count: total })}</small>{done > 0 && <em>{t("learn.progress", { completed: Math.min(done, total), total })}</em>}</button>;
+                const learnedNames = new Set<string>();
+                let learnedPersonal = 0;
+                for (const line of item.lines) {
+                    if (!learnedOpenings.has(`${line.eco}|${line.name}`)) continue;
+                    if (line.eco == "USR") learnedPersonal += 1;
+                    else learnedNames.add(line.name);
+                }
+                const done = Math.min(total, Math.min(28, learnedNames.size) + learnedPersonal);
+                return <button key={item.name} onClick={() => onFamily(item.name)}><span>{item.lines.find(line => line.eco != "USR")?.eco || item.lines[0]?.eco}</span><strong>{localizeOpeningName(item.name, language)}</strong><small>{t("learn.lessons", { count: total })}</small>{done > 0 && <em>{t("learn.progress", { completed: done, total })}</em>}</button>;
             })}</div>
         </div>
     </section>;
