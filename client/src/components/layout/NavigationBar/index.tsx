@@ -273,14 +273,14 @@ function NavigationBar() {
             className={styles.primaryNavigation}
             aria-label={t("navigationBar.primaryNavigation", { ns: "common" })}
         >
+            <NavigationItem icon="academy" url="/academy" current={onAcademyPage}>
+                {t("navigationBar.academy", { ns: "common" })}
+            </NavigationItem>
             <NavigationItem icon="analysis" url="/analysis" current={onAnalysisPage}>
                 {t("sidebar.analysis", { ns: "common" })}
             </NavigationItem>
             <NavigationItem icon="archive" url="/archive" current={onArchivePage}>
                 {t("sidebar.archive", { ns: "common" })}
-            </NavigationItem>
-            <NavigationItem icon="academy" url="/academy" current={onAcademyPage}>
-                {t("navigationBar.academy", { ns: "common" })}
             </NavigationItem>
             <NavigationItem icon="puzzle" url="/puzzles" current={onPuzzlesPage}>
                 {t("navigationBar.puzzles", { ns: "common" })}
