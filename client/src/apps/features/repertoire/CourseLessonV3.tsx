@@ -18,6 +18,7 @@ import RepertoireEngineInsight from "./RepertoireEngineInsight";
 import { appendPvToPgn } from "./repertoireEngine";
 import * as styles from "./courseV3.module.css";
 import * as balance from "./courseLessonBalance.module.css";
+import * as boardTools from "./repertoireBoardTools.module.css";
 
 type Mode = "study" | "practice" | "complete";
 
@@ -88,6 +89,7 @@ function sameMove(a: Move | undefined, b: Move) {
 function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress, preferredSide, startInPractice = false, blindPractice = false, customLineSuggestedName, onSaveCustomLine, onBack, onNext, onLearned }: Props) {
     const { t, i18n } = useTranslation("repertoire");
     const { t: tc } = useTranslation("repertoireCourse");
+    const { t: tAnalysis } = useTranslation("analysis");
     const copy = useRepertoireEnhancementCopy();
     const settings = useSettingsStore(state => state.settings);
     const setSettings = useSettingsStore(state => state.setSettings);
@@ -96,6 +98,7 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
     const lessonId = createLessonId(opening.eco, opening.name, opening.pgn);
     const old = progress[lessonId];
     const [side, setSide] = useState<RepertoireSide>(preferredSide || old?.side || inferSide(opening));
+    const [boardFlipped, setBoardFlipped] = useState(false);
     const [mode, setMode] = useState<Mode>(startInPractice ? "practice" : "study");
     const [studyIndex, setStudyIndex] = useState(0);
     const [practiceIndex, setPracticeIndex] = useState(0);
@@ -128,6 +131,10 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
     const squareStyles = getSquareStyles(activeFen, selected, settings.themes.board.legalMoveHints);
     const customActive = customStartIndex != null && customMoves.length > 0;
     const customPgn = customActive ? replay(studySequence).pgn() : "";
+    const boardOrientation: RepertoireSide = boardFlipped
+        ? side == "white" ? "black" : "white"
+        : side;
+    const flipBoardLabel = tAnalysis("optionsToolbar.flipBoard");
 
     useEffect(() => () => {
         if (opponentTimer.current != undefined) window.clearTimeout(opponentTimer.current);
@@ -309,7 +316,7 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
             <button type="button" onClick={onBack}>←</button>
             <div><span>{opening.eco} · {localizedFamily}</span><h1>{localizedName}</h1>{!blindPractice && <p>{opening.pgn}</p>}</div>
             <div className={styles.headerActions}>
-                <div className={styles.sidePicker}>{(["white", "black"] as RepertoireSide[]).map(value => <button key={value} data-active={side == value} onClick={() => { setSide(value); if (mode != "study") resetPractice(); }}>{t(`side.${value}`)}</button>)}</div>
+                <div className={styles.sidePicker}>{(["white", "black"] as RepertoireSide[]).map(value => <button key={value} data-active={side == value} onClick={() => { setSide(value); setBoardFlipped(false); if (mode != "study") resetPractice(); }}>{t(`side.${value}`)}</button>)}</div>
                 <div className={styles.lessonCount}><strong>{mode == "study" ? tc("practice.studyPhase") : mode == "practice" ? tc("practice.practicePhase") : tc("practice.completePhase")}</strong><span>{lineNumber}/{lineTotal}</span></div>
             </div>
         </header>
@@ -340,7 +347,12 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
                 </div>
             </aside>}
             <div className={styles.lessonBoardColumn}>
-                <div className={styles.lessonBoardWrap} data-repertoire-tour="lesson-board"><Chessboard id="repertoire-course-board-v3" position={activeFen} boardOrientation={side} onPieceDrop={play} onPieceDragBegin={(_piece, source) => draggable && setSelected(source as Square)} onPieceDragEnd={() => setSelected(undefined)} onSquareClick={clickSquare} arePiecesDraggable={Boolean(draggable)} customPieces={pieces} customDarkSquareStyle={{ backgroundColor: settings.themes.board.darkSquareColour }} customLightSquareStyle={{ backgroundColor: settings.themes.board.lightSquareColour }} customSquareStyles={squareStyles} showBoardNotation={settings.themes.board.coordinates == "inside"} snapToCursor/></div>
+                <div className={`${styles.lessonBoardWrap} ${boardTools.boardContainer}`} data-repertoire-tour="lesson-board" data-board-orientation={boardOrientation}>
+                    <button type="button" className={boardTools.flipButton} onClick={() => setBoardFlipped(value => !value)} title={flipBoardLabel} aria-label={flipBoardLabel}>
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10l-2.5-2.5"/><path d="M17 17H7l2.5 2.5"/><path d="M19 9.5A7 7 0 0 1 17 17"/><path d="M5 14.5A7 7 0 0 1 7 7"/></svg>
+                    </button>
+                    <Chessboard id="repertoire-course-board-v3" position={activeFen} boardOrientation={boardOrientation} onPieceDrop={play} onPieceDragBegin={(_piece, source) => draggable && setSelected(source as Square)} onPieceDragEnd={() => setSelected(undefined)} onSquareClick={clickSquare} arePiecesDraggable={Boolean(draggable)} customPieces={pieces} customDarkSquareStyle={{ backgroundColor: settings.themes.board.darkSquareColour }} customLightSquareStyle={{ backgroundColor: settings.themes.board.lightSquareColour }} customSquareStyles={squareStyles} showBoardNotation={settings.themes.board.coordinates == "inside"} snapToCursor/>
+                </div>
                 {mode == "study" && <div className={styles.lessonControls}><span aria-hidden="true"/><div><strong>{customActive ? customLineSuggestedName || copy.saveLine : t("learn.step", { current: studyIndex, total: moves.length })}</strong><span>{customActive ? copy.linePreview.replace("{moves}", studySequence.map(move => move.san).join(" ")) : tc("practice.studyHint")}</span></div>{customActive ? <button onClick={() => resetExploration(customStartIndex || 0)}>{t("learn.referenceLine")}</button> : studyIndex >= moves.length ? <button data-primary onClick={resetPractice}>{tc("practice.start")}</button> : <span aria-hidden="true"/>}</div>}
                 {mode == "practice" && <div className={styles.lessonControls}><button onClick={() => { if (expected?.color == learner) { registerProblem(); setHint(true); } }} disabled={!expected || expected.color != learner}>{t("learn.hint")}</button><div><strong>{tc("practice.repetition", { current: repetition, total: requiredRuns })}</strong><span>{transitioning ? tc("practice.repeatRule") : hint && expected ? t("learn.hintMove", { move: expected.san }) : t("learn.practiceInstruction")}</span></div>{blindPractice ? <button onClick={onBack}>{tc("practice.backModule")}</button> : <button onClick={() => { setMode("study"); resetExploration(0); }}>{t("learn.reviewLine")}</button>}</div>}
                 {mode == "complete" && <div className={styles.lessonControls}><button onClick={onBack}>{tc("practice.backModule")}</button><div><strong>{tc("practice.completeTitle")}</strong><span>{tc("practice.autoSaved")}</span></div>{onNext ? <button data-primary onClick={onNext}>{tc("practice.nextLine")}</button> : <button data-primary onClick={onBack}>{tc("practice.moduleDone")}</button>}</div>}
