@@ -1,3 +1,5 @@
+import { isMovePrefix, pgnMoveKeys } from "./courseDepth";
+
 export interface OpeningCatalogueEntry {
     eco: string;
     name: string;
@@ -148,12 +150,7 @@ function deduplicate(entries: OpeningCatalogueEntry[]) {
 }
 
 function plyCount(pgn: string) {
-    return pgn
-        .replace(/\d+\.(\.\.)?/g, " ")
-        .trim()
-        .split(/\s+/)
-        .filter(Boolean)
-        .length;
+    return pgnMoveKeys(pgn).length;
 }
 
 function lessonPriority(entry: OpeningCatalogueEntry) {
@@ -162,6 +159,30 @@ function lessonPriority(entry: OpeningCatalogueEntry) {
         return 1;
     }
     return 2;
+}
+
+function extendLesson(
+    representative: OpeningCatalogueEntry,
+    familyLines: OpeningCatalogueEntry[]
+) {
+    const prefix = pgnMoveKeys(representative.pgn);
+    if (!prefix.length) return representative;
+
+    const deeper = familyLines
+        .map(entry => ({ entry, moves: pgnMoveKeys(entry.pgn) }))
+        .filter(candidate => (
+            candidate.moves.length > prefix.length
+            && isMovePrefix(prefix, candidate.moves)
+        ))
+        .sort((a, b) => (
+            b.moves.length - a.moves.length
+            || lessonPriority(a.entry) - lessonPriority(b.entry)
+            || a.entry.name.localeCompare(b.entry.name)
+        ))[0];
+
+    return deeper
+        ? { ...representative, pgn: deeper.entry.pgn }
+        : representative;
 }
 
 export function buildCourseLessons(
@@ -186,7 +207,14 @@ export function buildCourseLessons(
         return sorted[0];
     });
 
-    return representatives
+    const extended = representatives.map(representative => (
+        extendLesson(
+            representative,
+            lines.filter(line => line.family == representative.family)
+        )
+    ));
+
+    return extended
         .sort((a, b) => (
             lessonPriority(a) - lessonPriority(b)
             || plyCount(a.pgn) - plyCount(b.pgn)
