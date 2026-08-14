@@ -218,6 +218,7 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
             setCustomMoves(value => [...value, move]);
         }
         setSelected(undefined);
+        window.dispatchEvent(new CustomEvent("nexochess:repertoire-study-move"));
         return true;
     }
 
@@ -315,8 +316,8 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
         <div className={`${styles.lessonGrid} ${balance.balancedGrid}`}>
             {!blindPractice && <aside className={`${styles.saveRail} ${balance.leftRail}`}>
                 <div className={balance.leftRailStack}>
-                    <section className={`${styles.infoCard} ${balance.leftCard} ${balance.referenceCard}`}><span>{t("learn.referenceLine")}</span><div className={styles.referenceMoves}>{moves.map((move, i) => <button key={`${move.san}-${i}`} data-active={mode == "study" && customStartIndex == null && studyIndex == i + 1} onClick={() => mode == "study" && resetExploration(i + 1)}><small>{i % 2 == 0 ? `${Math.floor(i / 2) + 1}.` : "…"}</small>{move.san}</button>)}</div></section>
-                    {mode == "study" && onSaveCustomLine && <section className={`${styles.saveWorkspace} ${balance.saveWorkspace}`}>
+                    <section className={`${styles.infoCard} ${balance.leftCard} ${balance.referenceCard}`} data-repertoire-tour="reference-line"><span>{t("learn.referenceLine")}</span><div className={styles.referenceMoves}>{moves.map((move, i) => <button key={`${move.san}-${i}`} data-active={mode == "study" && customStartIndex == null && studyIndex == i + 1} onClick={() => mode == "study" && resetExploration(i + 1)}><small>{i % 2 == 0 ? `${Math.floor(i / 2) + 1}.` : "…"}</small>{move.san}</button>)}</div></section>
+                    {mode == "study" && onSaveCustomLine && <section className={`${styles.saveWorkspace} ${balance.saveWorkspace}`} data-repertoire-tour="save-line">
                         <div className={styles.saveWorkspaceHeader}>
                             <span>＋</span>
                             <div><strong>{copy.saveLine}</strong><p>{copy.savedLinesHelp}</p></div>
@@ -339,7 +340,7 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
                 </div>
             </aside>}
             <div className={styles.lessonBoardColumn}>
-                <div className={styles.lessonBoardWrap}><Chessboard id="repertoire-course-board-v3" position={activeFen} boardOrientation={side} onPieceDrop={play} onPieceDragBegin={(_piece, source) => draggable && setSelected(source as Square)} onPieceDragEnd={() => setSelected(undefined)} onSquareClick={clickSquare} arePiecesDraggable={Boolean(draggable)} customPieces={pieces} customDarkSquareStyle={{ backgroundColor: settings.themes.board.darkSquareColour }} customLightSquareStyle={{ backgroundColor: settings.themes.board.lightSquareColour }} customSquareStyles={squareStyles} showBoardNotation={settings.themes.board.coordinates == "inside"} snapToCursor/></div>
+                <div className={styles.lessonBoardWrap} data-repertoire-tour="lesson-board"><Chessboard id="repertoire-course-board-v3" position={activeFen} boardOrientation={side} onPieceDrop={play} onPieceDragBegin={(_piece, source) => draggable && setSelected(source as Square)} onPieceDragEnd={() => setSelected(undefined)} onSquareClick={clickSquare} arePiecesDraggable={Boolean(draggable)} customPieces={pieces} customDarkSquareStyle={{ backgroundColor: settings.themes.board.darkSquareColour }} customLightSquareStyle={{ backgroundColor: settings.themes.board.lightSquareColour }} customSquareStyles={squareStyles} showBoardNotation={settings.themes.board.coordinates == "inside"} snapToCursor/></div>
                 {mode == "study" && <div className={styles.lessonControls}><span aria-hidden="true"/><div><strong>{customActive ? customLineSuggestedName || copy.saveLine : t("learn.step", { current: studyIndex, total: moves.length })}</strong><span>{customActive ? copy.linePreview.replace("{moves}", studySequence.map(move => move.san).join(" ")) : tc("practice.studyHint")}</span></div>{customActive ? <button onClick={() => resetExploration(customStartIndex || 0)}>{t("learn.referenceLine")}</button> : studyIndex >= moves.length ? <button data-primary onClick={resetPractice}>{tc("practice.start")}</button> : <span aria-hidden="true"/>}</div>}
                 {mode == "practice" && <div className={styles.lessonControls}><button onClick={() => { if (expected?.color == learner) { registerProblem(); setHint(true); } }} disabled={!expected || expected.color != learner}>{t("learn.hint")}</button><div><strong>{tc("practice.repetition", { current: repetition, total: requiredRuns })}</strong><span>{transitioning ? tc("practice.repeatRule") : hint && expected ? t("learn.hintMove", { move: expected.san }) : t("learn.practiceInstruction")}</span></div>{blindPractice ? <button onClick={onBack}>{tc("practice.backModule")}</button> : <button onClick={() => { setMode("study"); resetExploration(0); }}>{t("learn.reviewLine")}</button>}</div>}
                 {mode == "complete" && <div className={styles.lessonControls}><button onClick={onBack}>{tc("practice.backModule")}</button><div><strong>{tc("practice.completeTitle")}</strong><span>{tc("practice.autoSaved")}</span></div>{onNext ? <button data-primary onClick={onNext}>{tc("practice.nextLine")}</button> : <button data-primary onClick={onBack}>{tc("practice.moduleDone")}</button>}</div>}
