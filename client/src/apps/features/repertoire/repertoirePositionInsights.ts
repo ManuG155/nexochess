@@ -77,6 +77,17 @@ function buildIndex(catalogue: OpeningCatalogueEntry[]) {
     return index;
 }
 
+function cleanInsight(occurrence: IndexedOccurrence): CataloguePositionInsight {
+    return {
+        eco: occurrence.eco,
+        family: occurrence.family,
+        name: occurrence.name,
+        nextSan: occurrence.nextSan,
+        nextUci: occurrence.nextUci,
+        continuationUci: occurrence.continuationUci
+    };
+}
+
 export function catalogueInsightsAtFen(
     fen: string,
     catalogue: OpeningCatalogueEntry[],
@@ -89,28 +100,35 @@ export function catalogueInsightsAtFen(
     const distinctMoves = new Set(occurrences.map(item => item.nextUci));
     if (distinctNames.size < 2 && distinctMoves.size < 2) return [];
 
-    const seen = new Set<string>();
-    const result: CataloguePositionInsight[] = [];
-    const ordered = [...occurrences].sort((a, b) => {
-        const moveFrequencyA = occurrences.filter(item => item.nextUci == a.nextUci).length;
-        const moveFrequencyB = occurrences.filter(item => item.nextUci == b.nextUci).length;
-        return moveFrequencyB - moveFrequencyA
-            || b.continuationUci.length - a.continuationUci.length
-            || a.name.localeCompare(b.name);
-    });
+    const frequency = new Map<string, number>();
+    for (const item of occurrences) frequency.set(item.nextUci, (frequency.get(item.nextUci) || 0) + 1);
+    const ordered = [...occurrences].sort((a, b) =>
+        (frequency.get(b.nextUci) || 0) - (frequency.get(a.nextUci) || 0)
+        || b.continuationUci.length - a.continuationUci.length
+        || a.name.localeCompare(b.name)
+    );
 
+    const result: CataloguePositionInsight[] = [];
+    const usedMoves = new Set<string>();
+    const usedLines = new Set<string>();
+
+    // First show genuinely different chess choices. This keeps the card useful
+    // even when many opening names describe the same move order.
+    for (const occurrence of ordered) {
+        if (usedMoves.has(occurrence.nextUci)) continue;
+        usedMoves.add(occurrence.nextUci);
+        usedLines.add(`${occurrence.nextUci}|${occurrence.name}`);
+        result.push(cleanInsight(occurrence));
+        if (result.length >= maximum) return result;
+    }
+
+    // Then use remaining room for transposition names that share a move but
+    // describe a meaningfully different catalogue route to the same position.
     for (const occurrence of ordered) {
         const key = `${occurrence.nextUci}|${occurrence.name}`;
-        if (seen.has(key)) continue;
-        seen.add(key);
-        result.push({
-            eco: occurrence.eco,
-            family: occurrence.family,
-            name: occurrence.name,
-            nextSan: occurrence.nextSan,
-            nextUci: occurrence.nextUci,
-            continuationUci: occurrence.continuationUci
-        });
+        if (usedLines.has(key)) continue;
+        usedLines.add(key);
+        result.push(cleanInsight(occurrence));
         if (result.length >= maximum) break;
     }
     return result;
