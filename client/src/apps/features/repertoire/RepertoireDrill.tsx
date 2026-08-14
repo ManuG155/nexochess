@@ -14,6 +14,7 @@ import { localizeMaybeOpening } from "./openingLocalization";
 import { buildDrillLines, drillFen, drillSquareStyles } from "./repertoireDrillModel";
 import { formatEnhancementCopy, useRepertoireEnhancementCopy } from "./repertoireEnhancementCopy";
 import * as styles from "./repertoireDrill.module.css";
+import * as boardTools from "./repertoireBoardTools.module.css";
 
 type Feedback = "idle" | "correct" | "wrong";
 
@@ -22,6 +23,7 @@ interface Props { store: RepertoireStore; repertoireId?: string; mixed?: boolean
 function RepertoireDrill({ store, repertoireId, mixed = false, onExit }: Props) {
     const copy = useRepertoireEnhancementCopy();
     const { i18n } = useTranslation();
+    const { t: tAnalysis } = useTranslation("analysis");
     const language = i18n.resolvedLanguage || i18n.language || "en";
     const settings = useSettingsStore(state => state.settings);
     const setSettings = useSettingsStore(state => state.setSettings);
@@ -36,6 +38,7 @@ function RepertoireDrill({ store, repertoireId, mixed = false, onExit }: Props) 
     const [expression, setExpression] = useState<CoachExpression>("thinking");
     const [coachText, setCoachText] = useState(copy.coachReady);
     const [coachPickerOpen, setCoachPickerOpen] = useState(false);
+    const [boardFlipped, setBoardFlipped] = useState(false);
     const timer = useRef<number>();
     const line = lines[lineIndex];
     const fen = line ? drillFen(line, moveIndex) : new Chess().fen();
@@ -46,9 +49,15 @@ function RepertoireDrill({ store, repertoireId, mixed = false, onExit }: Props) 
     const spoken = coachText;
     const lineComplete = Boolean(line) && moveIndex >= (line?.moves.length || 0) && !finished;
     const hasNextLine = lineIndex < lines.length - 1;
+    const baseOrientation = line?.repertoire.side || "white";
+    const boardOrientation = boardFlipped
+        ? baseOrientation == "white" ? "black" : "white"
+        : baseOrientation;
+    const flipBoardLabel = tAnalysis("optionsToolbar.flipBoard");
 
     function later(action: () => void, delay: number) { if (timer.current != undefined) window.clearTimeout(timer.current); timer.current = window.setTimeout(action, delay); }
     useEffect(() => () => { if (timer.current != undefined) window.clearTimeout(timer.current); }, []);
+    useEffect(() => { setBoardFlipped(false); }, [line?.repertoire.side]);
 
     useEffect(() => {
         if (!line || !expected || learnerTurn || locked || finished) return;
@@ -126,7 +135,12 @@ function RepertoireDrill({ store, repertoireId, mixed = false, onExit }: Props) 
         <header className={styles.studyHeader}><button type="button" onClick={onExit}>{copy.exitStudy}</button><div><span>{progress}</span><h1>{title}</h1><p>{copy.studyIntro}</p></div><div className={styles.lineChip}><strong>{savedName}</strong><span>{repertoireName}</span></div></header>
         <div className={styles.studyGrid}>
             <div className={styles.boardArea}>
-                <div className={styles.boardWrap}><Chessboard id="repertoire-saved-line-study" position={fen} boardOrientation={line.repertoire.side} onPieceDrop={play} onPieceDragBegin={(_piece, source) => learnerTurn && !locked && setSelected(source as Square)} onPieceDragEnd={() => setSelected(undefined)} onSquareClick={clickSquare} arePiecesDraggable={learnerTurn && !locked} customPieces={pieces} customDarkSquareStyle={{ backgroundColor: settings.themes.board.darkSquareColour }} customLightSquareStyle={{ backgroundColor: settings.themes.board.lightSquareColour }} customSquareStyles={drillSquareStyles(fen, selected, settings.themes.board.legalMoveHints)} showBoardNotation={settings.themes.board.coordinates == "inside"} snapToCursor/></div>
+                <div className={`${styles.boardWrap} ${boardTools.boardContainer}`} data-board-orientation={boardOrientation}>
+                    <button type="button" className={boardTools.flipButton} onClick={() => setBoardFlipped(value => !value)} title={flipBoardLabel} aria-label={flipBoardLabel}>
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10l-2.5-2.5"/><path d="M17 17H7l2.5 2.5"/><path d="M19 9.5A7 7 0 0 1 17 17"/><path d="M5 14.5A7 7 0 0 1 7 7"/></svg>
+                    </button>
+                    <Chessboard id="repertoire-saved-line-study" position={fen} boardOrientation={boardOrientation} onPieceDrop={play} onPieceDragBegin={(_piece, source) => learnerTurn && !locked && setSelected(source as Square)} onPieceDragEnd={() => setSelected(undefined)} onSquareClick={clickSquare} arePiecesDraggable={learnerTurn && !locked} customPieces={pieces} customDarkSquareStyle={{ backgroundColor: settings.themes.board.darkSquareColour }} customLightSquareStyle={{ backgroundColor: settings.themes.board.lightSquareColour }} customSquareStyles={drillSquareStyles(fen, selected, settings.themes.board.legalMoveHints)} showBoardNotation={settings.themes.board.coordinates == "inside"} snapToCursor/>
+                </div>
                 <div className={styles.boardStatus}><strong>{lineComplete ? `✓ ${copy.correct}` : moveProgress}</strong><span>{lineComplete ? copy.nextLine : learnerTurn ? copy.studyIntro : copy.coachOpponent}</span></div>
             </div>
             <aside className={styles.studyPanel}>
