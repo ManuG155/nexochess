@@ -6,6 +6,11 @@ interface ParsedLine {
     moves: string[];
 }
 
+interface BuiltLesson {
+    entry: OpeningCatalogueEntry;
+    ply: number;
+}
+
 interface TheoryNode {
     children: Map<string, TheoryNode>;
     best?: ParsedLine;
@@ -91,12 +96,12 @@ export function buildCourseLessonsIndexed(lines: OpeningCatalogueEntry[], maximu
 
     const byFamily = new Map<string, ParsedLine[]>();
     for (const item of parsed) {
-        const family = byFamily.get(item.entry.family) || [];
-        family.push(item);
-        byFamily.set(item.entry.family, family);
+        const family = byFamily.get(item.entry.family);
+        if (family) family.push(item);
+        else byFamily.set(item.entry.family, [item]);
     }
 
-    const result: OpeningCatalogueEntry[] = [];
+    const result: BuiltLesson[] = [];
 
     for (const familyLines of byFamily.values()) {
         const root = createNode();
@@ -104,9 +109,9 @@ export function buildCourseLessonsIndexed(lines: OpeningCatalogueEntry[], maximu
 
         const byName = new Map<string, ParsedLine[]>();
         for (const item of familyLines) {
-            const group = byName.get(item.entry.name) || [];
-            group.push(item);
-            byName.set(item.entry.name, group);
+            const group = byName.get(item.entry.name);
+            if (group) group.push(item);
+            else byName.set(item.entry.name, [item]);
         }
 
         for (const group of byName.values()) {
@@ -115,20 +120,22 @@ export function buildCourseLessonsIndexed(lines: OpeningCatalogueEntry[], maximu
             const prefixNode = nodeAt(root, representative.moves);
             const deepest = prefixNode?.best || representative;
             result.push({
-                ...representative.entry,
-                pgn: deepest.entry.pgn,
-                depthCheckpoints: checkpointsFor(root, deepest.moves)
+                entry: {
+                    ...representative.entry,
+                    pgn: deepest.entry.pgn,
+                    depthCheckpoints: checkpointsFor(root, deepest.moves)
+                },
+                ply: deepest.moves.length
             });
         }
     }
 
     return result
-        .sort((a, b) => {
-            const aMoves = pgnMoveKeys(a.pgn).length;
-            const bMoves = pgnMoveKeys(b.pgn).length;
-            return priority(a) - priority(b)
-                || aMoves - bMoves
-                || a.name.localeCompare(b.name);
-        })
-        .slice(0, maximum);
+        .sort((a, b) => (
+            priority(a.entry) - priority(b.entry)
+            || a.ply - b.ply
+            || a.entry.name.localeCompare(b.entry.name)
+        ))
+        .slice(0, maximum)
+        .map(item => item.entry);
 }
