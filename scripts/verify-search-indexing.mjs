@@ -4,6 +4,14 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import {
+    SEARCH_FAVICON_HREF,
+    SEARCH_FAVICON_LINK,
+    SEARCH_FAVICON_SOURCE_PATH,
+    applySearchFaviconLink,
+    applySearchFaviconManifest,
+    renderSearchFaviconSvg
+} from "../config/favicon.mjs";
+import {
     INDEXABLE_PAGE_ROUTES,
     NOINDEX_PAGE_RULES,
     TECHNICAL_ROBOTS_DISALLOW_PATHS,
@@ -90,6 +98,54 @@ for (const route of INDEXABLE_PAGE_ROUTES) {
         html.split(canonicalTemplate).length - 1,
         1,
         `${route.assetPath} must contain one central canonical placeholder.`
+    );
+
+    const faviconHtml = applySearchFaviconLink(html);
+    assert.ok(
+        faviconHtml.includes(SEARCH_FAVICON_LINK),
+        `${route.assetPath} must receive the centralized search favicon.`
+    );
+    assert.ok(
+        !faviconHtml.includes('href="/favicon.ico"'),
+        `${route.assetPath} must not deploy the legacy white favicon.`
+    );
+}
+
+const faviconSource = await readFile(
+    repositoryPath("client", "public", SEARCH_FAVICON_SOURCE_PATH)
+);
+assert.equal(
+    faviconSource.subarray(0, 8).toString("hex"),
+    "89504e470d0a1a0a",
+    "The centralized search favicon source must remain a PNG."
+);
+const faviconSvg = renderSearchFaviconSvg(faviconSource.toString("base64"));
+assert.ok(faviconSvg.includes('viewBox="0 0 512 512"'));
+assert.ok(faviconSvg.includes('preserveAspectRatio="xMidYMid meet"'));
+assert.ok(faviconSvg.includes("data:image/png;base64,"));
+
+const sourceManifest = JSON.parse(
+    await readRepositoryFile("client", "public", "manifest.webmanifest")
+);
+const searchManifest = applySearchFaviconManifest(sourceManifest);
+assert.deepEqual(searchManifest.icons, [
+    {
+        src: SEARCH_FAVICON_HREF,
+        sizes: "any",
+        type: "image/svg+xml"
+    }
+]);
+
+for (const fragment of [
+    "SEARCH_FAVICON_FILENAME",
+    "SEARCH_FAVICON_SOURCE_PATH",
+    "applySearchFaviconLink",
+    "applySearchFaviconManifest",
+    "renderSearchFaviconSvg"
+]) {
+    assert.ok(
+        buildScript.includes(fragment),
+        `Cloudflare build is not wiring the search favicon: ${fragment}`
     );
 }
 
@@ -189,5 +245,5 @@ assert.equal(
 
 console.log(
     `Verified search indexing policy: ${INDEXABLE_PAGE_ROUTES.length} indexable routes, `
-    + `${NOINDEX_PAGE_RULES.length} noindex rules and centralized canonicals.`
+    + `${NOINDEX_PAGE_RULES.length} noindex rules, centralized canonicals and favicon.`
 );
