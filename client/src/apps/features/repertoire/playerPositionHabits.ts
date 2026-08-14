@@ -9,6 +9,12 @@ export interface HabitGame {
     score: number;
 }
 
+export interface PositionHabitReply {
+    uci: string;
+    san: string;
+    count: number;
+}
+
 export interface PositionHabitMove {
     uci: string;
     san: string;
@@ -16,6 +22,7 @@ export interface PositionHabitMove {
     wins: number;
     draws: number;
     losses: number;
+    replies?: PositionHabitReply[];
 }
 
 export interface PositionHabit {
@@ -69,6 +76,24 @@ function writePositionHabits(store: PositionHabitStore) {
     }
 }
 
+function addReply(move: PositionHabitMove, boardAfterPlayerMove: Chess, san: string | undefined) {
+    if (!san) return;
+    const replyBoard = new Chess(boardAfterPlayerMove.fen());
+    let reply;
+    try {
+        reply = replyBoard.move(san);
+    } catch {
+        return;
+    }
+    if (!reply) return;
+    const uci = `${reply.from}${reply.to}${reply.promotion || ""}`;
+    const replies = move.replies || [];
+    const current = replies.find(item => item.uci == uci);
+    if (current) current.count += 1;
+    else replies.push({ uci, san: reply.san, count: 1 });
+    move.replies = replies.sort((a, b) => b.count - a.count || a.san.localeCompare(b.san));
+}
+
 export function savePositionHabitsFromGames(
     games: HabitGame[],
     platform: HabitPlatform,
@@ -80,7 +105,8 @@ export function savePositionHabitsFromGames(
 
     for (const game of games) {
         const board = new Chess();
-        for (let ply = 0; ply < Math.min(game.moves.length, maximumPlies); ply += 1) {
+        const limit = Math.min(game.moves.length, maximumPlies);
+        for (let ply = 0; ply < limit; ply += 1) {
             const san = game.moves[ply];
             const playerTurn = (game.side == "white" && board.turn() == "w")
                 || (game.side == "black" && board.turn() == "b");
@@ -101,12 +127,14 @@ export function savePositionHabitsFromGames(
                 count: 0,
                 wins: 0,
                 draws: 0,
-                losses: 0
+                losses: 0,
+                replies: []
             };
             current.count += 1;
             if (game.score == 1) current.wins += 1;
             else if (game.score == 0.5) current.draws += 1;
             else current.losses += 1;
+            if (ply + 1 < limit) addReply(current, board, game.moves[ply + 1]);
             moves.set(uci, current);
             buckets.set(before, moves);
             totals.set(before, (totals.get(before) || 0) + 1);
