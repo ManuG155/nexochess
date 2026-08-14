@@ -17,6 +17,7 @@ import { useRepertoireEnhancementCopy } from "./repertoireEnhancementCopy";
 import RepertoireEngineInsight from "./RepertoireEngineInsight";
 import { appendPvToPgn } from "./repertoireEngine";
 import * as styles from "./courseV3.module.css";
+import * as balance from "./courseLessonBalance.module.css";
 
 type Mode = "study" | "practice" | "complete";
 
@@ -311,27 +312,31 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
                 <div className={styles.lessonCount}><strong>{mode == "study" ? tc("practice.studyPhase") : mode == "practice" ? tc("practice.practicePhase") : tc("practice.completePhase")}</strong><span>{lineNumber}/{lineTotal}</span></div>
             </div>
         </header>
-        <div className={styles.lessonGrid}>
-            {mode == "study" && onSaveCustomLine && <aside className={styles.saveRail}>
-                <section className={styles.saveWorkspace}>
-                    <div className={styles.saveWorkspaceHeader}>
-                        <span>＋</span>
-                        <div><strong>{copy.saveLine}</strong><p>{copy.savedLinesHelp}</p></div>
-                    </div>
-                    <button type="button" className={styles.savePrimary} onClick={openSaveCustom} disabled={!customActive}>{copy.saveLine}</button>
-                    <div className={styles.saveNameBlock} data-active={saveOpen && customActive} aria-disabled={!saveOpen || !customActive}>
-                        <span className={styles.saveNameKicker}>{copy.saveModalTitle}</span>
-                        <h3>{copy.customNameLabel}</h3>
-                        <p>{linePreview}</p>
-                        <form onSubmit={saveCustom}>
-                            <label><span>{copy.customNameLabel}</span><input value={draftName} onChange={event => setDraftName(event.target.value)} maxLength={120} placeholder={customLineSuggestedName || copy.customNamePlaceholder} disabled={!saveOpen || !customActive}/></label>
-                            <div className={styles.saveNameActions}>
-                                <button type="button" onClick={() => setSaveOpen(false)} disabled={!saveOpen || !customActive}>{copy.cancel}</button>
-                                <button type="submit" disabled={!saveOpen || !customActive}>{copy.save}</button>
-                            </div>
-                        </form>
-                    </div>
-                </section>
+        <div className={`${styles.lessonGrid} ${balance.balancedGrid}`}>
+            {!blindPractice && <aside className={`${styles.saveRail} ${balance.leftRail}`}>
+                <div className={balance.leftRailStack}>
+                    <section className={`${styles.infoCard} ${balance.leftCard} ${balance.referenceCard}`}><span>{t("learn.referenceLine")}</span><div className={styles.referenceMoves}>{moves.map((move, i) => <button key={`${move.san}-${i}`} data-active={mode == "study" && customStartIndex == null && studyIndex == i + 1} onClick={() => mode == "study" && resetExploration(i + 1)}><small>{i % 2 == 0 ? `${Math.floor(i / 2) + 1}.` : "…"}</small>{move.san}</button>)}</div></section>
+                    {mode == "study" && onSaveCustomLine && <section className={`${styles.saveWorkspace} ${balance.saveWorkspace}`}>
+                        <div className={styles.saveWorkspaceHeader}>
+                            <span>＋</span>
+                            <div><strong>{copy.saveLine}</strong><p>{copy.savedLinesHelp}</p></div>
+                        </div>
+                        <button type="button" className={styles.savePrimary} onClick={openSaveCustom} disabled={!customActive}>{copy.saveLine}</button>
+                        <div className={styles.saveNameBlock} data-active={saveOpen && customActive} aria-disabled={!saveOpen || !customActive}>
+                            <span className={styles.saveNameKicker}>{copy.saveModalTitle}</span>
+                            <h3>{copy.customNameLabel}</h3>
+                            <p>{linePreview}</p>
+                            <form onSubmit={saveCustom}>
+                                <label><span>{copy.customNameLabel}</span><input value={draftName} onChange={event => setDraftName(event.target.value)} maxLength={120} placeholder={customLineSuggestedName || copy.customNamePlaceholder} disabled={!saveOpen || !customActive}/></label>
+                                <div className={styles.saveNameActions}>
+                                    <button type="button" onClick={() => setSaveOpen(false)} disabled={!saveOpen || !customActive}>{copy.cancel}</button>
+                                    <button type="submit" disabled={!saveOpen || !customActive}>{copy.save}</button>
+                                </div>
+                            </form>
+                        </div>
+                    </section>}
+                    {mode == "study" && <section className={`${styles.infoCard} ${balance.leftCard}`}><span>{t("learn.whyTitle")}</span><strong>{currentMove?.san || t("editor.startPosition")}</strong><p>{explanation(currentMove, t)}</p></section>}
+                </div>
             </aside>}
             <div className={styles.lessonBoardColumn}>
                 <div className={styles.lessonBoardWrap}><Chessboard id="repertoire-course-board-v3" position={activeFen} boardOrientation={side} onPieceDrop={play} onPieceDragBegin={(_piece, source) => draggable && setSelected(source as Square)} onPieceDragEnd={() => setSelected(undefined)} onSquareClick={clickSquare} arePiecesDraggable={Boolean(draggable)} customPieces={pieces} customDarkSquareStyle={{ backgroundColor: settings.themes.board.darkSquareColour }} customLightSquareStyle={{ backgroundColor: settings.themes.board.lightSquareColour }} customSquareStyles={squareStyles} showBoardNotation={settings.themes.board.coordinates == "inside"} snapToCursor/></div>
@@ -339,16 +344,14 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
                 {mode == "practice" && <div className={styles.lessonControls}><button onClick={() => { if (expected?.color == learner) { registerProblem(); setHint(true); } }} disabled={!expected || expected.color != learner}>{t("learn.hint")}</button><div><strong>{tc("practice.repetition", { current: repetition, total: requiredRuns })}</strong><span>{transitioning ? tc("practice.repeatRule") : hint && expected ? t("learn.hintMove", { move: expected.san }) : t("learn.practiceInstruction")}</span></div>{blindPractice ? <button onClick={onBack}>{tc("practice.backModule")}</button> : <button onClick={() => { setMode("study"); resetExploration(0); }}>{t("learn.reviewLine")}</button>}</div>}
                 {mode == "complete" && <div className={styles.lessonControls}><button onClick={onBack}>{tc("practice.backModule")}</button><div><strong>{tc("practice.completeTitle")}</strong><span>{tc("practice.autoSaved")}</span></div>{onNext ? <button data-primary onClick={onNext}>{tc("practice.nextLine")}</button> : <button data-primary onClick={onBack}>{tc("practice.moduleDone")}</button>}</div>}
             </div>
-            <aside className={styles.lessonPanel}>
+            <aside className={`${styles.lessonPanel} ${balance.rightRail}`}>
                 {mode == "study" && <RepertoireEngineInsight fen={activeFen} onAddLine={addEngineCourseLine}/>}
                 {settings.coach.enabled && <section className={styles.coachCard}>
                     <button type="button" className={styles.coachPortraitButton} onClick={() => setCoachPickerOpen(true)} aria-label={coach.name} title={coach.name}><CoachPortrait coach={coach} baseExpression={expression} speechText={spoken} animationsEnabled={settings.coach.animations} className={styles.coachPortrait}/></button>
                     <div><strong>{coach.name}</strong><p>{spoken}</p></div>
                 </section>}
-                {mode == "study" && <section className={styles.infoCard}><span>{t("learn.whyTitle")}</span><strong>{currentMove?.san || t("editor.startPosition")}</strong><p>{explanation(currentMove, t)}</p></section>}
                 {mode == "practice" && <section className={styles.infoCard}><span>{tc("practice.memoryBlock")}</span><strong>{tc("practice.repetition", { current: repetition, total: requiredRuns })}</strong><p>{requiredRuns > (old ? 1 : 2) ? tc("practice.extra") : tc("practice.repeatRule")}</p><div className={styles.repeatDots}>{Array.from({ length: requiredRuns }, (_, i) => <i key={i} data-done={i < runs}/>)}</div></section>}
                 {mode == "complete" && <section className={styles.completeCard}><span>✓</span><strong>{tc("practice.lessonComplete")}</strong><p>{tc("practice.completeBody")}</p></section>}
-                {!blindPractice && <section className={styles.infoCard}><span>{t("learn.referenceLine")}</span><div className={styles.referenceMoves}>{moves.map((move, i) => <button key={`${move.san}-${i}`} data-active={mode == "study" && customStartIndex == null && studyIndex == i + 1} onClick={() => mode == "study" && resetExploration(i + 1)}><small>{i % 2 == 0 ? `${Math.floor(i / 2) + 1}.` : "…"}</small>{move.san}</button>)}</div></section>}
             </aside>
         </div>
         {settings.coach.enabled && coachPickerOpen && <CoachPicker selectedCoach={coach} onClose={() => setCoachPickerOpen(false)} onConfirm={chooseCoach}/>} 
