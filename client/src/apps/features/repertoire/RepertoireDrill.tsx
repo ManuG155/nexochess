@@ -13,6 +13,9 @@ import { RepertoireStore } from "./repertoireStore";
 import { localizeMaybeOpening } from "./openingLocalization";
 import { buildDrillLines, drillFen, drillSquareStyles } from "./repertoireDrillModel";
 import { formatEnhancementCopy, useRepertoireEnhancementCopy } from "./repertoireEnhancementCopy";
+import { depthIncrementMoves, fullMoveCount, initialDepth, nextDepth } from "./courseDepth";
+import { courseDepthCopy, formatDepthCopy } from "./courseDepthCopy";
+import { readDrillDepth, writeDrillDepth } from "./repertoireDrillDepth";
 import * as styles from "./repertoireDrill.module.css";
 import * as boardTools from "./repertoireBoardTools.module.css";
 
@@ -25,11 +28,15 @@ function RepertoireDrill({ store, repertoireId, mixed = false, onExit }: Props) 
     const { i18n } = useTranslation();
     const { t: tAnalysis } = useTranslation("analysis");
     const language = i18n.resolvedLanguage || i18n.language || "en";
+    const depthCopy = courseDepthCopy(language);
     const settings = useSettingsStore(state => state.settings);
     const setSettings = useSettingsStore(state => state.setSettings);
     const pieces = useMemo(() => createCustomPieces(settings.themes.piece), [settings.themes.piece]);
     const lines = useMemo(() => buildDrillLines(store, repertoireId, mixed), [store, repertoireId, mixed]);
+    const firstLine = lines[0];
+    const firstLearnedDepth = firstLine ? readDrillDepth(firstLine.saved.id, firstLine.moves.length) : 0;
     const [lineIndex, setLineIndex] = useState(0);
+    const [targetPly, setTargetPly] = useState(() => firstLine ? firstLearnedDepth || initialDepth(firstLine.moves.length) : 0);
     const [moveIndex, setMoveIndex] = useState(0);
     const [selected, setSelected] = useState<Square>();
     const [feedback, setFeedback] = useState<Feedback>("idle");
@@ -41,14 +48,19 @@ function RepertoireDrill({ store, repertoireId, mixed = false, onExit }: Props) 
     const [boardFlipped, setBoardFlipped] = useState(false);
     const timer = useRef<number>();
     const line = lines[lineIndex];
+    const activeMoves = line?.moves.slice(0, targetPly) || [];
     const fen = line ? drillFen(line, moveIndex) : new Chess().fen();
-    const expected = line?.moves[moveIndex];
+    const expected = activeMoves[moveIndex];
     const learner = line?.repertoire.side == "black" ? "b" : "w";
     const learnerTurn = Boolean(expected) && new Chess(fen).turn() == learner;
     const coach = getCoachById(settings.appearance.selectedCoach);
     const spoken = coachText;
-    const lineComplete = Boolean(line) && moveIndex >= (line?.moves.length || 0) && !finished;
+    const lineComplete = Boolean(line) && activeMoves.length > 0 && moveIndex >= activeMoves.length && !finished;
     const hasNextLine = lineIndex < lines.length - 1;
+    const canDeepen = Boolean(line) && targetPly < (line?.moves.length || 0);
+    const totalMoves = fullMoveCount(line?.moves.length || 0);
+    const targetMoves = fullMoveCount(targetPly);
+    const deepenCount = depthIncrementMoves(targetPly, line?.moves.length || 0);
     const baseOrientation = line?.repertoire.side || "white";
     const boardOrientation = boardFlipped
         ? baseOrientation == "white" ? "black" : "white"
@@ -62,12 +74,18 @@ function RepertoireDrill({ store, repertoireId, mixed = false, onExit }: Props) 
     useEffect(() => {
         if (!line || !expected || learnerTurn || locked || finished) return;
         setLocked(true); setExpression("explaining"); setCoachText(copy.coachOpponent);
-        later(() => { setMoveIndex(value => Math.min(value + 1, line.moves.length)); setFeedback("idle"); setSelected(undefined); setLocked(false); }, 430);
-    }, [expected?.id, learnerTurn, line?.saved.id, finished]);
+        later(() => { setMoveIndex(value => Math.min(value + 1, activeMoves.length)); setFeedback("idle"); setSelected(undefined); setLocked(false); }, 430);
+    }, [expected?.id, learnerTurn, line?.saved.id, finished, activeMoves.length]);
 
     useEffect(() => {
-        if (!line || moveIndex < line.moves.length || locked || finished) return;
+        if (!line || !activeMoves.length || moveIndex < activeMoves.length || locked || finished) return;
+        writeDrillDepth(line.saved.id, targetPly);
         setExpression("celebrating");
+        if (canDeepen) {
+            setLocked(true);
+            setCoachText(depthCopy.deepenBody);
+            return;
+        }
         if (lineIndex >= lines.length - 1) {
             setCoachText(copy.studyCompleteBody);
             setFinished(true);
@@ -76,7 +94,7 @@ function RepertoireDrill({ store, repertoireId, mixed = false, onExit }: Props) 
         }
         setLocked(true);
         setCoachText(copy.nextLine);
-    }, [moveIndex, line?.moves.length, lineIndex, lines.length, finished, locked]);
+    }, [moveIndex, activeMoves.length, lineIndex, lines.length, finished, locked, canDeepen, targetPly, line?.saved.id]);
 
     function chooseCoach(id: CoachId) {
         setSettings(draft => { draft.appearance.selectedCoach = id; return draft; });
@@ -86,7 +104,25 @@ function RepertoireDrill({ store, repertoireId, mixed = false, onExit }: Props) 
     function nextLine() {
         if (!hasNextLine) return;
         if (timer.current != undefined) window.clearTimeout(timer.current);
-        setLineIndex(value => Math.min(value + 1, lines.length - 1));
+        const nextIndex = Math.min(lineIndex + 1, lines.length - 1);
+        const next = lines[nextIndex];
+        const learned = next ? readDrillDepth(next.saved.id, next.moves.length) : 0;
+        setLineIndex(nextIndex);
+        setTargetPly(next ? learned || initialDepth(next.moves.length) : 0);
+        setMoveIndex(0);
+        setSelected(undefined);
+        setFeedback("idle");
+        setExpression("thinking");
+        setCoachText(copy.coachReady);
+        setLocked(false);
+    }
+
+    function deepenLine() {
+        if (!line || !canDeepen) return;
+        if (timer.current != undefined) window.clearTimeout(timer.current);
+        const next = nextDepth(targetPly, line.moves.length);
+        if (next <= targetPly) return;
+        setTargetPly(next);
         setMoveIndex(0);
         setSelected(undefined);
         setFeedback("idle");
@@ -107,7 +143,7 @@ function RepertoireDrill({ store, repertoireId, mixed = false, onExit }: Props) 
             return false;
         }
         setFeedback("correct"); setLocked(true); setExpression("approving"); setCoachText(copy.coachCorrect);
-        later(() => { setMoveIndex(value => Math.min(value + 1, line.moves.length)); setFeedback("idle"); setLocked(false); }, 280);
+        later(() => { setMoveIndex(value => Math.min(value + 1, activeMoves.length)); setFeedback("idle"); setLocked(false); }, 280);
         return true;
     }
 
@@ -126,7 +162,8 @@ function RepertoireDrill({ store, repertoireId, mixed = false, onExit }: Props) 
     if (finished) return <section className={styles.completedStudy}><div><span>✓</span><h1>{copy.studyComplete}</h1><p>{copy.studyCompleteBody}</p><button onClick={onExit}>{copy.exitStudy}</button></div></section>;
 
     const progress = formatEnhancementCopy(copy.lineCounter, { current: lineIndex + 1, total: lines.length });
-    const moveProgress = formatEnhancementCopy(copy.moveProgress, { current: Math.min(moveIndex + 1, line.moves.length), total: line.moves.length });
+    const moveProgress = formatEnhancementCopy(copy.moveProgress, { current: Math.min(moveIndex + 1, activeMoves.length), total: activeMoves.length });
+    const depthProgress = formatDepthCopy(depthCopy.learned, { learned: targetMoves, available: totalMoves });
     const repertoireName = localizeMaybeOpening(line.repertoire.name, language);
     const savedName = localizeMaybeOpening(line.saved.name, language);
     const title = mixed ? copy.studyMixedTitle : formatEnhancementCopy(copy.studyTitle, { name: repertoireName });
@@ -141,13 +178,13 @@ function RepertoireDrill({ store, repertoireId, mixed = false, onExit }: Props) 
                     </button>
                     <Chessboard id="repertoire-saved-line-study" position={fen} boardOrientation={boardOrientation} onPieceDrop={play} onPieceDragBegin={(_piece, source) => learnerTurn && !locked && setSelected(source as Square)} onPieceDragEnd={() => setSelected(undefined)} onSquareClick={clickSquare} arePiecesDraggable={learnerTurn && !locked} customPieces={pieces} customDarkSquareStyle={{ backgroundColor: settings.themes.board.darkSquareColour }} customLightSquareStyle={{ backgroundColor: settings.themes.board.lightSquareColour }} customSquareStyles={drillSquareStyles(fen, selected, settings.themes.board.legalMoveHints)} showBoardNotation={settings.themes.board.coordinates == "inside"} snapToCursor/>
                 </div>
-                <div className={styles.boardStatus}><strong>{lineComplete ? `✓ ${copy.correct}` : moveProgress}</strong><span>{lineComplete ? copy.nextLine : learnerTurn ? copy.studyIntro : copy.coachOpponent}</span></div>
+                <div className={styles.boardStatus}><strong>{lineComplete ? `✓ ${copy.correct}` : moveProgress}</strong><span>{lineComplete ? canDeepen ? formatDepthCopy(depthCopy.deepen, { count: deepenCount }) : copy.nextLine : learnerTurn ? copy.studyIntro : copy.coachOpponent}</span></div>
             </div>
             <aside className={styles.studyPanel}>
                 {settings.coach.enabled && <section className={styles.coachCard}><button type="button" className={styles.coachPortraitButton} onClick={() => setCoachPickerOpen(true)} aria-label={coach.name} title={coach.name}><CoachPortrait coach={coach} baseExpression={expression} speechText={spoken} animationsEnabled={settings.coach.animations} className={styles.coachPortrait}/></button><div><strong>{coach.name}</strong><p>{spoken}</p></div></section>}
-                {lineComplete && hasNextLine && <section className={styles.lineCompleteCard}><span>✓</span><div><strong>{copy.correct}</strong><p>{savedName}</p></div><button type="button" onClick={nextLine}>{copy.nextLine}</button></section>}
+                {lineComplete && (canDeepen || hasNextLine) && <section className={styles.lineCompleteCard}><span>✓</span><div><strong>{copy.correct}</strong><p>{canDeepen ? depthProgress : savedName}</p></div><button type="button" onClick={canDeepen ? deepenLine : nextLine}>{canDeepen ? formatDepthCopy(depthCopy.deepen, { count: deepenCount }) : copy.nextLine}</button></section>}
                 <section className={styles.feedbackCard} data-feedback={feedback}><b>{feedback == "correct" ? "✓" : feedback == "wrong" ? "×" : "·"}</b><div><strong>{feedback == "correct" ? copy.correct : feedback == "wrong" ? copy.wrong : savedName}</strong><p>{feedback == "wrong" && expected ? formatEnhancementCopy(copy.correctMove, { move: expected.moveSan || expected.moveUci || "" }) : feedback == "correct" ? copy.coachCorrect : copy.studyIntro}</p></div></section>
-                <section className={styles.progressCard}><strong>{progress}</strong><span>{moveProgress}</span><div><i style={{ width: `${line.moves.length ? Math.min(100, moveIndex / line.moves.length * 100) : 0}%` }}/></div></section>
+                <section className={styles.progressCard}><strong>{progress}</strong><span>{moveProgress} · {depthProgress}</span><div><i style={{ width: `${activeMoves.length ? Math.min(100, moveIndex / activeMoves.length * 100) : 0}%` }}/></div></section>
             </aside>
         </div>
         {settings.coach.enabled && coachPickerOpen && <CoachPicker selectedCoach={coach} onClose={() => setCoachPickerOpen(false)} onConfirm={chooseCoach}/>} 
