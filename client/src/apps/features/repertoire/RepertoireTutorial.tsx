@@ -1,6 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { Chess, Square } from "chess.js";
 import { useTranslation } from "react-i18next";
 
+import SuggestionArrowOverlay from "@analysis/components/Board/SuggestionArrowOverlay";
 import { getRepertoireTutorialCopy } from "./repertoireTutorialCopy";
 import * as styles from "./repertoireTutorial.module.css";
 
@@ -17,6 +20,7 @@ interface TutorialState {
 }
 
 interface RectState { left:number; top:number; right:number; bottom:number; width:number; height:number; }
+interface ArrowState { host:HTMLElement; from:Square; to:Square; flipped:boolean; }
 interface Props { onResetWorkspace: () => void; }
 
 const STORAGE_KEY = "nexochess:repertoire:tutorial:v1";
@@ -38,11 +42,42 @@ function selectorFor(step:CoreStep|null,microtip:Microtip|null){
     if (microtip == "habit") return '[data-repertoire-tour="personal-habit"]';
     if (step == "learn") return '[data-repertoire-tour="mode-learn"]';
     if (step == "family") return '[data-repertoire-tour="family-grid"] button';
-    if (step == "line") return '[data-repertoire-tour="lesson-list"] button';
+    if (step == "line") return '[data-repertoire-tour="study-next"]';
     if (step == "move") return '[data-repertoire-tour="lesson-board"]';
     if (step == "reference") return '[data-repertoire-tour="reference-line"]';
     if (step == "save") return '[data-repertoire-tour="save-line"]';
     return "";
+}
+
+function clamp(value:number,min:number,max:number){return Math.max(min,Math.min(value,max));}
+
+function sanOf(button:HTMLButtonElement){
+    const prefix=button.querySelector("small")?.textContent||"";
+    const text=button.textContent||"";
+    return (prefix&&text.startsWith(prefix)?text.slice(prefix.length):text.replace(prefix,"")).trim();
+}
+
+function tutorialMoveArrow():ArrowState|null{
+    const host=document.querySelector<HTMLElement>('[data-repertoire-tour="lesson-board"]');
+    const reference=document.querySelector<HTMLElement>('[data-repertoire-tour="reference-line"]');
+    if(!host||!reference)return null;
+    const buttons=Array.from(reference.querySelectorAll<HTMLButtonElement>("button"));
+    if(!buttons.length)return null;
+    const activeIndex=buttons.findIndex(button=>button.getAttribute("data-active")=="true");
+    const game=new Chess();
+    for(let i=0;i<=activeIndex;i++){
+        const san=sanOf(buttons[i]);
+        if(!san)return null;
+        try{game.move(san);}catch{return null;}
+    }
+    const next=buttons[activeIndex+1];
+    if(!next)return null;
+    let move;
+    try{move=game.move(sanOf(next));}catch{return null;}
+    if(!move)return null;
+    const activeSide=host.closest("section")?.querySelector('header button[data-active="true"]') as HTMLElement|null;
+    const flipped=Boolean(activeSide?.parentElement&&Array.from(activeSide.parentElement.children).indexOf(activeSide)==1);
+    return {host,from:move.from as Square,to:move.to as Square,flipped};
 }
 
 function RepertoireTutorial({onResetWorkspace}:Props){
@@ -53,31 +88,59 @@ function RepertoireTutorial({onResetWorkspace}:Props){
     const [step,setStep]=useState<CoreStep|null>(initial.completed?null:"welcome");
     const [microtip,setMicrotip]=useState<Microtip|null>(null);
     const [rect,setRect]=useState<RectState|null>(null);
+    const [moveArrow,setMoveArrow]=useState<ArrowState|null>(null);
     const justCompleted=useRef(false);
     const microtipShownThisSession=useRef(false);
+    const autoScrolledSelector=useRef("");
 
     function persist(next:TutorialState){setState(next);try{localStorage.setItem(STORAGE_KEY,JSON.stringify(next));}catch{}}
     function patch(next:Partial<TutorialState>){persist({...state,...next,seen:next.seen||state.seen});}
-    function startAgain(){onResetWorkspace();justCompleted.current=false;setMicrotip(null);setStep("welcome");}
-    function finishCore(){const next={...state,completed:true,completedAt:Date.now()};persist(next);justCompleted.current=true;setStep("done");}
-    function skipCore(){const next={...state,completed:true,completedAt:Date.now()};persist(next);justCompleted.current=true;setStep(null);}
+    function startAgain(){onResetWorkspace();justCompleted.current=false;setMicrotip(null);setRect(null);setMoveArrow(null);autoScrolledSelector.current="";setStep("welcome");}
+    function finishCore(){const next={...state,completed:true,completedAt:Date.now()};persist(next);justCompleted.current=true;setMoveArrow(null);setStep("done");}
+    function skipCore(){const next={...state,completed:true,completedAt:Date.now()};persist(next);justCompleted.current=true;setMicrotip(null);setRect(null);setMoveArrow(null);setStep(null);}
     function chooseExperience(experience:Experience){
         const next={...state,experience};persist(next);
         if(experience=="advanced"){justCompleted.current=true;persist({...next,completed:true,completedAt:Date.now()});setStep("done");return;}
         setStep("learn");
     }
-    function dismissMicrotip(){if(!microtip)return;patch({seen:{...state.seen,[microtip]:true}});setMicrotip(null);}
+    function dismissMicrotip(){if(!microtip)return;patch({seen:{...state.seen,[microtip]:true}});setMicrotip(null);setRect(null);}
 
     const selector=selectorFor(step,microtip);
     useEffect(()=>{
-        if(!selector){setRect(null);return;}
+        if(!selector){setRect(null);setMoveArrow(null);return;}
         let frame=0;
-        const refresh=()=>{window.cancelAnimationFrame(frame);frame=window.requestAnimationFrame(()=>{const element=document.querySelector(selector) as HTMLElement|null;if(!element){setRect(null);return;}const box=element.getBoundingClientRect();setRect({left:box.left,top:box.top,right:box.right,bottom:box.bottom,width:box.width,height:box.height});});};
-        refresh();
-        const observer=new MutationObserver(refresh);observer.observe(document.body,{subtree:true,childList:true,attributes:true});
-        window.addEventListener("resize",refresh);window.addEventListener("scroll",refresh,true);
-        return()=>{window.cancelAnimationFrame(frame);observer.disconnect();window.removeEventListener("resize",refresh);window.removeEventListener("scroll",refresh,true);};
-    },[selector]);
+        let observed:HTMLElement|null=null;
+        const resizeObserver=new ResizeObserver(()=>schedule());
+        const measure=()=>{
+            frame=0;
+            const element=document.querySelector(selector) as HTMLElement|null;
+            if(element!==observed){resizeObserver.disconnect();observed=element;if(observed)resizeObserver.observe(observed);}
+            if(!element){setRect(null);if(step=="move")setMoveArrow(null);return;}
+            const box=element.getBoundingClientRect();
+            setRect({left:box.left,top:box.top,right:box.right,bottom:box.bottom,width:box.width,height:box.height});
+            if(step=="move"){
+                const next=tutorialMoveArrow();
+                setMoveArrow(previous=>previous&&next&&previous.host==next.host&&previous.from==next.from&&previous.to==next.to&&previous.flipped==next.flipped?previous:next);
+            }else setMoveArrow(null);
+            if(autoScrolledSelector.current!=selector){
+                autoScrolledSelector.current=selector;
+                if(step=="move"||box.top<86||box.bottom>window.innerHeight-64){
+                    window.setTimeout(()=>element.scrollIntoView({behavior:"smooth",block:"center",inline:"nearest"}),0);
+                }
+            }
+        };
+        function schedule(){if(frame)return;frame=window.requestAnimationFrame(measure);}
+        schedule();
+        const observer=new MutationObserver(schedule);observer.observe(document.body,{subtree:true,childList:true});
+        window.addEventListener("resize",schedule);window.addEventListener("scroll",schedule,true);
+        window.visualViewport?.addEventListener("resize",schedule);window.visualViewport?.addEventListener("scroll",schedule);
+        return()=>{
+            if(frame)window.cancelAnimationFrame(frame);
+            resizeObserver.disconnect();observer.disconnect();
+            window.removeEventListener("resize",schedule);window.removeEventListener("scroll",schedule,true);
+            window.visualViewport?.removeEventListener("resize",schedule);window.visualViewport?.removeEventListener("scroll",schedule);
+        };
+    },[selector,step]);
 
     useEffect(()=>{
         if(!step||!["learn","family","line"].includes(step))return;
@@ -98,7 +161,7 @@ function RepertoireTutorial({onResetWorkspace}:Props){
         if(!step||step=="welcome"||step=="done")return;
         const observer=new MutationObserver(()=>{
             if(step=="learn"&&document.querySelector('[data-repertoire-tour="family-grid"]'))setStep("family");
-            if(step=="family"&&document.querySelector('[data-repertoire-tour="lesson-list"]'))setStep("line");
+            if(step=="family"&&document.querySelector('[data-repertoire-tour="study-next"]'))setStep("line");
             if(step=="line"&&document.querySelector('[data-repertoire-tour="lesson-board"]'))setStep("move");
         });
         observer.observe(document.body,{subtree:true,childList:true});return()=>observer.disconnect();
@@ -118,16 +181,39 @@ function RepertoireTutorial({onResetWorkspace}:Props){
         return()=>{observer.disconnect();if(timer!=undefined)window.clearTimeout(timer);};
     },[state.completed,state.seen,step,microtip]);
 
+    useEffect(()=>{
+        if(!step&&!microtip)return;
+        const handler=(event:KeyboardEvent)=>{
+            if(event.key!="Escape")return;
+            event.preventDefault();event.stopPropagation();
+            if(microtip)dismissMicrotip();else skipCore();
+        };
+        document.addEventListener("keydown",handler,true);return()=>document.removeEventListener("keydown",handler,true);
+    },[step,microtip,state]);
+
     const tooltipPosition=useMemo(()=>{
         if(!rect)return undefined;
-        const width=Math.min(340,window.innerWidth-24);const estimatedHeight=190;const gap=14;
+        const margin=12;const gap=16;const maxWidth=Math.min(340,window.innerWidth-margin*2);const estimatedHeight=200;
+        if(step=="move"){
+            const roomLeft=Math.max(0,rect.left-gap-margin);
+            const roomRight=Math.max(0,window.innerWidth-rect.right-gap-margin);
+            const useRight=roomRight>=roomLeft;
+            const room=Math.max(roomLeft,roomRight);
+            if(room>=220){
+                const width=Math.min(maxWidth,room);
+                const left=useRight?rect.right+gap:rect.left-gap-width;
+                const top=clamp(rect.top+(rect.height-estimatedHeight)/2,margin,Math.max(margin,window.innerHeight-estimatedHeight-margin));
+                return{top,left,width};
+            }
+        }
+        const width=maxWidth;
         let top=rect.bottom+gap;
         if(top+estimatedHeight>window.innerHeight&&rect.top>estimatedHeight+gap)top=rect.top-estimatedHeight-gap;
-        top=Math.max(12,Math.min(top,window.innerHeight-estimatedHeight-12));
+        top=clamp(top,margin,Math.max(margin,window.innerHeight-estimatedHeight-margin));
         let left=rect.left+Math.min(rect.width/2,180)-width/2;
-        left=Math.max(12,Math.min(left,window.innerWidth-width-12));
+        left=clamp(left,margin,window.innerWidth-width-margin);
         return{top,left,width};
-    },[rect]);
+    },[rect,step]);
 
     const progress=step&&["learn","family","line","move","reference","save"].includes(step)?(["learn","family","line","move","reference","save"].indexOf(step)+1):0;
     const total=state.experience=="basic"?4:6;
@@ -140,6 +226,7 @@ function RepertoireTutorial({onResetWorkspace}:Props){
         {step=="welcome"&&<div className={styles.modalBackdrop} role="dialog" aria-modal="true"><section className={styles.modal}><span className={styles.modalEyebrow}>NexoChess</span><h2>{copy.welcomeTitle}</h2><p>{copy.welcomeBody}</p><div className={styles.experienceGrid}><button type="button" onClick={()=>chooseExperience("beginner")}><strong>{copy.beginner}</strong><small>{copy.beginnerHelp}</small></button><button type="button" onClick={()=>chooseExperience("basic")}><strong>{copy.basic}</strong><small>{copy.basicHelp}</small></button><button type="button" onClick={()=>chooseExperience("advanced")}><strong>{copy.advanced}</strong><small>{copy.advancedHelp}</small></button></div><div className={styles.modalActions}><button type="button" className={styles.skip} onClick={skipCore}>{copy.skip}</button></div></section></div>}
         {step=="done"&&<div className={styles.modalBackdrop} role="dialog" aria-modal="true"><section className={styles.modal}><span className={styles.doneMark}>✓</span><h2>{copy.doneTitle}</h2><p>{copy.doneBody}</p><div className={styles.modalActions}><button type="button" className={styles.skip} onClick={startAgain}>{copy.restart}</button><button type="button" onClick={()=>setStep(null)}>{copy.keepGoing}</button></div></section></div>}
         {rect&&selector&&<div className={styles.spotlight} style={{left:rect.left-6,top:rect.top-6,width:rect.width+12,height:rect.height+12}}/>}
+        {step=="move"&&moveArrow&&createPortal(<div className={styles.tutorialArrow}><SuggestionArrowOverlay arrows={[{from:moveArrow.from,to:moveArrow.to,colour:"#66b5ff"}]} flipped={moveArrow.flipped}/></div>,moveArrow.host)}
         {(rect&&tooltipPosition&&(step&&!(["welcome","done"].includes(step))||microtip))&&<section className={styles.tooltip} style={tooltipPosition} role="status"><div className={styles.tooltipHeader}><div><span>{microtip?"NexoChess":`${progress}/${total}`}</span><h3>{title}</h3></div>{!microtip&&<div className={styles.progressDots}>{Array.from({length:total},(_,index)=><i key={index} data-active={index<progress}/>)}</div>}</div><p>{body}</p><div className={styles.tooltipFooter}><span className={styles.actionHint}>{actionable?copy.actionHint:""}</span><div>{microtip?<button type="button" onClick={dismissMicrotip}>{copy.understood}</button>:actionable?<button type="button" className={styles.skip} onClick={skipCore}>{copy.skip}</button>:<button type="button" onClick={()=>step=="reference"?setStep("save"):finishCore()}>{copy.understood}</button>}</div></div></section>}
     </>;
 }
