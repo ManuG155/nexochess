@@ -24,6 +24,17 @@ interface Props {
     onReviewFamily: (lines: OpeningCatalogueEntry[]) => void;
 }
 
+const CARD_PREVIEW_FULL_MOVES = 5;
+
+function previewPgn(pgn: string) {
+    const text = pgn.trim();
+    if (!text) return text;
+    const nextMove = CARD_PREVIEW_FULL_MOVES + 1;
+    const cutoff = text.search(new RegExp(`(?:^|\\s)${nextMove}\\.`));
+    if (cutoff < 0) return text;
+    return `${text.slice(0, cutoff).trim()} …`;
+}
+
 function CourseFamilyV3({ name, lines, progress, preferredSide, onBack, onOpen, onReviewFamily }: Props) {
     const { t, i18n } = useTranslation("repertoire");
     const { t: tc } = useTranslation("repertoireCourse");
@@ -106,7 +117,7 @@ function CourseFamilyV3({ name, lines, progress, preferredSide, onBack, onOpen, 
                             : t("learn.study");
                 return <button key={`${item.eco}|${item.name}|${item.pgn}`} data-recommended={index == recommended} onClick={() => onOpen(item, itemProgress?.side || preferredSide, Boolean(itemProgress && complete), Boolean(itemProgress && complete))}>
                     <b>{complete ? "✓" : itemProgress ? "↗" : index + 1}</b>
-                    <div><strong>{display}</strong><small>{item.pgn}</small><small className={depthStyles.depthBadge}>{depthLabel}</small></div>
+                    <div><strong>{display}</strong><small title={item.pgn}>{previewPgn(item.pgn)}</small><small className={depthStyles.depthBadge}>{depthLabel}</small></div>
                     <span>{action}</span>
                 </button>;
             })}</div>
