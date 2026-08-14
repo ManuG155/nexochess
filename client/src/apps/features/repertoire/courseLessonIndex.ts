@@ -16,6 +16,16 @@ interface TheoryNode {
     best?: ParsedLine;
 }
 
+const moveCache = new WeakMap<OpeningCatalogueEntry, string[]>();
+
+function movesFor(entry: OpeningCatalogueEntry) {
+    const cached = moveCache.get(entry);
+    if (cached) return cached;
+    const moves = pgnMoveKeys(entry.pgn);
+    moveCache.set(entry, moves);
+    return moves;
+}
+
 function priority(entry: OpeningCatalogueEntry) {
     if (entry.name == entry.family) return 0;
     if (/\b(Main Line|Classical|Normal|Advance|Exchange|Accepted|Declined)\b/i.test(entry.name)) return 1;
@@ -91,7 +101,7 @@ export function countCourseLessonsFast(lines: OpeningCatalogueEntry[], maximum =
 
 export function buildCourseLessonsIndexed(lines: OpeningCatalogueEntry[], maximum = 28) {
     const parsed = lines
-        .map(entry => ({ entry, moves: pgnMoveKeys(entry.pgn) }))
+        .map(entry => ({ entry, moves: movesFor(entry) }))
         .filter(item => item.moves.length > 0);
 
     const byFamily = new Map<string, ParsedLine[]>();
