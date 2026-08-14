@@ -11,14 +11,28 @@ import { CoachExpression, CoachId, getCoachById } from "@analysis/lib/coach";
 
 import { OpeningCatalogueEntry } from "./openingCatalogue";
 import { localizeOpeningName } from "./openingLocalization";
-import { CourseProgressStore, createLessonId, recordLessonReview } from "./courseProgress";
+import {
+    CourseProgressStore,
+    createLessonId,
+    findLessonProgress,
+    recordLessonReview
+} from "./courseProgress";
 import { RepertoireSide, courseMoves, fenAt, inferSide } from "./courseV3Model";
+import {
+    depthIncrementMoves,
+    fullMoveCount,
+    initialDepth,
+    learnedDepth,
+    nextDepth
+} from "./courseDepth";
+import { courseDepthCopy, formatDepthCopy } from "./courseDepthCopy";
 import { useRepertoireEnhancementCopy } from "./repertoireEnhancementCopy";
 import RepertoireEngineInsight from "./RepertoireEngineInsight";
 import { appendPvToPgn } from "./repertoireEngine";
 import * as styles from "./courseV3.module.css";
 import * as balance from "./courseLessonBalance.module.css";
 import * as boardTools from "./repertoireBoardTools.module.css";
+import * as depthStyles from "./courseDepth.module.css";
 
 type Mode = "study" | "practice" | "complete";
 
@@ -91,20 +105,34 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
     const { t: tc } = useTranslation("repertoireCourse");
     const { t: tAnalysis } = useTranslation("analysis");
     const copy = useRepertoireEnhancementCopy();
+    const language = i18n.resolvedLanguage || i18n.language || "en";
+    const depthCopy = courseDepthCopy(language);
     const settings = useSettingsStore(state => state.settings);
     const setSettings = useSettingsStore(state => state.setSettings);
     const pieces = useMemo(() => createCustomPieces(settings.themes.piece), [settings.themes.piece]);
-    const moves = useMemo(() => courseMoves(opening), [opening]);
+    const allMoves = useMemo(() => courseMoves(opening), [opening]);
     const lessonId = createLessonId(opening.eco, opening.name, opening.pgn);
-    const old = progress[lessonId];
+    const old = findLessonProgress(progress, opening);
+    const availablePly = allMoves.length;
+    const learnedPly = learnedDepth(old, availablePly);
+    const startingTarget = startInPractice
+        ? (learnedPly || initialDepth(availablePly))
+        : old && learnedPly < availablePly
+            ? nextDepth(learnedPly, availablePly)
+            : learnedPly || initialDepth(availablePly);
+    const startingStudyIndex = !startInPractice && old && startingTarget > learnedPly
+        ? learnedPly
+        : 0;
+    const [targetPly, setTargetPly] = useState(startingTarget);
+    const moves = useMemo(() => allMoves.slice(0, targetPly), [allMoves, targetPly]);
     const [side, setSide] = useState<RepertoireSide>(preferredSide || old?.side || inferSide(opening));
     const [boardFlipped, setBoardFlipped] = useState(false);
     const [mode, setMode] = useState<Mode>(startInPractice ? "practice" : "study");
-    const [studyIndex, setStudyIndex] = useState(0);
+    const [studyIndex, setStudyIndex] = useState(startingStudyIndex);
     const [practiceIndex, setPracticeIndex] = useState(0);
     const [selected, setSelected] = useState<Square>();
     const [runs, setRuns] = useState(0);
-    const [requiredRuns, setRequiredRuns] = useState(old ? 1 : 2);
+    const [requiredRuns, setRequiredRuns] = useState(old && startingTarget <= learnedPly ? 1 : 2);
     const [mistakes, setMistakes] = useState(0);
     const [transitioning, setTransitioning] = useState(false);
     const [hint, setHint] = useState(false);
@@ -125,8 +153,8 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
     const studyFen = replay(studySequence).fen();
     const activeFen = mode == "study" ? studyFen : fenAt(moves, mode == "complete" ? moves.length : practiceIndex);
     const coach = getCoachById(settings.appearance.selectedCoach);
-    const localizedName = localizeOpeningName(opening.name, i18n.resolvedLanguage || i18n.language);
-    const localizedFamily = localizeOpeningName(opening.family, i18n.resolvedLanguage || i18n.language);
+    const localizedName = localizeOpeningName(opening.name, language);
+    const localizedFamily = localizeOpeningName(opening.family, language);
     const spoken = t(coachKey, { opening: localizedName, move: expected?.san || "" });
     const squareStyles = getSquareStyles(activeFen, selected, settings.themes.board.legalMoveHints);
     const customActive = customStartIndex != null && customMoves.length > 0;
@@ -135,6 +163,19 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
         ? side == "white" ? "black" : "white"
         : side;
     const flipBoardLabel = tAnalysis("optionsToolbar.flipBoard");
+    const availableMoves = fullMoveCount(availablePly);
+    const learnedMoves = fullMoveCount(learnedPly);
+    const targetMoves = fullMoveCount(targetPly);
+    const canDeepen = targetPly < availablePly;
+    const deepenCount = depthIncrementMoves(targetPly, availablePly);
+    const depthPercent = availablePly ? Math.min(100, targetPly / availablePly * 100) : 0;
+    const newTheoryFrom = learnedMoves + 1;
+    const depthBody = targetPly > learnedPly
+        ? formatDepthCopy(depthCopy.newTheory, { from: newTheoryFrom, to: targetMoves })
+        : learnedPly >= availablePly
+            ? depthCopy.complete
+            : depthCopy.review;
+    const remainingMoves = Math.max(0, availableMoves - targetMoves);
 
     useEffect(() => () => {
         if (opponentTimer.current != undefined) window.clearTimeout(opponentTimer.current);
@@ -157,9 +198,24 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
         if (mode != "practice" || transitioning || !moves.length || practiceIndex < moves.length) return;
         const nextRuns = runs + 1;
         if (nextRuns >= requiredRuns) {
-            const alreadyLearned = Boolean(old);
-            setProgress(previous => recordLessonReview(previous, { id: lessonId, openingName: opening.name, family: opening.family, eco: opening.eco, pgn: opening.pgn, side }, mistakes));
-            if (!alreadyLearned) onLearned(opening, side);
+            const nextLearnedPly = Math.max(learnedPly, targetPly);
+            setProgress(previous => recordLessonReview(previous, {
+                id: lessonId,
+                openingName: opening.name,
+                family: opening.family,
+                eco: opening.eco,
+                pgn: opening.pgn,
+                side,
+                learnedPly: nextLearnedPly,
+                availablePly
+            }, mistakes));
+            if (nextLearnedPly > learnedPly) {
+                const learnedOpening = {
+                    ...opening,
+                    pgn: replay(allMoves.slice(0, nextLearnedPly)).pgn()
+                };
+                onLearned(learnedOpening, side);
+            }
             setRuns(nextRuns);
             setMode("complete");
             setExpression("celebrating");
@@ -178,12 +234,12 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
             setExpression("thinking");
             setCoachKey("learn.coach.practiceStart");
         }, 800);
-    }, [mode, moves.length, practiceIndex, requiredRuns, runs, transitioning]);
+    }, [mode, moves.length, practiceIndex, requiredRuns, runs, transitioning, targetPly]);
 
     function resetExploration(index = studyIndex) {
         setCustomStartIndex(null);
         setCustomMoves([]);
-        setStudyIndex(index);
+        setStudyIndex(Math.min(index, moves.length));
         setSelected(undefined);
         setSaveOpen(false);
     }
@@ -193,7 +249,7 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
         setPracticeIndex(0);
         setRuns(0);
         setMistakes(0);
-        setRequiredRuns(old ? 1 : 2);
+        setRequiredRuns(old && targetPly <= learnedPly ? 1 : 2);
         setSelected(undefined);
         setHint(false);
         setTransitioning(false);
@@ -202,9 +258,30 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
         setSaveOpen(false);
     }
 
+    function deepenFurther() {
+        const currentDepth = Math.max(learnedPly, targetPly);
+        const next = nextDepth(currentDepth, availablePly);
+        if (next <= currentDepth) return;
+        setTargetPly(next);
+        setMode("study");
+        setStudyIndex(currentDepth);
+        setPracticeIndex(0);
+        setRuns(0);
+        setMistakes(0);
+        setRequiredRuns(2);
+        setCustomStartIndex(null);
+        setCustomMoves([]);
+        setSelected(undefined);
+        setHint(false);
+        setTransitioning(false);
+        setExpression("explaining");
+        setCoachKey("learn.coach.lineStart");
+        setSaveOpen(false);
+    }
+
     function registerProblem() {
         setMistakes(value => value + 1);
-        setRequiredRuns(value => Math.max(value, old ? 2 : 3));
+        setRequiredRuns(value => Math.max(value, old && targetPly <= learnedPly ? 2 : 3));
     }
 
     function playStudy(from: string, to: string) {
@@ -323,6 +400,12 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
         <div className={`${styles.lessonGrid} ${balance.balancedGrid}`}>
             {!blindPractice && <aside className={`${styles.saveRail} ${balance.leftRail}`}>
                 <div className={balance.leftRailStack}>
+                    <section className={depthStyles.depthCard}>
+                        <div className={depthStyles.depthHead}><span>{depthCopy.depth}</span><strong>{targetMoves}/{availableMoves}</strong></div>
+                        <div className={depthStyles.depthTrack}><i style={{ width: `${depthPercent}%` }}/></div>
+                        <p>{depthBody}</p>
+                        {remainingMoves > 0 && <small>{formatDepthCopy(depthCopy.available, { remaining: remainingMoves })}</small>}
+                    </section>
                     <section className={`${styles.infoCard} ${balance.leftCard} ${balance.referenceCard}`} data-repertoire-tour="reference-line"><span>{t("learn.referenceLine")}</span><div className={styles.referenceMoves}>{moves.map((move, i) => <button key={`${move.san}-${i}`} data-active={mode == "study" && customStartIndex == null && studyIndex == i + 1} onClick={() => mode == "study" && resetExploration(i + 1)}><small>{i % 2 == 0 ? `${Math.floor(i / 2) + 1}.` : "…"}</small>{move.san}</button>)}</div></section>
                     {mode == "study" && onSaveCustomLine && <section className={`${styles.saveWorkspace} ${balance.saveWorkspace}`} data-repertoire-tour="save-line">
                         <div className={styles.saveWorkspaceHeader}>
@@ -355,7 +438,7 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
                 </div>
                 {mode == "study" && <div className={styles.lessonControls}><span aria-hidden="true"/><div><strong>{customActive ? customLineSuggestedName || copy.saveLine : t("learn.step", { current: studyIndex, total: moves.length })}</strong><span>{customActive ? copy.linePreview.replace("{moves}", studySequence.map(move => move.san).join(" ")) : tc("practice.studyHint")}</span></div>{customActive ? <button onClick={() => resetExploration(customStartIndex || 0)}>{t("learn.referenceLine")}</button> : studyIndex >= moves.length ? <button data-primary onClick={resetPractice}>{tc("practice.start")}</button> : <span aria-hidden="true"/>}</div>}
                 {mode == "practice" && <div className={styles.lessonControls}><button onClick={() => { if (expected?.color == learner) { registerProblem(); setHint(true); } }} disabled={!expected || expected.color != learner}>{t("learn.hint")}</button><div><strong>{tc("practice.repetition", { current: repetition, total: requiredRuns })}</strong><span>{transitioning ? tc("practice.repeatRule") : hint && expected ? t("learn.hintMove", { move: expected.san }) : t("learn.practiceInstruction")}</span></div>{blindPractice ? <button onClick={onBack}>{tc("practice.backModule")}</button> : <button onClick={() => { setMode("study"); resetExploration(0); }}>{t("learn.reviewLine")}</button>}</div>}
-                {mode == "complete" && <div className={styles.lessonControls}><button onClick={onBack}>{tc("practice.backModule")}</button><div><strong>{tc("practice.completeTitle")}</strong><span>{tc("practice.autoSaved")}</span></div>{onNext ? <button data-primary onClick={onNext}>{tc("practice.nextLine")}</button> : <button data-primary onClick={onBack}>{tc("practice.moduleDone")}</button>}</div>}
+                {mode == "complete" && <div className={styles.lessonControls}><button onClick={onBack}>{tc("practice.backModule")}</button><div><strong>{tc("practice.completeTitle")}</strong><span>{tc("practice.autoSaved")}</span></div><div className={depthStyles.completeActions}>{!blindPractice && canDeepen && <button type="button" data-depth-primary="true" onClick={deepenFurther}>{formatDepthCopy(depthCopy.deepen, { count: deepenCount })}</button>}{onNext ? <button type="button" onClick={onNext}>{tc("practice.nextLine")}</button> : <button type="button" onClick={onBack}>{tc("practice.moduleDone")}</button>}</div></div>}
             </div>
             <aside className={`${styles.lessonPanel} ${balance.rightRail}`}>
                 {mode == "study" && <RepertoireEngineInsight fen={activeFen} onAddLine={addEngineCourseLine}/>}
@@ -363,8 +446,8 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
                     <button type="button" className={styles.coachPortraitButton} onClick={() => setCoachPickerOpen(true)} aria-label={coach.name} title={coach.name}><CoachPortrait coach={coach} baseExpression={expression} speechText={spoken} animationsEnabled={settings.coach.animations} className={styles.coachPortrait}/></button>
                     <div><strong>{coach.name}</strong><p>{spoken}</p></div>
                 </section>}
-                {mode == "practice" && <section className={styles.infoCard}><span>{tc("practice.memoryBlock")}</span><strong>{tc("practice.repetition", { current: repetition, total: requiredRuns })}</strong><p>{requiredRuns > (old ? 1 : 2) ? tc("practice.extra") : tc("practice.repeatRule")}</p><div className={styles.repeatDots}>{Array.from({ length: requiredRuns }, (_, i) => <i key={i} data-done={i < runs}/>)}</div></section>}
-                {mode == "complete" && <section className={styles.completeCard}><span>✓</span><strong>{tc("practice.lessonComplete")}</strong><p>{tc("practice.completeBody")}</p></section>}
+                {mode == "practice" && <section className={styles.infoCard}><span>{tc("practice.memoryBlock")}</span><strong>{tc("practice.repetition", { current: repetition, total: requiredRuns })}</strong><p>{requiredRuns > (old && targetPly <= learnedPly ? 1 : 2) ? tc("practice.extra") : tc("practice.repeatRule")}</p><div className={styles.repeatDots}>{Array.from({ length: requiredRuns }, (_, i) => <i key={i} data-done={i < runs}/>)}</div></section>}
+                {mode == "complete" && <section className={styles.completeCard}><span>✓</span><strong>{tc("practice.lessonComplete")}</strong><p>{canDeepen && !blindPractice ? depthCopy.deepenBody : tc("practice.completeBody")}</p></section>}
             </aside>
         </div>
         {settings.coach.enabled && coachPickerOpen && <CoachPicker selectedCoach={coach} onClose={() => setCoachPickerOpen(false)} onConfirm={chooseCoach}/>} 
