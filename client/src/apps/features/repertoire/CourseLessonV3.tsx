@@ -177,6 +177,7 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
         setCustomMoves([]);
         setStudyIndex(index);
         setSelected(undefined);
+        setSaveOpen(false);
     }
 
     function resetPractice() {
@@ -190,6 +191,7 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
         setTransitioning(false);
         setExpression("thinking");
         setCoachKey("learn.coach.practiceStart");
+        setSaveOpen(false);
     }
 
     function registerProblem() {
@@ -274,7 +276,7 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
 
     function openSaveCustom() {
         if (!customActive || !onSaveCustomLine) return;
-        setDraftName(customLineSuggestedName || copy.saveLine);
+        setDraftName(customLineSuggestedName || copy.suggestedLineName.replace("{move}", customMoves.at(-1)?.san || ""));
         setSaveOpen(true);
     }
 
@@ -296,6 +298,9 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
     const repetition = Math.min(runs + 1, requiredRuns);
     const currentMove = customActive ? customMoves.at(-1) : studyIndex > 0 ? moves[studyIndex - 1] : undefined;
     const draggable = mode == "study" || (mode == "practice" && !transitioning && expected?.color == learner);
+    const linePreview = customActive
+        ? copy.linePreview.replace("{moves}", studySequence.map(move => move.san).join(" "))
+        : copy.savedLinesHelp;
 
     return <section className={styles.lessonShell}>
         <header className={styles.lessonHeader}>
@@ -307,6 +312,27 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
             </div>
         </header>
         <div className={styles.lessonGrid}>
+            {mode == "study" && onSaveCustomLine && <aside className={styles.saveRail}>
+                <section className={styles.saveWorkspace}>
+                    <div className={styles.saveWorkspaceHeader}>
+                        <span>＋</span>
+                        <div><strong>{copy.saveLine}</strong><p>{copy.savedLinesHelp}</p></div>
+                    </div>
+                    <button type="button" className={styles.savePrimary} onClick={openSaveCustom} disabled={!customActive}>{copy.saveLine}</button>
+                    <div className={styles.saveNameBlock} data-active={saveOpen && customActive} aria-disabled={!saveOpen || !customActive}>
+                        <span className={styles.saveNameKicker}>{copy.saveModalTitle}</span>
+                        <h3>{copy.customNameLabel}</h3>
+                        <p>{linePreview}</p>
+                        <form onSubmit={saveCustom}>
+                            <label><span>{copy.customNameLabel}</span><input value={draftName} onChange={event => setDraftName(event.target.value)} maxLength={120} placeholder={customLineSuggestedName || copy.customNamePlaceholder} disabled={!saveOpen || !customActive}/></label>
+                            <div className={styles.saveNameActions}>
+                                <button type="button" onClick={() => setSaveOpen(false)} disabled={!saveOpen || !customActive}>{copy.cancel}</button>
+                                <button type="submit" disabled={!saveOpen || !customActive}>{copy.save}</button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            </aside>}
             <div className={styles.lessonBoardColumn}>
                 <div className={styles.lessonBoardWrap}><Chessboard id="repertoire-course-board-v3" position={activeFen} boardOrientation={side} onPieceDrop={play} onPieceDragBegin={(_piece, source) => draggable && setSelected(source as Square)} onPieceDragEnd={() => setSelected(undefined)} onSquareClick={clickSquare} arePiecesDraggable={Boolean(draggable)} customPieces={pieces} customDarkSquareStyle={{ backgroundColor: settings.themes.board.darkSquareColour }} customLightSquareStyle={{ backgroundColor: settings.themes.board.lightSquareColour }} customSquareStyles={squareStyles} showBoardNotation={settings.themes.board.coordinates == "inside"} snapToCursor/></div>
                 {mode == "study" && <div className={styles.lessonControls}><span aria-hidden="true"/><div><strong>{customActive ? customLineSuggestedName || copy.saveLine : t("learn.step", { current: studyIndex, total: moves.length })}</strong><span>{customActive ? copy.linePreview.replace("{moves}", studySequence.map(move => move.san).join(" ")) : tc("practice.studyHint")}</span></div>{customActive ? <button onClick={() => resetExploration(customStartIndex || 0)}>{t("learn.referenceLine")}</button> : studyIndex >= moves.length ? <button data-primary onClick={resetPractice}>{tc("practice.start")}</button> : <span aria-hidden="true"/>}</div>}
@@ -319,7 +345,6 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
                     <button type="button" className={styles.coachPortraitButton} onClick={() => setCoachPickerOpen(true)} aria-label={coach.name} title={coach.name}><CoachPortrait coach={coach} baseExpression={expression} speechText={spoken} animationsEnabled={settings.coach.animations} className={styles.coachPortrait}/></button>
                     <div><strong>{coach.name}</strong><p>{spoken}</p></div>
                 </section>}
-                {customActive && onSaveCustomLine && <section className={styles.saveCustomCard}><span>＋</span><div><strong>{copy.saveLine}</strong><p>{copy.savedLinesHelp}</p></div><button type="button" onClick={openSaveCustom}>{copy.saveLine}</button></section>}
                 {mode == "study" && <section className={styles.infoCard}><span>{t("learn.whyTitle")}</span><strong>{currentMove?.san || t("editor.startPosition")}</strong><p>{explanation(currentMove, t)}</p></section>}
                 {mode == "practice" && <section className={styles.infoCard}><span>{tc("practice.memoryBlock")}</span><strong>{tc("practice.repetition", { current: repetition, total: requiredRuns })}</strong><p>{requiredRuns > (old ? 1 : 2) ? tc("practice.extra") : tc("practice.repeatRule")}</p><div className={styles.repeatDots}>{Array.from({ length: requiredRuns }, (_, i) => <i key={i} data-done={i < runs}/>)}</div></section>}
                 {mode == "complete" && <section className={styles.completeCard}><span>✓</span><strong>{tc("practice.lessonComplete")}</strong><p>{tc("practice.completeBody")}</p></section>}
@@ -327,7 +352,6 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
             </aside>
         </div>
         {settings.coach.enabled && coachPickerOpen && <CoachPicker selectedCoach={coach} onClose={() => setCoachPickerOpen(false)} onConfirm={chooseCoach}/>} 
-        {saveOpen && <div className={styles.courseModalBackdrop} onMouseDown={event => { if (event.target == event.currentTarget) setSaveOpen(false); }}><form className={styles.courseSaveModal} role="dialog" aria-modal="true" onSubmit={saveCustom}><span>{copy.saveModalTitle}</span><h3>{copy.customNameLabel}</h3><p>{copy.linePreview.replace("{moves}", studySequence.map(move => move.san).join(" "))}</p><label><span>{copy.customNameLabel}</span><input autoFocus value={draftName} onChange={event => setDraftName(event.target.value)} maxLength={120} placeholder={customLineSuggestedName}/></label><div><button type="button" onClick={() => setSaveOpen(false)}>{copy.cancel}</button><button type="submit">{copy.save}</button></div></form></div>}
     </section>;
 }
 
