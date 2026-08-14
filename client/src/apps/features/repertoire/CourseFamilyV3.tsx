@@ -40,7 +40,7 @@ function CourseFamilyV3({ name, lines, progress, preferredSide, onBack, onOpen, 
             <div><span>{lines.find(item => item.eco != "USR")?.eco || lines[0]?.eco}</span><h2>{localizedFamily}</h2><p>{tc("path.intro")}</p></div>
             <div className={styles.familyHeroActions}>
                 <div><strong>{completed}/{lines.length}</strong><span>{t("learn.linesLearned")}</span></div>
-                <button type="button" onClick={studyNext} disabled={!lines.length}>{t("learn.study")}</button>
+                <button type="button" data-repertoire-tour="study-next" onClick={studyNext} disabled={!lines.length}>{t("learn.study")}</button>
                 <button type="button" onClick={() => onReviewFamily(learnedLines)} disabled={!learnedLines.length}>{t("modes.review")}</button>
             </div>
         </div>
