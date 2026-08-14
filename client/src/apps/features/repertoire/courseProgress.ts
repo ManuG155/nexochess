@@ -13,6 +13,8 @@ export interface LessonProgress {
     mistakes: number;
     streak: number;
     mastered: boolean;
+    learnedPly?: number;
+    availablePly?: number;
 }
 
 export type CourseProgressStore = Record<string, LessonProgress>;
@@ -22,6 +24,31 @@ const MIN_EASE = 1.3;
 
 export function createLessonId(eco: string, name: string, pgn: string) {
     return `${eco}|${name}|${pgn}`;
+}
+
+export function findLessonProgress(
+    progress: CourseProgressStore,
+    lesson: { eco: string; name: string; pgn?: string }
+) {
+    if (lesson.pgn) {
+        const exact = progress[createLessonId(lesson.eco, lesson.name, lesson.pgn)];
+        if (exact) return exact;
+    }
+    return Object.values(progress).find(item => (
+        item.eco == lesson.eco && item.openingName == lesson.name
+    ));
+}
+
+function uniqueProgress(progress: CourseProgressStore) {
+    const byOpening = new Map<string, LessonProgress>();
+    for (const item of Object.values(progress)) {
+        const key = `${item.eco}|${item.openingName}`;
+        const previous = byOpening.get(key);
+        if (!previous || previous.lastReviewedAt < item.lastReviewedAt) {
+            byOpening.set(key, item);
+        }
+    }
+    return Array.from(byOpening.values());
 }
 
 export function readCourseProgress(): CourseProgressStore {
@@ -64,11 +91,15 @@ export function recordLessonReview(
         eco: string;
         pgn: string;
         side: "white" | "black";
+        learnedPly?: number;
+        availablePly?: number;
     },
     mistakes: number
 ): CourseProgressStore {
     const now = new Date();
-    const old = previous[lesson.id];
+    const old = previous[lesson.id] || Object.values(previous).find(item => (
+        item.eco == lesson.eco && item.openingName == lesson.openingName
+    ));
     const quality = qualityFromMistakes(mistakes);
     let repetitions = old?.repetitions || 0;
     let intervalDays = old?.intervalDays || 0;
@@ -111,25 +142,36 @@ export function recordLessonReview(
         lastReviewedAt: now.toISOString(),
         mistakes,
         streak,
-        mastered
+        mastered,
+        learnedPly: lesson.learnedPly ?? old?.learnedPly,
+        availablePly: lesson.availablePly ?? old?.availablePly
     };
 
+    const cleaned = { ...previous };
+    for (const [key, item] of Object.entries(cleaned)) {
+        if (
+            key != lesson.id
+            && item.eco == lesson.eco
+            && item.openingName == lesson.openingName
+        ) delete cleaned[key];
+    }
+
     return {
-        ...previous,
+        ...cleaned,
         [lesson.id]: next
     };
 }
 
 export function getDueLessons(progress: CourseProgressStore) {
-    return Object.values(progress)
+    return uniqueProgress(progress)
         .filter(item => isDue(item))
         .sort((a, b) => a.dueAt.localeCompare(b.dueAt));
 }
 
 export function getLearnedCount(progress: CourseProgressStore) {
-    return Object.keys(progress).length;
+    return uniqueProgress(progress).length;
 }
 
 export function getMasteredCount(progress: CourseProgressStore) {
-    return Object.values(progress).filter(item => item.mastered).length;
+    return uniqueProgress(progress).filter(item => item.mastered).length;
 }
