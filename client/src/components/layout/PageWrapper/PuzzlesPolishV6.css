@@ -1,0 +1,390 @@
+/* Puzzles V6: correcciones de geometría y flujo en resolución. */
+
+/* Todo el lateral se mueve con el documento; nada queda anclado. */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-left-rail,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-right-rail {
+    position: relative !important;
+    top: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-left-rail {
+    overflow: visible !important;
+}
+
+/* El historial nunca puede escapar del lateral. Solo él gana scroll si crece. */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-left-history {
+    box-sizing: border-box !important;
+    flex: 0 1 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 112px !important;
+    min-height: 0 !important;
+    padding-right: 4px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    scrollbar-gutter: stable !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-left-history > div,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-left-history > div > div:last-child {
+    min-width: 0 !important;
+    max-width: 100% !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-left-history > div > div:last-child {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-content: flex-start !important;
+}
+
+/* Botón de información: fuera del panel, en su esquina inferior izquierda. */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-left-rail > button[data-puzzle-info-toggle="true"] {
+    position: absolute !important;
+    z-index: 12 !important;
+    left: -42px !important;
+    bottom: 10px !important;
+    margin: 0 !important;
+}
+
+/* Cambiar sesión + siguiente automático son una única tarjeta real. */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-session-card {
+    flex: 0 0 auto !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(255, 255, 255, 0.07) !important;
+    border-radius: 11px !important;
+    background: rgba(7, 10, 15, 0.25) !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-session-card .nexo-puzzle-back-link {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-height: 43px !important;
+    margin: 0 !important;
+    padding: 9px 12px 5px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-session-card .nexo-puzzle-auto-next-control {
+    display: block !important;
+    margin: 0 !important;
+    padding: 7px 12px 11px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"]
+.nexo-puzzle-session-card {
+    border-color: rgba(39, 72, 109, 0.11) !important;
+    background: rgba(247, 250, 254, 0.86) !important;
+}
+
+/* Dificultad: chevron dibujado con bordes, sin glifo raro. */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-difficulty-menu > summary::after {
+    content: "" !important;
+    position: absolute !important;
+    top: 50% !important;
+    right: 14px !important;
+    width: 7px !important;
+    height: 7px !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-right: 1.7px solid #8fb2f9 !important;
+    border-bottom: 1.7px solid #8fb2f9 !important;
+    background: transparent !important;
+    transform: translateY(-65%) rotate(45deg) !important;
+    transform-origin: 50% 50% !important;
+    transition: transform 0.15s ease !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-difficulty-menu[open] > summary::after {
+    transform: translateY(-35%) rotate(225deg) !important;
+}
+
+/* Cronómetro por problema: bloque separado, compacto y numérico. */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-timer {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 9px !important;
+    flex: 0 0 auto !important;
+    min-height: 70px !important;
+    margin-top: 2px !important;
+    padding: 10px 12px !important;
+    color: rgba(244, 247, 252, 0.82) !important;
+    border: 1px solid rgba(255, 255, 255, 0.065) !important;
+    border-radius: 11px !important;
+    background: rgba(7, 10, 15, 0.22) !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-timer > span {
+    color: #87aef8 !important;
+    font-size: 1.05rem !important;
+    line-height: 1 !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-timer > strong {
+    font-size: 1.45rem !important;
+    font-weight: 720 !important;
+    font-variant-numeric: tabular-nums !important;
+    letter-spacing: 0.04em !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"]
+.nexo-puzzle-timer {
+    color: #24364d !important;
+    border-color: rgba(39, 72, 109, 0.11) !important;
+    background: rgba(247, 250, 254, 0.82) !important;
+}
+
+/* El rail derecho crece por contenido y nunca recorta traducciones. */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-right-rail {
+    height: auto !important;
+    min-height: var(--nexo-puzzle-stage) !important;
+    overflow: visible !important;
+}
+
+/* Entrenador + bocadillo forman una única fila cuyo alto lo manda el texto. */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 102px !important;
+    align-items: stretch !important;
+    gap: 4px !important;
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card > div:first-child {
+    align-self: stretch !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 13px 14px !important;
+    overflow: visible !important;
+}
+
+/* Cola del bocadillo: dos triángulos perfectamente superpuestos. */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card > div:first-child::before,
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card > div:first-child::after {
+    content: "" !important;
+    position: absolute !important;
+    top: auto !important;
+    left: auto !important;
+    margin: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    clip-path: polygon(0 0, 100% 50%, 0 100%) !important;
+    pointer-events: none !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card > div:first-child::before {
+    z-index: 3 !important;
+    right: -16px !important;
+    bottom: 55px !important;
+    width: 16px !important;
+    height: 26px !important;
+    background: rgba(72, 112, 173, 0.58) !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card > div:first-child::after {
+    z-index: 4 !important;
+    right: -14px !important;
+    bottom: 57px !important;
+    width: 14px !important;
+    height: 22px !important;
+    background: #ffffff !important;
+}
+
+/* El entrenador baja hasta el fondo del bocadillo. */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card > button {
+    align-self: end !important;
+    justify-self: end !important;
+    width: 104px !important;
+    height: 132px !important;
+    margin: 0 -6px 2px 0 !important;
+}
+
+/*
+ * Boca animada: ajuste EXCLUSIVO de Puzzles. En el resto de secciones no se
+ * modifica. Se sube 1 px respecto a la posición anterior.
+ */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-coach-card > button > span > svg,
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-coach-card > button > span > span:last-child,
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-coach-card > button > span > img:nth-child(3) {
+    translate: 0 14px !important;
+}
+
+/* El objetivo queda pegado al bloque del entrenador, sin vacío artificial. */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-objective {
+    margin-top: 0 !important;
+}
+
+/* El rail funciona como una sola columna al hacer scroll. */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-right-rail > .nexo-puzzle-coach-card,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-objective,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-actions,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-next,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-secondary {
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+}
+
+/* Herramientas del tablero: mismo rail vertical, siempre arriba. */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-board-tools,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-board-white .nexo-puzzle-board-tools,
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-board-black .nexo-puzzle-board-tools {
+    top: 4px !important;
+    bottom: auto !important;
+    gap: 4px !important;
+    justify-content: flex-start !important;
+}
+
+/* ---------- Modo sin distracciones ---------- */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-training-shell.nexo-puzzle-focus-mode {
+    --nexo-puzzle-stage: min(
+        780px,
+        calc(100dvh - 44px),
+        calc(100vw - 500px)
+    );
+
+    position: fixed !important;
+    z-index: 9999 !important;
+    inset: 0 !important;
+    display: grid !important;
+    grid-template-columns:
+        var(--nexo-puzzle-stage)
+        minmax(320px, 420px) !important;
+    grid-template-rows: var(--nexo-puzzle-stage) !important;
+    grid-template-areas: "board right" !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 28px !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    padding: 22px 26px !important;
+    overflow: hidden !important;
+    background: #0a1018 !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"]
+.nexo-puzzle-training-shell.nexo-puzzle-focus-mode {
+    background: #eef2f7 !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-focus-mode > header,
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-focus-mode > .nexo-puzzle-left-rail,
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-focus-mode .nexo-puzzle-right-rail > .nexo-puzzle-coach-card,
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-focus-mode .nexo-puzzle-next,
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-focus-mode .nexo-puzzle-secondary {
+    display: none !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-focus-mode .nexo-puzzle-board-column {
+    grid-area: board !important;
+    align-self: center !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-focus-mode .nexo-puzzle-right-rail {
+    grid-area: right !important;
+    align-self: center !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    gap: 12px !important;
+    overflow: visible !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-focus-mode .nexo-puzzle-objective,
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-focus-mode .nexo-puzzle-actions {
+    width: 100% !important;
+}
+
+/* En foco desaparece la barra de evaluación y el rail de iconos pasa a la izquierda. */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-focus-mode .nexo-puzzle-board-tools,
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-focus-mode .nexo-puzzle-board-white .nexo-puzzle-board-tools,
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-focus-mode .nexo-puzzle-board-black .nexo-puzzle-board-tools {
+    top: 4px !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: -45px !important;
+    gap: 4px !important;
+    justify-content: flex-start !important;
+}
+
+@media (max-width: 1280px) and (min-width: 1051px) {
+    [data-nexo-shell][data-route="puzzles"]
+    .nexo-puzzle-right-rail > .nexo-puzzle-coach-card {
+        grid-template-columns: minmax(0, 1fr) 88px !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"]
+    .nexo-puzzle-right-rail > .nexo-puzzle-coach-card > button {
+        width: 92px !important;
+        height: 118px !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"]
+    .nexo-puzzle-right-rail > .nexo-puzzle-coach-card > div:first-child::before {
+        bottom: 48px !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"]
+    .nexo-puzzle-right-rail > .nexo-puzzle-coach-card > div:first-child::after {
+        bottom: 50px !important;
+    }
+}
+
+@media (max-width: 1050px) {
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-training-shell.nexo-puzzle-focus-mode {
+        --nexo-puzzle-stage: min(680px, calc(100vw - 72px), calc(100dvh - 320px));
+        grid-template-columns: var(--nexo-puzzle-stage) !important;
+        grid-template-rows: var(--nexo-puzzle-stage) auto !important;
+        grid-template-areas:
+            "board"
+            "right" !important;
+        align-content: center !important;
+        gap: 16px !important;
+        overflow-y: auto !important;
+    }
+}

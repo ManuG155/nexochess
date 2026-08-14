@@ -11,15 +11,12 @@ function publicAssetFilename(pathData) {
     const filename = String(pathData.filename || "").replaceAll("\\", "/");
     const publicMarker = "public/";
     const publicIndex = filename.lastIndexOf(publicMarker);
-
     return publicIndex >= 0
         ? filename.slice(publicIndex + publicMarker.length)
         : filename.replace(/^\.\//, "");
 }
 
-/**
- * @type {Configuration}
- */
+/** @type {Configuration} */
 module.exports = {
     entry: {
         home: "./src/apps/home/index.tsx",
@@ -29,24 +26,19 @@ module.exports = {
         archive: "./src/apps/features/archive/index.tsx",
         academy: "./src/apps/features/academy/index.tsx",
         puzzles: "./src/apps/features/puzzles/index.tsx",
+        repertoire: "./src/apps/features/repertoire/entryV3.tsx",
         guides: "./src/apps/guides/index.tsx",
         news: "./src/apps/features/news/index.tsx",
-
         signin: "./src/apps/account/signin/index.tsx",
         resetPassword: "./src/apps/account/resetPassword/index.tsx",
         profile: "./src/apps/account/profile/index.tsx",
-
         helpCenter: "./src/apps/footer/helpCenter/index.tsx",
         legal: "./src/apps/footer/legal/index.tsx",
-
         settings: "./src/apps/settings/index.tsx",
         internal: "./src/apps/internal/index.tsx",
         unfound: "./src/apps/unfound/index.tsx"
     },
     output: {
-        // Entry bundles keep their stable names because the existing HTML files
-        // reference them directly. Lazy chunks receive a content hash so every
-        // deployment produces a new URL whenever their code or CSS changes.
         filename: "[name].bundle.js",
         chunkFilename: "[name].[contenthash:8].bundle.js",
         path: resolve("./dist"),
@@ -63,46 +55,20 @@ module.exports = {
     },
     module: {
         rules: [
-            {
-                test: /\.tsx?$/i,
-                use: "babel-loader"
-            },
+            { test: /\.tsx?$/i, use: "babel-loader" },
             {
                 test: /\.css$/i,
-                use: [
-                    "style-loader",
-                    {
-                        loader: "css-loader",
-                        options: {
-                            // Component styles use *.module.css. Files such as
-                            // index.css and NexoReview.css are deliberately
-                            // global and must keep the class names written in
-                            // the markup.
-                            modules: {
-                                auto: /\.module\.css$/i
-                            }
-                        }
-                    }
-                ]
+                use: ["style-loader", {
+                    loader: "css-loader",
+                    options: { modules: { auto: /\.module\.css$/i } }
+                }]
             },
             {
                 test: /\.(png|svg|gif|ttf|mp3)$/i,
                 include: publicDirectory,
                 type: "asset",
-                parser: {
-                    dataUrlCondition: {
-                        maxSize: 8 * 1024
-                    }
-                },
-                generator: {
-                    // client/public is copied verbatim into cloudflare-dist.
-                    // Keep small assets inline, but point larger imported assets
-                    // at that canonical public copy instead of emitting a second
-                    // hashed duplicate into client/dist.
-                    emit: false,
-                    filename: publicAssetFilename,
-                    publicPath: "/"
-                }
+                parser: { dataUrlCondition: { maxSize: 8 * 1024 } },
+                generator: { emit: false, filename: publicAssetFilename, publicPath: "/" }
             },
             {
                 test: /\.(png|svg|gif|ttf|mp3)$/i,
@@ -111,12 +77,6 @@ module.exports = {
             }
         ]
     },
-    plugins: [
-        new DotenvPlugin({
-            systemvars: true,
-            path: "../.env",
-            silent: true
-        })
-    ],
+    plugins: [new DotenvPlugin({ systemvars: true, path: "../.env", silent: true })],
     mode: nodeEnv
 };

@@ -4,7 +4,7 @@
 [![CodeQL](https://github.com/ManuG155/nexochess/actions/workflows/codeql.yml/badge.svg)](https://github.com/ManuG155/nexochess/actions/workflows/codeql.yml)
 [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
 
-**NexoChess** is a free web application for analysing chess games, reviewing mistakes with Stockfish, training with puzzles and tracking progress.
+**NexoChess** is a free web application for analysing chess games, reviewing mistakes with Stockfish, preparing opening repertoires, training with puzzles and tracking progress.
 
 - Public website: **https://www.nexochess.com**
 - Source code: **https://github.com/ManuG155/nexochess**
@@ -14,16 +14,14 @@ NexoChess is an independent project. It is not affiliated with, sponsored by or 
 
 ## Project status
 
-NexoChess is publicly available while the next release is prepared through a separate development environment.
+NexoChess uses two long-lived branches with deliberately different roles:
 
-| Environment | Branch | Address | Purpose |
-| --- | --- | --- | --- |
-| Production | `master` | https://www.nexochess.com | Public, explicitly approved releases |
-| Staging | `develop` | https://nexochess-staging.manuel-garcia-villaescusa.workers.dev | Integration and validation before production |
+- `master` contains explicitly approved public releases.
+- `develop` is used for integration, validation and subsequent development work.
 
-`master` and `develop` are deliberately separated. A change merged into `develop` does not modify the public website until it is reviewed, promoted to `master` and deployed as an authorised production release.
+A release promotion aligns `master` with the tested `develop` commit without removing `develop`. New work then continues on `develop` through normal pull requests.
 
-The project no longer depends on a persistent application running on `localhost` or on the developer's computer. Local commands are used for installation, checks and builds; functional validation is performed against the hosted staging environment.
+The project no longer depends on a persistent application running on `localhost` or on the developer's computer. Local commands are used for installation, checks and builds; release validation is performed before production promotion.
 
 ## Main features
 
@@ -36,8 +34,9 @@ The project no longer depends on a persistent application running on `localhost`
 - Google OAuth and email/password accounts.
 - Verification, password recovery and account email flows.
 - Public profiles and shareable analysed games.
+- Repertoire tools for creating or importing opening lines, studying them move by move and practising guided opening courses.
 - Puzzles generated from analysed mistakes.
-- Thematic and difficulty-filtered puzzle training.
+- Redesigned thematic puzzle training with multi-theme and difficulty filters.
 - Progress, streaks and puzzle rating.
 - Light and dark appearance.
 - Interface support for 11 languages.
@@ -130,8 +129,6 @@ Prepare the Cloudflare staging bundle without deploying it:
 ```bash
 npm run build:cloudflare
 ```
-
-The normal development target is hosted staging; the repository does not define `localhost` as an official NexoChess environment.
 
 ## Development workflow
 

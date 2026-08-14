@@ -85,7 +85,7 @@
         },
         "hints": {
             "title": "Podpowiedzi",
-            "body": "Pozwól trenerowi pokazać ruch"
+            "body": "Pozwól trenerowi podświetlić właściwą figurę"
         },
         "solution": {
             "title": "Rozwiązanie",
@@ -102,7 +102,7 @@
         "wrong": "Nie ten ruch. Jest legalny, ale wypuszcza kluczową szansę. Ponownie sprawdź szachy, bicia i groźby.",
         "correctContinue": "Dobry ruch. Obserwuj odpowiedź; pomysł jeszcze się nie skończył.",
         "yourTurnAgain": "To była oczekiwana obrona. Kontynuuj kombinację.",
-        "hint": "Podpowiedź: zbadaj {{move}} i zrozum, dlaczego ten ruch jest silniejszy.",
+        "hint": "Figura, która powinna się ruszyć, jest podświetlona. Sam znajdź pole docelowe.",
         "solvedClean": "Świetnie. Cały pomysł został znaleziony bez pomocy.",
         "solvedAfterHelp": "Rozwiązane. Powtórz jeszcze raz ten motyw w myślach.",
         "solutionShown": "Oto cały wariant. Użyj sterowania w karcie celu, aby przejrzeć każdą pozycję.",
@@ -156,7 +156,7 @@
     },
     "actions": {
         "hint": "Podpowiedź",
-        "hintHelp": "Pokaż kluczowy ruch",
+        "hintHelp": "Podświetl figurę",
         "solution": "Rozwiązanie",
         "solutionHelp": "Ujawnij wariant",
         "disabled": "Wyłączone w tej sesji",
@@ -164,7 +164,9 @@
         "changeFilters": "Zmień sesję",
         "sourceGame": "Partia źródłowa",
         "autoNext": "Automatycznie dalej",
-        "autoNextHelp": "Po rozwiązaniu przejdź do następnego"
+        "autoNextHelp": "Po rozwiązaniu przejdź do następnego",
+        "focusMode": "Tryb bez rozpraszania",
+        "exitFocusMode": "Wyjdź z trybu bez rozpraszania"
     },
     "attribution": {
         "text": "Pozycje pochodzą z publicznej bazy zadań Lichess CC0. NexoChess nie jest powiązany z Lichess.",

@@ -85,7 +85,7 @@
         },
         "hints": {
             "title": "Dicas",
-            "body": "Permitir ao treinador mostrar uma jogada"
+            "body": "Permitir que o treinador destaque a peça correta"
         },
         "solution": {
             "title": "Solução",
@@ -102,7 +102,7 @@
         "wrong": "Não é esta. A jogada é legal, mas deixa escapar a oportunidade principal. Reveja xeques, capturas e ameaças.",
         "correctContinue": "Boa jogada. Observe a resposta; a ideia ainda não terminou.",
         "yourTurnAgain": "Essa era a defesa esperada. Continue a combinação.",
-        "hint": "Uma dica: estude {{move}} e descubra por que é mais forte.",
+        "hint": "A peça que deve mover está destacada. Encontra tu a casa de destino.",
         "solvedClean": "Excelente. Encontrou toda a ideia sem ajuda.",
         "solvedAfterHelp": "Resolvido. Repita o padrão mentalmente mais uma vez.",
         "solutionShown": "Aqui está a variante completa. Use os controlos no cartão do objetivo para rever cada posição.",
@@ -156,7 +156,7 @@
     },
     "actions": {
         "hint": "Dica",
-        "hintHelp": "Mostrar a jogada-chave",
+        "hintHelp": "Destacar a peça",
         "solution": "Solução",
         "solutionHelp": "Revelar a variante",
         "disabled": "Desativado nesta sessão",
@@ -164,7 +164,9 @@
         "changeFilters": "Mudar sessão",
         "sourceGame": "Partida de origem",
         "autoNext": "Avanço automático",
-        "autoNextHelp": "Passa ao puzzle seguinte ao resolver"
+        "autoNextHelp": "Passa ao puzzle seguinte ao resolver",
+        "focusMode": "Modo sem distrações",
+        "exitFocusMode": "Sair do modo sem distrações"
     },
     "attribution": {
         "text": "As posições vêm da base pública CC0 de puzzles do Lichess. A NexoChess não é afiliada ao Lichess.",

@@ -85,7 +85,7 @@
         },
         "hints": {
             "title": "Pistas",
-            "body": "Permite al entrenador mostrar una jugada"
+            "body": "Permite al entrenador resaltar la pieza"
         },
         "solution": {
             "title": "Solución",
@@ -102,7 +102,7 @@
         "wrong": "Esta no. La jugada es legal, pero deja escapar la oportunidad clave. Revisa jaques, capturas y amenazas.",
         "correctContinue": "Buena jugada. Mira la respuesta; la idea todavía no ha terminado.",
         "yourTurnAgain": "Esa era la defensa esperada. Continúa la combinación.",
-        "hint": "Una pista útil: estudia {{move}}. Intenta entender por qué es más fuerte antes de jugarla.",
+        "hint": "La pieza que debe moverse está resaltada. Encuentra tú la casilla de destino.",
         "solvedClean": "Excelente. Has encontrado toda la idea sin ayuda.",
         "solvedAfterHelp": "Resuelto. Repite el patrón mentalmente una vez más para fijarlo.",
         "solutionShown": "Aquí tienes la línea completa. Usa los controles del objetivo para revisar cada posición.",
@@ -156,7 +156,7 @@
     },
     "actions": {
         "hint": "Pista",
-        "hintHelp": "Muestra la jugada clave",
+        "hintHelp": "Resalta la pieza",
         "solution": "Solución",
         "solutionHelp": "Revela la línea",
         "disabled": "Desactivado en esta sesión",
@@ -164,7 +164,9 @@
         "changeFilters": "Cambiar sesión",
         "sourceGame": "Partida de origen",
         "autoNext": "Siguiente automático",
-        "autoNextHelp": "Pasa al siguiente al resolverlo"
+        "autoNextHelp": "Pasa al siguiente al resolverlo",
+        "focusMode": "Modo sin distracciones",
+        "exitFocusMode": "Salir del modo sin distracciones"
     },
     "attribution": {
         "text": "Las posiciones proceden de la base pública CC0 de Lichess. NexoChess no está afiliado a Lichess.",

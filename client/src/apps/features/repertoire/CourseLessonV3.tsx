@@ -1,0 +1,458 @@
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Chess, Move, Square } from "chess.js";
+import { Chessboard } from "react-chessboard";
+
+import useSettingsStore from "@/stores/SettingsStore";
+import { createCustomPieces } from "@/lib/chessAppearance";
+import CoachPicker from "@analysis/components/AnalysisPanel/CoachPicker";
+import CoachPortrait from "@analysis/components/AnalysisPanel/CoachPortrait";
+import { CoachExpression, CoachId, getCoachById } from "@analysis/lib/coach";
+
+import { OpeningCatalogueEntry } from "./openingCatalogue";
+import { localizeOpeningName } from "./openingLocalization";
+import {
+    CourseProgressStore,
+    createLessonId,
+    findLessonProgress,
+    recordLessonReview
+} from "./courseProgress";
+import { RepertoireSide, courseMoves, fenAt, inferSide } from "./courseV3Model";
+import {
+    depthIncrementMoves,
+    fullMoveCount,
+    initialDepth,
+    learnedDepth,
+    nextDepth
+} from "./courseDepth";
+import { courseDepthCopy, formatDepthCopy } from "./courseDepthCopy";
+import { useRepertoireEnhancementCopy } from "./repertoireEnhancementCopy";
+import RepertoireEngineInsight from "./RepertoireEngineInsight";
+import { appendPvToPgn } from "./repertoireEngine";
+import * as styles from "./courseV3.module.css";
+import * as balance from "./courseLessonBalance.module.css";
+import * as boardTools from "./repertoireBoardTools.module.css";
+import * as depthStyles from "./courseDepth.module.css";
+
+type Mode = "study" | "practice" | "complete";
+
+interface CustomLineSave {
+    opening: OpeningCatalogueEntry;
+    side: RepertoireSide;
+    pgn: string;
+    name: string;
+}
+
+interface Props {
+    opening: OpeningCatalogueEntry;
+    lineNumber: number;
+    lineTotal: number;
+    progress: CourseProgressStore;
+    setProgress: React.Dispatch<React.SetStateAction<CourseProgressStore>>;
+    preferredSide?: RepertoireSide;
+    startInPractice?: boolean;
+    blindPractice?: boolean;
+    customLineSuggestedName?: string;
+    onSaveCustomLine?: (line: CustomLineSave) => void;
+    onBack: () => void;
+    onNext?: () => void;
+    onLearned: (opening: OpeningCatalogueEntry, side: RepertoireSide) => void;
+}
+
+function explanation(move: Move | undefined, t: (key: string) => string) {
+    if (!move) return t("learn.explanations.start");
+    if (move.san.includes("O-O")) return t("learn.explanations.castle");
+    if (move.san.includes("+")) return t("learn.explanations.check");
+    if (move.san.includes("x")) return t("learn.explanations.capture");
+    if (move.piece == "n") return t("learn.explanations.knight");
+    if (move.piece == "b") return t("learn.explanations.bishop");
+    if (move.piece == "q") return t("learn.explanations.queen");
+    return move.piece == "p" ? t("learn.explanations.pawn") : t("learn.explanations.piece");
+}
+
+function getSquareStyles(fen: string, selected: Square | undefined, legalHints: boolean) {
+    const result: NonNullable<React.ComponentProps<typeof Chessboard>["customSquareStyles"]> = {};
+    if (!selected) return result;
+    result[selected] = { boxShadow: "inset 0 0 0 4px rgba(96,151,255,.92)" };
+    if (!legalHints) return result;
+    const board = new Chess(fen);
+    board.moves({ square: selected, verbose: true }).forEach(move => {
+        result[move.to] = board.get(move.to)
+            ? { boxShadow: "inset 0 0 0 5px rgba(18,24,34,.34)" }
+            : { backgroundImage: "radial-gradient(circle, rgba(18,24,34,.42) 0 16%, transparent 17%)" };
+    });
+    return result;
+}
+
+function replay(moves: Move[]) {
+    const board = new Chess();
+    for (const move of moves) {
+        try {
+            board.move({ from: move.from, to: move.to, ...(move.promotion ? { promotion: move.promotion } : {}) });
+        } catch {
+            break;
+        }
+    }
+    return board;
+}
+
+function sameMove(a: Move | undefined, b: Move) {
+    return Boolean(a && a.from == b.from && a.to == b.to && (a.promotion || "") == (b.promotion || ""));
+}
+
+function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress, preferredSide, startInPractice = false, blindPractice = false, customLineSuggestedName, onSaveCustomLine, onBack, onNext, onLearned }: Props) {
+    const { t, i18n } = useTranslation("repertoire");
+    const { t: tc } = useTranslation("repertoireCourse");
+    const { t: tAnalysis } = useTranslation("analysis");
+    const copy = useRepertoireEnhancementCopy();
+    const language = i18n.resolvedLanguage || i18n.language || "en";
+    const depthCopy = courseDepthCopy(language);
+    const settings = useSettingsStore(state => state.settings);
+    const setSettings = useSettingsStore(state => state.setSettings);
+    const pieces = useMemo(() => createCustomPieces(settings.themes.piece), [settings.themes.piece]);
+    const allMoves = useMemo(() => courseMoves(opening), [opening]);
+    const lessonId = createLessonId(opening.eco, opening.name, opening.pgn);
+    const old = findLessonProgress(progress, opening);
+    const availablePly = allMoves.length;
+    const learnedPly = learnedDepth(old, availablePly);
+    const checkpoints = opening.depthCheckpoints || [];
+    const startingTarget = startInPractice
+        ? (learnedPly || initialDepth(availablePly, checkpoints))
+        : old && learnedPly < availablePly
+            ? nextDepth(learnedPly, availablePly, checkpoints)
+            : learnedPly || initialDepth(availablePly, checkpoints);
+    const startingStudyIndex = !startInPractice && old && startingTarget > learnedPly
+        ? learnedPly
+        : 0;
+    const [targetPly, setTargetPly] = useState(startingTarget);
+    const moves = useMemo(() => allMoves.slice(0, targetPly), [allMoves, targetPly]);
+    const [side, setSide] = useState<RepertoireSide>(preferredSide || old?.side || inferSide(opening));
+    const [boardFlipped, setBoardFlipped] = useState(false);
+    const [mode, setMode] = useState<Mode>(startInPractice ? "practice" : "study");
+    const [studyIndex, setStudyIndex] = useState(startingStudyIndex);
+    const [practiceIndex, setPracticeIndex] = useState(0);
+    const [selected, setSelected] = useState<Square>();
+    const [runs, setRuns] = useState(0);
+    const [requiredRuns, setRequiredRuns] = useState(old && startingTarget <= learnedPly ? 1 : 2);
+    const [mistakes, setMistakes] = useState(0);
+    const [transitioning, setTransitioning] = useState(false);
+    const [hint, setHint] = useState(false);
+    const [expression, setExpression] = useState<CoachExpression>("explaining");
+    const [coachKey, setCoachKey] = useState(startInPractice ? "learn.coach.practiceStart" : "learn.coach.lineStart");
+    const [coachPickerOpen, setCoachPickerOpen] = useState(false);
+    const [customStartIndex, setCustomStartIndex] = useState<number | null>(null);
+    const [customMoves, setCustomMoves] = useState<Move[]>([]);
+    const [saveOpen, setSaveOpen] = useState(false);
+    const [draftName, setDraftName] = useState("");
+    const opponentTimer = useRef<number>();
+    const resetTimer = useRef<number>();
+    const learner = side == "white" ? "w" : "b";
+    const expected = moves[practiceIndex];
+    const studySequence = customStartIndex == null
+        ? moves.slice(0, studyIndex)
+        : [...moves.slice(0, customStartIndex), ...customMoves];
+    const studyFen = replay(studySequence).fen();
+    const activeFen = mode == "study" ? studyFen : fenAt(moves, mode == "complete" ? moves.length : practiceIndex);
+    const coach = getCoachById(settings.appearance.selectedCoach);
+    const localizedName = localizeOpeningName(opening.name, language);
+    const localizedFamily = localizeOpeningName(opening.family, language);
+    const spoken = t(coachKey, { opening: localizedName, move: expected?.san || "" });
+    const squareStyles = getSquareStyles(activeFen, selected, settings.themes.board.legalMoveHints);
+    const customActive = customStartIndex != null && customMoves.length > 0;
+    const customPgn = customActive ? replay(studySequence).pgn() : "";
+    const boardOrientation: RepertoireSide = boardFlipped
+        ? side == "white" ? "black" : "white"
+        : side;
+    const flipBoardLabel = tAnalysis("optionsToolbar.flipBoard");
+    const availableMoves = fullMoveCount(availablePly);
+    const learnedMoves = fullMoveCount(learnedPly);
+    const targetMoves = fullMoveCount(targetPly);
+    const canDeepen = targetPly < availablePly;
+    const deepenCount = depthIncrementMoves(targetPly, availablePly, checkpoints);
+    const depthPercent = availablePly ? Math.min(100, targetPly / availablePly * 100) : 0;
+    const newTheoryFrom = learnedMoves + 1;
+    const depthBody = targetPly > learnedPly
+        ? formatDepthCopy(depthCopy.newTheory, { from: newTheoryFrom, to: targetMoves })
+        : learnedPly >= availablePly
+            ? depthCopy.complete
+            : depthCopy.review;
+    const remainingMoves = Math.max(0, availableMoves - targetMoves);
+
+    useEffect(() => () => {
+        if (opponentTimer.current != undefined) window.clearTimeout(opponentTimer.current);
+        if (resetTimer.current != undefined) window.clearTimeout(resetTimer.current);
+    }, []);
+
+    useEffect(() => {
+        if (mode != "practice" || transitioning || !expected || expected.color == learner) return;
+        if (opponentTimer.current != undefined) window.clearTimeout(opponentTimer.current);
+        setExpression("explaining");
+        setCoachKey("learn.coach.opponent");
+        opponentTimer.current = window.setTimeout(() => {
+            setPracticeIndex(value => Math.min(value + 1, moves.length));
+            setSelected(undefined);
+            setHint(false);
+        }, 430);
+    }, [expected?.san, learner, mode, moves.length, transitioning]);
+
+    useEffect(() => {
+        if (mode != "practice" || transitioning || !moves.length || practiceIndex < moves.length) return;
+        const nextRuns = runs + 1;
+        if (nextRuns >= requiredRuns) {
+            const nextLearnedPly = Math.max(learnedPly, targetPly);
+            setProgress(previous => recordLessonReview(previous, {
+                id: lessonId,
+                openingName: opening.name,
+                family: opening.family,
+                eco: opening.eco,
+                pgn: opening.pgn,
+                side,
+                learnedPly: nextLearnedPly,
+                availablePly
+            }, mistakes));
+            if (nextLearnedPly > learnedPly) {
+                const learnedOpening = {
+                    ...opening,
+                    pgn: replay(allMoves.slice(0, nextLearnedPly)).pgn()
+                };
+                onLearned(learnedOpening, side);
+            }
+            setRuns(nextRuns);
+            setMode("complete");
+            setExpression("celebrating");
+            setCoachKey("learn.coach.completed");
+            return;
+        }
+        setRuns(nextRuns);
+        setTransitioning(true);
+        setExpression("approving");
+        setCoachKey("learn.coach.practiceStart");
+        resetTimer.current = window.setTimeout(() => {
+            setPracticeIndex(0);
+            setSelected(undefined);
+            setHint(false);
+            setTransitioning(false);
+            setExpression("thinking");
+            setCoachKey("learn.coach.practiceStart");
+        }, 800);
+    }, [mode, moves.length, practiceIndex, requiredRuns, runs, transitioning, targetPly]);
+
+    function resetExploration(index = studyIndex) {
+        setCustomStartIndex(null);
+        setCustomMoves([]);
+        setStudyIndex(Math.min(index, moves.length));
+        setSelected(undefined);
+        setSaveOpen(false);
+    }
+
+    function resetPractice() {
+        setMode("practice");
+        setPracticeIndex(0);
+        setRuns(0);
+        setMistakes(0);
+        setRequiredRuns(old && targetPly <= learnedPly ? 1 : 2);
+        setSelected(undefined);
+        setHint(false);
+        setTransitioning(false);
+        setExpression("thinking");
+        setCoachKey("learn.coach.practiceStart");
+        setSaveOpen(false);
+    }
+
+    function deepenFurther() {
+        const currentDepth = Math.max(learnedPly, targetPly);
+        const next = nextDepth(currentDepth, availablePly, checkpoints);
+        if (next <= currentDepth) return;
+        setTargetPly(next);
+        setMode("study");
+        setStudyIndex(currentDepth);
+        setPracticeIndex(0);
+        setRuns(0);
+        setMistakes(0);
+        setRequiredRuns(2);
+        setCustomStartIndex(null);
+        setCustomMoves([]);
+        setSelected(undefined);
+        setHint(false);
+        setTransitioning(false);
+        setExpression("explaining");
+        setCoachKey("learn.coach.lineStart");
+        setSaveOpen(false);
+    }
+
+    function registerProblem() {
+        setMistakes(value => value + 1);
+        setRequiredRuns(value => Math.max(value, old && targetPly <= learnedPly ? 2 : 3));
+    }
+
+    function playStudy(from: string, to: string) {
+        const board = new Chess(activeFen);
+        let move: Move;
+        try {
+            move = board.move({ from, to, promotion: "q" });
+        } catch {
+            return false;
+        }
+        if (!move) return false;
+        if (customStartIndex == null && sameMove(moves[studyIndex], move)) {
+            setStudyIndex(value => Math.min(value + 1, moves.length));
+        } else if (customStartIndex == null) {
+            setCustomStartIndex(studyIndex);
+            setCustomMoves([move]);
+        } else {
+            setCustomMoves(value => [...value, move]);
+        }
+        setSelected(undefined);
+        window.dispatchEvent(new CustomEvent("nexochess:repertoire-study-move"));
+        return true;
+    }
+
+    function playPractice(from: string, to: string) {
+        if (transitioning || !expected || expected.color != learner) return false;
+        if (expected.from != from || expected.to != to) {
+            registerProblem();
+            setExpression("worried");
+            setCoachKey("learn.hintMove");
+            setHint(true);
+            setSelected(undefined);
+            return false;
+        }
+        setPracticeIndex(value => Math.min(value + 1, moves.length));
+        setSelected(undefined);
+        setHint(false);
+        setExpression("approving");
+        setCoachKey("learn.coach.correct");
+        return true;
+    }
+
+    function play(from: string, to: string) {
+        if (mode == "study") return playStudy(from, to);
+        if (mode == "practice") return playPractice(from, to);
+        return false;
+    }
+
+    function clickSquare(name: string) {
+        if (transitioning || mode == "complete") return;
+        const square = name as Square;
+        const board = new Chess(activeFen);
+        if (mode == "practice" && (!expected || expected.color != learner)) return;
+        const selectableColour = mode == "study" ? board.turn() : learner;
+        const clickedPiece = board.get(square);
+        if (!selected) {
+            if (clickedPiece?.color == selectableColour) setSelected(square);
+            return;
+        }
+        if (selected == square) {
+            setSelected(undefined);
+            return;
+        }
+        if (clickedPiece?.color == selectableColour) {
+            setSelected(square);
+            return;
+        }
+        play(selected, square);
+    }
+
+    function chooseCoach(id: CoachId) {
+        setSettings(draft => {
+            draft.appearance.selectedCoach = id;
+            return draft;
+        });
+        setCoachPickerOpen(false);
+    }
+
+    function openSaveCustom() {
+        if (!customActive || !onSaveCustomLine) return;
+        setDraftName(customLineSuggestedName || copy.suggestedLineName.replace("{move}", customMoves.at(-1)?.san || ""));
+        setSaveOpen(true);
+    }
+
+    function saveCustom(event: React.FormEvent) {
+        event.preventDefault();
+        if (!customActive || !onSaveCustomLine || !customPgn) return;
+        const name = draftName.trim() || customLineSuggestedName || copy.saveLine;
+        onSaveCustomLine({ opening, side, pgn: customPgn, name });
+        setSaveOpen(false);
+    }
+
+    function addEngineCourseLine(pvUci: string[], name: string) {
+        if (mode != "study" || !onSaveCustomLine) return;
+        const pgn = appendPvToPgn(studySequence, activeFen, pvUci, 8);
+        if (!pgn) return;
+        onSaveCustomLine({ opening, side, pgn, name });
+    }
+
+    const repetition = Math.min(runs + 1, requiredRuns);
+    const currentMove = customActive ? customMoves.at(-1) : studyIndex > 0 ? moves[studyIndex - 1] : undefined;
+    const draggable = mode == "study" || (mode == "practice" && !transitioning && expected?.color == learner);
+    const linePreview = customActive
+        ? copy.linePreview.replace("{moves}", studySequence.map(move => move.san).join(" "))
+        : copy.savedLinesHelp;
+
+    return <section className={styles.lessonShell}>
+        <header className={styles.lessonHeader}>
+            <button type="button" onClick={onBack}>←</button>
+            <div><span>{opening.eco} · {localizedFamily}</span><h1>{localizedName}</h1>{!blindPractice && <p>{opening.pgn}</p>}</div>
+            <div className={styles.headerActions}>
+                <div className={styles.sidePicker}>{(["white", "black"] as RepertoireSide[]).map(value => <button key={value} data-active={side == value} onClick={() => { setSide(value); setBoardFlipped(false); if (mode != "study") resetPractice(); }}>{t(`side.${value}`)}</button>)}</div>
+                <div className={styles.lessonCount}><strong>{mode == "study" ? tc("practice.studyPhase") : mode == "practice" ? tc("practice.practicePhase") : tc("practice.completePhase")}</strong><span>{lineNumber}/{lineTotal}</span></div>
+            </div>
+        </header>
+        <div className={`${styles.lessonGrid} ${balance.balancedGrid}`}>
+            {!blindPractice && <aside className={`${styles.saveRail} ${balance.leftRail}`}>
+                <div className={balance.leftRailStack}>
+                    <section className={depthStyles.depthCard}>
+                        <div className={depthStyles.depthHead}><span>{depthCopy.depth}</span><strong>{targetMoves}/{availableMoves}</strong></div>
+                        <div className={depthStyles.depthTrack}><i style={{ width: `${depthPercent}%` }}/></div>
+                        <p>{depthBody}</p>
+                        {remainingMoves > 0 && <small>{formatDepthCopy(depthCopy.available, { remaining: remainingMoves })}</small>}
+                    </section>
+                    <section className={`${styles.infoCard} ${balance.leftCard} ${balance.referenceCard}`} data-repertoire-tour="reference-line"><span>{t("learn.referenceLine")}</span><div className={styles.referenceMoves}>{moves.map((move, i) => <button key={`${move.san}-${i}`} data-active={mode == "study" && customStartIndex == null && studyIndex == i + 1} onClick={() => mode == "study" && resetExploration(i + 1)}><small>{i % 2 == 0 ? `${Math.floor(i / 2) + 1}.` : "…"}</small>{move.san}</button>)}</div></section>
+                    {mode == "study" && onSaveCustomLine && <section className={`${styles.saveWorkspace} ${balance.saveWorkspace}`} data-repertoire-tour="save-line">
+                        <div className={styles.saveWorkspaceHeader}>
+                            <span>＋</span>
+                            <div><strong>{copy.saveLine}</strong><p>{copy.savedLinesHelp}</p></div>
+                        </div>
+                        <button type="button" className={styles.savePrimary} onClick={openSaveCustom} disabled={!customActive}>{copy.saveLine}</button>
+                        <div className={styles.saveNameBlock} data-active={saveOpen && customActive} aria-disabled={!saveOpen || !customActive}>
+                            <span className={styles.saveNameKicker}>{copy.saveModalTitle}</span>
+                            <h3>{copy.customNameLabel}</h3>
+                            <p>{linePreview}</p>
+                            <form onSubmit={saveCustom}>
+                                <label><span>{copy.customNameLabel}</span><input value={draftName} onChange={event => setDraftName(event.target.value)} maxLength={120} placeholder={customLineSuggestedName || copy.customNamePlaceholder} disabled={!saveOpen || !customActive}/></label>
+                                <div className={styles.saveNameActions}>
+                                    <button type="button" onClick={() => setSaveOpen(false)} disabled={!saveOpen || !customActive}>{copy.cancel}</button>
+                                    <button type="submit" disabled={!saveOpen || !customActive}>{copy.save}</button>
+                                </div>
+                            </form>
+                        </div>
+                    </section>}
+                    {mode == "study" && <section className={`${styles.infoCard} ${balance.leftCard}`}><span>{t("learn.whyTitle")}</span><strong>{currentMove?.san || t("editor.startPosition")}</strong><p>{explanation(currentMove, t)}</p></section>}
+                </div>
+            </aside>}
+            <div className={styles.lessonBoardColumn}>
+                <div className={`${styles.lessonBoardWrap} ${boardTools.boardContainer}`} data-repertoire-tour="lesson-board" data-board-orientation={boardOrientation}>
+                    <button type="button" className={boardTools.flipButton} onClick={() => setBoardFlipped(value => !value)} title={flipBoardLabel} aria-label={flipBoardLabel}>
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10l-2.5-2.5"/><path d="M17 17H7l2.5 2.5"/><path d="M19 9.5A7 7 0 0 1 17 17"/><path d="M5 14.5A7 7 0 0 1 7 7"/></svg>
+                    </button>
+                    <Chessboard id="repertoire-course-board-v3" position={activeFen} boardOrientation={boardOrientation} onPieceDrop={play} onPieceDragBegin={(_piece, source) => draggable && setSelected(source as Square)} onPieceDragEnd={() => setSelected(undefined)} onSquareClick={clickSquare} arePiecesDraggable={Boolean(draggable)} customPieces={pieces} customDarkSquareStyle={{ backgroundColor: settings.themes.board.darkSquareColour }} customLightSquareStyle={{ backgroundColor: settings.themes.board.lightSquareColour }} customSquareStyles={squareStyles} showBoardNotation={settings.themes.board.coordinates == "inside"} snapToCursor/>
+                </div>
+                {mode == "study" && <div className={styles.lessonControls}><span aria-hidden="true"/><div><strong>{customActive ? customLineSuggestedName || copy.saveLine : t("learn.step", { current: studyIndex, total: moves.length })}</strong><span>{customActive ? copy.linePreview.replace("{moves}", studySequence.map(move => move.san).join(" ")) : tc("practice.studyHint")}</span></div>{customActive ? <button onClick={() => resetExploration(customStartIndex || 0)}>{t("learn.referenceLine")}</button> : studyIndex >= moves.length ? <button data-primary onClick={resetPractice}>{tc("practice.start")}</button> : <span aria-hidden="true"/>}</div>}
+                {mode == "practice" && <div className={styles.lessonControls}><button onClick={() => { if (expected?.color == learner) { registerProblem(); setHint(true); } }} disabled={!expected || expected.color != learner}>{t("learn.hint")}</button><div><strong>{tc("practice.repetition", { current: repetition, total: requiredRuns })}</strong><span>{transitioning ? tc("practice.repeatRule") : hint && expected ? t("learn.hintMove", { move: expected.san }) : t("learn.practiceInstruction")}</span></div>{blindPractice ? <button onClick={onBack}>{tc("practice.backModule")}</button> : <button onClick={() => { setMode("study"); resetExploration(0); }}>{t("learn.reviewLine")}</button>}</div>}
+                {mode == "complete" && <div className={styles.lessonControls}><button onClick={onBack}>{tc("practice.backModule")}</button><div><strong>{tc("practice.completeTitle")}</strong><span>{tc("practice.autoSaved")}</span></div><div className={depthStyles.completeActions}>{!blindPractice && canDeepen && <button type="button" data-depth-primary="true" onClick={deepenFurther}>{formatDepthCopy(depthCopy.deepen, { count: deepenCount })}</button>}{onNext ? <button type="button" onClick={onNext}>{tc("practice.nextLine")}</button> : <button type="button" onClick={onBack}>{tc("practice.moduleDone")}</button>}</div></div>}
+            </div>
+            <aside className={`${styles.lessonPanel} ${balance.rightRail}`}>
+                {mode == "study" && <RepertoireEngineInsight fen={activeFen} onAddLine={addEngineCourseLine}/>}
+                {settings.coach.enabled && <section className={styles.coachCard}>
+                    <button type="button" className={styles.coachPortraitButton} onClick={() => setCoachPickerOpen(true)} aria-label={coach.name} title={coach.name}><CoachPortrait coach={coach} baseExpression={expression} speechText={spoken} animationsEnabled={settings.coach.animations} className={styles.coachPortrait}/></button>
+                    <div><strong>{coach.name}</strong><p>{spoken}</p></div>
+                </section>}
+                {mode == "practice" && <section className={styles.infoCard}><span>{tc("practice.memoryBlock")}</span><strong>{tc("practice.repetition", { current: repetition, total: requiredRuns })}</strong><p>{requiredRuns > (old && targetPly <= learnedPly ? 1 : 2) ? tc("practice.extra") : tc("practice.repeatRule")}</p><div className={styles.repeatDots}>{Array.from({ length: requiredRuns }, (_, i) => <i key={i} data-done={i < runs}/>)}</div></section>}
+                {mode == "complete" && <section className={styles.completeCard}><span>✓</span><strong>{tc("practice.lessonComplete")}</strong><p>{canDeepen && !blindPractice ? depthCopy.deepenBody : tc("practice.completeBody")}</p></section>}
+            </aside>
+        </div>
+        {settings.coach.enabled && coachPickerOpen && <CoachPicker selectedCoach={coach} onClose={() => setCoachPickerOpen(false)} onConfirm={chooseCoach}/>} 
+    </section>;
+}
+
+export default CourseLessonV3;

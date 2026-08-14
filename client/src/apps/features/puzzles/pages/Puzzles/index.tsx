@@ -13,13 +13,10 @@ import EngineVersion from "shared/constants/EngineVersion";
 import Evaluation from "shared/types/game/position/Evaluation";
 
 import useSettingsStore from "@/stores/SettingsStore";
-import {
-    createCustomPieces
-} from "@/lib/chessAppearance";
+import { createCustomPieces } from "@/lib/chessAppearance";
 import { playBoardMoveSound } from "@/lib/boardSounds";
 
-import EvaluationBar from
-    "@analysis/components/EvaluationBar";
+import EvaluationBar from "@analysis/components/EvaluationBar";
 import SuggestionArrowOverlay from
     "@analysis/components/Board/SuggestionArrowOverlay";
 import CoachPortrait from
@@ -43,11 +40,11 @@ import {
 import {
     filterPuzzles,
     loadArchivePuzzleLibrary,
-    loadNextLichessPuzzleRecord,
     loadPuzzleCatalogue,
     normaliseLichessPuzzle,
     pickRandomPuzzle
 } from "../../lib/sources";
+import { loadNextLichessPuzzleFromSelections } from "../../lib/multiSelection";
 import {
     PuzzleCatalogue,
     PuzzleDifficulty,
@@ -59,11 +56,10 @@ import {
 import {
     formatOpeningTag,
     formatPuzzleTheme,
-    getPuzzleFilterOptions,
-    getVisiblePuzzleThemes,
-    puzzleThemeCategories
+    getVisiblePuzzleThemes
 } from "../../lib/themeCatalogue";
 
+import ThemeMultiSelector from "./ThemeMultiSelector";
 import * as styles from "./Puzzles.module.css";
 import * as readable from "./Puzzles.readability.module.css";
 import { getPuzzlePageCopy } from "./copy";
@@ -78,7 +74,6 @@ type PageState =
     | "error";
 
 type SourceLoadState = "loading" | "ready" | "error";
-
 type ManualArrow = [Square, Square, string?];
 
 interface CoachMessage {
@@ -96,6 +91,11 @@ interface WrongMovePreview {
 interface MoveFeedback {
     square: Square;
     kind: "correct" | "brilliant";
+}
+
+interface PuzzlePremove {
+    from: Square;
+    to: Square;
 }
 
 interface PuzzleRatingEvent {
@@ -122,10 +122,7 @@ const PuzzleBoardSquare = React.forwardRef<
 
     return <div
         ref={ref}
-        style={{
-            ...squareStyle,
-            position: "relative"
-        }}
+        style={{ ...squareStyle, position: "relative" }}
     >
         {feedbackKind && (
             <>
@@ -166,7 +163,6 @@ const difficulties: PuzzleDifficulty[] = [
 ];
 
 const AUTO_NEXT_STORAGE_KEY = "nexochess-puzzle-auto-next-v1";
-const PUZZLES_FLIP_EVENT = "nexochess:puzzles:flip-board"; // NEXO_PUZZLES_NAV_FLIP
 
 function getAutoNextPreference() {
     if (typeof window == "undefined") return false;
@@ -190,10 +186,7 @@ function getProvisionalEvaluation(fen: string): Evaluation {
         }
 
         if (board.isDraw()) {
-            return {
-                type: "centipawn",
-                value: 0
-            };
+            return { type: "centipawn", value: 0 };
         }
 
         let material = 0;
@@ -218,15 +211,9 @@ function getProvisionalEvaluation(fen: string): Evaluation {
             });
         });
 
-        return {
-            type: "centipawn",
-            value: material
-        };
+        return { type: "centipawn", value: material };
     } catch {
-        return {
-            type: "centipawn",
-            value: 0
-        };
+        return { type: "centipawn", value: 0 };
     }
 }
 
@@ -240,92 +227,75 @@ function getMoveSAN(fen: string, uci: string) {
 }
 
 function Puzzles() {
-    const { t, i18n } = useTranslation([
-        "puzzles",
-        "analysis"
-    ]);
-    const { t: tCoach } = useTranslation("coach", {
-        useSuspense: false
-    });
+    const { t, i18n } = useTranslation(["puzzles", "analysis"]);
+    const { t: tCoach } = useTranslation("coach", { useSuspense: false });
     const pageCopy = useMemo(
         () => getPuzzlePageCopy(t),
         [i18n.resolvedLanguage, t]
     );
+    const flipBoardLabel = t("optionsToolbar.flipBoard", {
+        ns: "analysis"
+    });
+    const focusModeLabel = t("actions.focusMode");
+    const exitFocusModeLabel = t("actions.exitFocusMode");
 
-    const [ pageState, setPageState ] =
-        useState<PageState>("loading");
-    const [ source, setSource ] =
-        useState<PuzzleSource>("archive");
-    const [ themeSelection, setThemeSelection ] =
-        useState<PuzzleThemeSelection>({ category: "all" });
-    const [ openingSearch, setOpeningSearch ] = useState("");
-    const [ difficulty, setDifficulty ] =
+    const [pageState, setPageState] = useState<PageState>("loading");
+    const [source, setSource] = useState<PuzzleSource>("archive");
+    const [themeSelections, setThemeSelections] = useState<
+        PuzzleThemeSelection[]
+    >([{ category: "all" }]);
+    const [difficulty, setDifficulty] =
         useState<PuzzleDifficulty>("adaptive");
-    const [ ratedSession, setRatedSession ] =
-        useState(true);
-    const [ hintsEnabled, setHintsEnabled ] =
-        useState(true);
-    const [ solutionEnabled, setSolutionEnabled ] =
-        useState(true);
-    const [ autoNext, setAutoNext ] =
-        useState(getAutoNextPreference);
-    const [ boardFlipped, setBoardFlipped ] =
-        useState(false);
-    const [ archivePuzzles, setArchivePuzzles ] =
+    const [ratedSession, setRatedSession] = useState(true);
+    const [hintsEnabled, setHintsEnabled] = useState(true);
+    const [solutionEnabled, setSolutionEnabled] = useState(true);
+    const [autoNext, setAutoNext] = useState(getAutoNextPreference);
+    const [evaluationVisible, setEvaluationVisible] = useState(true);
+    const [boardFlipped, setBoardFlipped] = useState(false);
+    const [focusMode, setFocusMode] = useState(false);
+    const [archivePuzzles, setArchivePuzzles] =
         useState<TrainingPuzzle[]>([]);
-    const [ analysedGameCount, setAnalysedGameCount ] =
-        useState(0);
-    const [ archiveLoadState, setArchiveLoadState ] =
+    const [analysedGameCount, setAnalysedGameCount] = useState(0);
+    const [archiveLoadState, setArchiveLoadState] =
         useState<SourceLoadState>("loading");
-    const [ puzzleCatalogue, setPuzzleCatalogue ] =
+    const [puzzleCatalogue, setPuzzleCatalogue] =
         useState<PuzzleCatalogue>();
-    const [ lichessLoadState, setLichessLoadState ] =
+    const [lichessLoadState, setLichessLoadState] =
         useState<SourceLoadState>("loading");
-    const [ requestingPuzzle, setRequestingPuzzle ] =
-        useState(false);
-    const [ profile, setProfile ] =
-        useState<PuzzleProfile>(getPuzzleProfile);
-    const [ puzzle, setPuzzle ] =
-        useState<TrainingPuzzle>();
-    const [ boardEvaluation, setBoardEvaluation ] =
-        useState<Evaluation>({
-            type: "centipawn",
-            value: 0
-        });
-    const [ boardHistory, setBoardHistory ] =
-        useState<string[]>([]);
-    const [ historyIndex, setHistoryIndex ] =
-        useState(0);
-    const [ solutionIndex, setSolutionIndex ] =
-        useState(0);
-    const [ selectedSquare, setSelectedSquare ] =
-        useState<Square>();
-    const [ wrongMovePreview, setWrongMovePreview ] =
+    const [requestingPuzzle, setRequestingPuzzle] = useState(false);
+    const [profile, setProfile] = useState<PuzzleProfile>(getPuzzleProfile);
+    const [puzzle, setPuzzle] = useState<TrainingPuzzle>();
+    const [boardEvaluation, setBoardEvaluation] = useState<Evaluation>({
+        type: "centipawn",
+        value: 0
+    });
+    const [boardHistory, setBoardHistory] = useState<string[]>([]);
+    const [historyIndex, setHistoryIndex] = useState(0);
+    const [solutionIndex, setSolutionIndex] = useState(0);
+    const [selectedSquare, setSelectedSquare] = useState<Square>();
+    const [hintedSquare, setHintedSquare] = useState<Square>();
+    const [queuedPremove, setQueuedPremove] = useState<PuzzlePremove>();
+    const [wrongMovePreview, setWrongMovePreview] =
         useState<WrongMovePreview>();
-    const [ moveFeedback, setMoveFeedback ] =
-        useState<MoveFeedback>();
-    const [ ratingHistory, setRatingHistory ] =
+    const [moveFeedback, setMoveFeedback] = useState<MoveFeedback>();
+    const [ratingHistory, setRatingHistory] =
         useState<PuzzleRatingEvent[]>([]);
-    const [ hintArrow, setHintArrow ] =
-        useState<NonNullable<
-            React.ComponentProps<typeof Chessboard>["customArrows"]
-        >>([]);
-    const [ manualArrows, setManualArrows ] =
-        useState<ManualArrow[]>([]);
-    const [ pendingReply, setPendingReply ] =
-        useState(false);
-    const [ coachMessage, setCoachMessage ] =
-        useState<CoachMessage>({ key: "coach.loading" });
-    const [ coachExpression, setCoachExpression ] =
+    const [hintArrow, setHintArrow] = useState<NonNullable<
+        React.ComponentProps<typeof Chessboard>["customArrows"]
+    >>([]);
+    const [manualArrows, setManualArrows] = useState<ManualArrow[]>([]);
+    const [pendingReply, setPendingReply] = useState(false);
+    const [coachMessage, setCoachMessage] = useState<CoachMessage>({
+        key: "coach.loading"
+    });
+    const [coachExpression, setCoachExpression] =
         useState<CoachExpression>("thinking");
-    const [ coachPickerOpen, setCoachPickerOpen ] =
-        useState(false);
+    const [coachPickerOpen, setCoachPickerOpen] = useState(false);
+    const [puzzleElapsedSeconds, setPuzzleElapsedSeconds] = useState(0);
 
     const settings = useSettingsStore(state => state.settings);
     const setSettings = useSettingsStore(state => state.setSettings);
-    const selectedCoach = getCoachById(
-        settings.appearance.selectedCoach
-    );
+    const selectedCoach = getCoachById(settings.appearance.selectedCoach);
     const coachEnabled = settings.coach.enabled;
     const customPieces = useMemo(
         () => createCustomPieces(settings.themes.piece),
@@ -347,24 +317,7 @@ function Puzzles() {
     const puzzleBoardShellRef = useRef<HTMLDivElement | null>(null);
     const setupRevealedRef = useRef(false);
     const requestingPuzzleRef = useRef(false);
-
-    useEffect(() => {
-        const flipBoard = () => {
-            setBoardFlipped(flipped => !flipped);
-        };
-
-        window.addEventListener(
-            PUZZLES_FLIP_EVENT,
-            flipBoard
-        );
-
-        return () => {
-            window.removeEventListener(
-                PUZZLES_FLIP_EVENT,
-                flipBoard
-            );
-        };
-    }, []);
+    const puzzleStartedAtRef = useRef(0);
 
     useEffect(() => {
         profileRef.current = profile;
@@ -380,10 +333,62 @@ function Puzzles() {
             // The preference remains active for the current tab.
         }
 
-        if (!autoNext) {
-            window.clearTimeout(autoNextTimer.current);
-        }
+        if (!autoNext) window.clearTimeout(autoNextTimer.current);
     }, [autoNext]);
+
+    useEffect(() => {
+        if (!focusMode) return undefined;
+
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        setCoachPickerOpen(false);
+
+        const leaveOnEscape = (event: KeyboardEvent) => {
+            if (event.key == "Escape") setFocusMode(false);
+        };
+
+        window.addEventListener("keydown", leaveOnEscape);
+
+        return () => {
+            document.body.style.overflow = previousOverflow;
+            window.removeEventListener("keydown", leaveOnEscape);
+        };
+    }, [focusMode]);
+
+    useEffect(() => {
+        if (
+            pendingReply
+            || !queuedPremove
+            || !puzzle
+            || pageState != "playing"
+        ) return undefined;
+
+        const premove = queuedPremove;
+        const timeoutId = window.setTimeout(() => {
+            setQueuedPremove(current => current === premove ? undefined : current);
+            setSelectedSquare(undefined);
+            playExpectedMove(premove.from, premove.to);
+        }, 80);
+
+        return () => window.clearTimeout(timeoutId);
+    }, [pendingReply, queuedPremove, puzzle?.id, pageState]);
+
+    useEffect(() => {
+        if (!puzzle || pageState != "playing") return undefined;
+
+        const updateElapsed = () => {
+            const elapsed = Math.max(
+                0,
+                Math.floor((Date.now() - puzzleStartedAtRef.current) / 1000)
+            );
+            setPuzzleElapsedSeconds(elapsed);
+        };
+
+        updateElapsed();
+        const intervalId = window.setInterval(updateElapsed, 1000);
+
+        return () => window.clearInterval(intervalId);
+    }, [puzzle?.id, pageState]);
 
     useEffect(() => {
         let cancelled = false;
@@ -435,20 +440,18 @@ function Puzzles() {
                 throw error;
             });
 
-        void Promise.allSettled([
-            archivePromise,
-            lichessPromise
-        ]).then(results => {
-            if (cancelled || setupRevealedRef.current) return;
+        void Promise.allSettled([archivePromise, lichessPromise])
+            .then(results => {
+                if (cancelled || setupRevealedRef.current) return;
 
-            if (results[1].status == "fulfilled") {
-                revealSetup("lichess", "coach.setupLichess");
-            } else {
-                setPageState("error");
-                setCoachMessage({ key: "coach.loadError" });
-                setCoachExpression("worried");
-            }
-        });
+                if (results[1].status == "fulfilled") {
+                    revealSetup("lichess", "coach.setupLichess");
+                } else {
+                    setPageState("error");
+                    setCoachMessage({ key: "coach.loadError" });
+                    setCoachExpression("worried");
+                }
+            });
 
         return () => {
             cancelled = true;
@@ -465,6 +468,9 @@ function Puzzles() {
         window.clearTimeout(moveFeedbackTimer.current);
         window.clearTimeout(autoNextTimer.current);
 
+        puzzleStartedAtRef.current = Date.now();
+        setPuzzleElapsedSeconds(0);
+
         const history = nextPuzzle.previousFen
             ? [nextPuzzle.previousFen, nextPuzzle.startFen]
             : [nextPuzzle.startFen];
@@ -475,6 +481,8 @@ function Puzzles() {
         setHistoryIndex(history.length - 1);
         setSolutionIndex(0);
         setSelectedSquare(undefined);
+        setHintedSquare(undefined);
+        setQueuedPremove(undefined);
         setWrongMovePreview(undefined);
         setMoveFeedback(undefined);
         setHintArrow([]);
@@ -483,11 +491,7 @@ function Puzzles() {
         setPageState("playing");
 
         window.requestAnimationFrame(() => {
-            window.scrollTo({
-                top: 0,
-                left: 0,
-                behavior: "auto"
-            });
+            window.scrollTo({ top: 0, left: 0, behavior: "auto" });
         });
 
         setCoachExpression("explaining");
@@ -495,9 +499,7 @@ function Puzzles() {
             key: nextPuzzle.source == "archive"
                 ? "coach.archiveTurn"
                 : "coach.lichessTurn",
-            values: {
-                colour: t(`colours.${nextPuzzle.solver}`)
-            }
+            values: { colour: t(`colours.${nextPuzzle.solver}`) }
         });
 
         liveFen.current = nextPuzzle.startFen;
@@ -516,9 +518,9 @@ function Puzzles() {
             ));
         }
 
-        const record = await loadNextLichessPuzzleRecord(
+        const record = await loadNextLichessPuzzleFromSelections(
             completedIdsRef.current,
-            themeSelection,
+            themeSelections,
             difficulty,
             profileRef.current
         );
@@ -553,9 +555,7 @@ function Puzzles() {
             initialisePuzzle(nextPuzzle);
         } catch {
             setPageState("error");
-            setCoachMessage({
-                key: "coach.loadError"
-            });
+            setCoachMessage({ key: "coach.loadError" });
             setCoachExpression("worried");
         } finally {
             requestingPuzzleRef.current = false;
@@ -568,7 +568,6 @@ function Puzzles() {
 
         completedCurrentPuzzle.current = true;
         const solvedWithoutHelp = !failedAttempt.current && !revealed;
-
         const nextCompleted = new Set(completedIdsRef.current);
         nextCompleted.add(puzzle.id);
         completedIdsRef.current = nextCompleted;
@@ -614,11 +613,15 @@ function Puzzles() {
                     : "coach.solvedAfterHelp"
         });
 
-        if (!revealed && autoNext) {
+        const autoAdvanceDelay = focusMode
+            ? (revealed ? 450 : 320)
+            : (!revealed && autoNext ? 320 : undefined);
+
+        if (autoAdvanceDelay != undefined) {
             window.clearTimeout(autoNextTimer.current);
             autoNextTimer.current = window.setTimeout(() => {
                 void startTraining();
-            }, 1500);
+            }, autoAdvanceDelay);
         }
     }
 
@@ -641,6 +644,25 @@ function Puzzles() {
         await startTraining();
     }
 
+    function returnToSetup() {
+        window.clearTimeout(autoNextTimer.current);
+        window.clearTimeout(replyTimer.current);
+        setPuzzle(undefined);
+        setFocusMode(false);
+        puzzleStartedAtRef.current = 0;
+        setPuzzleElapsedSeconds(0);
+        setPageState("setup");
+        setPendingReply(false);
+        setSelectedSquare(undefined);
+        setHintedSquare(undefined);
+        setQueuedPremove(undefined);
+        setWrongMovePreview(undefined);
+        setMoveFeedback(undefined);
+        setCoachExpression("idle");
+        setCoachMessage({ key: "coach.changeFilters" });
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }
+
     function appendPosition(fen: string) {
         setBoardHistory(previous => {
             const next = [...previous, fen];
@@ -658,12 +680,12 @@ function Puzzles() {
             || historyIndex != boardHistory.length - 1
         ) return false;
 
+        setHintedSquare(undefined);
         const attemptBoard = new Chess(liveFen.current);
         const legalMove = attemptBoard.moves({
             square: from as Square,
             verbose: true
-        })
-            .find(move => move.to == to);
+        }).find(move => move.to == to);
 
         if (!legalMove) return false;
 
@@ -723,19 +745,14 @@ function Puzzles() {
         const feedbackKind = (
             solutionIndex == 0
             && puzzle.themes.includes("sacrifice")
-        )
-            ? "brilliant"
-            : "correct";
+        ) ? "brilliant" : "correct";
 
         liveFen.current = afterPlayer;
         appendPosition(afterPlayer);
         setSolutionIndex(nextIndex);
         setSelectedSquare(undefined);
         setHintArrow([]);
-        setMoveFeedback({
-            square: to as Square,
-            kind: feedbackKind
-        });
+        setMoveFeedback({ square: to as Square, kind: feedbackKind });
         window.clearTimeout(moveFeedbackTimer.current);
         moveFeedbackTimer.current = window.setTimeout(() => {
             setMoveFeedback(undefined);
@@ -780,28 +797,60 @@ function Puzzles() {
 
             setCoachExpression("explaining");
             setCoachMessage({ key: "coach.yourTurnAgain" });
-        }, 680);
+        }, 220);
 
         return true;
+    }
+
+    function queuePremove(from: Square, to: Square) {
+        if (!puzzle || !pendingReply || from == to) return false;
+
+        const board = new Chess(liveFen.current);
+        const piece = board.get(from);
+        const solverColour = puzzle.solver == "white" ? "w" : "b";
+
+        if (piece?.color != solverColour) return false;
+
+        setQueuedPremove({ from, to });
+        setSelectedSquare(undefined);
+        setHintedSquare(undefined);
+        return false;
     }
 
     function selectBoardSquare(square: Square) {
         if (
             !puzzle
             || pageState != "playing"
-            || pendingReply
             || wrongMovePreview
             || historyIndex != boardHistory.length - 1
         ) return;
 
-        if (!selectedSquare) {
-            const piece = new Chess(liveFen.current).get(square);
-            const expectedColour = puzzle.solver == "white" ? "w" : "b";
+        const board = new Chess(liveFen.current);
+        const piece = board.get(square);
+        const expectedColour = puzzle.solver == "white" ? "w" : "b";
+
+        if (pendingReply) {
+            if (!selectedSquare) {
+                if (piece?.color == expectedColour) setSelectedSquare(square);
+                return;
+            }
+
+            if (square == selectedSquare) {
+                setSelectedSquare(undefined);
+                return;
+            }
 
             if (piece?.color == expectedColour) {
                 setSelectedSquare(square);
+                return;
             }
 
+            queuePremove(selectedSquare, square);
+            return;
+        }
+
+        if (!selectedSquare) {
+            if (piece?.color == expectedColour) setSelectedSquare(square);
             return;
         }
 
@@ -810,21 +859,15 @@ function Puzzles() {
             return;
         }
 
-        const board = new Chess(liveFen.current);
-        const piece = board.get(square);
-        const expectedColour = puzzle.solver == "white" ? "w" : "b";
-
         if (piece?.color == expectedColour) {
             setSelectedSquare(square);
             return;
         }
 
-        const legalDestination = board
-            .moves({
-                square: selectedSquare,
-                verbose: true
-            })
-            .some(move => move.to == square);
+        const legalDestination = board.moves({
+            square: selectedSquare,
+            verbose: true
+        }).some(move => move.to == square);
 
         if (!legalDestination) {
             setSelectedSquare(undefined);
@@ -846,18 +889,10 @@ function Puzzles() {
         if (!expected) return;
 
         failedAttempt.current = true;
-        setHintArrow([[
-            expected.slice(0, 2) as Square,
-            expected.slice(2, 4) as Square,
-            "#78a7ff"
-        ]]);
+        setHintArrow([]);
+        setHintedSquare(expected.slice(0, 2) as Square);
         setCoachExpression("explaining");
-        setCoachMessage({
-            key: "coach.hint",
-            values: {
-                move: getMoveSAN(liveFen.current, expected)
-            }
-        });
+        setCoachMessage({ key: "coach.hint" });
     }
 
     function revealSolution() {
@@ -898,6 +933,8 @@ function Puzzles() {
         setSolutionIndex(puzzle.solution.length);
         setPendingReply(false);
         setSelectedSquare(undefined);
+        setHintedSquare(undefined);
+        setQueuedPremove(undefined);
         setHintArrow([]);
         void finishPuzzle(true);
     }
@@ -905,39 +942,7 @@ function Puzzles() {
     const reviewedFen = boardHistory[historyIndex] || puzzle?.startFen;
     const currentFen = wrongMovePreview?.fen || reviewedFen;
     const atLivePosition = historyIndex == boardHistory.length - 1;
-    const visibleThemes = puzzle
-        ? getVisiblePuzzleThemes(puzzle)
-        : [];
-    const filterOptions = useMemo(
-        () => getPuzzleFilterOptions(
-            puzzleCatalogue,
-            themeSelection.category
-        ),
-        [puzzleCatalogue, themeSelection.category]
-    );
-    const visibleFilterOptions = useMemo(() => {
-        const query = openingSearch.trim().toLocaleLowerCase(
-            i18n.resolvedLanguage
-        );
-
-        if (
-            themeSelection.category != "opening"
-            || !query
-        ) return filterOptions;
-
-        return filterOptions.filter(option => (
-            formatOpeningTag(
-                option.value,
-                i18n.resolvedLanguage || "en"
-            ).toLocaleLowerCase(i18n.resolvedLanguage)
-                .includes(query)
-        ));
-    }, [
-        filterOptions,
-        i18n.resolvedLanguage,
-        openingSearch,
-        themeSelection.category
-    ]);
+    const visibleThemes = puzzle ? getVisiblePuzzleThemes(puzzle) : [];
     const translatedCoachMessage = coachMessage.text || t(
         coachMessage.key,
         coachMessage.values
@@ -963,20 +968,66 @@ function Puzzles() {
             translatedCoachMessage
         ]
     );
-    const setupCoachMessage = useMemo(() => {
-        if (source != "archive") return pageCopy.trainingSetup;
-        if (archiveLoadState == "loading") return pageCopy.archiveChecking;
-        if (analysedGameCount == 0) return pageCopy.archiveNoGames;
-        if (archivePuzzles.length == 0) return pageCopy.archiveNoErrors;
 
-        return pageCopy.archiveReady;
+    const selectionLabels = useMemo(() => {
+        const language = i18n.resolvedLanguage || "en";
+
+        return themeSelections.map(selection => {
+            if (selection.category == "all") {
+                return t("themeCategories.all");
+            }
+
+            if (!selection.value) {
+                return [
+                    t(`themeCategories.${selection.category}`),
+                    t("filters.clearSubtheme")
+                ].join(" · ");
+            }
+
+            return selection.kind == "opening"
+                ? formatOpeningTag(selection.value, language)
+                : formatPuzzleTheme(selection.value, language);
+        });
+    }, [i18n.resolvedLanguage, t, themeSelections]);
+
+    const setupCoachMessage = useMemo(() => {
+        if (source == "archive") {
+            if (archiveLoadState == "loading") return pageCopy.archiveChecking;
+            if (analysedGameCount == 0) return pageCopy.archiveNoGames;
+            if (archivePuzzles.length == 0) return pageCopy.archiveNoErrors;
+            return pageCopy.archiveReady;
+        }
+
+        const language = i18n.resolvedLanguage || "en";
+        let selectionText = selectionLabels.join(", ");
+
+        try {
+            selectionText = new Intl.ListFormat(language, {
+                style: "long",
+                type: "conjunction"
+            }).format(selectionLabels);
+        } catch {
+            // join fallback already prepared.
+        }
+
+        return [
+            `${t("setup.kicker")}: ${selectionText}.`,
+            `${t("filters.difficulty")}: ${t(
+                `difficulties.${difficulty}.title`
+            )}.`
+        ].join(" ");
     }, [
         analysedGameCount,
         archiveLoadState,
         archivePuzzles.length,
+        difficulty,
+        i18n.resolvedLanguage,
         pageCopy,
-        source
+        selectionLabels,
+        source,
+        t
     ]);
+
     const spokenSetupCoachMessage = useMemo(
         () => getCoachSpokenLine(
             selectedCoach,
@@ -984,22 +1035,20 @@ function Puzzles() {
             [
                 "setup",
                 source,
-                archiveLoadState,
-                analysedGameCount,
-                archivePuzzles.length
+                setupCoachMessage,
+                difficulty
             ].join("|"),
             tCoach
         ),
         [
-            analysedGameCount,
-            archiveLoadState,
-            archivePuzzles.length,
+            difficulty,
             selectedCoach,
             setupCoachMessage,
             source,
             tCoach
         ]
     );
+
     const calibrationRemaining = Math.max(
         0,
         CALIBRATION_ATTEMPTS - profile.attempts
@@ -1015,15 +1064,10 @@ function Puzzles() {
             || pageState == "revealed"
         )
     );
-    const showRatedProfile = (
-        puzzle?.source
-        || source
-    ) == "lichess";
+    const showRatedProfile = (puzzle?.source || source) == "lichess";
     const puzzleBoardOrientation = puzzle
         ? boardFlipped
-            ? puzzle.solver == "white"
-                ? "black"
-                : "white"
+            ? puzzle.solver == "white" ? "black" : "white"
             : puzzle.solver
         : "white";
 
@@ -1039,7 +1083,6 @@ function Puzzles() {
             7,
             Math.max(0, Math.floor(((clientY - rect.top) / rect.height) * 8))
         );
-
         const normalFiles = ["a", "b", "c", "d", "e", "f", "g", "h"];
         const flippedFiles = [...normalFiles].reverse();
         const file = (
@@ -1096,16 +1139,12 @@ function Puzzles() {
     }
 
     useEffect(() => {
-        if (!coachEnabled && coachPickerOpen) {
-            setCoachPickerOpen(false);
-        }
+        if (!coachEnabled && coachPickerOpen) setCoachPickerOpen(false);
     }, [coachEnabled, coachPickerOpen]);
 
-    const boardSquareStyles = useMemo<
-        NonNullable<
-            React.ComponentProps<typeof Chessboard>["customSquareStyles"]
-        >
-    >(() => {
+    const boardSquareStyles = useMemo<NonNullable<
+        React.ComponentProps<typeof Chessboard>["customSquareStyles"]
+    >>(() => {
         const squareStyles: NonNullable<
             React.ComponentProps<typeof Chessboard>["customSquareStyles"]
         > = {};
@@ -1113,11 +1152,9 @@ function Puzzles() {
         if (wrongMovePreview) {
             const wrongStyle = {
                 backgroundImage:
-                    "linear-gradient("
-                    + "rgba(224, 82, 73, 0.34), "
+                    "linear-gradient(rgba(224, 82, 73, 0.34), "
                     + "rgba(224, 82, 73, 0.34))",
-                boxShadow:
-                    "inset 0 0 0 4px rgba(244, 111, 98, 0.9)"
+                boxShadow: "inset 0 0 0 4px rgba(244, 111, 98, 0.9)"
             };
 
             squareStyles[wrongMovePreview.from] = wrongStyle;
@@ -1131,10 +1168,30 @@ function Puzzles() {
             };
         }
 
+        if (queuedPremove) {
+            squareStyles[queuedPremove.from] = {
+                backgroundImage:
+                    "linear-gradient(rgba(242, 132, 132, 0.48), "
+                    + "rgba(242, 132, 132, 0.48))",
+                boxShadow: "inset 0 0 0 3px rgba(255, 171, 171, 0.78)"
+            };
+            squareStyles[queuedPremove.to] = {
+                backgroundImage:
+                    "linear-gradient(rgba(207, 56, 43, 0.66), "
+                    + "rgba(207, 56, 43, 0.66))",
+                boxShadow: "inset 0 0 0 3px rgba(232, 75, 59, 0.92)"
+            };
+        }
+
+        if (hintedSquare) {
+            squareStyles[hintedSquare] = {
+                boxShadow: "inset 0 0 0 5px rgba(120, 167, 255, 0.95)"
+            };
+        }
+
         if (selectedSquare) {
             squareStyles[selectedSquare] = {
-                boxShadow:
-                    "inset 0 0 0 4px rgba(96, 151, 255, 0.9)"
+                boxShadow: "inset 0 0 0 4px rgba(96, 151, 255, 0.9)"
             };
         }
 
@@ -1145,9 +1202,7 @@ function Puzzles() {
             || pageState != "playing"
             || pendingReply
             || !settings.themes.board.legalMoveHints
-        ) {
-            return squareStyles;
-        }
+        ) return squareStyles;
 
         const board = new Chess(currentFen);
         const legalMoves = board.moves({
@@ -1163,9 +1218,8 @@ function Puzzles() {
                 }
                 : {
                     backgroundImage:
-                        "radial-gradient(circle, "
-                        + "rgba(18, 24, 34, 0.42) 0 16%, "
-                        + "transparent 17%)"
+                        "radial-gradient(circle, rgba(18, 24, 34, 0.42) "
+                        + "0 16%, transparent 17%)"
                 };
         });
 
@@ -1173,16 +1227,18 @@ function Puzzles() {
     }, [
         atLivePosition,
         currentFen,
+        hintedSquare,
+        moveFeedback,
         pageState,
         pendingReply,
+        queuedPremove,
         selectedSquare,
         settings.themes.board.legalMoveHints,
-        moveFeedback,
         wrongMovePreview
     ]);
 
     useEffect(() => {
-        if (!puzzle || !currentFen) return;
+        if (!puzzle || !currentFen || !evaluationVisible || focusMode) return;
 
         const requestId = ++evaluationRequestRef.current;
         const updateEvaluation = (evaluation: Evaluation) => {
@@ -1192,10 +1248,7 @@ function Puzzles() {
             setBoardEvaluation({ ...evaluation });
         };
 
-        if (
-            puzzle.source == "archive"
-            && currentFen == puzzle.startFen
-        ) {
+        if (puzzle.source == "archive" && currentFen == puzzle.startFen) {
             updateEvaluation(puzzle.evaluation);
             return;
         }
@@ -1209,18 +1262,9 @@ function Puzzles() {
             provisionalEvaluation.type == "mate"
             || provisionalEvaluation.value != 0
         ) {
-            // Capturas/promociones reaccionan de inmediato mientras Stockfish
-            // termina de preparar la evaluación posicional. Una posición de
-            // material igual no fuerza artificialmente la barra a 0.0.
             setBoardEvaluation({ ...provisionalEvaluation });
         }
 
-        /*
-         * Una FEN = un Worker. No reutilizamos una búsqueda anterior ni
-         * esperamos a un `stop`: al cambiar de posición arrancamos un
-         * Stockfish limpio, por lo que la barra no puede quedar bloqueada por
-         * el estado del movimiento previo.
-         */
         const engine = new Engine(EngineVersion.STOCKFISH_17_LITE);
         let cancelled = false;
 
@@ -1238,42 +1282,28 @@ function Puzzles() {
                     && requestId == evaluationRequestRef.current
                     && line.index == 1
                     && line.depth >= 1
-                ) {
-                    updateEvaluation(line.evaluation);
-                }
+                ) updateEvaluation(line.evaluation);
             }
         }).then(lines => {
-            const finalLine = lines
-                .filter(line => line.index == 1)
-                .at(-1);
+            const finalLine = lines.filter(line => line.index == 1).at(-1);
 
             if (
                 !cancelled
                 && requestId == evaluationRequestRef.current
                 && finalLine
-            ) {
-                updateEvaluation(finalLine.evaluation);
-            }
+            ) updateEvaluation(finalLine.evaluation);
         }).catch(() => {
-            if (
-                !cancelled
-                && requestId == evaluationRequestRef.current
-            ) {
+            if (!cancelled && requestId == evaluationRequestRef.current) {
                 setBoardEvaluation({ ...provisionalEvaluation });
             }
-        }).finally(() => {
-            engine.terminate();
-        });
+        }).finally(() => engine.terminate());
 
         return () => {
             cancelled = true;
             evaluationRequestRef.current++;
             engine.terminate();
         };
-    }, [
-        currentFen,
-        puzzle?.id
-    ]);
+    }, [currentFen, evaluationVisible, focusMode, puzzle?.id]);
 
     const profileStats = showRatedProfile ? (
         <div className={styles.profileStats}>
@@ -1282,9 +1312,7 @@ function Puzzles() {
                 <strong>{profile.rating}</strong>
                 <small>
                     {calibrationRemaining > 0
-                        ? t("stats.calibrating", {
-                            count: calibrationRemaining
-                        })
+                        ? t("stats.calibrating", { count: calibrationRemaining })
                         : t("stats.calibrated")
                     }
                 </small>
@@ -1292,29 +1320,19 @@ function Puzzles() {
             <div>
                 <span>{t("stats.accuracy")}</span>
                 <strong>{accuracy}%</strong>
-                <small>
-                    {t("stats.attempts", {
-                        count: profile.attempts
-                    })}
-                </small>
+                <small>{t("stats.attempts", { count: profile.attempts })}</small>
             </div>
             <div>
                 <span>{t("stats.streak")}</span>
                 <strong>{profile.streak}</strong>
-                <small>
-                    {t("stats.best", {
-                        count: profile.bestStreak
-                    })}
-                </small>
+                <small>{t("stats.best", { count: profile.bestStreak })}</small>
             </div>
         </div>
     ) : null;
 
     const sessionRatingTrail = showRatedProfile ? (
         <div className={styles.ratingTrail}>
-            <span className={styles.ratingTrailLabel}>
-                {t("stats.rating")}
-            </span>
+            <span className={styles.ratingTrailLabel}>{t("stats.rating")}</span>
             <div className={styles.ratingTrailItems}>
                 {ratingHistory.map((event, index) => (
                     <span
@@ -1335,12 +1353,7 @@ function Puzzles() {
                 {puzzle?.source == "lichess"
                     && ratedSession
                     && pageState == "playing"
-                    && (
-                        <span
-                            className={styles.ratingPending}
-                            aria-hidden="true"
-                        />
-                    )
+                    && <span className={styles.ratingPending} aria-hidden="true" />
                 }
             </div>
         </div>
@@ -1353,19 +1366,20 @@ function Puzzles() {
             trainingActive ? styles.trainingPage : ""
         ].filter(Boolean).join(" ")}
     >
-        {!trainingActive && <section className={styles.hero}>
-            <div>
-                <span className={styles.eyebrow}>{t("hero.eyebrow")}</span>
-                <h1>{t("hero.title")}</h1>
-                <p>{pageCopy.heroSubtitle}</p>
-            </div>
-
-            {profileStats}
-        </section>}
+        {!trainingActive && (
+            <section className={styles.hero}>
+                <div>
+                    <span className={styles.eyebrow}>{t("hero.eyebrow")}</span>
+                    <h1>{t("hero.title")}</h1>
+                    <p>{pageCopy.heroSubtitle}</p>
+                </div>
+                {profileStats}
+            </section>
+        )}
 
         {(pageState == "loading" || pageState == "error") && (
             <section className={styles.stateCard}>
-                <span className={styles.stateSpinner}/>
+                <span className={styles.stateSpinner} />
                 <h2>
                     {pageState == "loading"
                         ? t("states.loadingTitle")
@@ -1385,13 +1399,13 @@ function Puzzles() {
             <section className={[
                 styles.setupGrid,
                 readable.setupGrid,
-                !coachEnabled
-                    ? readable.setupGridWithoutCoach
-                    : ""
+                "nexo-puzzle-setup-shell",
+                !coachEnabled ? readable.setupGridWithoutCoach : ""
             ].filter(Boolean).join(" ")}>
                 <div className={[
                     styles.setupMain,
-                    readable.setupMain
+                    readable.setupMain,
+                    "nexo-puzzle-setup-main"
                 ].join(" ")}>
                     <header className={[
                         styles.sectionHeader,
@@ -1416,7 +1430,7 @@ function Puzzles() {
                         >
                             <span className={styles.sourceIcon}>
                                 <svg viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="M4.5 8.5h15v11h-15zM3.5 4.5h17v4h-17zM9.5 12h5"/>
+                                    <path d="M4.5 8.5h15v11h-15zM3.5 4.5h17v4h-17zM9.5 12h5" />
                                 </svg>
                             </span>
                             <span>
@@ -1435,7 +1449,7 @@ function Puzzles() {
                         >
                             <span className={styles.sourceIcon}>
                                 <svg viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="M8 4.5c4-1.8 8 .6 8 4.5 0 2.2-1.2 3.4-3 4.7-1.5 1.1-2.4 2.3-2.4 4.3M9.8 21h.1"/>
+                                    <path d="M8 4.5c4-1.8 8 .6 8 4.5 0 2.2-1.2 3.4-3 4.7-1.5 1.1-2.4 2.3-2.4 4.3M9.8 21h.1" />
                                 </svg>
                             </span>
                             <span>
@@ -1445,8 +1459,7 @@ function Puzzles() {
                         </button>
                     </div>
 
-                    {
-                        source == "archive"
+                    {source == "archive"
                         && archiveLoadState == "ready"
                         && archivePuzzles.length == 0
                         && (
@@ -1475,205 +1488,11 @@ function Puzzles() {
 
                     {source == "lichess" && (
                         <>
-                            <div className={[
-                                styles.filterBlock,
-                                readable.filterBlock
-                            ].join(" ")}>
-                                <div className={[
-                                    styles.filterHeading,
-                                    readable.filterHeading
-                                ].join(" ")}>
-                                    <strong>{t("filters.theme")}</strong>
-                                    <span>{t("filters.themeHelp")}</span>
-                                </div>
-                                <div className={[
-                                    styles.themeCategories,
-                                    readable.themeCategories
-                                ].join(" ")}>
-                                    {puzzleThemeCategories.map(value => (
-                                        <button
-                                            type="button"
-                                            key={value}
-                                            className={
-                                                themeSelection.category
-                                                == value
-                                                    ? styles.themeCategoryActive
-                                                    : ""
-                                            }
-                                            onClick={() => {
-                                                setThemeSelection({
-                                                    category: value
-                                                });
-                                                setOpeningSearch("");
-                                            }}
-                                            aria-pressed={
-                                                themeSelection.category
-                                                == value
-                                            }
-                                        >
-                                            <span>
-                                                {t(
-                                                    `themeCategories.${value}`
-                                                )}
-                                            </span>
-                                        </button>
-                                    ))}
-                                </div>
-
-                                {filterOptions.length > 0 && (
-                                    <div className={[
-                                        styles.subthemePanel,
-                                        readable.subthemePanel
-                                    ].join(" ")}>
-                                        <div
-                                            className={
-                                                [
-                                                    styles.subthemeHeading,
-                                                    readable.subthemeHeading
-                                                ].join(" ")
-                                            }
-                                        >
-                                            <div>
-                                                <strong>
-                                                    {t("filters.subtheme", {
-                                                        theme: t(
-                                                            "themeCategories."
-                                                            + themeSelection
-                                                                .category
-                                                        )
-                                                    })}
-                                                </strong>
-                                                <span>
-                                                    {t(
-                                                        "filters.subthemeHelp"
-                                                    )}
-                                                </span>
-                                            </div>
-
-                                            {themeSelection.value && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() => (
-                                                        setThemeSelection({
-                                                            category:
-                                                                themeSelection
-                                                                    .category
-                                                        })
-                                                    )}
-                                                >
-                                                    {t(
-                                                        "filters.clearSubtheme"
-                                                    )}
-                                                </button>
-                                            )}
-                                        </div>
-
-                                        {themeSelection.category
-                                            == "opening"
-                                            && filterOptions.length > 8
-                                            && (
-                                                <input
-                                                    type="search"
-                                                    value={openingSearch}
-                                                    onChange={event => (
-                                                        setOpeningSearch(
-                                                            event.target.value
-                                                        )
-                                                    )}
-                                                    placeholder={t(
-                                                        "filters.openingSearch"
-                                                    )}
-                                                    aria-label={t(
-                                                        "filters.openingSearch"
-                                                    )}
-                                                    className={
-                                                        readable.openingSearch
-                                                    }
-                                                />
-                                            )}
-
-                                        <div className={[
-                                            styles.subthemeGrid,
-                                            readable.subthemeGrid
-                                        ].join(" ")}>
-                                            {visibleFilterOptions.map(option => {
-                                                const active = (
-                                                    themeSelection.kind
-                                                        == option.kind
-                                                    && themeSelection.value
-                                                        == option.value
-                                                );
-
-                                                return (
-                                                    <button
-                                                        type="button"
-                                                        key={
-                                                            `${option.kind}:`
-                                                            + option.value
-                                                        }
-                                                        className={active
-                                                            ? styles
-                                                                .subthemeActive
-                                                            : ""
-                                                        }
-                                                        onClick={() => (
-                                                            setThemeSelection(
-                                                                active
-                                                                    ? {
-                                                                        category:
-                                                                            themeSelection
-                                                                                .category
-                                                                    }
-                                                                    : {
-                                                                        category:
-                                                                            themeSelection
-                                                                                .category,
-                                                                        kind:
-                                                                            option
-                                                                                .kind,
-                                                                        value:
-                                                                            option
-                                                                                .value
-                                                                    }
-                                                            )
-                                                        )}
-                                                    >
-                                                        <span>
-                                                            {option.kind
-                                                                == "opening"
-                                                                ? formatOpeningTag(
-                                                                    option.value,
-                                                                    i18n
-                                                                        .resolvedLanguage
-                                                                        || "en"
-                                                                )
-                                                                : formatPuzzleTheme(
-                                                                    option.value,
-                                                                    i18n
-                                                                        .resolvedLanguage
-                                                                        || "en"
-                                                                )
-                                                            }
-                                                        </span>
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-
-                                        {visibleFilterOptions.length == 0 && (
-                                            <p
-                                                className={
-                                                    styles.noSubthemeResults
-                                                }
-                                            >
-                                                {t(
-                                                    "filters.noSubthemeResults"
-                                                )}
-                                            </p>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
+                            <ThemeMultiSelector
+                                catalogue={puzzleCatalogue}
+                                selections={themeSelections}
+                                onChange={setThemeSelections}
+                            />
 
                             <div className={[
                                 styles.filterBlock,
@@ -1699,6 +1518,7 @@ function Puzzles() {
                                                 : ""
                                             }
                                             onClick={() => setDifficulty(value)}
+                                            aria-pressed={difficulty == value}
                                         >
                                             <strong>
                                                 {t(`difficulties.${value}.title`)}
@@ -1716,9 +1536,7 @@ function Puzzles() {
                     <div className={[
                         styles.sessionOptions,
                         readable.sessionOptions,
-                        source == "archive"
-                            ? styles.archiveSessionOptions
-                            : ""
+                        source == "archive" ? styles.archiveSessionOptions : ""
                     ].filter(Boolean).join(" ")}>
                         {source == "lichess" && (
                             <OptionToggle
@@ -1768,8 +1586,7 @@ function Puzzles() {
                         onClick={() => void startTraining()}
                         disabled={
                             requestingPuzzle
-                            ||
-                            (
+                            || (
                                 source == "archive"
                                 && (
                                     archiveLoadState != "ready"
@@ -1791,27 +1608,21 @@ function Puzzles() {
                     <CoachCard
                         coach={selectedCoach}
                         expression={coachExpression}
-                        message={
-                            pageState == "setup"
-                                ? spokenSetupCoachMessage
-                                : spokenCoachMessage
-                        }
+                        message={spokenSetupCoachMessage}
                         animationsEnabled={settings.coach.animations}
-                        title={t("coach.title", {
-                            name: selectedCoach.name
-                        })}
+                        title={t("coach.title", { name: selectedCoach.name })}
                         onCoachClick={() => setCoachPickerOpen(true)}
                     />
                 )}
             </section>
         )}
 
-        {puzzle && (
-            pageState == "playing"
-            || pageState == "solved"
-            || pageState == "revealed"
-        ) && (
-            <section className={styles.trainingGrid}>
+        {puzzle && trainingActive && (
+            <section className={[
+                styles.trainingGrid,
+                "nexo-puzzle-training-shell",
+                focusMode ? "nexo-puzzle-focus-mode" : ""
+            ].filter(Boolean).join(" ")}>
                 <header className={styles.workspaceHeader}>
                     <div className={styles.workspaceIdentity}>
                         <span className={styles.workspaceSource}>
@@ -1820,7 +1631,6 @@ function Puzzles() {
                                 : pageCopy.thematicSource
                             }
                         </span>
-
                         <div className={styles.workspaceTitleRow}>
                             <h2>
                                 {t("puzzle.toMove", {
@@ -1831,23 +1641,278 @@ function Puzzles() {
                     </div>
                 </header>
 
-                <div className={styles.boardColumn}>
-                    <div className={[
-                        styles.boardStage,
-                        settings.themes.board.coordinates == "outside"
-                            ? styles.boardStageWithOutsideCoordinates
-                            : ""
-                    ].filter(Boolean).join(" ")}>
-                        <EvaluationBar
-                            className={styles.evaluationBar}
-                            evaluation={boardEvaluation}
-                            moveColour={
-                                new Chess(currentFen).turn() == "w"
-                                    ? PieceColour.WHITE
-                                    : PieceColour.BLACK
-                            }
-                            flipped={puzzleBoardOrientation == "black"}
-                        />
+                <aside className="nexo-puzzle-left-rail">
+                    <button
+                        type="button"
+                        className="nexo-puzzle-back-top"
+                        onClick={returnToSetup}
+                        title={t("actions.changeFilters")}
+                        aria-label={t("actions.changeFilters")}
+                    >
+                        ←
+                    </button>
+
+                    {puzzle.source == "archive" && (
+                        <div className="nexo-puzzle-source-card">
+                            <strong>{puzzle.gameLabel || t("puzzle.archiveSource")}</strong>
+                            <span>
+                                {puzzle.moveNumber
+                                    ? `${t("puzzle.archiveSource")} · #${puzzle.moveNumber}`
+                                    : t("puzzle.archiveSource")
+                                }
+                            </span>
+                        </div>
+                    )}
+
+                    {showRatedProfile && (
+                        <div className="nexo-puzzle-score-card">
+                            <div className="nexo-puzzle-score-head">
+                                <strong>{t("options.rated.title")}</strong>
+                                <button
+                                    type="button"
+                                    role="switch"
+                                    aria-checked={ratedSession}
+                                    aria-label={t("options.rated.title")}
+                                    className="nexo-puzzle-switch"
+                                    onClick={() => setRatedSession(value => !value)}
+                                />
+                            </div>
+                            <strong className="nexo-puzzle-score-value">
+                                {profile.rating}
+                            </strong>
+                            {puzzle.rating && (
+                                <small>{t("puzzle.rating", { rating: puzzle.rating })}</small>
+                            )}
+                            <div className="nexo-puzzle-mini-stats">
+                                <div>
+                                    <span>{t("stats.accuracy")}</span>
+                                    <strong>{accuracy}%</strong>
+                                    <small>
+                                        {t("stats.attempts", { count: profile.attempts })}
+                                    </small>
+                                </div>
+                                <div>
+                                    <span>{t("stats.streak")}</span>
+                                    <strong>{profile.streak}</strong>
+                                    <small>
+                                        {t("stats.best", { count: profile.bestStreak })}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="nexo-puzzle-session-card">
+                        <button
+                            type="button"
+                            className="nexo-puzzle-back-link"
+                            onClick={returnToSetup}
+                        >
+                            <span aria-hidden="true">‹</span>
+                            {t("actions.changeFilters")}
+                        </button>
+
+                        <div className={[
+                            "nexo-puzzle-left-control",
+                            "nexo-puzzle-auto-next-control"
+                        ].join(" ")}>
+                            <div className="nexo-puzzle-control-row">
+                                <strong>{t("actions.autoNext")}</strong>
+                                <button
+                                    type="button"
+                                    role="switch"
+                                    aria-checked={autoNext}
+                                    aria-label={t("actions.autoNext")}
+                                    className="nexo-puzzle-switch"
+                                    onClick={() => setAutoNext(value => !value)}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {source == "lichess" && (
+                        <details className="nexo-puzzle-difficulty-menu">
+                            <summary>
+                                <span>{t("filters.difficulty")}</span>
+                                <small>{t(`difficulties.${difficulty}.title`)}</small>
+                            </summary>
+                            <div className="nexo-puzzle-difficulty-options">
+                                {difficulties.map(value => (
+                                    <button
+                                        type="button"
+                                        key={value}
+                                        className={difficulty == value
+                                            ? "nexo-active"
+                                            : ""
+                                        }
+                                        onClick={event => {
+                                            setDifficulty(value);
+                                            const details = event.currentTarget
+                                                .closest("details");
+                                            if (details) details.open = false;
+                                        }}
+                                    >
+                                        <span>{t(`difficulties.${value}.title`)}</span>
+                                        <small>{t(`difficulties.${value}.range`)}</small>
+                                    </button>
+                                ))}
+                            </div>
+                        </details>
+                    )}
+
+                    <div
+                        className="nexo-puzzle-timer"
+                        role="timer"
+                        aria-live="off"
+                    >
+                        <span aria-hidden="true">
+                            <svg
+                                viewBox="0 0 24 24"
+                                width="20"
+                                height="20"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.8"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <circle cx="12" cy="13" r="8" />
+                                <path d="M12 9v4l2.5 1.5" />
+                                <path d="M9 3h6" />
+                            </svg>
+                        </span>
+                        <strong>
+                            {String(Math.floor(puzzleElapsedSeconds / 60))
+                                .padStart(2, "0")}
+                            :
+                            {String(puzzleElapsedSeconds % 60)
+                                .padStart(2, "0")}
+                        </strong>
+                    </div>
+
+                    {showRatedProfile && (
+                        <div className="nexo-puzzle-left-history">
+                            {sessionRatingTrail}
+                        </div>
+                    )}
+                </aside>
+
+                <div className={[
+                    styles.boardColumn,
+                    "nexo-puzzle-board-column"
+                ].join(" ")}>
+                    <div
+                        className={[
+                            styles.boardStage,
+                            settings.themes.board.coordinates == "outside"
+                                ? styles.boardStageWithOutsideCoordinates
+                                : "",
+                            "nexo-puzzle-board-stage",
+                            puzzleBoardOrientation == "black"
+                                ? "nexo-puzzle-board-black"
+                                : "nexo-puzzle-board-white",
+                            evaluationVisible && !focusMode
+                                ? ""
+                                : "nexo-eval-hidden"
+                        ].filter(Boolean).join(" ")}
+                    >
+                        <div className="nexo-puzzle-board-tools">
+                            <button
+                                type="button"
+                                className={[
+                                    "nexo-puzzle-tool-button",
+                                    "nexo-puzzle-tool-flip"
+                                ].join(" ")}
+                                onClick={() => (
+                                    setBoardFlipped(flipped => !flipped)
+                                )}
+                                title={flipBoardLabel}
+                                aria-label={flipBoardLabel}
+                            >
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                    width="20"
+                                    height="20"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="1.8"
+                                >
+                                    <path d="M7 7h10l-2.5-2.5" />
+                                    <path d="M17 17H7l2.5 2.5" />
+                                    <path d="M19 9.5A7 7 0 0 1 17 17" />
+                                    <path d="M5 14.5A7 7 0 0 1 7 7" />
+                                </svg>
+                            </button>
+
+                            <button
+                                type="button"
+                                className={[
+                                    "nexo-puzzle-tool-button",
+                                    "nexo-puzzle-tool-focus"
+                                ].join(" ")}
+                                onClick={() => setFocusMode(value => !value)}
+                                title={focusMode
+                                    ? exitFocusModeLabel
+                                    : focusModeLabel
+                                }
+                                aria-label={focusMode
+                                    ? exitFocusModeLabel
+                                    : focusModeLabel
+                                }
+                            >
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                    width="20"
+                                    height="20"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="1.8"
+                                >
+                                    {focusMode ? (
+                                        <>
+                                            <path d="M4 4l6 6" />
+                                            <path d="M6 10h4V6" />
+                                            <path d="M20 4l-6 6" />
+                                            <path d="M14 6v4h4" />
+                                            <path d="M4 20l6-6" />
+                                            <path d="M6 14h4v4" />
+                                            <path d="M20 20l-6-6" />
+                                            <path d="M14 18v-4h4" />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <path d="M10 10 4 4" />
+                                            <path d="M4 9V4h5" />
+                                            <path d="m14 10 6-6" />
+                                            <path d="M15 4h5v5" />
+                                            <path d="m10 14-6 6" />
+                                            <path d="M4 15v5h5" />
+                                            <path d="m14 14 6 6" />
+                                            <path d="M15 20h5v-5" />
+                                        </>
+                                    )}
+                                </svg>
+                            </button>
+                        </div>
+
+                        {evaluationVisible && !focusMode && (
+                            <EvaluationBar
+                                className={styles.evaluationBar}
+                                evaluation={boardEvaluation}
+                                moveColour={
+                                    new Chess(currentFen).turn() == "w"
+                                        ? PieceColour.WHITE
+                                        : PieceColour.BLACK
+                                }
+                                flipped={puzzleBoardOrientation == "black"}
+                            />
+                        )}
 
                         <div
                             ref={puzzleBoardShellRef}
@@ -1860,20 +1925,36 @@ function Puzzles() {
                                 position={currentFen}
                                 boardOrientation={puzzleBoardOrientation}
                                 showBoardNotation={
-                                    settings.themes.board.coordinates
-                                    == "inside"
+                                    settings.themes.board.coordinates == "inside"
                                 }
-                                animationDuration={165}
+                                animationDuration={70}
                                 arePiecesDraggable={
                                     pageState == "playing"
-                                    && !pendingReply
                                     && !wrongMovePreview
                                     && atLivePosition
                                 }
-                                onPieceDrop={(from, to) => (
-                                    playExpectedMove(from, to)
-                                )}
+                                isDraggablePiece={({ piece }) => {
+                                    const solverColour = puzzle.solver == "white"
+                                        ? "w"
+                                        : "b";
+                                    return piece[0] == solverColour;
+                                }}
+                                onPieceDragBegin={(_, square) => {
+                                    setSelectedSquare(square);
+                                }}
+                                onPieceDragEnd={() => {
+                                    setSelectedSquare(undefined);
+                                }}
+                                onPieceDrop={(from, to) => pendingReply
+                                    ? queuePremove(from, to)
+                                    : playExpectedMove(from, to)
+                                }
                                 onSquareClick={selectBoardSquare}
+                                snapToCursor={true}
+                                customDropSquareStyle={{
+                                    boxShadow:
+                                        "inset 0 0 0 3px rgba(120, 167, 255, 0.62)"
+                                }}
                                 areArrowsAllowed={false}
                                 customPieces={customPieces}
                                 customSquare={
@@ -1899,18 +1980,13 @@ function Puzzles() {
                                 }}
                             />
 
-                            {(
-                                hintArrow.length > 0
-                                || manualArrows.length > 0
-                            ) && (
+                            {(hintArrow.length > 0 || manualArrows.length > 0) && (
                                 <SuggestionArrowOverlay
                                     arrows={[
                                         ...hintArrow.map(arrow => ({
                                             from: arrow[0],
                                             to: arrow[1],
-                                            colour: String(
-                                                arrow[2] || "#78a7ff"
-                                            )
+                                            colour: String(arrow[2] || "#78a7ff")
                                         })),
                                         ...manualArrows.map(([from, to, colour]) => ({
                                             from,
@@ -1921,27 +1997,23 @@ function Puzzles() {
                                             )
                                         }))
                                     ]}
-                                    flipped={
-                                        puzzleBoardOrientation == "black"
-                                    }
+                                    flipped={puzzleBoardOrientation == "black"}
                                 />
                             )}
 
                             {settings.themes.board.coordinates == "outside" && (
                                 <OutsideCoordinates
-                                    flipped={
-                                        puzzleBoardOrientation == "black"
-                                    }
+                                    flipped={puzzleBoardOrientation == "black"}
                                 />
                             )}
                         </div>
                     </div>
-
                 </div>
 
                 <aside className={[
                     styles.trainingPanel,
-                    readable.trainingPanel
+                    readable.trainingPanel,
+                    "nexo-puzzle-right-rail"
                 ].join(" ")}>
                     {coachEnabled && (
                         <CoachCard
@@ -1949,14 +2021,15 @@ function Puzzles() {
                             expression={coachExpression}
                             message={spokenCoachMessage}
                             animationsEnabled={settings.coach.animations}
-                            title={t("coach.title", {
-                                name: selectedCoach.name
-                            })}
+                            title={t("coach.title", { name: selectedCoach.name })}
                             onCoachClick={() => setCoachPickerOpen(true)}
                         />
                     )}
 
-                    <div className={styles.objectiveCard}>
+                    <div className={[
+                        styles.objectiveCard,
+                        "nexo-puzzle-objective"
+                    ].join(" ")}>
                         <span>{t("puzzle.objective")}</span>
                         <h3>
                             {pageState == "solved"
@@ -2034,9 +2107,7 @@ function Puzzles() {
                         <div className={styles.positionDetails}>
                             {puzzle.rating && (
                                 <span>
-                                    {t("puzzle.rating", {
-                                        rating: puzzle.rating
-                                    })}
+                                    {t("puzzle.rating", { rating: puzzle.rating })}
                                 </span>
                             )}
                             {puzzle.classification && (
@@ -2047,26 +2118,26 @@ function Puzzles() {
                                     )}
                                 </span>
                             )}
-                            {visibleThemes.map(value => (
-                                <span key={value}>
-                                    {formatPuzzleTheme(
-                                        value,
-                                        i18n.resolvedLanguage || "en"
-                                    )}
-                                </span>
-                            ))}
+                            {visibleThemes
+                                .filter(value => value != puzzle.classification)
+                                .slice(0, 2)
+                                .map(value => (
+                                    <span key={value}>
+                                        {formatPuzzleTheme(
+                                            value,
+                                            i18n.resolvedLanguage || "en"
+                                        )}
+                                    </span>
+                                ))
+                            }
                         </div>
                     </div>
 
-                    {showRatedProfile && (
-                        <div className={styles.performancePanel}>
-                            {profileStats}
-                            {sessionRatingTrail}
-                        </div>
-                    )}
-
                     {pageState == "playing" && (
-                        <div className={styles.puzzleActions}>
+                        <div className={[
+                            styles.puzzleActions,
+                            "nexo-puzzle-actions"
+                        ].join(" ")}>
                             <button
                                 type="button"
                                 onClick={showHint}
@@ -2098,51 +2169,28 @@ function Puzzles() {
                         </div>
                     )}
 
-                    <div className={styles.autoNextControl}>
-                        <span className={styles.autoNextCopy}>
-                            <strong>{t("actions.autoNext")}</strong>
-                            <small>{t("actions.autoNextHelp")}</small>
-                        </span>
-                        <button
-                            type="button"
-                            role="switch"
-                            aria-checked={autoNext}
-                            className={[
-                                styles.autoNextSwitch,
-                                autoNext ? styles.autoNextEnabled : ""
-                            ].filter(Boolean).join(" ")}
-                            onClick={() => setAutoNext(value => !value)}
-                        >
-                            <i aria-hidden="true" />
-                        </button>
-                    </div>
-
                     <button
                         type="button"
-                        className={styles.nextPuzzle}
+                        className={[
+                            styles.nextPuzzle,
+                            "nexo-puzzle-next"
+                        ].join(" ")}
                         onClick={() => {
                             if (pageState == "playing") {
                                 void skipPuzzle();
                                 return;
                             }
-
                             void startTraining();
                         }}
                     >
                         {t("actions.nextPuzzle")} →
                     </button>
 
-                    <div className={styles.secondaryActions}>
-                        <button
-                            type="button"
-                            onClick={() => {
-                                window.clearTimeout(autoNextTimer.current);
-                                setPuzzle(undefined);
-                                setPageState("setup");
-                                setCoachExpression("idle");
-                                setCoachMessage({ key: "coach.changeFilters" });
-                            }}
-                        >
+                    <div className={[
+                        styles.secondaryActions,
+                        "nexo-puzzle-secondary"
+                    ].join(" ")}>
+                        <button type="button" onClick={returnToSetup}>
                             {t("actions.changeFilters")}
                         </button>
 
@@ -2197,7 +2245,7 @@ function OptionToggle({
             <strong>{title}</strong>
             <small>{description}</small>
         </span>
-        <i><b/></i>
+        <i><b /></i>
     </button>;
 }
 
@@ -2218,7 +2266,8 @@ function CoachCard({
 }) {
     return <div className={[
         styles.coachCard,
-        readable.coachCard
+        readable.coachCard,
+        "nexo-puzzle-coach-card"
     ].join(" ")}>
         <div className={[
             styles.coachCopy,

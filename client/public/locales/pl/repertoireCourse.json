@@ -1,0 +1,59 @@
+{
+  "categories": {
+    "label": "Kategorie kursów debiutowych",
+    "e4": "Gry otwarte i 1.e4",
+    "d4": "Systemy z 1.d4",
+    "vsE4": "Obrony przeciw 1.e4",
+    "vsD4": "Obrony przeciw 1.d4",
+    "flank": "Debiuty skrzydłowe"
+  },
+  "path": {
+    "intro": "Traktuj ten debiut jak krótką ścieżkę nauki. Ukończ jedną linię naraz; NexoChess zapisuje postęp i wskazuje kolejny sensowny krok.",
+    "title": "Ścieżka kursu",
+    "progress": "{{completed}} / {{total}} linii",
+    "recommended": "Kontynuuj"
+  },
+  "practice": {
+    "autoRule": "Po nauczeniu się linii NexoChess automatycznie dodaje ją do twojego osobistego repertuaru.",
+    "againCoach": "Dobrze. Zagraj ją jeszcze raz od początku, aby utrwalić sekwencję.",
+    "backModule": "Wróć do modułu",
+    "studyPhase": "Nauka",
+    "practicePhase": "Pamięć",
+    "completePhase": "Ukończono",
+    "studyHint": "Przejdź linię raz, a potem odtwórz ją z pamięci.",
+    "start": "Rozpocznij trening pamięci",
+    "repetition": "Powtórzenie {{current}} z {{total}}",
+    "memoryBlock": "Natychmiastowe utrwalenie",
+    "extra": "Ponieważ potrzebna była podpowiedź lub pojawił się błędny ruch, ta lekcja dostaje jedno dodatkowe powtórzenie.",
+    "repeatRule": "Nowa linia jest od razu powtarzana dwa razy, zanim zostanie uznana za nauczoną.",
+    "lessonComplete": "Lekcja ukończona",
+    "completeTitle": "Linia nauczona",
+    "completeBody": "Linia została teraz utrwalona. Później wróci tylko wtedy, gdy harmonogram powtórek rozłożonych w czasie uzna przypomnienie za przydatne.",
+    "autoSaved": "Automatycznie dodano do twojego osobistego repertuaru.",
+    "nextLine": "Następna linia",
+    "moduleDone": "Zakończ moduł",
+    "srsExplainer": "Nie musisz odtwarzać wszystkich nauczonych linii za każdym razem, gdy otwierasz Repertuar. Wracają tu tylko powtórki, na które nadszedł czas."
+  },
+  "profile": {
+    "eyebrow": "Osobisty punkt startowy",
+    "title": "Zbuduj kurs wokół debiutów, które naprawdę grasz",
+    "intro": "Opcjonalnie podaj publiczną nazwę użytkownika Chess.com lub Lichess. NexoChess sprawdzi ostatnie partie, oszacuje najczęściej pojawiające się rodziny debiutów i zasugeruje, od czego zacząć naukę.",
+    "optional": "Opcjonalne",
+    "platform": "Platforma",
+    "username": "Nazwa użytkownika",
+    "usernamePlaceholder": "Twoja publiczna nazwa użytkownika",
+    "games": "Ostatnie partie",
+    "loading": "Analizowanie…",
+    "analyse": "Przeanalizuj moje debiuty",
+    "error": "NexoChess nie mógł teraz odczytać ostatnich publicznych partii tego konta. Sprawdź nazwę użytkownika albo spróbuj później na drugiej platformie.",
+    "resultTitle": "Profil debiutowy {{username}}",
+    "gamesAnalysed": "Przeanalizowano {{count}} ostatnich partii",
+    "heuristic": "To wskazówka do nauki oparta na częstotliwości, wynikach i głębokości rozpoznanej przez katalog; nie jest oceną silnika dla pojedynczych ruchów.",
+    "startHere": "Sugerowany punkt startowy",
+    "recommendation": "Grając {{side}}, ten debiut pojawił się w {{games}} partiach, osiągnął wynik {{score}}, a rozpoznana sekwencja debiutowa miała średnio około {{moves}} ruchów. Jego nauka powinna więc przydać się w wielu twoich partiach.",
+    "train": "Trenuj ten debiut",
+    "whiteRepertoire": "Zaobserwowany repertuar białymi",
+    "blackRepertoire": "Zaobserwowany repertuar czarnymi",
+    "noData": "Za mało rozpoznanych partii tym kolorem."
+  }
+}

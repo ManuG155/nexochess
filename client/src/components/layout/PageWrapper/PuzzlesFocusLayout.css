@@ -1,0 +1,59 @@
+/*
+ * Distraction-free Puzzles geometry.
+ * Keep the board centred on the viewport independently of the side panel.
+ */
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-training-shell.nexo-puzzle-focus-mode {
+    grid-template-columns:
+        minmax(0, 1fr)
+        var(--nexo-puzzle-stage)
+        minmax(0, 1fr) !important;
+    grid-template-areas: ". board right" !important;
+    column-gap: 0 !important;
+    padding-inline: 0 !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-focus-mode .nexo-puzzle-board-column {
+    grid-column: 2 !important;
+    justify-self: center !important;
+    width: var(--nexo-puzzle-stage) !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-focus-mode .nexo-puzzle-right-rail {
+    grid-column: 3 !important;
+    justify-self: end !important;
+    box-sizing: border-box !important;
+    width: min(420px, calc(100% - 64px)) !important;
+    max-width: 420px !important;
+    margin-right: 32px !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-focus-mode .nexo-puzzle-board-tools,
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-focus-mode .nexo-puzzle-board-white .nexo-puzzle-board-tools,
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-focus-mode .nexo-puzzle-board-black .nexo-puzzle-board-tools {
+    right: auto !important;
+    left: -54px !important;
+}
+
+@media (max-width: 1180px) {
+    [data-nexo-shell][data-route="puzzles"]
+    .nexo-puzzle-focus-mode .nexo-puzzle-right-rail {
+        width: min(360px, calc(100% - 36px)) !important;
+        margin-right: 18px !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"]
+    .nexo-puzzle-focus-mode .nexo-puzzle-board-tools,
+    [data-nexo-shell][data-route="puzzles"]
+    .nexo-puzzle-focus-mode .nexo-puzzle-board-white .nexo-puzzle-board-tools,
+    [data-nexo-shell][data-route="puzzles"]
+    .nexo-puzzle-focus-mode .nexo-puzzle-board-black .nexo-puzzle-board-tools {
+        left: -48px !important;
+    }
+}

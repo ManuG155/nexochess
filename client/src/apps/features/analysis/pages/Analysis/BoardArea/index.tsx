@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Move } from "chess.js";
 
 import { addChildMove } from "shared/types/game/position/StateTreeNode";
@@ -17,6 +18,7 @@ import useSuggestionArrows from "./useSuggestionArrows";
 import * as styles from "./BoardArea.module.css";
 
 function BoardArea() {
+    const { t } = useTranslation("analysis");
     const settings = useSettingsStore(state => state.settings.analysis);
     const theme = useSettingsStore(state => state.settings.themes);
 
@@ -37,11 +39,13 @@ function BoardArea() {
         setCurrentStateTreeNode,
         dispatchCurrentNodeUpdate,
         autoplayEnabled,
-        boardFlipped
+        boardFlipped,
+        setBoardFlipped
     } = useAnalysisBoardStore();
 
     const evaluation = useEvaluation();
     const suggestionArrows = useSuggestionArrows();
+    const flipBoardLabel = t("optionsToolbar.flipBoard");
 
     function addMove(move: Move) {
         if (!gameAnalysisOpen) {
@@ -61,29 +65,56 @@ function BoardArea() {
         return true;
     }
 
-    return <Board
-        className={styles.board}
+    return <div
+        className={styles.boardArea}
         style={{
             maxWidth: `calc(100vh - ${evaluation ? 195 : 235}px)`
         }}
-        profileClassName={styles.boardProfile}
-        whiteProfile={analysisGame.players.white}
-        blackProfile={analysisGame.players.black}
-        theme={{
-            lightSquareColour: theme.board.lightSquareColour,
-            darkSquareColour: theme.board.darkSquareColour
-        }}
-        node={currentStateTreeNode}
-        flipped={boardFlipped}
-        evaluation={evaluation}
-        arrows={suggestionArrows}
-        piecesDraggable={
-            analysisStatus == AnalysisStatus.INACTIVE
-            && !autoplayEnabled
-        }
-        enableClassifications={!settings.classifications.hide}
-        onAddMove={addMove}
-    />;
+    >
+        <button
+            type="button"
+            className={styles.flipBoardButton}
+            onClick={() => setBoardFlipped(!boardFlipped)}
+            title={flipBoardLabel}
+            aria-label={flipBoardLabel}
+        >
+            <svg
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.8"
+            >
+                <path d="M7 7h10l-2.5-2.5" />
+                <path d="M17 17H7l2.5 2.5" />
+                <path d="M19 9.5A7 7 0 0 1 17 17" />
+                <path d="M5 14.5A7 7 0 0 1 7 7" />
+            </svg>
+        </button>
+
+        <Board
+            className={styles.board}
+            profileClassName={styles.boardProfile}
+            whiteProfile={analysisGame.players.white}
+            blackProfile={analysisGame.players.black}
+            theme={{
+                lightSquareColour: theme.board.lightSquareColour,
+                darkSquareColour: theme.board.darkSquareColour
+            }}
+            node={currentStateTreeNode}
+            flipped={boardFlipped}
+            evaluation={evaluation}
+            arrows={suggestionArrows}
+            piecesDraggable={
+                analysisStatus == AnalysisStatus.INACTIVE
+                && !autoplayEnabled
+            }
+            enableClassifications={!settings.classifications.hide}
+            onAddMove={addMove}
+        />
+    </div>;
 }
 
 export default BoardArea;

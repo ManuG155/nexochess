@@ -1,0 +1,129 @@
+import React, { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+
+import { OpeningCatalogueEntry } from "./openingCatalogue";
+import { localizeOpeningName } from "./openingLocalization";
+import { CourseProgressStore, findLessonProgress } from "./courseProgress";
+import { RepertoireSide } from "./courseV3Model";
+import {
+    fullMoveCount,
+    learnedDepth,
+    pgnPlyCount
+} from "./courseDepth";
+import { courseDepthCopy, formatDepthCopy } from "./courseDepthCopy";
+import * as styles from "./courseV3.module.css";
+import * as depthStyles from "./courseDepth.module.css";
+
+interface Props {
+    name: string;
+    lines: OpeningCatalogueEntry[];
+    progress: CourseProgressStore;
+    preferredSide?: RepertoireSide;
+    onBack: () => void;
+    onOpen: (opening: OpeningCatalogueEntry, side?: RepertoireSide, startPractice?: boolean, blindPractice?: boolean) => void;
+    onReviewFamily: (lines: OpeningCatalogueEntry[]) => void;
+}
+
+const CARD_PREVIEW_FULL_MOVES = 5;
+
+function previewPgn(pgn: string) {
+    const text = pgn.trim();
+    if (!text) return text;
+    const nextMove = CARD_PREVIEW_FULL_MOVES + 1;
+    const cutoff = text.search(new RegExp(`(?:^|\\s)${nextMove}\\.`));
+    if (cutoff < 0) return text;
+    return `${text.slice(0, cutoff).trim()} …`;
+}
+
+function CourseFamilyV3({ name, lines, progress, preferredSide, onBack, onOpen, onReviewFamily }: Props) {
+    const { t, i18n } = useTranslation("repertoire");
+    const { t: tc } = useTranslation("repertoireCourse");
+    const [limit, setLimit] = useState(10);
+    const language = i18n.resolvedLanguage || i18n.language || "en";
+    const depthCopy = courseDepthCopy(language);
+
+    const lineStates = useMemo(() => lines.map(item => {
+        const itemProgress = findLessonProgress(progress, item);
+        const availablePly = pgnPlyCount(item.pgn);
+        const learnedPly = learnedDepth(itemProgress, availablePly);
+        return {
+            item,
+            progress: itemProgress,
+            availablePly,
+            learnedPly,
+            complete: availablePly > 0 && learnedPly >= availablePly
+        };
+    }), [lines, progress]);
+
+    const learnedLines = lineStates
+        .filter(state => state.learnedPly > 0)
+        .map(state => state.item);
+    const completed = learnedLines.length;
+    const firstNew = lineStates.findIndex(state => state.learnedPly == 0);
+    const firstPartial = lineStates.findIndex(state => state.learnedPly > 0 && !state.complete);
+    const recommended = firstNew >= 0 ? firstNew : firstPartial;
+    const depthScore = lineStates.reduce((sum, state) => (
+        sum + (state.availablePly ? state.learnedPly / state.availablePly : 0)
+    ), 0);
+    const percent = lineStates.length
+        ? Math.round(depthScore / lineStates.length * 100)
+        : 0;
+    const localizedFamily = localizeOpeningName(name, language);
+
+    function studyNext() {
+        const index = recommended >= 0 ? recommended : 0;
+        const state = lineStates[index];
+        if (!state) return;
+        onOpen(
+            state.item,
+            state.progress?.side || preferredSide,
+            Boolean(state.progress && state.complete),
+            Boolean(state.progress && state.complete)
+        );
+    }
+
+    return <section className={styles.browserShell}>
+        <button className={styles.backToOpenings} onClick={onBack}>← {t("learn.allOpenings")}</button>
+        <div className={styles.familyHero}>
+            <div><span>{lines.find(item => item.eco != "USR")?.eco || lines[0]?.eco}</span><h2>{localizedFamily}</h2><p>{tc("path.intro")}</p></div>
+            <div className={styles.familyHeroActions}>
+                <div><strong>{completed}/{lines.length}</strong><span>{t("learn.linesLearned")}</span></div>
+                <button type="button" data-repertoire-tour="study-next" onClick={studyNext} disabled={!lines.length}>{t("learn.study")}</button>
+                <button type="button" onClick={() => onReviewFamily(learnedLines)} disabled={!learnedLines.length}>{t("modes.review")}</button>
+            </div>
+        </div>
+        <div className={styles.pathCard}>
+            <div className={styles.pathHead}><strong>{tc("path.title")}</strong><span>{percent}%</span></div>
+            <div className={styles.pathTrack}><i style={{ width: `${percent}%` }}/></div>
+            <div className={styles.lessonList} data-repertoire-tour="lesson-list">{lineStates.slice(0, limit).map((state, index) => {
+                const { item, progress: itemProgress, learnedPly, availablePly, complete } = state;
+                const display = item.eco == "USR"
+                    ? item.name
+                    : item.name == name
+                        ? t("learn.fundamentals")
+                        : localizeOpeningName(item.name, language);
+                const learnedMoves = fullMoveCount(learnedPly);
+                const availableMoves = fullMoveCount(availablePly);
+                const depthLabel = formatDepthCopy(depthCopy.learned, {
+                    learned: learnedMoves,
+                    available: availableMoves
+                });
+                const action = complete
+                    ? t("modes.review")
+                    : itemProgress
+                        ? depthCopy.partial
+                        : index == recommended
+                            ? tc("path.recommended")
+                            : t("learn.study");
+                return <button key={`${item.eco}|${item.name}|${item.pgn}`} data-recommended={index == recommended} onClick={() => onOpen(item, itemProgress?.side || preferredSide, Boolean(itemProgress && complete), Boolean(itemProgress && complete))}>
+                    <b>{complete ? "✓" : itemProgress ? "↗" : index + 1}</b>
+                    <div><strong>{display}</strong><small title={item.pgn}>{previewPgn(item.pgn)}</small><small className={depthStyles.depthBadge}>{depthLabel}</small></div>
+                    <span>{action}</span>
+                </button>;
+            })}</div>
+        </div>
+        {limit < lines.length && <button className={styles.showMore} onClick={() => setLimit(value => value + 10)}>{t("learn.showMore", { remaining: lines.length - limit })}</button>}
+    </section>;
+}
+
+export default CourseFamilyV3;

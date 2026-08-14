@@ -1,0 +1,59 @@
+{
+  "categories": {
+    "label": "Kategorien der Eröffnungskurse",
+    "e4": "Offene Spiele & 1.e4",
+    "d4": "1.d4-Systeme",
+    "vsE4": "Verteidigungen gegen 1.e4",
+    "vsD4": "Verteidigungen gegen 1.d4",
+    "flank": "Flankeneröffnungen"
+  },
+  "path": {
+    "intro": "Behandle diese Eröffnung wie einen kurzen Lernpfad. Schließe jeweils eine Variante ab; NexoChess speichert deinen Fortschritt und zeigt dir den nächsten sinnvollen Schritt.",
+    "title": "Kurspfad",
+    "progress": "{{completed}} / {{total}} Varianten",
+    "recommended": "Weiter"
+  },
+  "practice": {
+    "autoRule": "Wenn du eine Variante gelernt hast, fügt NexoChess sie automatisch deinem persönlichen Repertoire hinzu.",
+    "againCoach": "Gut. Spiele sie noch einmal von Anfang an, damit sich die Zugfolge festigt.",
+    "backModule": "Zurück zum Modul",
+    "studyPhase": "Lernen",
+    "practicePhase": "Gedächtnis",
+    "completePhase": "Abgeschlossen",
+    "studyHint": "Gehe die Variante einmal durch und spiele sie danach aus dem Gedächtnis.",
+    "start": "Gedächtnistraining starten",
+    "repetition": "Wiederholung {{current}} von {{total}}",
+    "memoryBlock": "Sofortige Festigung",
+    "extra": "Weil du einen Hinweis gebraucht oder einen Zug verpasst hast, erhält diese Lektion eine zusätzliche Wiederholung.",
+    "repeatRule": "Eine neue Variante wird direkt zweimal wiederholt, bevor sie als gelernt gilt.",
+    "lessonComplete": "Lektion abgeschlossen",
+    "completeTitle": "Variante gelernt",
+    "completeBody": "Du hast sie jetzt gefestigt. Später erscheint sie nur dann wieder, wenn der Plan der verteilten Wiederholung eine Auffrischung für sinnvoll hält.",
+    "autoSaved": "Automatisch zu deinem persönlichen Repertoire hinzugefügt.",
+    "nextLine": "Nächste Variante",
+    "moduleDone": "Modul beenden",
+    "srsExplainer": "Du musst nicht jedes Mal alle gelernten Varianten wiederholen, wenn du Repertoire öffnest. Hier erscheinen nur fällige Wiederholungen."
+  },
+  "profile": {
+    "eyebrow": "Persönlicher Ausgangspunkt",
+    "title": "Baue den Kurs um die Eröffnungen, die du wirklich spielst",
+    "intro": "Optional kannst du einen öffentlichen Chess.com- oder Lichess-Benutzernamen eingeben. NexoChess betrachtet aktuelle Partien, schätzt die häufigsten Eröffnungsfamilien und schlägt einen sinnvollen Lernstart vor.",
+    "optional": "Optional",
+    "platform": "Plattform",
+    "username": "Benutzername",
+    "usernamePlaceholder": "Dein öffentlicher Benutzername",
+    "games": "Aktuelle Partien",
+    "loading": "Analyse läuft…",
+    "analyse": "Meine Eröffnungen analysieren",
+    "error": "NexoChess konnte die aktuellen öffentlichen Partien dieses Kontos gerade nicht lesen. Prüfe den Benutzernamen oder versuche später die andere Plattform.",
+    "resultTitle": "Eröffnungsprofil für {{username}}",
+    "gamesAnalysed": "{{count}} aktuelle Partien analysiert",
+    "heuristic": "Diese Lernempfehlung basiert auf Häufigkeit, Ergebnissen und darauf, wie weit der Katalog die Variante erkennt; sie ist kein Engine-Urteil über einzelne Züge.",
+    "startHere": "Empfohlener Startpunkt",
+    "recommendation": "Mit {{side}} kam diese Eröffnung in {{games}} Partien vor, erzielte {{score}} und die erkannte Eröffnungsfolge reichte im Schnitt etwa {{moves}} Züge weit. Das Training dürfte daher viele deiner Partien betreffen.",
+    "train": "Diese Eröffnung trainieren",
+    "whiteRepertoire": "Beobachtetes Repertoire mit Weiß",
+    "blackRepertoire": "Beobachtetes Repertoire mit Schwarz",
+    "noData": "Für diese Farbe gibt es noch nicht genügend erkannte Partien."
+  }
+}
