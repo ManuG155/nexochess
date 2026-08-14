@@ -5,7 +5,8 @@ import CourseFamilyV3 from "./CourseFamilyV3";
 import CourseHomeV3 from "./CourseHomeV3";
 import CourseLessonV3 from "./CourseLessonV3";
 import CourseReviewV3 from "./CourseReviewV3";
-import { OpeningCatalogueEntry, buildCourseLessons, getFallbackOpeningCatalogue, loadOpeningCatalogue } from "./openingCatalogue";
+import { OpeningCatalogueEntry, getFallbackOpeningCatalogue, loadOpeningCatalogue } from "./openingCatalogue";
+import { buildCourseLessonsIndexed } from "./courseLessonIndex";
 import { localizeOpeningName, repertoireLanguage } from "./openingLocalization";
 import { CustomCourseLine, addCustomCourseLine, readCustomCourseLines, writeCustomCourseLines } from "./customCourseLines";
 import { CourseProgressStore, createLessonId, findLessonProgress, readCourseProgress, writeCourseProgress } from "./courseProgress";
@@ -65,7 +66,7 @@ function OpeningLearningV3({ mode = "learn", onAddToRepertoire, onFocusChange }:
         const sources = family?.lines || [];
         const standard = sources.filter(item => item.eco != "USR");
         const personal = sources.filter(item => item.eco == "USR");
-        return [...buildCourseLessons(standard), ...personal];
+        return [...buildCourseLessonsIndexed(standard), ...personal];
     }, [family]);
     const selectedIndex = opening ? lines.findIndex(item => createLessonId(item.eco, item.name, item.pgn) == createLessonId(opening.eco, opening.name, opening.pgn)) : -1;
 
