@@ -115,11 +115,12 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
     const old = findLessonProgress(progress, opening);
     const availablePly = allMoves.length;
     const learnedPly = learnedDepth(old, availablePly);
+    const checkpoints = opening.depthCheckpoints || [];
     const startingTarget = startInPractice
-        ? (learnedPly || initialDepth(availablePly))
+        ? (learnedPly || initialDepth(availablePly, checkpoints))
         : old && learnedPly < availablePly
-            ? nextDepth(learnedPly, availablePly)
-            : learnedPly || initialDepth(availablePly);
+            ? nextDepth(learnedPly, availablePly, checkpoints)
+            : learnedPly || initialDepth(availablePly, checkpoints);
     const startingStudyIndex = !startInPractice && old && startingTarget > learnedPly
         ? learnedPly
         : 0;
@@ -167,7 +168,7 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
     const learnedMoves = fullMoveCount(learnedPly);
     const targetMoves = fullMoveCount(targetPly);
     const canDeepen = targetPly < availablePly;
-    const deepenCount = depthIncrementMoves(targetPly, availablePly);
+    const deepenCount = depthIncrementMoves(targetPly, availablePly, checkpoints);
     const depthPercent = availablePly ? Math.min(100, targetPly / availablePly * 100) : 0;
     const newTheoryFrom = learnedMoves + 1;
     const depthBody = targetPly > learnedPly
@@ -260,7 +261,7 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
 
     function deepenFurther() {
         const currentDepth = Math.max(learnedPly, targetPly);
-        const next = nextDepth(currentDepth, availablePly);
+        const next = nextDepth(currentDepth, availablePly, checkpoints);
         if (next <= currentDepth) return;
         setTargetPly(next);
         setMode("study");
