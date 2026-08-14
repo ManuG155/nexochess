@@ -8,7 +8,7 @@ import CourseReviewV3 from "./CourseReviewV3";
 import { OpeningCatalogueEntry, buildCourseLessons, getFallbackOpeningCatalogue, loadOpeningCatalogue } from "./openingCatalogue";
 import { localizeOpeningName, repertoireLanguage } from "./openingLocalization";
 import { CustomCourseLine, addCustomCourseLine, readCustomCourseLines, writeCustomCourseLines } from "./customCourseLines";
-import { CourseProgressStore, createLessonId, readCourseProgress, writeCourseProgress } from "./courseProgress";
+import { CourseProgressStore, createLessonId, findLessonProgress, readCourseProgress, writeCourseProgress } from "./courseProgress";
 import { RepertoireSide } from "./courseV3Model";
 
 type PanelMode = "learn" | "review";
@@ -70,7 +70,7 @@ function OpeningLearningV3({ mode = "learn", onAddToRepertoire, onFocusChange }:
     const selectedIndex = opening ? lines.findIndex(item => createLessonId(item.eco, item.name, item.pgn) == createLessonId(opening.eco, opening.name, opening.pgn)) : -1;
 
     function sideFor(item: OpeningCatalogueEntry, fallback?: RepertoireSide) {
-        return progress[createLessonId(item.eco, item.name, item.pgn)]?.side || fallback;
+        return findLessonProgress(progress, item)?.side || fallback;
     }
     function openFamily(name: string, side?: RepertoireSide) {
         setFamilyName(name); setPreferredSide(side); setOpening(undefined); setReviewQueue([]); setReviewIndex(0); setBlindPractice(false); setQuery("");
