@@ -85,7 +85,7 @@ function RepertoirePositionContext({fen,onAddLine,onAskStockfish}:Props){
     }
 
     return <div className={styles.contextStack}>
-        {meaningful&&habit&&habitual&&<section className={styles.personalCard}>
+        {meaningful&&habit&&habitual&&<section className={styles.personalCard} data-repertoire-tour="personal-habit">
             <div className={styles.contextHeading}><span>◉</span><div><strong>{copy.personalTitle}</strong><small>{habitStore?.username}{habitStore?.platform=="chesscom"?" · Chess.com":habitStore?.platform=="lichess"?" · Lichess":""}</small></div></div>
             <p>{format(copy.personalMove,{move:habitual.san})}{meaningfulReply?` ${format(copy.reply,{move:meaningfulReply.san})}.`:"."}</p>
             <small className={styles.sample}>{format(copy.sample,{count:habitual.count,total:habit.total})}</small>
@@ -94,7 +94,7 @@ function RepertoirePositionContext({fen,onAddLine,onAskStockfish}:Props){
                 <button type="button" onClick={onAskStockfish}>{copy.stockfish}</button>
             </div>
         </section>}
-        {related.length>0&&<section className={styles.relatedCard}>
+        {related.length>0&&<section className={styles.relatedCard} data-repertoire-tour="variants">
             <button type="button" className={styles.relatedToggle} onClick={()=>setExpanded(value=>!value)} aria-expanded={expanded}>
                 <div><span>↔</span><div><strong>{copy.relatedTitle}</strong><small>{copy.relatedHelp}</small></div></div><b>{related.length}</b>
             </button>
