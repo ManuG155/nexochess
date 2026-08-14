@@ -12,6 +12,13 @@ import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import {
+    SEARCH_FAVICON_FILENAME,
+    SEARCH_FAVICON_SOURCE_PATH,
+    applySearchFaviconLink,
+    applySearchFaviconManifest,
+    renderSearchFaviconSvg
+} from "../config/favicon.mjs";
+import {
     renderRobotsTxt,
     renderSitemapXml
 } from "../config/search-indexing.mjs";
@@ -101,6 +108,37 @@ async function configureStaticPuzzleOrigin() {
     return occurrences;
 }
 
+async function configureSearchFavicon() {
+    const sourcePath = join(clientPublic, SEARCH_FAVICON_SOURCE_PATH);
+    const sourceIcon = await readFile(sourcePath);
+    const pngSignature = sourceIcon.subarray(0, 8).toString("hex");
+
+    if (pngSignature !== "89504e470d0a1a0a") {
+        throw new Error(
+            `Search favicon source must be a PNG: ${SEARCH_FAVICON_SOURCE_PATH}`
+        );
+    }
+
+    await writeFile(
+        join(outputDirectory, SEARCH_FAVICON_FILENAME),
+        renderSearchFaviconSvg(sourceIcon.toString("base64")),
+        "utf8"
+    );
+
+    const manifestPath = join(outputDirectory, "manifest.webmanifest");
+    const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+    await writeFile(
+        manifestPath,
+        `${JSON.stringify(applySearchFaviconManifest(manifest), null, 4)}\n`,
+        "utf8"
+    );
+
+    return {
+        source: SEARCH_FAVICON_SOURCE_PATH,
+        output: SEARCH_FAVICON_FILENAME
+    };
+}
+
 async function versionEntryBundles(html) {
     const pattern = /(<script\s+[^>]*src=["']\/)([^"'?]+\.bundle\.js)(?:\?[^"']*)?(["'][^>]*><\/script>)/gi;
     const matches = [...html.matchAll(pattern)];
@@ -149,18 +187,21 @@ await writeFile(
     "utf8"
 );
 
+const searchFavicon = await configureSearchFavicon();
 const puzzleOriginReplacements = await configureStaticPuzzleOrigin();
 const htmlFiles = await findHtmlFiles(join(outputDirectory, "apps"));
 
 for (const htmlFile of htmlFiles) {
     const html = await readFile(htmlFile, "utf8");
-    await writeFile(htmlFile, await versionEntryBundles(html), "utf8");
+    const faviconHtml = applySearchFaviconLink(html);
+    await writeFile(htmlFile, await versionEntryBundles(faviconHtml), "utf8");
 }
 
 const buildManifest = {
     generatedAt: new Date().toISOString(),
     puzzleDataOrigin: staticPuzzleOrigin,
     puzzleOriginReplacements,
+    searchFavicon,
     searchIndexingFiles: ["robots.txt", "sitemap.xml"],
     htmlFiles: htmlFiles.map(filepath => (
         relative(outputDirectory, filepath).replaceAll("\\", "/")
@@ -177,3 +218,4 @@ console.log(
     `Prepared ${htmlFiles.length} HTML applications in ${outputDirectory}`
 );
 console.log(`Static puzzle origin: ${staticPuzzleOrigin}`);
+console.log(`Search favicon: /${SEARCH_FAVICON_FILENAME}`);
