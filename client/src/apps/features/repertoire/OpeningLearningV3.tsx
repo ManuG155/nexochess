@@ -58,7 +58,11 @@ function OpeningLearningV3({ mode = "learn", onAddToRepertoire, onFocusChange }:
     const allLines = useMemo(() => [...catalogue, ...customLines], [catalogue, customLines]);
     const families = useMemo<Family[]>(() => {
         const grouped = new Map<string, OpeningCatalogueEntry[]>();
-        for (const item of allLines) grouped.set(item.family, [...(grouped.get(item.family) || []), item]);
+        for (const item of allLines) {
+            const existing = grouped.get(item.family);
+            if (existing) existing.push(item);
+            else grouped.set(item.family, [item]);
+        }
         return Array.from(grouped, ([name, lines]) => ({ name, lines })).sort((a, b) => localizeOpeningName(a.name, language).localeCompare(localizeOpeningName(b.name, language)));
     }, [allLines, language]);
     const family = familyName ? families.find(item => item.name == familyName) : undefined;
