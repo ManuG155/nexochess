@@ -10,6 +10,9 @@ import vi from "./repertoireCopy/vi";
 import hi from "./repertoireCopy/hi";
 import mr from "./repertoireCopy/mr";
 import pl from "./repertoireCopy/pl";
+import { refreshCourseArrowRuntime } from "./courseArrowRuntime";
+import { refreshCourseSaveRuntime } from "./courseSaveRuntime";
+import { refreshCourseSaveModalRuntime } from "./courseSaveModalRuntime";
 
 export type RepertoireEnhancementCopy = typeof en;
 const copy: Record<string, RepertoireEnhancementCopy> = { en, es, fr, de, pt, ru, zh, vi, hi, mr, pl };
@@ -19,5 +22,12 @@ export function formatEnhancementCopy(template: string, values: Record<string, s
 export function useRepertoireEnhancementCopy() {
     const { i18n } = useTranslation();
     const language = (i18n.resolvedLanguage || i18n.language || "en").split("-")[0].toLowerCase();
+    if (typeof window != "undefined") {
+        window.requestAnimationFrame(() => {
+            refreshCourseSaveRuntime();
+            refreshCourseSaveModalRuntime();
+            refreshCourseArrowRuntime();
+        });
+    }
     return copy[language] || en;
 }
