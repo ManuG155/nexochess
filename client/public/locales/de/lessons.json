@@ -1,0 +1,112 @@
+{
+    "nav": "Lektionen",
+    "page": {
+        "eyebrow": "Lernen durch Spielen",
+        "title": "Lektionen",
+        "subtitle": "Ein geführter Weg vom allerersten Zug bis zu eigenständigem Schach mit soliden Grundlagen."
+    },
+    "path": {
+        "progressLabel": "Abgeschlossen",
+        "sectionKicker": "Abschnitt 1",
+        "sectionTitle": "Erster Kontakt",
+        "sectionDescription": "Beginne mit den Figuren. Kurze Erklärungen, sofortige Übung und dein Trainer an deiner Seite.",
+        "start": "Lektion starten",
+        "replay": "Lektion wiederholen",
+        "nodes": {
+            "rook": "Der Turm",
+            "bishop": "Der Läufer",
+            "knight": "Der Springer",
+            "checkpoint": "Erster Checkpoint"
+        }
+    },
+    "coach": {
+        "choose": "Wähle deinen Trainer",
+        "close": "Trainerauswahl schließen",
+        "change": "Trainer wechseln. Aktueller Trainer: {{coach}}",
+        "clickToChange": "Klicke auf den Trainer, um ihn zu wechseln.",
+        "pathIntro": "Wir beginnen mit einer der am leichtesten zu verstehenden Figuren. Bereit, einen Turm zu bewegen?",
+        "pathComplete": "Gut gemacht. Du verstehst bereits, wie sich der Turm bewegt, was ihn blockiert und wie er schlägt."
+    },
+    "actions": {
+        "back": "Zurück zum Lernpfad",
+        "next": "Weiter",
+        "hint": "Hinweis",
+        "showSolution": "Lösung zeigen",
+        "solutionShown": "Lösung angezeigt",
+        "finish": "Zurück zum Lernpfad"
+    },
+    "lesson": {
+        "step": "Schritt {{current}} von {{total}}",
+        "yourTurn": "Du bist dran",
+        "question": "Erst nachdenken",
+        "completeKicker": "Lektion abgeschlossen",
+        "rook": {
+            "title": "Der Turm",
+            "intro": {
+                "coach": "Der Turm zieht in geraden Linien: waagerecht oder senkrecht. Er kann mehrere Felder weit ziehen, wenn der Weg frei ist.",
+                "body": "Sieh dir den Turm auf d4 an. In dieser Lektion bewegst du ihn, erkennst Blockaden und lernst mit ihm zu schlagen."
+            },
+            "horizontal": {
+                "coach": "Beginnen wir waagerecht. Der Turm bleibt auf derselben Reihe.",
+                "instruction": "Ziehe den Turm von d4 nach g4.",
+                "success": "Genau. Gleiche Reihe, gerade Linie.",
+                "hint1": "Waagerecht bedeutet nach links oder rechts zu ziehen, ohne die Reihe zu wechseln.",
+                "hint2": "Der Turm startet auf d4 und das Ziel ist g4.",
+                "hint3": "Folge der geraden Linie von d4 nach g4."
+            },
+            "vertical": {
+                "coach": "Jetzt dieselbe Idee senkrecht: Der Turm bleibt auf derselben Linie.",
+                "instruction": "Ziehe den Turm von d4 nach d7.",
+                "success": "Gut. Gleiche Linie, gerade Bewegung.",
+                "hint1": "Senkrecht bedeutet nach oben oder unten zu ziehen, ohne die Linie zu wechseln.",
+                "hint2": "Beide Felder liegen auf der d-Linie.",
+                "hint3": "Folge der geraden Linie von d4 nach d7."
+            },
+            "blocked": {
+                "coach": "Gerade Linien haben eine wichtige Grenze: Der Turm kann nicht über Figuren springen.",
+                "question": "Der weiße Bauer auf a3 blockiert den Turm auf a1. Kann der Turm direkt nach a5 ziehen?",
+                "yes": "Ja",
+                "no": "Nein",
+                "success": "Richtig. Der Bauer blockiert die a-Linie, also kann der Turm nicht hindurchziehen.",
+                "error": "Diesmal nicht. Türme können nicht über andere Figuren springen.",
+                "hint1": "Sieh nach, was zwischen a1 und a5 steht.",
+                "hint2": "Der Bauer auf a3 versperrt den Weg."
+            },
+            "capture": {
+                "coach": "Ein Turm schlägt, indem er auf einer freien geraden Linie auf die gegnerische Figur zieht.",
+                "instruction": "Schlage den schwarzen Bauern auf a6 mit dem Turm.",
+                "success": "Perfekt. Der Weg war frei, also konnte der Turm auf a6 schlagen.",
+                "hint1": "Der Bauer steht auf derselben Linie wie der Turm.",
+                "hint2": "Zwischen a1 und a6 steht nichts.",
+                "hint3": "Ziehe gerade von a1 nach a6."
+            },
+            "control": {
+                "coach": "Auch ohne zu ziehen kontrolliert ein Turm jedes freie Feld auf seiner Reihe und Linie.",
+                "instruction": "Klicke auf ein beliebiges Feld, das der Turm auf d4 kontrolliert.",
+                "success": "Ja. Dieses Feld liegt auf der Reihe oder Linie des Turms.",
+                "hint1": "Sieh nur entlang der waagerechten und senkrechten Linien von d4.",
+                "hint2": "Das markierte Kreuz zeigt die vom Turm kontrollierten Felder."
+            },
+            "combined": {
+                "coach": "Letzte Aufgabe: Verbinde alles. Ziehe gerade, beachte Blockaden und schlage, wenn der Weg frei ist.",
+                "instruction": "Schlage den schwarzen Bauern auf d7 mit dem Turm auf d4.",
+                "success": "Ausgezeichnet. Du hast die freie senkrechte Schlagmöglichkeit gefunden.",
+                "hint1": "Das Ziel steht auf derselben Linie wie der Turm.",
+                "hint2": "Prüfe die d-Linie zwischen d4 und d7.",
+                "hint3": "Der Turm kann direkt von d4 nach d7 ziehen."
+            },
+            "completion": {
+                "coach": "Das ist der Turm: gerade Linien, kein Springen und Schlagen auf freiem Weg. Ein guter erster Schritt.",
+                "title": "Turm-Grundlagen abgeschlossen",
+                "body": "Du kannst nun einen Turm waagerecht und senkrecht ziehen, Blockaden erkennen und eine einfache Figur schlagen."
+            }
+        }
+    },
+    "feedback": {
+        "legalOffTarget": "Dieser Zug ist legal, beantwortet aber nicht diese Aufgabe. Versuche die geforderte Idee.",
+        "rookDiagonal": "Der Turm kann nicht diagonal ziehen. Er zieht nur waagerecht oder senkrecht.",
+        "blocked": "Eine Figur steht im Weg. Der Turm kann nicht darüber springen.",
+        "illegalAction": "Dieser Zug ist in dieser Stellung nicht legal. Versuche ein anderes Feld.",
+        "wrongSquare": "Dieses Feld wird vom Turm hier nicht kontrolliert. Sieh auf seine Reihe und Linie."
+    }
+}

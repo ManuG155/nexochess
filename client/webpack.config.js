@@ -25,6 +25,7 @@ module.exports = {
         analysis: "./src/apps/features/analysis/index.tsx",
         archive: "./src/apps/features/archive/index.tsx",
         academy: "./src/apps/features/academy/index.tsx",
+        lessons: "./src/apps/features/lessons/index.tsx",
         puzzles: "./src/apps/features/puzzles/index.tsx",
         repertoire: "./src/apps/features/repertoire/entryV3.tsx",
         guides: "./src/apps/guides/index.tsx",

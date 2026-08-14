@@ -1,0 +1,112 @@
+{
+    "nav": "Bài học",
+    "page": {
+        "eyebrow": "Học bằng cách chơi",
+        "title": "Bài học",
+        "subtitle": "Lộ trình có hướng dẫn từ nước đi đầu tiên đến khi bạn có thể tự chơi với nền tảng cơ bản vững chắc."
+    },
+    "path": {
+        "progressLabel": "Đã hoàn thành",
+        "sectionKicker": "Phần 1",
+        "sectionTitle": "Làm quen đầu tiên",
+        "sectionDescription": "Bắt đầu với các quân cờ. Giải thích ngắn, thực hành ngay và huấn luyện viên luôn ở bên.",
+        "start": "Bắt đầu bài học",
+        "replay": "Học lại bài",
+        "nodes": {
+            "rook": "Xe",
+            "bishop": "Tượng",
+            "knight": "Mã",
+            "checkpoint": "Checkpoint đầu tiên"
+        }
+    },
+    "coach": {
+        "choose": "Chọn huấn luyện viên",
+        "close": "Đóng bộ chọn huấn luyện viên",
+        "change": "Đổi huấn luyện viên. Hiện tại: {{coach}}",
+        "clickToChange": "Nhấp vào huấn luyện viên để đổi.",
+        "pathIntro": "Ta sẽ bắt đầu với một trong những quân dễ hiểu nhất. Sẵn sàng di chuyển quân xe chưa?",
+        "pathComplete": "Làm tốt lắm. Bạn đã hiểu xe di chuyển thế nào, bị chặn ra sao và cách bắt quân."
+    },
+    "actions": {
+        "back": "Quay lại lộ trình",
+        "next": "Tiếp tục",
+        "hint": "Gợi ý",
+        "showSolution": "Hiện lời giải",
+        "solutionShown": "Đã hiện lời giải",
+        "finish": "Quay lại lộ trình"
+    },
+    "lesson": {
+        "step": "Bước {{current}} / {{total}}",
+        "yourTurn": "Lượt của bạn",
+        "question": "Hãy nghĩ trước",
+        "completeKicker": "Hoàn thành bài học",
+        "rook": {
+            "title": "Quân xe",
+            "intro": {
+                "coach": "Xe đi theo đường thẳng: ngang hoặc dọc. Nó có thể đi nhiều ô nếu đường đi không bị chặn.",
+                "body": "Hãy nhìn quân xe ở d4. Trong bài này bạn sẽ di chuyển nó, nhận biết đường bị chặn và học cách bắt quân."
+            },
+            "horizontal": {
+                "coach": "Bắt đầu theo chiều ngang. Giữ quân xe trên cùng một hàng.",
+                "instruction": "Di chuyển xe từ d4 đến g4.",
+                "success": "Chính xác. Cùng một hàng, đường thẳng.",
+                "hint1": "Đi ngang nghĩa là sang trái hoặc phải mà không đổi hàng.",
+                "hint2": "Xe bắt đầu ở d4 và mục tiêu là g4.",
+                "hint3": "Đi theo đường thẳng từ d4 đến g4."
+            },
+            "vertical": {
+                "coach": "Giờ làm tương tự theo chiều dọc: giữ xe trên cùng một cột.",
+                "instruction": "Di chuyển xe từ d4 đến d7.",
+                "success": "Tốt. Cùng một cột, đường thẳng.",
+                "hint1": "Đi dọc nghĩa là lên hoặc xuống mà không đổi cột.",
+                "hint2": "Cả hai ô đều nằm trên cột d.",
+                "hint3": "Đi theo đường thẳng từ d4 đến d7."
+            },
+            "blocked": {
+                "coach": "Đường thẳng có một giới hạn quan trọng: xe không thể nhảy qua quân khác.",
+                "question": "Tốt trắng ở a3 đang chặn xe ở a1. Xe có thể đi thẳng đến a5 không?",
+                "yes": "Có",
+                "no": "Không",
+                "success": "Đúng. Tốt chặn cột a nên xe không thể đi xuyên qua.",
+                "error": "Chưa đúng. Xe không thể nhảy qua quân khác.",
+                "hint1": "Hãy xem có gì nằm giữa a1 và a5.",
+                "hint2": "Tốt ở a3 chặn đường."
+            },
+            "capture": {
+                "coach": "Xe bắt quân bằng cách đi theo đường thẳng thông thoáng đến ô có quân đối phương.",
+                "instruction": "Dùng xe bắt tốt đen ở a6.",
+                "success": "Hoàn hảo. Đường đi trống nên xe có thể bắt ở a6.",
+                "hint1": "Tốt nằm cùng cột với xe.",
+                "hint2": "Không có quân nào giữa a1 và a6.",
+                "hint3": "Đi thẳng từ a1 đến a6."
+            },
+            "control": {
+                "coach": "Ngay cả khi không di chuyển, xe kiểm soát mọi ô trống trên cùng hàng và cột.",
+                "instruction": "Nhấp vào bất kỳ ô nào mà xe ở d4 đang kiểm soát.",
+                "success": "Đúng. Ô đó nằm trên hàng hoặc cột của xe.",
+                "hint1": "Chỉ nhìn theo các đường ngang và dọc từ d4.",
+                "hint2": "Hình chữ thập được tô sáng cho thấy các ô xe kiểm soát."
+            },
+            "combined": {
+                "coach": "Bài cuối: kết hợp tất cả. Đi theo đường thẳng, tôn trọng vật cản và bắt quân khi đường đi trống.",
+                "instruction": "Dùng xe ở d4 bắt tốt đen ở d7.",
+                "success": "Xuất sắc. Bạn đã tìm được nước bắt dọc với đường đi trống.",
+                "hint1": "Mục tiêu nằm cùng cột với xe.",
+                "hint2": "Kiểm tra cột d giữa d4 và d7.",
+                "hint3": "Xe có thể đi thẳng từ d4 đến d7."
+            },
+            "completion": {
+                "coach": "Đó là quân xe: đi thẳng, không nhảy và bắt quân khi đường đi thông thoáng. Khởi đầu rất tốt.",
+                "title": "Đã hoàn thành nền tảng về xe",
+                "body": "Bạn đã có thể di chuyển xe theo hàng và cột, nhận biết vật cản và thực hiện một nước bắt cơ bản."
+            }
+        }
+    },
+    "feedback": {
+        "legalOffTarget": "Nước đi này hợp lệ nhưng không trả lời bài tập. Hãy thử ý tưởng được yêu cầu.",
+        "rookDiagonal": "Xe không thể đi chéo. Nó chỉ đi ngang hoặc dọc.",
+        "blocked": "Có một quân cờ chắn đường. Xe không thể nhảy qua.",
+        "illegalAction": "Nước đi này không hợp lệ trong thế cờ hiện tại. Hãy thử ô khác.",
+        "wrongSquare": "Xe không kiểm soát ô đó từ vị trí này. Hãy nhìn theo hàng và cột của nó."
+    }
+}

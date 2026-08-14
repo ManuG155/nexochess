@@ -1,0 +1,112 @@
+{
+    "nav": "Lições",
+    "page": {
+        "eyebrow": "Aprende a jogar",
+        "title": "Lições",
+        "subtitle": "Um percurso guiado desde o teu primeiro lance até jogares xadrez de forma autónoma com bases sólidas."
+    },
+    "path": {
+        "progressLabel": "Concluído",
+        "sectionKicker": "Secção 1",
+        "sectionTitle": "Primeiro contacto",
+        "sectionDescription": "Começa pelas peças. Explicações curtas, prática imediata e o teu treinador ao teu lado.",
+        "start": "Começar a lição",
+        "replay": "Repetir a lição",
+        "nodes": {
+            "rook": "A torre",
+            "bishop": "O bispo",
+            "knight": "O cavalo",
+            "checkpoint": "Primeiro checkpoint"
+        }
+    },
+    "coach": {
+        "choose": "Escolhe o teu treinador",
+        "close": "Fechar seletor de treinador",
+        "change": "Mudar treinador. Treinador atual: {{coach}}",
+        "clickToChange": "Clica no treinador para o mudar.",
+        "pathIntro": "Vamos começar por uma das peças mais fáceis de entender. Preparado para mover uma torre?",
+        "pathComplete": "Bom trabalho. Já percebes como a torre se move, o que a bloqueia e como captura."
+    },
+    "actions": {
+        "back": "Voltar ao percurso",
+        "next": "Continuar",
+        "hint": "Pista",
+        "showSolution": "Mostrar solução",
+        "solutionShown": "Solução mostrada",
+        "finish": "Voltar ao percurso"
+    },
+    "lesson": {
+        "step": "Passo {{current}} de {{total}}",
+        "yourTurn": "A tua vez",
+        "question": "Pensa primeiro",
+        "completeKicker": "Lição concluída",
+        "rook": {
+            "title": "A torre",
+            "intro": {
+                "coach": "A torre move-se em linha reta: horizontal ou verticalmente. Pode percorrer várias casas se o caminho estiver livre.",
+                "body": "Olha para a torre em d4. Nesta lição vais movê-la, reconhecer caminhos bloqueados e aprender a capturar com ela."
+            },
+            "horizontal": {
+                "coach": "Comecemos na horizontal. Mantém a torre na mesma fila.",
+                "instruction": "Move a torre de d4 para g4.",
+                "success": "Exatamente. Mesma fila, linha reta.",
+                "hint1": "Horizontal significa mover para a esquerda ou direita sem mudar de fila.",
+                "hint2": "A torre começa em d4 e o alvo é g4.",
+                "hint3": "Segue a linha reta de d4 até g4."
+            },
+            "vertical": {
+                "coach": "Agora a mesma ideia na vertical: mantém a torre na mesma coluna.",
+                "instruction": "Move a torre de d4 para d7.",
+                "success": "Boa. Mesma coluna, linha reta.",
+                "hint1": "Vertical significa subir ou descer sem mudar de coluna.",
+                "hint2": "As duas casas estão na coluna d.",
+                "hint3": "Segue a linha reta de d4 até d7."
+            },
+            "blocked": {
+                "coach": "As linhas retas têm um limite importante: a torre não pode saltar por cima de peças.",
+                "question": "O peão branco em a3 bloqueia a torre em a1. A torre pode ir diretamente para a5?",
+                "yes": "Sim",
+                "no": "Não",
+                "success": "Correto. O peão bloqueia a coluna a, por isso a torre não pode passar por ele.",
+                "error": "Desta vez não. As torres não podem saltar por cima de outras peças.",
+                "hint1": "Repara no que está entre a1 e a5.",
+                "hint2": "O peão em a3 corta o caminho."
+            },
+            "capture": {
+                "coach": "A torre captura movendo-se até uma peça adversária por uma linha reta livre.",
+                "instruction": "Captura o peão preto em a6 com a torre.",
+                "success": "Perfeito. O caminho estava livre, por isso a torre podia capturar em a6.",
+                "hint1": "O peão está na mesma coluna que a torre.",
+                "hint2": "Não há nada entre a1 e a6.",
+                "hint3": "Move em linha reta de a1 até a6."
+            },
+            "control": {
+                "coach": "Mesmo sem se mover, a torre controla todas as casas livres da sua fila e coluna.",
+                "instruction": "Clica em qualquer casa controlada pela torre em d4.",
+                "success": "Sim. Essa casa está na fila ou coluna da torre.",
+                "hint1": "Olha apenas para as linhas horizontal e vertical a partir de d4.",
+                "hint2": "A cruz destacada mostra as casas controladas pela torre."
+            },
+            "combined": {
+                "coach": "Último exercício: junta tudo. Move em linha reta, respeita os bloqueios e captura se o caminho estiver livre.",
+                "instruction": "Captura o peão preto em d7 com a torre em d4.",
+                "success": "Excelente. Encontraste a captura vertical com caminho livre.",
+                "hint1": "O alvo está na mesma coluna que a torre.",
+                "hint2": "Verifica a coluna d entre d4 e d7.",
+                "hint3": "A torre pode ir diretamente de d4 para d7."
+            },
+            "completion": {
+                "coach": "É isto a torre: linhas retas, sem saltos e capturas com o caminho livre. Um ótimo primeiro passo.",
+                "title": "Fundamentos da torre concluídos",
+                "body": "Já consegues mover uma torre na horizontal e vertical, reconhecer bloqueios e fazer uma captura básica."
+            }
+        }
+    },
+    "feedback": {
+        "legalOffTarget": "Esse lance é legal, mas não responde a este exercício. Tenta a ideia pedida.",
+        "rookDiagonal": "A torre não pode mover-se na diagonal. Só se move na horizontal ou vertical.",
+        "blocked": "Há uma peça no caminho. A torre não pode saltar por cima dela.",
+        "illegalAction": "Esse movimento não é legal nesta posição. Tenta outra casa.",
+        "wrongSquare": "A torre não controla essa casa a partir daqui. Olha para a sua fila e coluna."
+    }
+}

@@ -1,0 +1,112 @@
+{
+    "nav": "Lekcje",
+    "page": {
+        "eyebrow": "Ucz się grając",
+        "title": "Lekcje",
+        "subtitle": "Prowadzona ścieżka od pierwszego ruchu do samodzielnej gry w szachy z solidnymi podstawami."
+    },
+    "path": {
+        "progressLabel": "Ukończono",
+        "sectionKicker": "Sekcja 1",
+        "sectionTitle": "Pierwszy kontakt",
+        "sectionDescription": "Zacznij od figur. Krótkie wyjaśnienia, natychmiastowa praktyka i trener obok ciebie.",
+        "start": "Rozpocznij lekcję",
+        "replay": "Powtórz lekcję",
+        "nodes": {
+            "rook": "Wieża",
+            "bishop": "Goniec",
+            "knight": "Skoczek",
+            "checkpoint": "Pierwszy checkpoint"
+        }
+    },
+    "coach": {
+        "choose": "Wybierz trenera",
+        "close": "Zamknij wybór trenera",
+        "change": "Zmień trenera. Obecny trener: {{coach}}",
+        "clickToChange": "Kliknij trenera, aby go zmienić.",
+        "pathIntro": "Zaczniemy od jednej z najłatwiejszych figur do zrozumienia. Gotowy poruszyć wieżą?",
+        "pathComplete": "Dobra robota. Wiesz już, jak porusza się wieża, co ją blokuje i jak bije."
+    },
+    "actions": {
+        "back": "Wróć do ścieżki",
+        "next": "Dalej",
+        "hint": "Wskazówka",
+        "showSolution": "Pokaż rozwiązanie",
+        "solutionShown": "Rozwiązanie pokazane",
+        "finish": "Wróć do ścieżki"
+    },
+    "lesson": {
+        "step": "Krok {{current}} z {{total}}",
+        "yourTurn": "Twój ruch",
+        "question": "Najpierw pomyśl",
+        "completeKicker": "Lekcja ukończona",
+        "rook": {
+            "title": "Wieża",
+            "intro": {
+                "coach": "Wieża porusza się po linii prostej: poziomo lub pionowo. Może przejść wiele pól, jeśli droga jest wolna.",
+                "body": "Spójrz na wieżę na d4. W tej lekcji będziesz ją poruszać, rozpoznawać blokady i uczyć się bicia."
+            },
+            "horizontal": {
+                "coach": "Zacznijmy poziomo. Zostaw wieżę w tym samym rzędzie.",
+                "instruction": "Przesuń wieżę z d4 na g4.",
+                "success": "Dokładnie. Ten sam rząd, linia prosta.",
+                "hint1": "Poziomo oznacza ruch w lewo lub w prawo bez zmiany rzędu.",
+                "hint2": "Wieża zaczyna na d4, a celem jest g4.",
+                "hint3": "Podążaj prostą linią z d4 do g4."
+            },
+            "vertical": {
+                "coach": "Teraz to samo pionowo: zostań na tej samej kolumnie.",
+                "instruction": "Przesuń wieżę z d4 na d7.",
+                "success": "Dobrze. Ta sama kolumna, linia prosta.",
+                "hint1": "Pionowo oznacza ruch w górę lub w dół bez zmiany kolumny.",
+                "hint2": "Oba pola leżą na kolumnie d.",
+                "hint3": "Podążaj prostą linią z d4 do d7."
+            },
+            "blocked": {
+                "coach": "Linia prosta ma ważne ograniczenie: wieża nie może przeskakiwać nad figurami.",
+                "question": "Biały pion na a3 blokuje wieżę na a1. Czy wieża może przejść bezpośrednio na a5?",
+                "yes": "Tak",
+                "no": "Nie",
+                "success": "Dobrze. Pion blokuje kolumnę a, więc wieża nie może przez niego przejść.",
+                "error": "Nie tym razem. Wieże nie mogą przeskakiwać nad figurami.",
+                "hint1": "Sprawdź, co znajduje się między a1 i a5.",
+                "hint2": "Pion na a3 blokuje drogę."
+            },
+            "capture": {
+                "coach": "Wieża bije, przechodząc po wolnej prostej linii na pole zajęte przez figurę przeciwnika.",
+                "instruction": "Zbij czarnego piona na a6 wieżą.",
+                "success": "Świetnie. Droga była wolna, więc wieża mogła zbić na a6.",
+                "hint1": "Pion jest na tej samej kolumnie co wieża.",
+                "hint2": "Między a1 i a6 nic nie stoi.",
+                "hint3": "Idź prosto z a1 do a6."
+            },
+            "control": {
+                "coach": "Nawet bez ruchu wieża kontroluje wszystkie wolne pola w swoim rzędzie i kolumnie.",
+                "instruction": "Kliknij dowolne pole kontrolowane przez wieżę na d4.",
+                "success": "Tak. To pole leży w rzędzie lub kolumnie wieży.",
+                "hint1": "Patrz tylko wzdłuż poziomej i pionowej linii wychodzącej z d4.",
+                "hint2": "Podświetlony krzyż pokazuje pola kontrolowane przez wieżę."
+            },
+            "combined": {
+                "coach": "Ostatnie ćwiczenie: połącz wszystko. Poruszaj się prosto, uwzględniaj blokady i bij, gdy droga jest wolna.",
+                "instruction": "Zbij czarnego piona na d7 wieżą z d4.",
+                "success": "Świetnie. Znalazłeś pionowe bicie po wolnej linii.",
+                "hint1": "Cel jest na tej samej kolumnie co wieża.",
+                "hint2": "Sprawdź kolumnę d między d4 i d7.",
+                "hint3": "Wieża może przejść bezpośrednio z d4 do d7."
+            },
+            "completion": {
+                "coach": "To właśnie wieża: proste linie, bez przeskakiwania i bicia po wolnej drodze. Dobry pierwszy krok.",
+                "title": "Podstawy wieży ukończone",
+                "body": "Potrafisz teraz poruszać wieżą poziomo i pionowo, rozpoznawać blokady i wykonać proste bicie."
+            }
+        }
+    },
+    "feedback": {
+        "legalOffTarget": "Ten ruch jest legalny, ale nie odpowiada na to ćwiczenie. Spróbuj wykonać wskazaną ideę.",
+        "rookDiagonal": "Wieża nie może poruszać się po skosie. Rusza się tylko poziomo lub pionowo.",
+        "blocked": "Na drodze stoi figura. Wieża nie może nad nią przeskoczyć.",
+        "illegalAction": "Ten ruch nie jest legalny w tej pozycji. Spróbuj innego pola.",
+        "wrongSquare": "Wieża nie kontroluje stąd tego pola. Spójrz na jej rząd i kolumnę."
+    }
+}

@@ -1,0 +1,112 @@
+{
+    "nav": "Lessons",
+    "page": {
+        "eyebrow": "Learn by playing",
+        "title": "Lessons",
+        "subtitle": "A guided path from your very first move to playing chess with solid basic ideas."
+    },
+    "path": {
+        "progressLabel": "Completed",
+        "sectionKicker": "Section 1",
+        "sectionTitle": "First contact",
+        "sectionDescription": "Start with the pieces. Short explanations, immediate practice and your coach beside you.",
+        "start": "Start the lesson",
+        "replay": "Replay the lesson",
+        "nodes": {
+            "rook": "The rook",
+            "bishop": "The bishop",
+            "knight": "The knight",
+            "checkpoint": "First checkpoint"
+        }
+    },
+    "coach": {
+        "choose": "Choose your coach",
+        "close": "Close coach selector",
+        "change": "Change coach. Current coach: {{coach}}",
+        "clickToChange": "Click the coach to change it.",
+        "pathIntro": "We will start with one of the easiest pieces to understand. Ready to move a rook?",
+        "pathComplete": "Nice work. You already understand how the rook moves, gets blocked and captures."
+    },
+    "actions": {
+        "back": "Back to path",
+        "next": "Continue",
+        "hint": "Hint",
+        "showSolution": "Show solution",
+        "solutionShown": "Solution shown",
+        "finish": "Return to path"
+    },
+    "lesson": {
+        "step": "Step {{current}} of {{total}}",
+        "yourTurn": "Your turn",
+        "question": "Think first",
+        "completeKicker": "Lesson complete",
+        "rook": {
+            "title": "The rook",
+            "intro": {
+                "coach": "The rook moves in straight lines: horizontally or vertically. It can travel several squares if the path is clear.",
+                "body": "Look at the rook on d4. During this lesson you will move it, spot blocked paths and use it to capture."
+            },
+            "horizontal": {
+                "coach": "Let's start horizontally. Keep the rook on the same rank.",
+                "instruction": "Move the rook from d4 to g4.",
+                "success": "Exactly. Same rank, straight line.",
+                "hint1": "Horizontal means moving left or right without changing rank.",
+                "hint2": "The rook starts on d4 and the target is g4.",
+                "hint3": "Follow the straight line from d4 to g4."
+            },
+            "vertical": {
+                "coach": "Now the same idea vertically: keep the rook on the same file.",
+                "instruction": "Move the rook from d4 to d7.",
+                "success": "Good. Same file, straight line.",
+                "hint1": "Vertical means moving up or down without changing file.",
+                "hint2": "Both squares are on the d-file.",
+                "hint3": "Follow the straight line from d4 to d7."
+            },
+            "blocked": {
+                "coach": "Straight lines have one important limit: the rook cannot jump over pieces.",
+                "question": "The white pawn on a3 blocks the rook on a1. Can the rook move directly to a5?",
+                "yes": "Yes",
+                "no": "No",
+                "success": "Correct. The pawn blocks the a-file, so the rook cannot pass through it.",
+                "error": "Not this time. Rooks cannot jump over pieces.",
+                "hint1": "Look at what sits between a1 and a5.",
+                "hint2": "The pawn on a3 cuts the path."
+            },
+            "capture": {
+                "coach": "A rook captures by moving onto an enemy piece along a clear straight line.",
+                "instruction": "Capture the black pawn on a6 with the rook.",
+                "success": "Perfect. The path was clear, so the rook could capture on a6.",
+                "hint1": "The pawn is on the same file as the rook.",
+                "hint2": "There is nothing between a1 and a6.",
+                "hint3": "Move straight from a1 to a6."
+            },
+            "control": {
+                "coach": "Even without moving, a rook controls every clear square along its rank and file.",
+                "instruction": "Click any square the rook on d4 controls.",
+                "success": "Yes. That square lies on the rook's rank or file.",
+                "hint1": "Look only along the horizontal and vertical lines from d4.",
+                "hint2": "The highlighted cross shows the squares controlled by the rook."
+            },
+            "combined": {
+                "coach": "Final one: use everything together. Move straight, respect blockers and capture when the path is clear.",
+                "instruction": "Capture the black pawn on d7 with the rook on d4.",
+                "success": "Excellent. You found the clear vertical capture.",
+                "hint1": "The target is on the same file as the rook.",
+                "hint2": "Check the d-file between d4 and d7.",
+                "hint3": "The rook can travel directly from d4 to d7."
+            },
+            "completion": {
+                "coach": "That's the rook. Straight lines, no jumping, and captures along a clear path. Good first step.",
+                "title": "Rook basics complete",
+                "body": "You can now move a rook horizontally and vertically, recognise blockers and make a basic capture."
+            }
+        }
+    },
+    "feedback": {
+        "legalOffTarget": "That move is legal, but it does not answer this exercise. Try the requested idea.",
+        "rookDiagonal": "The rook cannot move diagonally. It only moves horizontally or vertically.",
+        "blocked": "There is a piece in the way. The rook cannot jump over it.",
+        "illegalAction": "That move is not legal in this position. Try another square.",
+        "wrongSquare": "That square is not controlled by the rook from here. Look along its rank and file."
+    }
+}

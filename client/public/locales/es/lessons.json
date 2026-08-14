@@ -1,0 +1,112 @@
+{
+    "nav": "Lecciones",
+    "page": {
+        "eyebrow": "Aprende jugando",
+        "title": "Lecciones",
+        "subtitle": "Un recorrido guiado desde tu primera jugada hasta jugar al ajedrez con fundamentos básicos sólidos."
+    },
+    "path": {
+        "progressLabel": "Completado",
+        "sectionKicker": "Sección 1",
+        "sectionTitle": "Primer contacto",
+        "sectionDescription": "Empieza por las piezas. Explicaciones cortas, práctica inmediata y tu entrenador a tu lado.",
+        "start": "Empezar la lección",
+        "replay": "Repetir la lección",
+        "nodes": {
+            "rook": "La torre",
+            "bishop": "El alfil",
+            "knight": "El caballo",
+            "checkpoint": "Primer checkpoint"
+        }
+    },
+    "coach": {
+        "choose": "Elige tu entrenador",
+        "close": "Cerrar selector de entrenador",
+        "change": "Cambiar entrenador. Entrenador actual: {{coach}}",
+        "clickToChange": "Clica en el entrenador para cambiarlo.",
+        "pathIntro": "Vamos a empezar con una de las piezas más fáciles de entender. ¿Preparado para mover una torre?",
+        "pathComplete": "Buen trabajo. Ya entiendes cómo se mueve la torre, qué la bloquea y cómo captura."
+    },
+    "actions": {
+        "back": "Volver al recorrido",
+        "next": "Continuar",
+        "hint": "Pista",
+        "showSolution": "Mostrar solución",
+        "solutionShown": "Solución mostrada",
+        "finish": "Volver al recorrido"
+    },
+    "lesson": {
+        "step": "Paso {{current}} de {{total}}",
+        "yourTurn": "Tu turno",
+        "question": "Piensa primero",
+        "completeKicker": "Lección completada",
+        "rook": {
+            "title": "La torre",
+            "intro": {
+                "coach": "La torre se mueve en línea recta: horizontal o verticalmente. Puede recorrer varias casillas si el camino está libre.",
+                "body": "Mira la torre en d4. En esta lección la moverás, detectarás caminos bloqueados y aprenderás a capturar con ella."
+            },
+            "horizontal": {
+                "coach": "Empecemos en horizontal. Mantén la torre en la misma fila.",
+                "instruction": "Mueve la torre de d4 a g4.",
+                "success": "Exacto. Misma fila, línea recta.",
+                "hint1": "Horizontal significa ir a izquierda o derecha sin cambiar de fila.",
+                "hint2": "La torre empieza en d4 y el objetivo está en g4.",
+                "hint3": "Sigue la línea recta de d4 a g4."
+            },
+            "vertical": {
+                "coach": "Ahora la misma idea en vertical: mantén la torre en la misma columna.",
+                "instruction": "Mueve la torre de d4 a d7.",
+                "success": "Bien. Misma columna, línea recta.",
+                "hint1": "Vertical significa subir o bajar sin cambiar de columna.",
+                "hint2": "Las dos casillas están en la columna d.",
+                "hint3": "Sigue la línea recta de d4 a d7."
+            },
+            "blocked": {
+                "coach": "Las líneas rectas tienen un límite importante: la torre no puede saltar por encima de otras piezas.",
+                "question": "El peón blanco de a3 bloquea a la torre de a1. ¿Puede la torre ir directamente hasta a5?",
+                "yes": "Sí",
+                "no": "No",
+                "success": "Correcto. El peón bloquea la columna a, así que la torre no puede atravesarlo.",
+                "error": "Esta vez no. Las torres no pueden saltar por encima de otras piezas.",
+                "hint1": "Mira qué hay entre a1 y a5.",
+                "hint2": "El peón de a3 corta el camino."
+            },
+            "capture": {
+                "coach": "La torre captura moviéndose hasta una pieza rival por una línea recta despejada.",
+                "instruction": "Captura el peón negro de a6 con la torre.",
+                "success": "Perfecto. El camino estaba libre, así que la torre podía capturar en a6.",
+                "hint1": "El peón está en la misma columna que la torre.",
+                "hint2": "No hay ninguna pieza entre a1 y a6.",
+                "hint3": "Muévete en línea recta de a1 a a6."
+            },
+            "control": {
+                "coach": "Incluso sin moverse, una torre controla todas las casillas libres de su fila y su columna.",
+                "instruction": "Clica en cualquier casilla que controle la torre de d4.",
+                "success": "Sí. Esa casilla está en la fila o la columna de la torre.",
+                "hint1": "Mira solo las líneas horizontal y vertical que salen de d4.",
+                "hint2": "La cruz resaltada muestra las casillas que controla la torre."
+            },
+            "combined": {
+                "coach": "Último ejercicio: júntalo todo. Muévete en línea recta, respeta los bloqueos y captura si el camino está libre.",
+                "instruction": "Captura el peón negro de d7 con la torre de d4.",
+                "success": "Excelente. Has encontrado la captura vertical con el camino libre.",
+                "hint1": "El objetivo está en la misma columna que la torre.",
+                "hint2": "Comprueba la columna d entre d4 y d7.",
+                "hint3": "La torre puede ir directamente de d4 a d7."
+            },
+            "completion": {
+                "coach": "Eso es la torre. Líneas rectas, sin saltar y capturas con el camino libre. Buen primer paso.",
+                "title": "Fundamentos de la torre completados",
+                "body": "Ya puedes mover una torre horizontal y verticalmente, reconocer bloqueos y realizar una captura básica."
+            }
+        }
+    },
+    "feedback": {
+        "legalOffTarget": "Esa jugada es legal, pero no responde a este ejercicio. Prueba la idea que te pedimos.",
+        "rookDiagonal": "La torre no puede moverse en diagonal. Solo se mueve horizontal o verticalmente.",
+        "blocked": "Hay una pieza en medio. La torre no puede saltar por encima.",
+        "illegalAction": "Ese movimiento no es legal en esta posición. Prueba otra casilla.",
+        "wrongSquare": "La torre no controla esa casilla desde aquí. Mira su fila y su columna."
+    }
+}

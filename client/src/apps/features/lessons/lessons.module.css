@@ -1,0 +1,767 @@
+.pageContent {
+width: 100%;
+padding: 0;
+}
+.shell {
+--lessons-accent: #55b6d8;
+--lessons-accent-strong: #79d3ef;
+--lessons-panel: rgba(13, 24, 36, 0.9);
+--lessons-panel-soft: rgba(18, 32, 47, 0.76);
+--lessons-border: rgba(143, 184, 220, 0.14);
+--lessons-text-soft: #9db0c4;
+box-sizing: border-box;
+width: min(1420px, 100%);
+min-height: calc(100vh - 72px);
+margin: 0 auto;
+padding: 34px clamp(18px, 3vw, 46px) 62px;
+color: #eef5fb;
+}
+.pathHero,
+.lessonHeader {
+display: flex;
+align-items: flex-end;
+justify-content: space-between;
+gap: 28px;
+margin-bottom: 28px;
+}
+.heroCopy {
+max-width: 760px;
+}
+.eyebrow,
+.sectionHeader > span,
+.lessonHeading > span,
+.challengeLabel,
+.coachDialogHeader span {
+display: inline-block;
+margin-bottom: 8px;
+color: var(--lessons-accent-strong);
+font-size: 0.75rem;
+font-weight: 800;
+letter-spacing: 0.13em;
+text-transform: uppercase;
+}
+.heroCopy h1,
+.lessonHeading h1 {
+margin: 0;
+font-family: "Roboto Slab", "Noto Sans", sans-serif;
+font-size: clamp(2rem, 4vw, 3.35rem);
+line-height: 1.02;
+}
+.heroCopy p {
+max-width: 720px;
+margin: 14px 0 0;
+color: var(--lessons-text-soft);
+font-size: 1.03rem;
+line-height: 1.65;
+}
+.heroProgress,
+.stepProgress {
+min-width: 210px;
+padding: 16px 18px;
+border: 1px solid var(--lessons-border);
+border-radius: 16px;
+background: rgba(8, 17, 27, 0.54);
+box-shadow: 0 16px 34px rgba(0, 0, 0, 0.14);
+}
+.heroProgress {
+display: grid;
+grid-template-columns: 1fr auto;
+gap: 8px 14px;
+}
+.heroProgress span,
+.stepProgress strong {
+color: var(--lessons-text-soft);
+font-size: 0.82rem;
+font-weight: 700;
+}
+.heroProgress strong {
+color: #f4f8fc;
+}
+.progressTrack {
+grid-column: 1 / -1;
+width: 100%;
+height: 7px;
+overflow: hidden;
+border-radius: 999px;
+background: rgba(255, 255, 255, 0.08);
+}
+.progressTrack i {
+display: block;
+width: 0;
+height: 100%;
+border-radius: inherit;
+background: linear-gradient(90deg, #4aa4cd, #73d3e8);
+box-shadow: 0 0 14px rgba(92, 192, 224, 0.35);
+transition: width 0.25s ease;
+}
+.pathLayout,
+.lessonLayout {
+display: grid;
+grid-template-columns: minmax(0, 1fr) minmax(270px, 330px);
+gap: clamp(24px, 3vw, 42px);
+align-items: start;
+}
+.pathCard,
+.lessonStage,
+.coachCard,
+.challengeCard,
+.completionCard {
+border: 1px solid var(--lessons-border);
+background:
+linear-gradient(180deg, rgba(18, 32, 47, 0.92), rgba(10, 20, 31, 0.94));
+box-shadow: 0 22px 55px rgba(0, 0, 0, 0.19);
+}
+.pathCard {
+min-height: 690px;
+padding: clamp(24px, 4vw, 44px);
+border-radius: 28px;
+position: relative;
+overflow: hidden;
+}
+.pathCard::before {
+content: "";
+width: 390px;
+height: 390px;
+position: absolute;
+top: -190px;
+right: -120px;
+border-radius: 50%;
+background: radial-gradient(circle, rgba(76, 183, 217, 0.18), transparent 70%);
+pointer-events: none;
+}
+.sectionHeader {
+position: relative;
+z-index: 1;
+max-width: 650px;
+}
+.sectionHeader h2 {
+margin: 0;
+font-family: "Roboto Slab", "Noto Sans", sans-serif;
+font-size: clamp(1.65rem, 3vw, 2.35rem);
+}
+.sectionHeader p {
+margin: 10px 0 0;
+color: var(--lessons-text-soft);
+line-height: 1.58;
+}
+.learningPath {
+width: min(650px, 92%);
+margin: 42px auto 34px;
+padding: 8px 0;
+position: relative;
+}
+.pathRail {
+width: 8px;
+height: calc(100% - 74px);
+position: absolute;
+top: 36px;
+left: 50%;
+z-index: 0;
+border-radius: 999px;
+background:
+linear-gradient(
+180deg,
+rgba(86, 193, 222, 0.7) 0 23%,
+rgba(100, 126, 151, 0.22) 23% 100%
+);
+transform: translateX(-50%);
+}
+.pathNodeRow {
+display: flex;
+align-items: center;
+gap: 18px;
+width: 54%;
+min-height: 104px;
+position: relative;
+z-index: 1;
+}
+.pathNodeAlternate {
+margin-left: 46%;
+flex-direction: row-reverse;
+text-align: right;
+}
+.pathNode {
+display: grid;
+place-items: center;
+width: 76px;
+height: 76px;
+flex: 0 0 76px;
+border: 1px solid rgba(128, 170, 204, 0.22);
+border-radius: 50%;
+outline: none;
+color: #f3f8fc;
+background:
+radial-gradient(circle at 35% 28%, rgba(122, 219, 238, 0.26), transparent 34%),
+linear-gradient(180deg, #17364b, #102536);
+box-shadow:
+0 12px 25px rgba(0, 0, 0, 0.26),
+inset 0 0 0 7px rgba(255, 255, 255, 0.035);
+cursor: pointer;
+transition:
+transform 0.18s ease,
+border-color 0.18s ease,
+box-shadow 0.18s ease;
+}
+.pathNode:hover:not(:disabled),
+.pathNode:focus-visible {
+transform: translateY(-3px) scale(1.03);
+border-color: rgba(117, 214, 236, 0.68);
+box-shadow:
+0 16px 30px rgba(0, 0, 0, 0.28),
+0 0 0 4px rgba(78, 171, 207, 0.1);
+}
+.pathNode:focus-visible,
+.startButton:focus-visible,
+.nextButton:focus-visible,
+.hintButton:focus-visible,
+.backButton:focus-visible,
+.coachPortraitButton:focus-visible,
+.coachChoice:focus-visible,
+.choiceRow button:focus-visible,
+.closeButton:focus-visible {
+outline: 2px solid #83cfff;
+outline-offset: 3px;
+}
+.pathNodeRow[data-state="complete"] .pathNode {
+background: linear-gradient(180deg, #4e8e66, #326248);
+border-color: rgba(143, 219, 166, 0.58);
+}
+.pathNodeRow[data-state="locked"] .pathNode {
+opacity: 0.45;
+filter: saturate(0.6);
+cursor: default;
+}
+.nodeSymbol {
+font-family: Georgia, serif;
+font-size: 2rem;
+line-height: 1;
+}
+.nodeCopy {
+display: flex;
+align-items: center;
+gap: 7px;
+min-width: 0;
+}
+.nodeCopy strong {
+color: #eaf2f8;
+font-size: 0.94rem;
+}
+.lockedDot {
+color: #6e8194;
+font-size: 1.5rem;
+}
+.startButton,
+.nextButton {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+min-height: 46px;
+padding: 0 20px;
+border: 1px solid rgba(132, 218, 238, 0.32);
+border-radius: 12px;
+color: #f7fbff;
+background: linear-gradient(180deg, #397fa5, #2d678b);
+box-shadow: 0 10px 23px rgba(31, 96, 132, 0.24);
+font-weight: 800;
+cursor: pointer;
+}
+.startButton {
+margin-left: auto;
+}
+.startButton:hover,
+.nextButton:hover {
+background: linear-gradient(180deg, #438cb4, #327298);
+}
+.coachCard {
+position: sticky;
+top: 104px;
+padding: 18px 18px 20px;
+border-radius: 24px;
+}
+.coachPortraitButton {
+display: block;
+width: 100%;
+padding: 0;
+border: 0;
+border-radius: 18px;
+background: transparent;
+cursor: pointer;
+}
+.coachPortrait {
+display: block !important;
+width: min(100%, 255px) !important;
+aspect-ratio: 1 / 1;
+margin: 0 auto;
+}
+.speechBubble {
+margin-top: -2px;
+padding: 17px 18px;
+position: relative;
+border: 1px solid rgba(159, 194, 222, 0.17);
+border-radius: 18px;
+background: rgba(7, 16, 25, 0.62);
+}
+.speechBubble::before {
+content: "";
+width: 14px;
+height: 14px;
+position: absolute;
+top: -8px;
+left: 42px;
+border-top: 1px solid rgba(159, 194, 222, 0.17);
+border-left: 1px solid rgba(159, 194, 222, 0.17);
+background: rgba(7, 16, 25, 0.92);
+transform: rotate(45deg);
+}
+.speechBubble > span {
+color: var(--lessons-accent-strong);
+font-size: 0.78rem;
+font-weight: 850;
+letter-spacing: 0.04em;
+}
+.speechBubble p {
+margin: 7px 0 9px;
+color: #e9f1f7;
+line-height: 1.5;
+}
+.speechBubble small {
+color: #6f8598;
+}
+.lessonHeader {
+align-items: center;
+}
+.backButton,
+.hintButton,
+.choiceRow button,
+.closeButton {
+border: 1px solid rgba(137, 173, 203, 0.16);
+background: rgba(16, 29, 42, 0.72);
+color: #dce8f2;
+cursor: pointer;
+}
+.backButton {
+display: inline-flex;
+align-items: center;
+gap: 8px;
+min-height: 42px;
+padding: 0 14px;
+border-radius: 11px;
+}
+.lessonHeading {
+flex: 1;
+}
+.lessonHeading h1 {
+font-size: clamp(1.7rem, 3vw, 2.45rem);
+}
+.stepProgress {
+width: min(245px, 28vw);
+}
+.stepProgress strong {
+display: block;
+margin-bottom: 9px;
+}
+.lessonStage {
+min-width: 0;
+padding: clamp(16px, 2.3vw, 25px);
+border-radius: 25px;
+}
+.boardFrame {
+width: min(720px, 100%);
+margin: 0 auto;
+overflow: hidden;
+border: 1px solid rgba(183, 211, 231, 0.12);
+border-radius: 18px;
+box-shadow: 0 17px 40px rgba(0, 0, 0, 0.27);
+}
+.challengeCard {
+width: min(720px, 100%);
+box-sizing: border-box;
+margin: 18px auto 0;
+padding: 19px 20px;
+border-radius: 18px;
+box-shadow: none;
+}
+.challengeCard > p {
+margin: 0;
+color: #e8f0f7;
+font-size: 1rem;
+line-height: 1.55;
+}
+.choiceRow {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 10px;
+margin-top: 16px;
+}
+.choiceRow button {
+min-height: 46px;
+border-radius: 11px;
+font-weight: 750;
+}
+.choiceRow button:hover:not(:disabled) {
+border-color: rgba(98, 192, 221, 0.44);
+background: rgba(45, 86, 112, 0.7);
+}
+.choiceRow button:disabled {
+opacity: 0.58;
+cursor: default;
+}
+.hintPanel,
+.feedback {
+margin-top: 15px;
+padding: 13px 14px;
+border-radius: 13px;
+}
+.hintPanel {
+border: 1px solid rgba(234, 194, 89, 0.19);
+background: rgba(98, 74, 25, 0.18);
+}
+.hintPanel strong {
+color: #e6bd55;
+font-size: 0.78rem;
+text-transform: uppercase;
+letter-spacing: 0.08em;
+}
+.hintPanel p {
+margin: 5px 0 0;
+color: #dfd4b5;
+}
+.feedback {
+display: flex;
+align-items: center;
+gap: 12px;
+border: 1px solid rgba(142, 160, 183, 0.26);
+background: rgba(142, 160, 183, 0.08);
+}
+.feedback img,
+.feedback > span {
+width: 31px;
+height: 31px;
+flex: 0 0 31px;
+}
+.feedback > span {
+display: grid;
+place-items: center;
+border: 2px solid var(--feedback-colour);
+border-radius: 50%;
+color: var(--feedback-colour);
+font-weight: 900;
+}
+.feedback p {
+margin: 0;
+color: #e5edf4;
+line-height: 1.45;
+}
+.lessonActions {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 12px;
+margin-top: 17px;
+}
+.hintButton {
+min-height: 42px;
+padding: 0 15px;
+border-radius: 11px;
+font-weight: 700;
+}
+.hintButton:disabled {
+opacity: 0.5;
+cursor: default;
+}
+.completionCard {
+display: grid;
+place-items: center;
+min-height: 590px;
+padding: 48px 28px;
+border-radius: 21px;
+text-align: center;
+}
+.completionIcon {
+display: grid;
+place-items: center;
+width: 84px;
+height: 84px;
+margin-bottom: 21px;
+border-radius: 50%;
+color: #eaffef;
+background: linear-gradient(180deg, #568f68, #37634a);
+box-shadow: 0 0 0 10px rgba(90, 152, 108, 0.11);
+font-size: 2.3rem;
+font-weight: 900;
+}
+.completionCard h2 {
+margin: 0;
+font-family: "Roboto Slab", "Noto Sans", sans-serif;
+font-size: 2rem;
+}
+.completionCard p {
+max-width: 520px;
+margin: 13px 0 25px;
+color: var(--lessons-text-soft);
+line-height: 1.6;
+}
+.coachOverlay {
+display: grid;
+place-items: center;
+padding: 20px;
+position: fixed;
+inset: 0;
+z-index: 1200;
+background: rgba(2, 8, 14, 0.76);
+backdrop-filter: blur(10px);
+}
+.coachDialog {
+width: min(760px, 100%);
+max-height: min(720px, calc(100vh - 40px));
+overflow: auto;
+padding: 24px;
+border: 1px solid rgba(154, 198, 230, 0.17);
+border-radius: 24px;
+background: #0d1925;
+box-shadow: 0 28px 90px rgba(0, 0, 0, 0.45);
+}
+.coachDialogHeader {
+display: flex;
+align-items: flex-start;
+justify-content: space-between;
+gap: 18px;
+margin-bottom: 20px;
+}
+.coachDialogHeader h2 {
+margin: 0;
+font-size: 1.55rem;
+}
+.closeButton {
+width: 42px;
+height: 42px;
+border-radius: 11px;
+font-size: 1.5rem;
+}
+.coachGrid {
+display: grid;
+grid-template-columns: repeat(4, minmax(0, 1fr));
+gap: 12px;
+}
+.coachChoice {
+min-width: 0;
+padding: 13px 10px 12px;
+position: relative;
+border: 1px solid rgba(148, 188, 217, 0.14);
+border-radius: 17px;
+background: rgba(17, 32, 46, 0.74);
+color: #eaf2f8;
+cursor: pointer;
+}
+.coachChoice:hover {
+border-color: rgba(102, 202, 228, 0.44);
+transform: translateY(-2px);
+}
+.coachChoiceSelected {
+border-color: rgba(107, 207, 232, 0.64);
+box-shadow: 0 0 0 3px rgba(76, 174, 204, 0.09);
+}
+.coachChoicePortrait {
+display: block !important;
+width: 100% !important;
+aspect-ratio: 1 / 1;
+margin-bottom: 9px;
+}
+.coachChoice strong {
+display: block;
+overflow: hidden;
+text-overflow: ellipsis;
+white-space: nowrap;
+}
+.selectedMark {
+display: grid;
+place-items: center;
+width: 24px;
+height: 24px;
+position: absolute;
+top: 10px;
+right: 10px;
+border-radius: 50%;
+color: white;
+background: #4f9670;
+font-size: 0.8rem;
+}
+:global([data-theme="light"]) .shell {
+--lessons-panel: rgba(248, 251, 254, 0.95);
+--lessons-panel-soft: rgba(241, 246, 250, 0.9);
+--lessons-border: rgba(39, 78, 109, 0.14);
+--lessons-text-soft: #61758a;
+color: #172536;
+}
+:global([data-theme="light"]) .pathCard,
+:global([data-theme="light"]) .lessonStage,
+:global([data-theme="light"]) .coachCard,
+:global([data-theme="light"]) .challengeCard,
+:global([data-theme="light"]) .completionCard {
+background: linear-gradient(180deg, #fbfdff, #f1f6fa);
+box-shadow: 0 18px 45px rgba(31, 58, 78, 0.11);
+}
+:global([data-theme="light"]) .heroProgress,
+:global([data-theme="light"]) .stepProgress,
+:global([data-theme="light"]) .speechBubble,
+:global([data-theme="light"]) .coachChoice,
+:global([data-theme="light"]) .backButton,
+:global([data-theme="light"]) .hintButton,
+:global([data-theme="light"]) .choiceRow button {
+background: rgba(236, 244, 250, 0.9);
+color: #26384a;
+}
+:global([data-theme="light"]) .heroProgress strong,
+:global([data-theme="light"]) .nodeCopy strong,
+:global([data-theme="light"]) .challengeCard > p,
+:global([data-theme="light"]) .feedback p,
+:global([data-theme="light"]) .speechBubble p {
+color: #1f3346;
+}
+:global([data-theme="light"]) .speechBubble::before {
+background: #edf5fa;
+}
+:global([data-theme="light"]) .coachDialog {
+background: #f7fbfe;
+color: #1d3143;
+}
+@media (max-width: 1000px) {
+.pathLayout,
+.lessonLayout {
+grid-template-columns: 1fr;
+}
+.coachCard {
+display: grid;
+grid-template-columns: minmax(145px, 220px) 1fr;
+gap: 18px;
+align-items: center;
+position: static;
+}
+.speechBubble {
+margin-top: 0;
+}
+.speechBubble::before {
+top: 30px;
+left: -8px;
+}
+.coachPortrait {
+width: 100% !important;
+}
+}
+@media (max-width: 720px) {
+.shell {
+padding: 22px 12px 42px;
+}
+.pathHero,
+.lessonHeader {
+align-items: stretch;
+flex-direction: column;
+gap: 16px;
+}
+.heroProgress,
+.stepProgress {
+width: auto;
+min-width: 0;
+}
+.lessonHeader {
+position: relative;
+}
+.lessonHeading {
+order: -1;
+}
+.pathCard {
+min-height: 0;
+padding: 23px 16px 28px;
+border-radius: 21px;
+}
+.learningPath {
+width: 100%;
+margin-block: 30px 24px;
+}
+.pathNodeRow,
+.pathNodeAlternate {
+width: 70%;
+min-height: 92px;
+}
+.pathNodeAlternate {
+margin-left: 30%;
+}
+.pathNode {
+width: 66px;
+height: 66px;
+flex-basis: 66px;
+}
+.lessonStage {
+padding: 11px;
+border-radius: 18px;
+}
+.boardFrame {
+border-radius: 12px;
+}
+.challengeCard {
+padding: 16px;
+}
+.coachCard {
+grid-template-columns: 118px 1fr;
+gap: 12px;
+padding: 13px;
+border-radius: 18px;
+}
+.speechBubble {
+padding: 13px 14px;
+}
+.coachGrid {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.coachDialog {
+padding: 18px;
+}
+}
+@media (max-width: 460px) {
+.coachCard {
+grid-template-columns: 92px 1fr;
+}
+.speechBubble small {
+display: none;
+}
+.choiceRow {
+grid-template-columns: 1fr;
+}
+.lessonActions {
+align-items: stretch;
+flex-direction: column;
+}
+.lessonActions > span {
+display: none;
+}
+.hintButton,
+.nextButton {
+width: 100%;
+}
+.nodeCopy strong {
+font-size: 0.84rem;
+}
+.pathNodeRow,
+.pathNodeAlternate {
+width: 76%;
+}
+.pathNodeAlternate {
+margin-left: 24%;
+}
+}
+@media (prefers-reduced-motion: reduce) {
+.pathNode,
+.progressTrack i,
+.coachChoice {
+transition: none;
+}
+}
+.feedback[data-tone="positive"] {
+border-color: rgba(151, 175, 139, 0.34);
+background: rgba(151, 175, 139, 0.09);
+}
+.feedback[data-tone="negative"] {
+border-color: rgba(255, 107, 107, 0.32);
+background: rgba(255, 107, 107, 0.08);
+}

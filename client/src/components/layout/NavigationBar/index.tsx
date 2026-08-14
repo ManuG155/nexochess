@@ -24,6 +24,7 @@ const ShareDialog = lazy(loadShareDialog);
 type IconName =
     | "academy"
     | "analysis"
+    | "lessons"
     | "archive"
     | "login"
     | "menu"
@@ -59,6 +60,13 @@ function NavIcon({ name }: NavIconProps) {
             <path d="m3 9 9-5 9 5-9 5z" />
             <path d="M7 11.2V16c2.8 2.2 7.2 2.2 10 0v-4.8" />
             <path d="M21 9v6" />
+        </>,
+        lessons: <>
+            <circle cx="6" cy="17" r="2" />
+            <circle cx="12" cy="11" r="2" />
+            <circle cx="18" cy="6" r="2" />
+            <path d="m7.5 15.5 3-3" />
+            <path d="m13.7 9.7 2.7-2.4" />
         </>,
         puzzle: <path d="M9.5 4H4v5.5a2.5 2.5 0 1 1 0 5V20h5.5a2.5 2.5 0 1 0 5 0H20v-5.5a2.5 2.5 0 1 0 0-5V4h-5.5a2.5 2.5 0 1 1-5 0Z" />,
         repertoire: <>
@@ -142,7 +150,7 @@ function NavigationAction({ children, icon, onClick }: NavigationActionProps) {
 }
 
 function NavigationBar() {
-    const { t } = useTranslation(["common", "analysis", "repertoire"]);
+    const { t } = useTranslation(["common", "analysis", "lessons", "repertoire"]);
     const { profile, status } = useAuthedProfile();
     const [sidebarMounted, setSidebarMounted] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -150,6 +158,7 @@ function NavigationBar() {
     const currentPathname = parseLanguagePathname(location.pathname).basePathname;
 
     const onAnalysisPage = currentPathname.startsWith("/analysis");
+    const onLessonsPage = currentPathname.startsWith("/lessons");
     const onArchivePage = currentPathname.startsWith("/archive");
     const onAcademyPage = currentPathname.startsWith("/academy");
     const onSettingsPage = currentPathname.startsWith("/settings");
@@ -275,6 +284,9 @@ function NavigationBar() {
         >
             <NavigationItem icon="academy" url="/academy" current={onAcademyPage}>
                 {t("navigationBar.academy", { ns: "common" })}
+            </NavigationItem>
+            <NavigationItem icon="lessons" url="/lessons" current={onLessonsPage}>
+                {t("nav", { ns: "lessons" })}
             </NavigationItem>
             <NavigationItem icon="analysis" url="/analysis" current={onAnalysisPage}>
                 {t("sidebar.analysis", { ns: "common" })}
