@@ -1,27 +1,163 @@
-export type OpeningLang="en"|"es"|"fr"|"de"|"pt"|"ru"|"zh"|"vi"|"hi"|"mr"|"pl";
-type Pair=[string,string];
+export type OpeningLang = "en" | "es" | "fr" | "de" | "pt" | "ru" | "zh" | "vi" | "hi" | "mr" | "pl";
+
+type ExactMap = Record<string, string>;
 
 /*
- * Repertoire keeps canonical English names internally for matching/imports,
- * but every descriptive opening term is rendered in the selected locale.
- * Proper names (Najdorf, Marshall, Grünfeld, etc.) intentionally remain names.
+ * The main localizer already translates known families and standard opening
+ * descriptors. This pass deliberately works on complete tokens/segments only.
+ * Never replace substrings here: that was the source of forms such as
+ * "Gambitoo" and of half-translated word order such as "Czech Defensa".
  */
-const X:Record<OpeningLang,Pair[]>={
-en:[],
-es:[["Main Line","Línea principal"],["Classical Variation","Variante clásica"],["Modern Variation","Variante moderna"],["Exchange Variation","Variante del cambio"],["Advance Variation","Variante del avance"],["Accepted Variation","Variante aceptada"],["Declined Variation","Variante declinada"],["Closed Variation","Variante cerrada"],["Open Variation","Variante abierta"],["Fianchetto Variation","Variante del fianchetto"],["Countergambit","Contragambito"],["Counterattack","Contraataque"],["Two Knights","Dos caballos"],["Three Knights","Tres caballos"],["Four Knights","Cuatro caballos"],["Delayed","Diferida"],["Deferred","Diferida"],["Symmetrical","Simétrica"],["Accelerated","Acelerada"],["Classical","Clásica"],["Modern","Moderna"],["Traditional","Tradicional"],["Improved","Mejorada"],["Variation","Variante"],["Defense","Defensa"],["Defence","Defensa"],["Attack","Ataque"],["Gambit","Gambito"],["Opening","Apertura"],["System","Sistema"],["Accepted","Aceptada"],["Declined","Declinada"],["Exchange","Cambio"],["Advance","Avance"],["Closed","Cerrada"],["Knight","Caballo"],["Bishop","Alfil"],["Pawn","Peón"],["Trap","Trampa"]],
-fr:[["Main Line","Ligne principale"],["Classical Variation","Variante classique"],["Modern Variation","Variante moderne"],["Exchange Variation","Variante d'échange"],["Advance Variation","Variante d'avance"],["Accepted Variation","Variante acceptée"],["Declined Variation","Variante refusée"],["Closed Variation","Variante fermée"],["Open Variation","Variante ouverte"],["Fianchetto Variation","Variante du fianchetto"],["Countergambit","Contre-gambit"],["Counterattack","Contre-attaque"],["Two Knights","Deux cavaliers"],["Three Knights","Trois cavaliers"],["Four Knights","Quatre cavaliers"],["Delayed","Différée"],["Deferred","Différée"],["Symmetrical","Symétrique"],["Accelerated","Accélérée"],["Classical","Classique"],["Modern","Moderne"],["Traditional","Traditionnelle"],["Improved","Améliorée"],["Variation","Variante"],["Defense","Défense"],["Defence","Défense"],["Attack","Attaque"],["Gambit","Gambit"],["Opening","Ouverture"],["System","Système"],["Accepted","Acceptée"],["Declined","Refusée"],["Exchange","Échange"],["Advance","Avance"],["Closed","Fermée"],["Knight","Cavalier"],["Bishop","Fou"],["Pawn","Pion"],["Trap","Piège"]],
-de:[["Main Line","Hauptvariante"],["Classical Variation","Klassische Variante"],["Modern Variation","Moderne Variante"],["Exchange Variation","Abtauschvariante"],["Advance Variation","Vorstoßvariante"],["Accepted Variation","Angenommene Variante"],["Declined Variation","Abgelehnte Variante"],["Closed Variation","Geschlossene Variante"],["Open Variation","Offene Variante"],["Fianchetto Variation","Fianchetto-Variante"],["Countergambit","Gegengambit"],["Counterattack","Gegenangriff"],["Two Knights","Zweispringer"],["Three Knights","Dreispringer"],["Four Knights","Vierspringer"],["Delayed","Verzögert"],["Deferred","Verzögert"],["Symmetrical","Symmetrisch"],["Accelerated","Beschleunigt"],["Classical","Klassisch"],["Modern","Modern"],["Traditional","Traditionell"],["Improved","Verbessert"],["Variation","Variante"],["Defense","Verteidigung"],["Defence","Verteidigung"],["Attack","Angriff"],["Gambit","Gambit"],["Opening","Eröffnung"],["System","System"],["Accepted","Angenommen"],["Declined","Abgelehnt"],["Exchange","Abtausch"],["Advance","Vorstoß"],["Closed","Geschlossen"],["Knight","Springer"],["Bishop","Läufer"],["Pawn","Bauer"],["Trap","Falle"]],
-pt:[["Main Line","Linha principal"],["Classical Variation","Variante clássica"],["Modern Variation","Variante moderna"],["Exchange Variation","Variante de troca"],["Advance Variation","Variante de avanço"],["Accepted Variation","Variante aceita"],["Declined Variation","Variante recusada"],["Closed Variation","Variante fechada"],["Open Variation","Variante aberta"],["Fianchetto Variation","Variante de fianqueto"],["Countergambit","Contragambito"],["Counterattack","Contra-ataque"],["Two Knights","Dois cavalos"],["Three Knights","Três cavalos"],["Four Knights","Quatro cavalos"],["Delayed","Adiada"],["Deferred","Adiada"],["Symmetrical","Simétrica"],["Accelerated","Acelerada"],["Classical","Clássica"],["Modern","Moderna"],["Traditional","Tradicional"],["Improved","Melhorada"],["Variation","Variante"],["Defense","Defesa"],["Defence","Defesa"],["Attack","Ataque"],["Gambit","Gambito"],["Opening","Abertura"],["System","Sistema"],["Accepted","Aceita"],["Declined","Recusada"],["Exchange","Troca"],["Advance","Avanço"],["Closed","Fechada"],["Knight","Cavalo"],["Bishop","Bispo"],["Pawn","Peão"],["Trap","Armadilha"]],
-ru:[["Main Line","Основной вариант"],["Classical Variation","Классический вариант"],["Modern Variation","Современный вариант"],["Exchange Variation","Разменный вариант"],["Advance Variation","Вариант с продвижением"],["Accepted Variation","Принятый вариант"],["Declined Variation","Отказанный вариант"],["Closed Variation","Закрытый вариант"],["Open Variation","Открытый вариант"],["Fianchetto Variation","Вариант фианкетто"],["Countergambit","Контргамбит"],["Counterattack","Контратака"],["Two Knights","Двух коней"],["Three Knights","Трёх коней"],["Four Knights","Четырёх коней"],["Delayed","Отложенный"],["Deferred","Отложенный"],["Symmetrical","Симметричный"],["Accelerated","Ускоренный"],["Classical","Классический"],["Modern","Современный"],["Traditional","Традиционный"],["Improved","Улучшенный"],["Variation","Вариант"],["Defense","Защита"],["Defence","Защита"],["Attack","Атака"],["Gambit","Гамбит"],["Opening","Дебют"],["System","Система"],["Accepted","Принятый"],["Declined","Отказанный"],["Exchange","Размен"],["Advance","Продвижение"],["Closed","Закрытый"],["Knight","Конь"],["Bishop","Слон"],["Pawn","Пешка"],["Trap","Ловушка"]],
-zh:[["Main Line","主线"],["Classical Variation","古典变例"],["Modern Variation","现代变例"],["Exchange Variation","兑换变例"],["Advance Variation","推进变例"],["Accepted Variation","接受变例"],["Declined Variation","拒绝变例"],["Closed Variation","封闭变例"],["Open Variation","开放变例"],["Fianchetto Variation","菲安凯托变例"],["Countergambit","反弃兵"],["Counterattack","反击"],["Two Knights","双马"],["Three Knights","三马"],["Four Knights","四马"],["Delayed","延迟"],["Deferred","延迟"],["Symmetrical","对称"],["Accelerated","加速"],["Classical","古典"],["Modern","现代"],["Traditional","传统"],["Improved","改进"],["Variation","变例"],["Defense","防御"],["Defence","防御"],["Attack","进攻"],["Gambit","弃兵"],["Opening","开局"],["System","体系"],["Accepted","接受"],["Declined","拒绝"],["Exchange","兑换"],["Advance","推进"],["Closed","封闭"],["Knight","马"],["Bishop","象"],["Pawn","兵"],["Trap","陷阱"]],
-vi:[["Main Line","Biến chính"],["Classical Variation","Biến Cổ điển"],["Modern Variation","Biến Hiện đại"],["Exchange Variation","Biến Đổi quân"],["Advance Variation","Biến Tiến tốt"],["Accepted Variation","Biến Chấp nhận"],["Declined Variation","Biến Từ chối"],["Closed Variation","Biến Đóng"],["Open Variation","Biến Mở"],["Fianchetto Variation","Biến Fianchetto"],["Countergambit","Phản gambit"],["Counterattack","Phản công"],["Two Knights","Hai Mã"],["Three Knights","Ba Mã"],["Four Knights","Bốn Mã"],["Delayed","Trì hoãn"],["Deferred","Trì hoãn"],["Symmetrical","Đối xứng"],["Accelerated","Tăng tốc"],["Classical","Cổ điển"],["Modern","Hiện đại"],["Traditional","Truyền thống"],["Improved","Cải tiến"],["Variation","Biến"],["Defense","Phòng thủ"],["Defence","Phòng thủ"],["Attack","Tấn công"],["Gambit","Gambit"],["Opening","Khai cuộc"],["System","Hệ thống"],["Accepted","Chấp nhận"],["Declined","Từ chối"],["Exchange","Đổi quân"],["Advance","Tiến tốt"],["Closed","Đóng"],["Knight","Mã"],["Bishop","Tượng"],["Pawn","Tốt"],["Trap","Bẫy"]],
-hi:[["Main Line","मुख्य लाइन"],["Classical Variation","क्लासिकल वेरिएशन"],["Modern Variation","मॉडर्न वेरिएशन"],["Exchange Variation","एक्सचेंज वेरिएशन"],["Advance Variation","एडवांस वेरिएशन"],["Accepted Variation","स्वीकृत वेरिएशन"],["Declined Variation","अस्वीकृत वेरिएशन"],["Closed Variation","क्लोज्ड वेरिएशन"],["Open Variation","ओपन वेरिएशन"],["Fianchetto Variation","फियांकेटो वेरिएशन"],["Countergambit","प्रतिगैम्बिट"],["Counterattack","प्रत्याक्रमण"],["Two Knights","दो घोड़े"],["Three Knights","तीन घोड़े"],["Four Knights","चार घोड़े"],["Delayed","विलंबित"],["Deferred","विलंबित"],["Symmetrical","सममित"],["Accelerated","त्वरित"],["Classical","क्लासिकल"],["Modern","मॉडर्न"],["Traditional","पारंपरिक"],["Improved","सुधारित"],["Variation","वेरिएशन"],["Defense","डिफेंस"],["Defence","डिफेंस"],["Attack","अटैक"],["Gambit","गैम्बिट"],["Opening","ओपनिंग"],["System","सिस्टम"],["Accepted","स्वीकृत"],["Declined","अस्वीकृत"],["Exchange","एक्सचेंज"],["Advance","एडवांस"],["Closed","क्लोज्ड"],["Knight","घोड़ा"],["Bishop","ऊँट"],["Pawn","प्यादा"],["Trap","जाल"]],
-mr:[["Main Line","मुख्य लाईन"],["Classical Variation","क्लासिकल प्रकार"],["Modern Variation","आधुनिक प्रकार"],["Exchange Variation","अदलाबदल प्रकार"],["Advance Variation","आगाऊ प्रकार"],["Accepted Variation","स्वीकारलेला प्रकार"],["Declined Variation","नाकारलेला प्रकार"],["Closed Variation","बंद प्रकार"],["Open Variation","उघडा प्रकार"],["Fianchetto Variation","फियांकेटो प्रकार"],["Countergambit","प्रतिगँबिट"],["Counterattack","प्रतिहल्ला"],["Two Knights","दोन घोडे"],["Three Knights","तीन घोडे"],["Four Knights","चार घोडे"],["Delayed","विलंबित"],["Deferred","विलंबित"],["Symmetrical","सममित"],["Accelerated","वेगवान"],["Classical","क्लासिकल"],["Modern","आधुनिक"],["Traditional","पारंपरिक"],["Improved","सुधारित"],["Variation","प्रकार"],["Defense","बचाव"],["Defence","बचाव"],["Attack","हल्ला"],["Gambit","गँबिट"],["Opening","ओपनिंग"],["System","पद्धत"],["Accepted","स्वीकारलेला"],["Declined","नाकारलेला"],["Exchange","अदलाबदल"],["Advance","आगाऊ"],["Closed","बंद"],["Knight","घोडा"],["Bishop","उंट"],["Pawn","प्यादा"],["Trap","सापळा"]],
-pl:[["Main Line","Główny wariant"],["Classical Variation","Wariant klasyczny"],["Modern Variation","Wariant nowoczesny"],["Exchange Variation","Wariant wymienny"],["Advance Variation","Wariant wysunięty"],["Accepted Variation","Wariant przyjęty"],["Declined Variation","Wariant odrzucony"],["Closed Variation","Wariant zamknięty"],["Open Variation","Wariant otwarty"],["Fianchetto Variation","Wariant fianchetto"],["Countergambit","Kontrgambit"],["Counterattack","Kontratak"],["Two Knights","Dwóch skoczków"],["Three Knights","Trzech skoczków"],["Four Knights","Czterech skoczków"],["Delayed","Opóźniony"],["Deferred","Opóźniony"],["Symmetrical","Symetryczny"],["Accelerated","Przyspieszony"],["Classical","Klasyczny"],["Modern","Nowoczesny"],["Traditional","Tradycyjny"],["Improved","Ulepszony"],["Variation","Wariant"],["Defense","Obrona"],["Defence","Obrona"],["Attack","Atak"],["Gambit","Gambit"],["Opening","Debiut"],["System","System"],["Accepted","Przyjęty"],["Declined","Odrzucony"],["Exchange","Wymienny"],["Advance","Wysunięty"],["Closed","Zamknięty"],["Knight","Skoczek"],["Bishop","Goniec"],["Pawn","Pion"],["Trap","Pułapka"]]};
+const EXACT: Record<OpeningLang, ExactMap> = {
+    en: {},
+    es: {
+        "Danish Gambito": "Gambito danés",
+        "Danish Gambito Aceptado": "Gambito danés aceptado",
+        "Danish Gambito Aceptada": "Gambito danés aceptado",
+        "Center Partida": "Apertura del centro",
+        "Center Partida Aceptado": "Apertura del centro aceptada",
+        "Center Partida Aceptada": "Apertura del centro aceptada",
+        "Czech Defensa": "Defensa checa",
+        "Canard Apertura": "Apertura Canard"
+    },
+    fr: {
+        "Danish Gambit": "Gambit danois",
+        "Danish Gambit Accepté": "Gambit danois accepté",
+        "Danish Gambit Acceptée": "Gambit danois accepté",
+        "Center Partie": "Partie du centre",
+        "Center Partie Accepté": "Partie du centre acceptée",
+        "Center Partie Acceptée": "Partie du centre acceptée",
+        "Czech Défense": "Défense tchèque",
+        "Canard Ouverture": "Ouverture Canard"
+    },
+    de: {
+        "Danish Gambit": "Dänisches Gambit",
+        "Danish Gambit Angenommen": "Angenommenes Dänisches Gambit",
+        "Center Partie": "Zentrumsspiel",
+        "Center Partie Angenommen": "Angenommenes Zentrumsspiel",
+        "Czech Verteidigung": "Tschechische Verteidigung",
+        "Canard Eröffnung": "Canard-Eröffnung"
+    },
+    pt: {
+        "Danish Gambito": "Gambito dinamarquês",
+        "Danish Gambito Aceito": "Gambito dinamarquês aceito",
+        "Danish Gambito Aceita": "Gambito dinamarquês aceito",
+        "Center Partida": "Jogo do centro",
+        "Center Partida Aceito": "Jogo do centro aceito",
+        "Center Partida Aceita": "Jogo do centro aceito",
+        "Czech Defesa": "Defesa tcheca",
+        "Canard Abertura": "Abertura Canard"
+    },
+    ru: {
+        "Danish Гамбит": "Датский гамбит",
+        "Danish Гамбит Принятый": "Принятый датский гамбит",
+        "Center Партия": "Центральная партия",
+        "Center Партия Принятый": "Принятая центральная партия",
+        "Czech Защита": "Чешская защита",
+        "Canard Дебют": "Дебют Канар"
+    },
+    zh: {
+        "Danish 弃兵": "丹麦弃兵",
+        "Danish 弃兵 接受型": "丹麦弃兵接受型",
+        "Danish 弃兵 接受": "丹麦弃兵接受型",
+        "Center 开局": "中心开局",
+        "Center 开局 接受型": "中心开局接受型",
+        "Center 开局 接受": "中心开局接受型",
+        "Czech 防御": "捷克防御",
+        "Canard 开局": "Canard 开局"
+    },
+    vi: {
+        "Danish Gambit": "Gambit Đan Mạch",
+        "Danish Gambit Chấp nhận": "Gambit Đan Mạch chấp nhận",
+        "Center Ván cờ": "Ván cờ Trung tâm",
+        "Center Ván cờ Chấp nhận": "Ván cờ Trung tâm chấp nhận",
+        "Czech Phòng thủ": "Phòng thủ Séc",
+        "Canard Khai cuộc": "Khai cuộc Canard"
+    },
+    hi: {
+        "Danish गैम्बिट": "डैनिश गैम्बिट",
+        "Center गेम": "सेंटर गेम",
+        "Czech डिफेंस": "चेक डिफेंस",
+        "Canard ओपनिंग": "कैनार्ड ओपनिंग"
+    },
+    mr: {
+        "Danish गॅम्बिट": "डॅनिश गँबिट",
+        "Center गेम": "सेंटर गेम",
+        "Czech डिफेन्स": "झेक बचाव",
+        "Canard ओपनिंग": "कॅनार्ड ओपनिंग"
+    },
+    pl: {
+        "Danish Gambit": "Gambit duński",
+        "Danish Gambit Przyjęty": "Przyjęty gambit duński",
+        "Center Partia": "Debiut centralny",
+        "Center Partia Przyjęty": "Przyjęty debiut centralny",
+        "Czech Obrona": "Obrona czeska",
+        "Canard Debiut": "Debiut Canard"
+    }
+};
 
-export function applyOpeningSupplement(value:string,lang:OpeningLang){
-    if(lang==="en")return value;
-    let out=value;
-    for(const [from,to] of [...X[lang]].sort((a,b)=>b[0].length-a[0].length))out=out.split(from).join(to);
-    return out;
+const DESCRIPTORS: Record<OpeningLang, Record<string, string>> = {
+    en: {},
+    es: { Danish: "danés", Czech: "checa", Center: "del centro" },
+    fr: { Danish: "danois", Czech: "tchèque", Center: "du centre" },
+    de: { Danish: "Dänisch", Czech: "Tschechisch", Center: "Zentrum" },
+    pt: { Danish: "dinamarquês", Czech: "tcheca", Center: "do centro" },
+    ru: { Danish: "датский", Czech: "чешская", Center: "центральная" },
+    zh: { Danish: "丹麦", Czech: "捷克", Center: "中心" },
+    vi: { Danish: "Đan Mạch", Czech: "Séc", Center: "Trung tâm" },
+    hi: { Danish: "डैनिश", Czech: "चेक", Center: "सेंटर" },
+    mr: { Danish: "डॅनिश", Czech: "झेक", Center: "मध्य" },
+    pl: { Danish: "duński", Czech: "czeska", Center: "centralny" }
+};
+
+function descriptor(value: string, lang: OpeningLang) {
+    return DESCRIPTORS[lang][value] || value;
+}
+
+function escaped(value: string) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function prefixTrailing(segment: string, noun: string, lang: OpeningLang) {
+    const match = segment.match(new RegExp(`^(.+?)\\s+${escaped(noun)}$`));
+    if (!match) return segment;
+    return `${noun} ${descriptor(match[1], lang)}`;
+}
+
+function hyphenateTrailing(segment: string, noun: string, lang: OpeningLang) {
+    const match = segment.match(new RegExp(`^(.+?)\\s+${escaped(noun)}$`));
+    if (!match) return segment;
+    return `${descriptor(match[1], lang)}-${noun}`;
+}
+
+function polishSegment(segment: string, lang: OpeningLang) {
+    const exact = EXACT[lang][segment];
+    if (exact) return exact;
+
+    let out = segment;
+    if (lang == "es") {
+        for (const noun of ["Gambito", "Defensa", "Apertura", "Ataque", "Sistema", "Partida"]) out = prefixTrailing(out, noun, lang);
+    } else if (lang == "fr") {
+        for (const noun of ["Gambit", "Défense", "Ouverture", "Attaque", "Système", "Partie"]) out = prefixTrailing(out, noun, lang);
+    } else if (lang == "de") {
+        for (const noun of ["Gambit", "Verteidigung", "Eröffnung", "Angriff", "System"]) out = hyphenateTrailing(out, noun, lang);
+    } else if (lang == "pt") {
+        for (const noun of ["Gambito", "Defesa", "Abertura", "Ataque", "Sistema", "Partida"]) out = prefixTrailing(out, noun, lang);
+    } else if (lang == "ru") {
+        for (const noun of ["Гамбит", "Защита", "Дебют", "Атака", "Система", "Партия"]) out = prefixTrailing(out, noun, lang);
+    } else if (lang == "vi") {
+        for (const noun of ["Gambit", "Phòng thủ", "Khai cuộc", "Tấn công", "Hệ thống", "Ván cờ"]) out = prefixTrailing(out, noun, lang);
+    } else if (lang == "pl") {
+        for (const noun of ["Gambit", "Obrona", "Debiut", "Atak", "System", "Partia"]) out = prefixTrailing(out, noun, lang);
+    } else if (lang == "zh") {
+        for (const [from, to] of Object.entries(DESCRIPTORS.zh)) {
+            out = out.replace(new RegExp(`\\b${escaped(from)}\\b`, "g"), to);
+        }
+    }
+    return EXACT[lang][out] || out;
+}
+
+export function applyOpeningSupplement(value: string, lang: OpeningLang) {
+    if (lang == "en" || !value) return value;
+    return value.split(":").map(part => polishSegment(part.trim(), lang)).join(": ");
 }
