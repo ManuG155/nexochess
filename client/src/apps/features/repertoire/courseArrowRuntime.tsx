@@ -1,4 +1,5 @@
 import React from "react";
+import { Square } from "chess.js";
 import { createRoot } from "react-dom/client";
 import useSettingsStore from "@/stores/SettingsStore";
 import SuggestionArrowOverlay from "@analysis/components/Board/SuggestionArrowOverlay";
@@ -6,22 +7,22 @@ import SuggestionArrowOverlay from "@analysis/components/Board/SuggestionArrowOv
 let currentBoard: HTMLElement | null = null;
 let overlayHost: HTMLDivElement | null = null;
 let overlayRoot: ReturnType<typeof createRoot> | null = null;
-let arrows: Array<{from:string;to:string;colour:string}> = [];
-let start: string | undefined;
+let arrows: Array<{from:Square;to:Square;colour:string}> = [];
+let start: Square | undefined;
 
 function flipped(board: HTMLElement) {
     const active = board.closest("section")?.querySelector("header button[data-active=\"true\"]") as HTMLElement | null;
     return Boolean(active?.parentElement && Array.from(active.parentElement.children).indexOf(active) == 1);
 }
 
-function square(board: HTMLElement, x: number, y: number) {
+function square(board: HTMLElement, x: number, y: number): Square | undefined {
     const r = board.getBoundingClientRect();
     if (!r.width || !r.height) return undefined;
     const fx = Math.min(7, Math.max(0, Math.floor((x-r.left)/r.width*8)));
     const ry = Math.min(7, Math.max(0, Math.floor((y-r.top)/r.height*8)));
     const files = flipped(board) ? ["h","g","f","e","d","c","b","a"] : ["a","b","c","d","e","f","g","h"];
     const rank = flipped(board) ? ry+1 : 8-ry;
-    return `${files[fx]}${rank}`;
+    return `${files[fx]}${rank}` as Square;
 }
 
 function draw() {
