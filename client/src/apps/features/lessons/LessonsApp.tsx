@@ -30,11 +30,14 @@ import {
 } from "./progress";
 import { buildPracticeLesson } from "./lessonPractice";
 import type { PracticeChoice, PracticePosition } from "./lessonPractice";
+import { analyseLessonPosition } from "./lessonCoachContext";
+import type { LessonPieceType } from "./lessonCoachContext";
 import LessonLandmark from "./LessonLandmarks";
 import type { LandmarkVariant } from "./LessonLandmarks";
 
 import * as styles from "./lessonsV4.module.css";
 import * as polish from "./lessonsPolish.module.css";
+import * as interactive from "./lessonsInteractive.module.css";
 
 type View = "path" | "lesson";
 type PathNodeState = "complete" | "current" | "available" | "locked";
@@ -300,6 +303,7 @@ function LessonsApp() {
     const [result, setResult] = useState<SessionResult>(null);
     const [hintVisible, setHintVisible] = useState(false);
     const [brilliantSquare, setBrilliantSquare] = useState<Square>();
+    const [lastMoveSan, setLastMoveSan] = useState<string>();
     const [sessionComplete, setSessionComplete] = useState(false);
     const [coachPickerOpen, setCoachPickerOpen] = useState(false);
     const [jumpTarget, setJumpTarget] = useState<CurriculumLessonEntry | null>(null);
@@ -333,6 +337,10 @@ function LessonsApp() {
 
     const activeTitle = titleFor(activeLesson);
 
+    function pieceLabel(type?: LessonPieceType) {
+        return tp(`pieceNames.${type || "piece"}`);
+    }
+
     useEffect(() => {
         if (!position) return;
         setBoardFen(position.fen);
@@ -340,6 +348,7 @@ function LessonsApp() {
         setResult(null);
         setHintVisible(false);
         setBrilliantSquare(undefined);
+        setLastMoveSan(undefined);
     }, [position?.id]);
 
     useEffect(() => {
@@ -369,6 +378,7 @@ function LessonsApp() {
         setHintVisible(false);
         setSelectedFrom(undefined);
         setBrilliantSquare(undefined);
+        setLastMoveSan(undefined);
         setView("lesson");
     }
 
@@ -398,6 +408,7 @@ function LessonsApp() {
         setHintVisible(false);
         setSelectedFrom(undefined);
         setBrilliantSquare(undefined);
+        setLastMoveSan(undefined);
         setView("lesson");
     }
 
@@ -416,6 +427,7 @@ function LessonsApp() {
         try {
             board = new Chess(boardFen);
         } catch {
+            setLastMoveSan(undefined);
             setResult("illegal");
             return false;
         }
@@ -424,24 +436,28 @@ function LessonsApp() {
         try {
             move = board.move({ from, to, promotion: "q" });
         } catch {
+            setLastMoveSan(undefined);
             setResult("illegal");
             setSelectedFrom(undefined);
             return false;
         }
 
         if (!move) {
+            setLastMoveSan(undefined);
             setResult("illegal");
             setSelectedFrom(undefined);
             return false;
         }
 
         if (!correct) {
+            setLastMoveSan(undefined);
             setResult("error");
             setSelectedFrom(undefined);
             return false;
         }
 
         setBoardFen(board.fen());
+        setLastMoveSan(move.san);
         setResult("success");
         setSelectedFrom(undefined);
         playBoardMoveSound(move.san);
@@ -459,6 +475,7 @@ function LessonsApp() {
         const target = name as Square;
 
         if (position.kind == "select") {
+            setLastMoveSan(undefined);
             setResult(position.acceptedSquares.includes(target) ? "success" : "error");
             return;
         }
@@ -469,6 +486,7 @@ function LessonsApp() {
         try {
             board = new Chess(boardFen);
         } catch {
+            setLastMoveSan(undefined);
             setResult("illegal");
             return;
         }
@@ -500,6 +518,7 @@ function LessonsApp() {
 
     function answerChoice(choice: PracticeChoice) {
         if (!position || position.kind != "choice" || result == "success") return;
+        setLastMoveSan(undefined);
         setResult(choice == position.correctChoice ? "success" : "error");
     }
 
@@ -523,6 +542,12 @@ function LessonsApp() {
         setRecentlyUnlockedId(nextLesson?.id);
         setSessionComplete(true);
     }
+
+    useEffect(() => {
+        if (view != "lesson" || sessionComplete || result != "success") return;
+        const timer = window.setTimeout(() => advancePosition(), 1250);
+        return () => window.clearTimeout(timer);
+    }, [view, sessionComplete, result, positionIndex, activeLesson.id, practiceLesson.positions.length]);
 
     function finishLesson() {
         const nextLesson = getNextCurriculumLesson(activeLesson.id);
@@ -703,23 +728,68 @@ function LessonsApp() {
 
     const isBoardTour = activeLesson.id == "first-contact.board" && position?.kind == "move";
     const boardTarget = isBoardTour ? position.expected.to.toUpperCase() : undefined;
-    const promptKey = isBoardTour
-        ? "prompts.boardSquare"
-        : position
-            ? `prompts.${position.prompt}`
-            : "prompts.findMove";
-    const coachText = isBoardTour
-        ? tp("coachBoard", {
+    const coachContext = analyseLessonPosition(position, position?.fen || boardFen);
+    const turn = coachContext.turn;
+    const turnLabel = tp(`choices.${turn}`);
+    const movingPiece = pieceLabel(coachContext.movingPieceType);
+    const targetPiece = pieceLabel(coachContext.targetPieceType);
+    const checkerPiece = pieceLabel(coachContext.checkerType);
+
+    let coachText: string;
+    if (result == "success") {
+        const successKey = `coachDynamic.success${positionIndex % 4 + 1}`;
+        coachText = tp(successKey, { move: lastMoveSan || "" });
+    } else if (result == "illegal") {
+        coachText = tp("coachDynamic.illegal");
+    } else if (result == "error") {
+        coachText = tp("coachDynamic.error");
+    } else if (hintVisible) {
+        coachText = coachContext.checkerType
+            ? tp("coachDynamic.hintCheck", {
+                attacker: checkerPiece,
+                square: coachContext.checkerSquare?.toUpperCase()
+            })
+            : position?.kind == "move"
+                ? tp("coachDynamic.hintMove", {
+                    piece: movingPiece,
+                    from: coachContext.from?.toUpperCase(),
+                    lesson: activeTitle
+                })
+                : tp("coachDynamic.hintChoice", { lesson: activeTitle });
+    } else if (isBoardTour) {
+        coachText = tp("coachBoard", {
             square: boardTarget,
             current: Math.min(positionIndex + 1, practiceLesson.positions.length),
             total: practiceLesson.positions.length
-        })
-        : tp("coach", {
-            lesson: activeTitle,
-            current: Math.min(positionIndex + 1, practiceLesson.positions.length),
-            total: practiceLesson.positions.length
         });
-    const turn = (boardFen || position?.fen || "").split(" ")[1] == "b" ? "black" : "white";
+    } else if (coachContext.checkerType) {
+        coachText = tp("coachDynamic.check", {
+            side: turnLabel,
+            attacker: checkerPiece,
+            square: coachContext.checkerSquare?.toUpperCase()
+        });
+    } else if (position?.kind == "move" && coachContext.targetPieceType) {
+        coachText = tp("coachDynamic.capture", {
+            side: turnLabel,
+            piece: movingPiece,
+            from: coachContext.from?.toUpperCase(),
+            target: targetPiece,
+            to: coachContext.to?.toUpperCase(),
+            lesson: activeTitle
+        });
+    } else if (position?.kind == "move") {
+        coachText = tp("coachDynamic.position", {
+            side: turnLabel,
+            piece: movingPiece,
+            from: coachContext.from?.toUpperCase(),
+            lesson: activeTitle
+        });
+    } else {
+        coachText = tp("coachDynamic.choice", {
+            side: turnLabel,
+            lesson: activeTitle
+        });
+    }
 
     return <main
         className={`${styles.shellV4} ${styles.sessionPage} ${polish.sessionAtmosphere}`}
@@ -752,20 +822,24 @@ function LessonsApp() {
 
         <div className={`${styles.sessionStage} ${polish.sessionStageRich}`}>
             {!sessionComplete && position && <aside className={styles.taskRailV4}>
-                <div className={`${styles.taskCardV4} ${polish.taskCardRich}`}>
+                <div className={`${styles.taskCardV4} ${polish.taskCardRich} ${interactive.taskCard}`}>
                     <div className={polish.taskTopline}>
                         <span className={styles.challengeEyebrow}>{t("lesson.yourTurn")}</span>
                         <span className={polish.turnBadge} data-turn={turn}>
                             <span aria-hidden="true">{turn == "white" ? "♙" : "♟"}</span>
-                            {tp(`choices.${turn}`)}
+                            {turnLabel}
                         </span>
                     </div>
                     <span className={polish.levelChip}>{tc(activeLevel.titleKey)}</span>
                     <h2>{activeTitle}</h2>
-                    <p className={styles.promptText}>{tp(promptKey, {
-                        lesson: activeTitle,
-                        square: boardTarget
-                    })}</p>
+
+                    <div className={`${styles.positionMeta} ${interactive.positionMeta}`}>
+                        <span>{tp("positionProgress", {
+                            current: positionIndex + 1,
+                            total: practiceLesson.positions.length
+                        })}</span>
+                        <span>{tp("positions", { count: practiceLesson.positions.length })}</span>
+                    </div>
 
                     {position.kind == "move" && position.revealTarget && <div className={styles.moveTarget}>
                         <span>{position.expected.from}</span>
@@ -791,13 +865,8 @@ function LessonsApp() {
                         </button>)}
                     </div>}
 
-                    <div className={styles.positionMeta}>
-                        <span>{tp("positions", { count: practiceLesson.positions.length })}</span>
-                        <span>{positionIndex + 1}/{practiceLesson.positions.length}</span>
-                    </div>
-
                     {result && <div
-                        className={styles.feedbackV4}
+                        className={`${styles.feedbackV4} ${interactive.feedback}`}
                         data-result={result == "success" ? "success" : "error"}
                         role="status"
                     >
@@ -813,24 +882,15 @@ function LessonsApp() {
                         </span>
                     </div>}
 
-                    <div className={styles.taskActions}>
+                    <div className={`${styles.taskActions} ${interactive.taskActions}`}>
                         <button
                             type="button"
                             className={styles.secondaryButton}
                             onClick={() => setHintVisible(value => !value)}
+                            disabled={result == "success"}
                         >
                             {t("actions.hint")}
                         </button>
-
-                        {result == "success" && <button
-                            type="button"
-                            className={styles.primaryButton}
-                            onClick={advancePosition}
-                        >
-                            {positionIndex + 1 < practiceLesson.positions.length
-                                ? t("actions.next")
-                                : tp("completeLesson")}
-                        </button>}
                     </div>
                 </div>
             </aside>}
@@ -893,7 +953,7 @@ function LessonsApp() {
                             className={styles.coachPortraitV4}
                         />
                     </button>
-                    <div className={styles.coachBubbleV4}>
+                    <div className={`${styles.coachBubbleV4} ${interactive.coachBubble}`}>
                         <strong>{coach.name}</strong>
                         <p>{coachText}</p>
                         <small>{t("coach.clickToChange")}</small>

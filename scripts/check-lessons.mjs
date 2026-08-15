@@ -17,6 +17,10 @@ function fail(message) {
     throw new Error(`[Lessons] ${message}`);
 }
 
+function pieceCount(board) {
+    return board.board().flat().filter(Boolean).length;
+}
+
 try {
     const compile = spawnSync(process.execPath, [
         tscPath,
@@ -45,6 +49,7 @@ try {
 
     const ids = new Set();
     let totalPositions = 0;
+    let contextualPositions = 0;
 
     for (const lesson of curriculum.curriculumLessons) {
         if (ids.has(lesson.id)) fail(`Duplicate lesson id: ${lesson.id}`);
@@ -73,6 +78,23 @@ try {
                 board = new Chess(position.fen);
             } catch (error) {
                 fail(`${lesson.id}/${position.id} has invalid FEN: ${String(error)}`);
+            }
+
+            if (
+                position.kind === "move"
+                && practice.lessonNeedsGameContext?.(lesson.id, position.id)
+            ) {
+                contextualPositions += 1;
+                if (pieceCount(board) < 10) {
+                    fail(
+                        `${lesson.id}/${position.id} is too sparse for a game-context exercise `
+                        + `(${pieceCount(board)} pieces).`
+                    );
+                }
+            }
+
+            if (lesson.id === "first-contact.escape-check" && !board.isCheck()) {
+                fail(`${lesson.id}/${position.id} must start with the side to move in check.`);
             }
 
             if (position.kind === "move") {
@@ -113,7 +135,7 @@ try {
                 fen: position.fen,
                 kind: position.kind,
                 expected: position.kind === "move" ? position.expected : undefined,
-                acceptedSquares: position.kind === "select" ? position.acceptedSquares : undefined,
+                accepted: position.kind === "move" ? position.accepted : undefined,
                 correctChoice: position.kind === "choice" ? position.correctChoice : undefined
             });
 
@@ -130,8 +152,9 @@ try {
     }
 
     console.log(
-        `Lessons audit passed: ${ids.size} lessons, ${totalPositions} unique practice positions, `
-        + "move-first board exercises, valid FENs and legal expected moves."
+        `Lessons audit passed: ${ids.size} lessons, ${totalPositions} unique positions, `
+        + `${contextualPositions} realistic move positions, move-first board exercises, valid FENs `
+        + "and legal expected moves."
     );
 } finally {
     fs.rmSync(tempRoot, { recursive: true, force: true });
