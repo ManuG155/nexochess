@@ -1,2 +1,2 @@
 export * from "./lessonPracticeBase";
-export { buildPracticeLesson } from "./lessonPracticeV11";
+export { buildPracticeLesson } from "./lessonPracticeV12";
