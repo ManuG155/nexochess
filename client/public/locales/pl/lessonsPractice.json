@@ -1,38 +1,9 @@
 {
-  "positions": "{{count}} pozycji",
-  "positionProgress": "Pozycja {{current}} z {{total}}",
-  "prompts": {
-    "moveTarget": "Wykonaj wskazany ruch.",
-    "findMove": "Znajdź ruch pokazujący {{lesson}}.",
-    "selectConcept": "Wybierz bierkę lub pole, które najlepiej przedstawia {{lesson}}.",
-    "selectMover": "Wybierz bierkę strony, która jest na ruchu.",
-    "selectTarget": "Kliknij zaznaczone pole.",
-    "boardSquare": "Przesuń bierkę na {{square}}. Linie są oznaczone od a do h, a rzędy od 1 do 8.",
-    "choose": "Wybierz poprawną odpowiedź dla tej pozycji."
-  },
-  "coach": "{{lesson}} · pozycja {{current}} z {{total}}. Spójrz na szachownicę i rozwiąż zadanie.",
-  "coachBoard": "Zorientuj się na szachownicy i przesuń bierkę na {{square}}, korzystając z linii i rzędu.",
-  "pieceNames": {"piece":"bierka","p":"pion","n":"skoczek","b":"goniec","r":"wieża","q":"hetman","k":"król"},
-  "coachDynamic": {
-    "check": "Ruch mają {{side}}, a ich król jest szachowany: {{attacker}} na {{square}} go atakuje. Znajdź najczystszy sposób wyjścia z szacha.",
-    "capture": "Ruch mają {{side}}. {{piece}} na {{from}} może zadziałać na {{target}} na {{to}}. Znajdź ruch, który realizuje {{lesson}} w tej pozycji.",
-    "position": "Ruch mają {{side}}. Zacznij od {{piece}} na {{from}} i znajdź ruch, który realizuje {{lesson}} w tej pozycji.",
-    "choice": "Ruch mają {{side}}. Przeczytaj całą pozycję, zanim odpowiesz w temacie {{lesson}}.",
-    "hintCheck": "Podpowiedź: prześledź linię szacha od {{attacker}} na {{square}} do swojego króla. Możesz odejść królem, zbić szachującą bierkę albo zasłonić linię, jeśli pozycja na to pozwala.",
-    "hintMove": "Podpowiedź: zacznij od {{piece}} na {{from}} i zastanów się, co zmieni się po uaktywnieniu tej bierki. Celem jest {{lesson}}.",
-    "hintChoice": "Podpowiedź: porównaj bezpieczeństwo królów, legalne ruchy i bezpośrednie groźby, zanim odpowiesz w temacie {{lesson}}.",
-    "success1": "Świetna wizja. Dokładnie tego ruchu wymagała pozycja.",
-    "success2": "Bardzo dobrze. Poprawnie odczytałeś pozycję i znalazłeś kluczową ideę.",
-    "success3": "Dobrze zauważone. Ten ruch czysto rozwiązuje problem.",
-    "success4": "Idealnie. Znalazłeś poprawną odpowiedź, nie tracąc z oczu całej pozycji.",
-    "error": "Ten ruch jest legalny, ale tutaj nie jest poprawnym rozwiązaniem. Przeczytaj pozycję jeszcze raz i spróbuj innego pomysłu.",
-    "illegal": "Ten ruch nie jest tutaj legalny. Wybierz ponownie bierkę i sprawdź dostępne pola."
-  },
-  "correct": "Poprawny ruch.",
-  "illegal": "Ten ruch nie jest tutaj legalny.",
-  "tryAgain": "To nie jest ruch, którego wymaga ta pozycja.",
-  "completeLesson": "Ukończ lekcję",
-  "completed": "{{lesson}} ukończona",
-  "completedBody": "Rozwiązałeś wszystkie pozycje. Następna lekcja jest już dostępna.",
-  "choices": {"yes":"Tak","no":"Nie","white":"Białe","black":"Czarne","one":"1","three":"3","five":"5","nine":"9","draw":"Remis","stalemate":"Pat","checkmate":"Mat","continue":"Kontynuuj","resign":"Poddaj się","offerDraw":"Zaproponuj remis"}
+  "positions":"{{count}} pozycji","positionProgress":"Pozycja {{current}} z {{total}}",
+  "prompts":{"moveTarget":"Wykonaj wskazany ruch.","findMove":"Znajdź ruch pokazujący {{lesson}}.","selectConcept":"Wybierz bierkę lub pole, które najlepiej przedstawia {{lesson}}.","selectMover":"Wybierz bierkę strony, która jest na ruchu.","selectTarget":"Kliknij zaznaczone pole.","boardSquare":"Przesuń bierkę na {{square}}. Linie są oznaczone od a do h, a rzędy od 1 do 8.","choose":"Wybierz poprawną odpowiedź dla tej pozycji."},
+  "coach":"{{lesson}} · pozycja {{current}} z {{total}}. Spójrz na szachownicę i rozwiąż zadanie.","coachBoard":"Zorientuj się na szachownicy i przesuń bierkę na {{square}}, korzystając z linii i rzędu.",
+  "pieceNames":{"piece":"bierka","p":"pion","n":"skoczek","b":"goniec","r":"wieża","q":"hetman","k":"król"},
+  "coachDynamic":{"check":"Ruch mają {{side}}, a ich król jest szachowany: {{attacker}} na {{square}} go atakuje. Znajdź najczystszy sposób wyjścia z szacha.","capture":"Ruch mają {{side}}. Wokół {{target}} na {{to}} jest konkretne napięcie. Znajdź sposób, by je wykorzystać do zastosowania {{lesson}} bez pośpiechu.","position":"Ruch mają {{side}}. Najpierw przeczytaj całą pozycję i znajdź konkretną okazję do zastosowania {{lesson}}.","choice":"Ruch mają {{side}}. Przeczytaj całą pozycję, zanim odpowiesz w temacie {{lesson}}.","hintCheck":"Podpowiedź: prześledź linię szacha od {{attacker}} na {{square}} do swojego króla. Możesz odejść królem, zbić szachującą bierkę albo zasłonić linię, jeśli pozycja na to pozwala.","hintMove":"Podpowiedź: zacznij od {{piece}} na {{from}} i zastanów się, co zmieni się po uaktywnieniu tej bierki. Celem jest {{lesson}}.","hintChoice":"Podpowiedź: porównaj bezpieczeństwo królów, legalne ruchy i bezpośrednie groźby, zanim odpowiesz w temacie {{lesson}}.","success1":"Świetna wizja. Dokładnie tego ruchu wymagała pozycja.","success2":"Bardzo dobrze. Poprawnie odczytałeś pozycję i znalazłeś kluczową ideę.","success3":"Dobrze zauważone. Ten ruch czysto rozwiązuje problem.","success4":"Idealnie. Znalazłeś poprawną odpowiedź, nie tracąc z oczu całej pozycji.","error":"Ten ruch jest legalny, ale tutaj nie jest poprawnym rozwiązaniem. Przeczytaj pozycję jeszcze raz i spróbuj innego pomysłu.","illegal":"Ten ruch nie jest tutaj legalny. Wybierz ponownie bierkę i sprawdź dostępne pola."},
+  "correct":"Poprawny ruch.","illegal":"Ten ruch nie jest tutaj legalny.","tryAgain":"To nie jest ruch, którego wymaga ta pozycja.","completeLesson":"Ukończ lekcję","completed":"{{lesson}} ukończona","completedBody":"Rozwiązałeś wszystkie pozycje. Następna lekcja jest już dostępna.",
+  "choices":{"yes":"Tak","no":"Nie","white":"Białe","black":"Czarne","one":"1","three":"3","five":"5","nine":"9","draw":"Remis","stalemate":"Pat","checkmate":"Mat","continue":"Kontynuuj","resign":"Poddaj się","offerDraw":"Zaproponuj remis"}
 }
