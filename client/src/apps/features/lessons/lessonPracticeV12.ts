@@ -32,6 +32,17 @@ const removeDefenderMoves: MovePractice[] = [
     { id: "remove-defender-rook-e7", kind: "move", fen: "k3q3/4r3/8/8/4R3/8/4Q3/7K w - - 0 1", prompt: "findMove", expected: { from: "e4", to: "e7" } }
 ];
 
+const interferenceMoves: MovePractice[] = [
+    { id: "interference-rank-e8", kind: "move", fen: "r6q/7k/2B5/8/8/8/8/1K6 w - - 0 1", prompt: "findMove", expected: { from: "c6", to: "e8" } },
+    { id: "interference-rank-d8", kind: "move", fen: "q6r/7k/5B2/8/8/8/8/1K6 w - - 0 1", prompt: "findMove", expected: { from: "f6", to: "d8" } },
+    { id: "interference-rank-e5", kind: "move", fen: "7k/8/8/r6q/8/2B5/8/1K6 w - - 0 1", prompt: "findMove", expected: { from: "c3", to: "e5" } },
+    { id: "interference-rank-d4", kind: "move", fen: "7k/8/8/8/q6r/8/5B2/1K6 w - - 0 1", prompt: "findMove", expected: { from: "f2", to: "d4" } },
+    { id: "interference-file-d3", kind: "move", fen: "3r3k/8/8/1B6/8/8/K7/3q4 w - - 0 1", prompt: "findMove", expected: { from: "b5", to: "d3" } },
+    { id: "interference-file-e2", kind: "move", fen: "4r2k/8/8/8/2B5/8/8/K3q3 w - - 0 1", prompt: "findMove", expected: { from: "c4", to: "e2" } },
+    { id: "interference-rank-f6", kind: "move", fen: "7k/8/r6q/8/4B3/8/8/1K6 w - - 0 1", prompt: "findMove", expected: { from: "e4", to: "f5" } },
+    { id: "interference-rank-c3", kind: "move", fen: "7k/8/8/8/8/q6r/1B6/1K6 w - - 0 1", prompt: "findMove", expected: { from: "b2", to: "c3" } }
+];
+
 export function buildPracticeLesson(lesson: CurriculumLesson): PracticeLesson {
     if (lesson.id == "first-contact.king-safety-rule") {
         return { lessonId: lesson.id, positions: kingSafetyMoves.slice(0, lesson.practiceCount) };
@@ -41,6 +52,9 @@ export function buildPracticeLesson(lesson: CurriculumLesson): PracticeLesson {
     }
     if (lesson.id == "intermediate.remove-defender") {
         return { lessonId: lesson.id, positions: removeDefenderMoves.slice(0, lesson.practiceCount) };
+    }
+    if (lesson.id == "intermediate.interference") {
+        return { lessonId: lesson.id, positions: interferenceMoves.slice(0, lesson.practiceCount) };
     }
     return buildMoveFirstPracticeLesson(lesson);
 }
