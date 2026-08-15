@@ -14,9 +14,9 @@ import {
 } from "./routing";
 
 const namespaces = [
-    "common", "academy", "lessons", "puzzles", "repertoire", "repertoireCourse",
-    "analysis", "settings", "otherPages", "helpCenter", "coach", "legal",
-    "guides"
+    "common", "academy", "lessons", "lessonsCatalog", "puzzles", "repertoire",
+    "repertoireCourse", "analysis", "settings", "otherPages", "helpCenter",
+    "coach", "legal", "guides"
 ] as const;
 
 function getBrowserLanguages(): string[] {
