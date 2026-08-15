@@ -58,7 +58,7 @@ const threatMoves: MovePractice[] = [
     {
         id: "threat-knight-queen-h7",
         kind: "move",
-        fen: "k7/7q/8/8/4N3/8/8/7K w - - 0 1",
+        fen: "k7/7q/8/8/4N3/8/8/K7 w - - 0 1",
         prompt: "findMove",
         expected: { from: "e4", to: "f6" }
     },
