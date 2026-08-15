@@ -1,4 +1,4 @@
-export type CurriculumTone = "ice" | "rose" | "copper" | "jade";
+export type CurriculumTone = "ice" | "indigo" | "copper" | "jade";
 
 export interface CurriculumLesson {
     id: string;
@@ -60,7 +60,7 @@ export const curriculumLevels: CurriculumLevel[] = [
     },
     {
         id: "beginner",
-        tone: "rose",
+        tone: "indigo",
         kickerKey: "levels.beginner.kicker",
         titleKey: "levels.beginner.title",
         descriptionKey: "levels.beginner.description",
