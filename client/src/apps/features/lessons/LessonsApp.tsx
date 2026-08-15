@@ -28,13 +28,8 @@ import {
     setCurrentLesson,
     unlockLessonsThrough
 } from "./progress";
-import {
-    buildPracticeLesson
-} from "./lessonPractice";
-import type {
-    PracticeChoice,
-    PracticePosition
-} from "./lessonPractice";
+import { buildPracticeLesson } from "./lessonPractice";
+import type { PracticeChoice, PracticePosition } from "./lessonPractice";
 import LessonLandmark from "./LessonLandmarks";
 import type { LandmarkVariant } from "./LessonLandmarks";
 
@@ -44,7 +39,6 @@ type View = "path" | "lesson";
 type PathNodeState = "complete" | "current" | "available" | "locked";
 type SessionResult = "success" | "error" | "illegal" | null;
 type CurriculumLessonEntry = (typeof curriculumLessons)[number];
-
 type BoardSquareStyle = Record<string, string | number>;
 
 interface LessonBoardSquareProps {
@@ -214,10 +208,7 @@ function LessonBoard({
                 : [])
         : [];
 
-    return <div
-        className={styles.boardShellV4}
-        data-coordinates={coordinates}
-    >
+    return <div className={styles.boardShellV4} data-coordinates={coordinates}>
         {outside && <div className={styles.rankCoordinatesV4} aria-hidden="true">
             {RANK_COORDINATES.map(rank => <span key={rank}>{rank}</span>)}
         </div>}
@@ -255,6 +246,7 @@ function LessonBoard({
 function LessonsApp() {
     const { t } = useTranslation("lessons");
     const { t: tc, i18n } = useTranslation("lessonsCatalog");
+    const { t: tp } = useTranslation("lessonsPractice");
     const settings = useSettingsStore(state => state.settings);
     const setSettings = useSettingsStore(state => state.setSettings);
 
@@ -604,10 +596,7 @@ function LessonsApp() {
                                     className={classNames.join(" ")}
                                     data-state={state}
                                     data-side={x > 54 ? "left" : "right"}
-                                    style={{
-                                        left: `${x}%`,
-                                        top: `${nodeY(index)}px`
-                                    }}
+                                    style={{ left: `${x}%`, top: `${nodeY(index)}px` }}
                                 >
                                     <button
                                         type="button"
@@ -624,7 +613,7 @@ function LessonsApp() {
                                     </button>
                                     <div className={styles.nodeCopyV4}>
                                         <strong>{titleFor(entry)}</strong>
-                                        <small>{t("practice.positions", { count: lesson.practiceCount })}</small>
+                                        <small>{tp("positions", { count: lesson.practiceCount })}</small>
                                     </div>
                                 </div>;
                             })}
@@ -667,10 +656,8 @@ function LessonsApp() {
         </main>;
     }
 
-    const promptKey = position
-        ? `practice.prompts.${position.prompt}`
-        : "practice.prompts.findMove";
-    const coachText = t("practice.coach", {
+    const promptKey = position ? `prompts.${position.prompt}` : "prompts.findMove";
+    const coachText = tp("coach", {
         lesson: activeTitle,
         current: Math.min(positionIndex + 1, practiceLesson.positions.length),
         total: practiceLesson.positions.length
@@ -696,7 +683,7 @@ function LessonsApp() {
             </div>
 
             <div className={styles.sessionProgressV4}>
-                <strong>{t("practice.positionProgress", {
+                <strong>{tp("positionProgress", {
                     current: Math.min(positionIndex + 1, practiceLesson.positions.length),
                     total: practiceLesson.positions.length
                 })}</strong>
@@ -711,7 +698,7 @@ function LessonsApp() {
                 <div className={styles.taskCardV4}>
                     <span className={styles.challengeEyebrow}>{t("lesson.yourTurn")}</span>
                     <h2>{activeTitle}</h2>
-                    <p className={styles.promptText}>{t(promptKey, { lesson: activeTitle })}</p>
+                    <p className={styles.promptText}>{tp(promptKey, { lesson: activeTitle })}</p>
 
                     {position.kind == "move" && position.revealTarget && <div className={styles.moveTarget}>
                         <span>{position.expected.from}</span>
@@ -727,12 +714,12 @@ function LessonsApp() {
                             onClick={() => answerChoice(choice)}
                             disabled={result == "success"}
                         >
-                            {t(`practice.choices.${choice}`)}
+                            {tp(`choices.${choice}`)}
                         </button>)}
                     </div>}
 
                     <div className={styles.positionMeta}>
-                        <span>{t("practice.positions", { count: practiceLesson.positions.length })}</span>
+                        <span>{tp("positions", { count: practiceLesson.positions.length })}</span>
                         <span>{positionIndex + 1}/{practiceLesson.positions.length}</span>
                     </div>
 
@@ -746,10 +733,10 @@ function LessonsApp() {
                         </span>
                         <span>
                             {result == "success"
-                                ? t("practice.correct")
+                                ? tp("correct")
                                 : result == "illegal"
-                                    ? t("practice.illegal")
-                                    : t("practice.tryAgain")}
+                                    ? tp("illegal")
+                                    : tp("tryAgain")}
                         </span>
                     </div>}
 
@@ -769,7 +756,7 @@ function LessonsApp() {
                         >
                             {positionIndex + 1 < practiceLesson.positions.length
                                 ? t("actions.next")
-                                : t("practice.completeLesson")}
+                                : tp("completeLesson")}
                         </button>}
                     </div>
                 </div>
@@ -803,8 +790,8 @@ function LessonsApp() {
                     : <section className={styles.completionStage}>
                         <span className={styles.completionMark} aria-hidden="true">✓</span>
                         <span className={styles.completionEyebrow}>{t("lesson.completeKicker")}</span>
-                        <h2>{t("practice.completed", { lesson: activeTitle })}</h2>
-                        <p>{t("practice.completedBody")}</p>
+                        <h2>{tp("completed", { lesson: activeTitle })}</h2>
+                        <p>{tp("completedBody")}</p>
                         <button
                             type="button"
                             className={styles.primaryButton}
