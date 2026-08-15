@@ -1,0 +1,35 @@
+{
+  "positions": "{{count}} positions",
+  "positionProgress": "Position {{current}} of {{total}}",
+  "prompts": {
+    "moveTarget": "Reproduce the indicated move.",
+    "findMove": "Find the move that demonstrates {{lesson}}.",
+    "selectConcept": "Select the piece or square that best represents {{lesson}}.",
+    "selectMover": "Select a piece belonging to the side to move.",
+    "selectTarget": "Click the marked square.",
+    "choose": "Choose the correct answer for this position."
+  },
+  "coach": "{{lesson}} · position {{current}} of {{total}}. Read the board and solve it.",
+  "correct": "Correct. Continue to the next position.",
+  "illegal": "That move is not legal in this position.",
+  "tryAgain": "That is not the idea of this exercise. Try again or use a hint.",
+  "completeLesson": "Complete lesson",
+  "completed": "{{lesson}} completed",
+  "completedBody": "You solved every position. The next lesson is now available.",
+  "choices": {
+    "yes": "Yes",
+    "no": "No",
+    "white": "White",
+    "black": "Black",
+    "one": "1",
+    "three": "3",
+    "five": "5",
+    "nine": "9",
+    "draw": "Draw",
+    "stalemate": "Stalemate",
+    "checkmate": "Checkmate",
+    "continue": "Continue",
+    "resign": "Resign",
+    "offerDraw": "Offer a draw"
+  }
+}
