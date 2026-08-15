@@ -34,6 +34,7 @@ import LessonLandmark from "./LessonLandmarks";
 import type { LandmarkVariant } from "./LessonLandmarks";
 
 import * as styles from "./lessonsV4.module.css";
+import * as polish from "./lessonsPolish.module.css";
 
 type View = "path" | "lesson";
 type PathNodeState = "complete" | "current" | "available" | "locked";
@@ -69,9 +70,9 @@ LessonBoardSquare.displayName = "LessonBoardSquare";
 const RANK_COORDINATES = ["8", "7", "6", "5", "4", "3", "2", "1"];
 const FILE_COORDINATES = ["a", "b", "c", "d", "e", "f", "g", "h"];
 const PATH_WIDTH = 880;
-const PATH_HEIGHT = 2240;
-const NODE_Y_START = 170;
-const NODE_Y_STEP = 102;
+const PATH_HEIGHT = 2960;
+const NODE_Y_START = 190;
+const NODE_Y_STEP = 138;
 const NODE_X = [
     49, 40, 32, 34, 45,
     58, 67, 64, 53, 40,
@@ -177,8 +178,7 @@ function LessonBoard({
         }
     }
 
-    const shouldRevealFocus = hintVisible || position.prompt == "selectTarget";
-    if (shouldRevealFocus) {
+    if (hintVisible) {
         const hintSquares = position.focusSquares
             || (position.kind == "move"
                 ? [position.expected.from, position.expected.to]
@@ -510,7 +510,7 @@ function LessonsApp() {
         : 0;
 
     if (view == "path") {
-        return <main className={`${styles.shellV4} ${styles.pathPage}`} data-tone="ice">
+        return <main className={`${styles.shellV4} ${styles.pathPage} ${polish.pathShell}`} data-tone="ice">
             <section className={styles.pathHeroV4}>
                 <div className={styles.heroCopyV4}>
                     <span>{t("page.eyebrow")}</span>
@@ -533,10 +533,14 @@ function LessonsApp() {
 
                     return <section
                         key={level.id}
-                        className={styles.levelSection}
+                        className={`${styles.levelSection} ${polish.levelAtmosphere}`}
                         data-tone={level.tone}
                     >
-                        <header className={styles.levelHeaderV4}>
+                        <div className={polish.environmentLayer} aria-hidden="true">
+                            <span/><span/><span/>
+                        </div>
+
+                        <header className={`${styles.levelHeaderV4} ${polish.levelHeaderLarge}`}>
                             <div>
                                 <span>{tc(level.kickerKey)}</span>
                                 <h2>{tc(level.titleKey)}</h2>
@@ -545,7 +549,7 @@ function LessonsApp() {
                             <strong>{tc("levelLessonCount", { count: level.lessons.length })}</strong>
                         </header>
 
-                        <div className={styles.pathStage}>
+                        <div className={`${styles.pathStage} ${polish.pathStageTall}`}>
                             <svg
                                 className={styles.pathRailSvg}
                                 viewBox={`0 0 ${PATH_WIDTH} ${PATH_HEIGHT}`}
@@ -559,7 +563,7 @@ function LessonsApp() {
 
                             {[0, 1, 2, 3].map(slot => <div
                                 key={slot}
-                                className={styles.landmarkSlot}
+                                className={`${styles.landmarkSlot} ${polish.landmarkSlotSpread}`}
                                 data-slot={slot}
                                 aria-hidden="true"
                             >
@@ -586,7 +590,7 @@ function LessonsApp() {
                                             ? "available"
                                             : "locked";
                                 const x = NODE_X[index % NODE_X.length];
-                                const classNames = [styles.pathNodeWrap];
+                                const classNames = [styles.pathNodeWrap, polish.pathNodeSafe];
                                 if (recentlyUnlockedId == lesson.id) classNames.push(styles.unlockPulse);
                                 if (recentlyCompletedId == lesson.id) classNames.push(styles.completePulse);
 
@@ -607,13 +611,12 @@ function LessonsApp() {
                                         <span className={styles.nodeSymbolV4} aria-hidden="true">
                                             {complete ? "✓" : lesson.symbol}
                                         </span>
-                                        <span className={styles.nodeNumberV4} aria-hidden="true">
+                                        <span className={`${styles.nodeNumberV4} ${polish.nodeNumberSafe}`} aria-hidden="true">
                                             {String(curriculumLessons.findIndex(item => item.id == lesson.id) + 1).padStart(2, "0")}
                                         </span>
                                     </button>
-                                    <div className={styles.nodeCopyV4}>
+                                    <div className={`${styles.nodeCopyV4} ${polish.pathNodeCopy}`}>
                                         <strong>{titleFor(entry)}</strong>
-                                        <small>{tp("positions", { count: lesson.practiceCount })}</small>
                                     </div>
                                 </div>;
                             })}
@@ -656,15 +659,27 @@ function LessonsApp() {
         </main>;
     }
 
-    const promptKey = position ? `prompts.${position.prompt}` : "prompts.findMove";
-    const coachText = tp("coach", {
-        lesson: activeTitle,
-        current: Math.min(positionIndex + 1, practiceLesson.positions.length),
-        total: practiceLesson.positions.length
-    });
+    const isBoardTour = activeLesson.id == "first-contact.board" && position?.kind == "select";
+    const boardTarget = isBoardTour ? position.acceptedSquares[0]?.toUpperCase() : undefined;
+    const promptKey = isBoardTour
+        ? "prompts.boardSquare"
+        : position
+            ? `prompts.${position.prompt}`
+            : "prompts.findMove";
+    const coachText = isBoardTour
+        ? tp("coachBoard", {
+            square: boardTarget,
+            current: Math.min(positionIndex + 1, practiceLesson.positions.length),
+            total: practiceLesson.positions.length
+        })
+        : tp("coach", {
+            lesson: activeTitle,
+            current: Math.min(positionIndex + 1, practiceLesson.positions.length),
+            total: practiceLesson.positions.length
+        });
 
     return <main
-        className={`${styles.shellV4} ${styles.sessionPage}`}
+        className={`${styles.shellV4} ${styles.sessionPage} ${polish.sessionAtmosphere}`}
         data-tone={activeLesson.tone}
     >
         <section className={styles.sessionHeaderV4}>
@@ -698,12 +713,19 @@ function LessonsApp() {
                 <div className={styles.taskCardV4}>
                     <span className={styles.challengeEyebrow}>{t("lesson.yourTurn")}</span>
                     <h2>{activeTitle}</h2>
-                    <p className={styles.promptText}>{tp(promptKey, { lesson: activeTitle })}</p>
+                    <p className={styles.promptText}>{tp(promptKey, {
+                        lesson: activeTitle,
+                        square: boardTarget
+                    })}</p>
 
                     {position.kind == "move" && position.revealTarget && <div className={styles.moveTarget}>
                         <span>{position.expected.from}</span>
                         <span aria-hidden="true">→</span>
                         <span>{position.expected.to}</span>
+                    </div>}
+
+                    {isBoardTour && boardTarget && <div className={styles.moveTarget}>
+                        <span>{boardTarget}</span>
                     </div>}
 
                     {position.kind == "choice" && <div className={styles.choiceGrid}>
@@ -803,7 +825,7 @@ function LessonsApp() {
             </section>
 
             {!sessionComplete && <aside className={styles.coachRailV4}>
-                {settings.coach.enabled && <div className={styles.coachCardV4}>
+                <div className={styles.coachCardV4}>
                     <button
                         type="button"
                         className={styles.coachPortraitButtonV4}
@@ -824,7 +846,7 @@ function LessonsApp() {
                         <p>{coachText}</p>
                         <small>{t("coach.clickToChange")}</small>
                     </div>
-                </div>}
+                </div>
             </aside>}
         </div>
 
