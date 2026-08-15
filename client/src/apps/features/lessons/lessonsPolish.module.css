@@ -315,15 +315,15 @@
 }
 
 /* CoachPortrait's image layers are absolutely positioned and require a real
- * height on their root. The shared component stays untouched; Lessons gives it
- * an explicit portrait stage here. */
+ * height on their root. The shared component renders that root as a span; keep
+ * the fix local to Lessons and size the actual span instead of a non-existent div. */
 .sessionAtmosphere aside:last-child > div > button:first-child {
     display: block;
     width: 100%;
     min-height: 258px;
 }
 
-.sessionAtmosphere aside:last-child > div > button:first-child > div {
+.sessionAtmosphere aside:last-child > div > button:first-child > span {
     display: block !important;
     width: 100% !important;
     height: 258px !important;
@@ -346,7 +346,7 @@
     }
 
     .sessionAtmosphere aside:last-child > div > button:first-child,
-    .sessionAtmosphere aside:last-child > div > button:first-child > div {
+    .sessionAtmosphere aside:last-child > div > button:first-child > span {
         min-height: 220px !important;
         height: 220px !important;
     }
