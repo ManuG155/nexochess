@@ -7,9 +7,11 @@
     "selectConcept": "Select the piece or square that best represents {{lesson}}.",
     "selectMover": "Select a piece belonging to the side to move.",
     "selectTarget": "Click the marked square.",
+    "boardSquare": "Find square {{square}}. Files run from a to h and ranks from 1 to 8.",
     "choose": "Choose the correct answer for this position."
   },
   "coach": "{{lesson}} · position {{current}} of {{total}}. Read the board and solve it.",
+  "coachBoard": "Start by orienting yourself on the board. Locate {{square}} using its file and rank.",
   "correct": "Correct. Continue to the next position.",
   "illegal": "That move is not legal in this position.",
   "tryAgain": "That is not the idea of this exercise. Try again or use a hint.",
