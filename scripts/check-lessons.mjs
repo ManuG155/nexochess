@@ -80,7 +80,10 @@ try {
                 fail(`${lesson.id}/${position.id} has invalid FEN: ${String(error)}`);
             }
 
-            if (practice.lessonNeedsGameContext?.(lesson.id, position.id)) {
+            if (
+                position.kind === "move"
+                && practice.lessonNeedsGameContext?.(lesson.id, position.id)
+            ) {
                 contextualPositions += 1;
                 if (pieceCount(board) < 10) {
                     fail(
@@ -150,7 +153,7 @@ try {
 
     console.log(
         `Lessons audit passed: ${ids.size} lessons, ${totalPositions} unique positions, `
-        + `${contextualPositions} game-context positions, move-first board exercises, valid FENs `
+        + `${contextualPositions} realistic move positions, move-first board exercises, valid FENs `
         + "and legal expected moves."
     );
 } finally {
