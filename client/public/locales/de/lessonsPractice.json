@@ -7,9 +7,11 @@
     "selectConcept": "Wähle die Figur oder das Feld, das {{lesson}} am besten zeigt.",
     "selectMover": "Wähle eine Figur der Seite, die am Zug ist.",
     "selectTarget": "Klicke auf das markierte Feld.",
+    "boardSquare": "Finde das Feld {{square}}. Die Linien gehen von a bis h und die Reihen von 1 bis 8.",
     "choose": "Wähle die richtige Antwort für diese Stellung."
   },
   "coach": "{{lesson}} · Stellung {{current}} von {{total}}. Lies das Brett und löse sie.",
+  "coachBoard": "Orientiere dich zuerst auf dem Brett. Finde {{square}} über Linie und Reihe.",
   "correct": "Richtig. Weiter zur nächsten Stellung.",
   "illegal": "Dieser Zug ist in dieser Stellung nicht legal.",
   "tryAgain": "Das ist nicht die Idee dieser Aufgabe. Versuch es erneut oder nutze einen Hinweis.",
