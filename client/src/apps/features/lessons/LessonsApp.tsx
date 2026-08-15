@@ -12,9 +12,7 @@ import {
 import { playBoardMoveSound } from "@/lib/boardSounds";
 import CoachPicker from "@analysis/components/AnalysisPanel/CoachPicker";
 import CoachPortrait from "@analysis/components/AnalysisPanel/CoachPortrait";
-import {
-    getCoachById
-} from "@analysis/lib/coach";
+import { getCoachById } from "@analysis/lib/coach";
 import type { CoachId } from "@analysis/lib/coach";
 
 import {
@@ -42,6 +40,7 @@ import type {
 } from "./lessonModel";
 
 import * as styles from "./lessons.module.css";
+import * as v3 from "./lessonsV3.module.css";
 
 type View = "path" | "lesson";
 type CurriculumLessonEntry = (typeof curriculumLessons)[number];
@@ -52,51 +51,141 @@ interface FeedbackState {
     key: string;
 }
 
+interface LessonBoardSquareProps {
+    children: React.ReactNode;
+    square: Square;
+    squareColor: "white" | "black";
+    style: Record<string, string | number>;
+}
+
+const LessonBoardSquare = React.forwardRef<
+    HTMLDivElement,
+    LessonBoardSquareProps
+>(({ children, style }, ref) => {
+    const brilliant = style["--nexo-lesson-brilliant"];
+    const squareStyle = { ...style };
+    delete squareStyle["--nexo-lesson-brilliant"];
+
+    return <div ref={ref} style={{ ...squareStyle, position: "relative" }}>
+        {brilliant && <>
+            <span className={v3.lessonSquareFeedback} aria-hidden="true"/>
+            <span className={v3.lessonBrilliantBadge} aria-hidden="true">!!</span>
+        </>}
+        {children}
+    </div>;
+});
+
+LessonBoardSquare.displayName = "LessonBoardSquare";
+
 const RANK_COORDINATES = ["8", "7", "6", "5", "4", "3", "2", "1"];
 const FILE_COORDINATES = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
+/*
+ * Organic route rather than a mechanical left/right alternation. The values
+ * describe a slow, asymmetric drift across the learning landscape.
+ */
+const TRAIL_X = [
+    50, 35, 25, 29, 43, 63, 77, 74, 59, 40,
+    26, 22, 34, 54, 73, 79, 68, 49, 31, 27
+];
+const TRAIL_STEP = 126;
+const TRAIL_TOP = 150;
+
 function isPositiveOutcome(outcome: LessonOutcome) {
     return outcome == "success" || outcome == "acceptedAlternative";
+}
+
+function buildTrailPath(count: number) {
+    const points = Array.from({ length: count }, (_, index) => ({
+        x: TRAIL_X[index % TRAIL_X.length] * 10,
+        y: TRAIL_TOP + index * TRAIL_STEP
+    }));
+
+    if (points.length == 0) return "";
+
+    let d = `M ${points[0].x} ${points[0].y}`;
+    for (let index = 1; index < points.length; index++) {
+        const previous = points[index - 1];
+        const current = points[index];
+        const midY = (previous.y + current.y) / 2;
+        d += ` C ${previous.x} ${midY}, ${current.x} ${midY}, ${current.x} ${current.y}`;
+    }
+    return d;
+}
+
+function LevelArtwork({ levelIndex }: { levelIndex: number }) {
+    const art = levelIndex == 0
+        ? ["observatory", "garden", "observatory"]
+        : levelIndex == 1
+            ? ["garden", "sanctum", "garden"]
+            : levelIndex == 2
+                ? ["forge", "observatory", "forge"]
+                : ["sanctum", "forge", "sanctum"];
+
+    return <div className={v3.levelArtwork} aria-hidden="true">
+        {art.map((kind, index) => <div
+            key={`${kind}-${index}`}
+            className={v3.artScene}
+            data-art={kind}
+        >
+            <span className={v3.artHalo}/>
+            <span className={v3.artCore}/>
+            <span className={v3.artSpire}/>
+            <span className={v3.artPedestal}/>
+        </div>)}
+    </div>;
 }
 
 function PathNode({
     label,
     symbol,
     number,
+    practiceCount,
+    brilliant,
     state,
-    onClick,
-    alternate = false
+    xPercent,
+    y,
+    justCompleted,
+    newlyUnlocked,
+    onClick
 }: {
     label: string;
     symbol: string;
     number: number;
+    practiceCount: number;
+    brilliant?: boolean;
     state: PathNodeState;
+    xPercent: number;
+    y: number;
+    justCompleted: boolean;
+    newlyUnlocked: boolean;
     onClick: () => void;
-    alternate?: boolean;
 }) {
     return <div
         id={`lesson-node-${number}`}
-        className={[
-            styles.pathNodeRow,
-            alternate ? styles.pathNodeAlternate : ""
-        ].filter(Boolean).join(" ")}
+        className={v3.journeyNode}
         data-state={state}
+        data-just-completed={justCompleted || undefined}
+        data-newly-unlocked={newlyUnlocked || undefined}
+        style={{
+            "--node-x": `${xPercent}%`,
+            "--node-y": `${y}px`
+        } as React.CSSProperties}
     >
         <button
             type="button"
-            className={styles.pathNode}
+            className={v3.journeyNodeButton}
             onClick={onClick}
             aria-label={`${number}. ${label}`}
         >
-            <span className={styles.nodeNumber}>{String(number).padStart(2, "0")}</span>
-            <span className={styles.nodeSymbol} aria-hidden="true">
+            <span className={v3.nodeNumberV3}>{String(number).padStart(2, "0")}</span>
+            <span className={v3.nodeSymbolV3} aria-hidden="true">
                 {state == "complete" ? "✓" : symbol}
             </span>
-            {state == "locked" && <span className={styles.nodeLock} aria-hidden="true">•</span>}
+            {brilliant && <span className={v3.brilliantMark} aria-hidden="true">!!</span>}
         </button>
-        <div className={styles.nodeCopy}>
-            <strong>{label}</strong>
-        </div>
+        <strong className={v3.nodeLabelV3}>{label}</strong>
+        <span className={v3.practiceBadge} aria-hidden="true">◫ {practiceCount}</span>
     </div>;
 }
 
@@ -111,6 +200,7 @@ function LessonBoard({
     coordinates,
     squareStyles,
     arrows,
+    brilliantSquare,
     onSquareClick,
     onPieceDrop,
     onPieceDragBegin,
@@ -126,15 +216,24 @@ function LessonBoard({
     coordinates: "inside" | "outside";
     squareStyles: NonNullable<React.ComponentProps<typeof Chessboard>["customSquareStyles"]>;
     arrows?: Array<[Square, Square]>;
+    brilliantSquare?: Square;
     onSquareClick: (square: string) => void;
     onPieceDrop: (from: string, to: string) => boolean;
     onPieceDragBegin: (source: string) => void;
     onPieceDragEnd: () => void;
 }) {
     const outside = coordinates == "outside";
+    const renderedStyles = { ...squareStyles };
+
+    if (brilliantSquare) {
+        renderedStyles[brilliantSquare] = {
+            ...(renderedStyles[brilliantSquare] || {}),
+            "--nexo-lesson-brilliant": "true"
+        } as React.CSSProperties;
+    }
 
     return <div
-        className={styles.boardShell}
+        className={`${styles.boardShell} ${v3.boardShellV3}`}
         data-coordinates={coordinates}
         data-selected={Boolean(selectedFrom)}
     >
@@ -142,7 +241,7 @@ function LessonBoard({
             {RANK_COORDINATES.map(rank => <span key={rank}>{rank}</span>)}
         </div>}
 
-        <div className={styles.boardFrame}>
+        <div className={`${styles.boardFrame} ${v3.boardFrameV3}`}>
             <Chessboard
                 id="nexochess-lessons-board"
                 position={fen}
@@ -152,9 +251,12 @@ function LessonBoard({
                 onSquareClick={onSquareClick}
                 arePiecesDraggable={stepKind == "move" && !resolved}
                 customPieces={pieces}
+                customSquare={LessonBoardSquare as unknown as NonNullable<
+                    React.ComponentProps<typeof Chessboard>["customSquare"]
+                >}
                 customDarkSquareStyle={{ backgroundColor: darkSquareColour }}
                 customLightSquareStyle={{ backgroundColor: lightSquareColour }}
-                customSquareStyles={squareStyles}
+                customSquareStyles={renderedStyles}
                 customArrows={arrows}
                 showBoardNotation={!outside}
                 snapToCursor
@@ -195,9 +297,16 @@ function LessonsApp() {
     const [jumpTarget, setJumpTarget] = useState<CurriculumLessonEntry | null>(null);
     const [plannedTarget, setPlannedTarget] = useState<CurriculumLessonEntry | null>(null);
     const [progress, setProgress] = useState(loadLessonsProgress);
+    const [justCompletedId, setJustCompletedId] = useState<string>();
+    const [newlyUnlockedId, setNewlyUnlockedId] = useState<string>();
+    const [brilliantSquare, setBrilliantSquare] = useState<Square>();
 
     const coach = getCoachById(settings.appearance.selectedCoach);
     const step = rookLesson.steps[stepIndex];
+    const activeCurriculumLesson = curriculumLessons.find(
+        item => item.id == rookLesson.id
+    );
+    const activeTone = activeCurriculumLesson?.tone || "ice";
     const resolved = feedback ? isPositiveOutcome(feedback.outcome) : false;
     const hints = step.hints || [];
     const activeHint: LessonHint | undefined = hintCount > 0
@@ -213,6 +322,7 @@ function LessonsApp() {
         setFeedback(null);
         setHintCount(0);
         setSelectedFrom(undefined);
+        setBrilliantSquare(undefined);
     }, [step.id]);
 
     useEffect(() => {
@@ -220,8 +330,15 @@ function LessonsApp() {
         window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     }, [view]);
 
-    function titleFor(lesson: CurriculumLessonEntry) {
-        return lessonTitles[lesson.titleIndex] || lesson.id;
+    function titleFor(item: CurriculumLessonEntry) {
+        if (item.titleIndex >= 0 && lessonTitles[item.titleIndex]) {
+            return lessonTitles[item.titleIndex];
+        }
+
+        const language = i18n.resolvedLanguage || i18n.language || "en";
+        return language.startsWith("es")
+            ? (item.titleEs || item.titleEn || item.id)
+            : (item.titleEn || item.titleEs || item.id);
     }
 
     function chooseCoach(id: CoachId) {
@@ -241,23 +358,24 @@ function LessonsApp() {
         setFeedback(null);
         setHintCount(0);
         setSelectedFrom(undefined);
+        setBrilliantSquare(undefined);
         setView("lesson");
     }
 
-    function openCurriculumLesson(lesson: CurriculumLessonEntry) {
-        if (!progress.unlockedLessonIds.includes(lesson.id)) {
-            setJumpTarget(lesson);
+    function openCurriculumLesson(item: CurriculumLessonEntry) {
+        if (!progress.unlockedLessonIds.includes(item.id)) {
+            setJumpTarget(item);
             return;
         }
 
-        setProgress(current => setCurrentLesson(current, lesson.id));
+        setProgress(current => setCurrentLesson(current, item.id));
 
-        if (lesson.playable && lesson.id == rookLesson.id) {
+        if (item.playable && item.id == rookLesson.id) {
             resetRookLesson();
             return;
         }
 
-        setPlannedTarget(lesson);
+        setPlannedTarget(item);
     }
 
     function confirmJump() {
@@ -265,7 +383,7 @@ function LessonsApp() {
 
         const next = unlockLessonsThrough(
             progress,
-            curriculumLessons.map(lesson => lesson.id),
+            curriculumLessons.map(item => item.id),
             jumpTarget.id
         );
         setProgress(next);
@@ -279,9 +397,7 @@ function LessonsApp() {
         }
 
         requestAnimationFrame(() => {
-            const number = curriculumLessons.findIndex(
-                lesson => lesson.id == target.id
-            ) + 1;
+            const number = curriculumLessons.findIndex(item => item.id == target.id) + 1;
             document
                 .getElementById(`lesson-node-${number}`)
                 ?.scrollIntoView({ block: "center", behavior: "smooth" });
@@ -289,10 +405,7 @@ function LessonsApp() {
     }
 
     function registerResult(result: AttemptResult) {
-        setFeedback({
-            outcome: result.outcome,
-            key: result.feedbackKey
-        });
+        setFeedback({ outcome: result.outcome, key: result.feedbackKey });
 
         if (isPositiveOutcome(result.outcome) && result.resultingFen) {
             setBoardFen(result.resultingFen);
@@ -308,6 +421,15 @@ function LessonsApp() {
         const result = evaluateMoveAttempt(step, from, to);
         registerResult(result);
         setSelectedFrom(undefined);
+
+        if (
+            isPositiveOutcome(result.outcome)
+            && activeCurriculumLesson?.brilliant
+        ) {
+            setBrilliantSquare(to);
+            window.setTimeout(() => setBrilliantSquare(undefined), 1350);
+        }
+
         return isPositiveOutcome(result.outcome);
     }
 
@@ -346,31 +468,26 @@ function LessonsApp() {
         if (step.kind != "multipleChoice" || resolved) return;
 
         if (optionId == step.correctOptionId) {
-            registerResult({
-                outcome: "success",
-                feedbackKey: step.successKey
-            });
+            registerResult({ outcome: "success", feedbackKey: step.successKey });
         } else {
-            registerResult({
-                outcome: "conceptualError",
-                feedbackKey: step.errorKey
-            });
+            registerResult({ outcome: "conceptualError", feedbackKey: step.errorKey });
         }
     }
 
     function advance() {
         if (step.kind == "completion") {
             setView("path");
+            const targetId = newlyUnlockedId || justCompletedId || progress.currentLessonId;
             requestAnimationFrame(() => {
+                const number = curriculumLessons.findIndex(item => item.id == targetId) + 1;
                 document
-                    .getElementById(`lesson-node-${Math.max(
-                        1,
-                        curriculumLessons.findIndex(
-                            lesson => lesson.id == progress.currentLessonId
-                        ) + 1
-                    )}`)
+                    .getElementById(`lesson-node-${Math.max(1, number)}`)
                     ?.scrollIntoView({ block: "center", behavior: "smooth" });
             });
+            window.setTimeout(() => {
+                setJustCompletedId(undefined);
+                setNewlyUnlockedId(undefined);
+            }, 1500);
             return;
         }
 
@@ -386,6 +503,8 @@ function LessonsApp() {
                 rookLesson.id,
                 nextCurriculumLesson?.id
             ));
+            setJustCompletedId(rookLesson.id);
+            setNewlyUnlockedId(nextCurriculumLesson?.id);
         }
 
         setStepIndex(nextIndex);
@@ -395,10 +514,7 @@ function LessonsApp() {
         React.ComponentProps<typeof Chessboard>["customSquareStyles"]
     > = {};
 
-    function mergeSquareStyle(
-        square: Square,
-        style: React.CSSProperties
-    ) {
+    function mergeSquareStyle(square: Square, style: React.CSSProperties) {
         squareStyles[square] = {
             ...(squareStyles[square] || {}),
             ...style
@@ -447,14 +563,14 @@ function LessonsApp() {
     );
 
     const completedCount = curriculumLessons.filter(
-        lesson => progress.completedLessonIds.includes(lesson.id)
+        item => progress.completedLessonIds.includes(item.id)
     ).length;
     const pathProgressPercent = Math.round(completedCount / TOTAL_LESSONS * 100);
 
     if (view == "path") {
         let lessonNumber = 0;
 
-        return <main className={`${styles.shell} ${styles.pathShell}`}>
+        return <main className={`${styles.shell} ${styles.pathShell} ${v3.pathShellV3}`}>
             <section className={styles.pathHero}>
                 <div className={styles.heroCopy}>
                     <span className={styles.eyebrow}>{t("page.eyebrow")}</span>
@@ -465,48 +581,54 @@ function LessonsApp() {
                 <div className={styles.heroProgress}>
                     <span>{t("path.progressLabel")}</span>
                     <strong>{completedCount} / {TOTAL_LESSONS}</strong>
-                    <div className={styles.progressTrack}>
+                    <div className={`${styles.progressTrack} ${v3.pathProgressV3}`}>
                         <i style={{ width: `${pathProgressPercent}%` }}/>
                     </div>
                 </div>
             </section>
 
-            <div className={styles.pathExperience}>
+            <div className={`${styles.pathExperience} ${v3.pathExperienceV3}`}>
                 <div className={styles.pathStack}>
-                    {curriculumLevels.map(level => (
-                        <section
+                    {curriculumLevels.map((level, levelIndex) => {
+                        const pathHeight = TRAIL_TOP + (level.lessons.length - 1) * TRAIL_STEP + 260;
+                        const pathD = buildTrailPath(level.lessons.length);
+
+                        return <section
                             key={level.id}
-                            className={styles.levelSection}
+                            className={`${styles.levelSection} ${v3.levelSectionV3}`}
                             data-tone={level.tone}
                         >
-                            <div className={styles.levelGlow} aria-hidden="true"/>
-                            <div className={styles.levelDecorations} aria-hidden="true">
-                                {level.decorations.map((symbol, index) => (
-                                    <span key={`${symbol}-${index}`}><i>{symbol}</i></span>
-                                ))}
-                            </div>
-
-                            <header className={styles.levelHeader}>
+                            <header className={`${styles.levelHeader} ${v3.levelHeaderV3}`}>
                                 <div>
                                     <span>{tc(level.kickerKey)}</span>
                                     <h2>{tc(level.titleKey)}</h2>
                                     <p>{tc(level.descriptionKey)}</p>
                                 </div>
-                                <strong>
-                                    {tc("levelLessonCount", {
-                                        count: level.lessons.length
-                                    })}
-                                </strong>
+                                <strong>{tc("levelLessonCount", { count: level.lessons.length })}</strong>
                             </header>
 
-                            <div className={styles.learningPath}>
-                                <div className={styles.pathRail} aria-hidden="true"/>
-                                {level.lessons.map((lesson, index) => {
+                            <div
+                                className={v3.journeyCanvas}
+                                style={{ height: `${pathHeight}px` }}
+                            >
+                                <svg
+                                    className={v3.journeyRail}
+                                    viewBox={`0 0 1000 ${pathHeight}`}
+                                    preserveAspectRatio="none"
+                                    aria-hidden="true"
+                                >
+                                    <path className={v3.journeyRailGlow} d={pathD}/>
+                                    <path className={v3.journeyRailLine} d={pathD}/>
+                                </svg>
+
+                                <LevelArtwork levelIndex={levelIndex}/>
+
+                                {level.lessons.map((lessonEntry, index) => {
                                     lessonNumber += 1;
                                     const number = lessonNumber;
-                                    const complete = progress.completedLessonIds.includes(lesson.id);
-                                    const unlocked = progress.unlockedLessonIds.includes(lesson.id);
-                                    const current = progress.currentLessonId == lesson.id;
+                                    const complete = progress.completedLessonIds.includes(lessonEntry.id);
+                                    const unlocked = progress.unlockedLessonIds.includes(lessonEntry.id);
+                                    const current = progress.currentLessonId == lessonEntry.id;
 
                                     const state: PathNodeState = complete
                                         ? "complete"
@@ -516,31 +638,34 @@ function LessonsApp() {
                                                 ? "available"
                                                 : "locked";
 
+                                    const item = {
+                                        ...lessonEntry,
+                                        levelId: level.id,
+                                        tone: level.tone
+                                    };
+
                                     return <PathNode
-                                        key={lesson.id}
-                                        label={titleFor({
-                                            ...lesson,
-                                            levelId: level.id,
-                                            tone: level.tone
-                                        })}
-                                        symbol={lesson.symbol}
+                                        key={lessonEntry.id}
+                                        label={titleFor(item)}
+                                        symbol={lessonEntry.symbol}
                                         number={number}
+                                        practiceCount={lessonEntry.practiceCount}
+                                        brilliant={lessonEntry.brilliant}
                                         state={state}
-                                        alternate={index % 2 == 1}
-                                        onClick={() => openCurriculumLesson({
-                                            ...lesson,
-                                            levelId: level.id,
-                                            tone: level.tone
-                                        })}
+                                        xPercent={TRAIL_X[index % TRAIL_X.length]}
+                                        y={TRAIL_TOP + index * TRAIL_STEP}
+                                        justCompleted={justCompletedId == lessonEntry.id}
+                                        newlyUnlocked={newlyUnlockedId == lessonEntry.id}
+                                        onClick={() => openCurriculumLesson(item)}
                                     />;
                                 })}
                             </div>
-                        </section>
-                    ))}
+                        </section>;
+                    })}
                 </div>
 
                 <aside className={styles.pathCoachRail}>
-                    {settings.coach.enabled && <div className={styles.coachCard}>
+                    {settings.coach.enabled && <div className={`${styles.coachCard} ${v3.coachCardV3}`}>
                         <button
                             type="button"
                             className={styles.coachPortraitButton}
@@ -553,10 +678,10 @@ function LessonsApp() {
                                 baseExpression="idle"
                                 speechText={t("coach.pathIntro")}
                                 animationsEnabled={settings.coach.animations}
-                                className={styles.coachPortrait}
+                                className={`${styles.coachPortrait} ${v3.coachPortraitV3}`}
                             />
                         </button>
-                        <div className={styles.speechBubble}>
+                        <div className={`${styles.speechBubble} ${v3.speechBubbleV3}`}>
                             <span>{coach.name}</span>
                             <p>{t("coach.pathIntro")}</p>
                             <small>{t("coach.clickToChange")}</small>
@@ -565,10 +690,7 @@ function LessonsApp() {
                 </aside>
             </div>
 
-            {jumpTarget && <div
-                className={styles.modalOverlay}
-                onClick={() => setJumpTarget(null)}
-            >
+            {jumpTarget && <div className={styles.modalOverlay} onClick={() => setJumpTarget(null)}>
                 <section
                     className={styles.pathDialog}
                     role="dialog"
@@ -581,20 +703,13 @@ function LessonsApp() {
                     <strong>{titleFor(jumpTarget)}</strong>
                     <p>{tc("jump.body")}</p>
                     <div className={styles.dialogActions}>
-                        <button type="button" onClick={() => setJumpTarget(null)}>
-                            {tc("cancel")}
-                        </button>
-                        <button type="button" data-primary="true" onClick={confirmJump}>
-                            {tc("jump.confirm")}
-                        </button>
+                        <button type="button" onClick={() => setJumpTarget(null)}>{tc("cancel")}</button>
+                        <button type="button" data-primary="true" onClick={confirmJump}>{tc("jump.confirm")}</button>
                     </div>
                 </section>
             </div>}
 
-            {plannedTarget && <div
-                className={styles.modalOverlay}
-                onClick={() => setPlannedTarget(null)}
-            >
+            {plannedTarget && <div className={styles.modalOverlay} onClick={() => setPlannedTarget(null)}>
                 <section
                     className={styles.pathDialog}
                     role="dialog"
@@ -606,13 +721,7 @@ function LessonsApp() {
                     <h2 id="lessons-planned-title">{titleFor(plannedTarget)}</h2>
                     <p>{tc("planned.body")}</p>
                     <div className={styles.dialogActions}>
-                        <button
-                            type="button"
-                            data-primary="true"
-                            onClick={() => setPlannedTarget(null)}
-                        >
-                            {tc("close")}
-                        </button>
+                        <button type="button" data-primary="true" onClick={() => setPlannedTarget(null)}>{tc("close")}</button>
                     </div>
                 </section>
             </div>}
@@ -625,18 +734,17 @@ function LessonsApp() {
         </main>;
     }
 
-    return <main className={`${styles.shell} ${styles.lessonShell}`}>
-        <section className={styles.lessonHeader}>
-            <button
-                type="button"
-                className={styles.backButton}
-                onClick={() => setView("path")}
-            >
+    return <main
+        className={`${styles.shell} ${styles.lessonShell} ${v3.lessonShellV3}`}
+        data-tone={activeTone}
+    >
+        <section className={`${styles.lessonHeader} ${v3.lessonHeaderV3}`}>
+            <button type="button" className={styles.backButton} onClick={() => setView("path")}>
                 <span aria-hidden="true">←</span>
                 {t("actions.back")}
             </button>
 
-            <div className={styles.lessonHeading}>
+            <div className={`${styles.lessonHeading} ${v3.lessonHeadingV3}`}>
                 <span>{t(rookLesson.moduleKey)}</span>
                 <h1>{t(rookLesson.titleKey)}</h1>
             </div>
@@ -646,15 +754,15 @@ function LessonsApp() {
                     current: Math.min(stepIndex + 1, rookLesson.steps.length),
                     total: rookLesson.steps.length
                 })}</strong>
-                <div className={styles.progressTrack}>
+                <div className={`${styles.progressTrack} ${v3.stepProgressV3}`}>
                     <i style={{ width: `${lessonProgressPercent}%` }}/>
                 </div>
             </div>
         </section>
 
-        <div className={styles.lessonViewport}>
-            <aside className={styles.taskRail}>
-                {step.kind != "completion" && <div className={styles.challengeCard}>
+        <div className={`${styles.lessonViewport} ${v3.lessonViewportV3}`}>
+            <aside className={`${styles.taskRail} ${v3.taskRailV3}`}>
+                {step.kind != "completion" && <div className={`${styles.challengeCard} ${v3.challengeCardV3}`}>
                     {step.kind == "message" && <p>{t(step.bodyKey)}</p>}
 
                     {step.kind == "move" && <>
@@ -690,9 +798,7 @@ function LessonsApp() {
                     {feedback && feedbackVisual && <div
                         className={styles.feedback}
                         data-tone={feedbackVisual.tone}
-                        style={{
-                            "--feedback-colour": feedbackVisual.colour
-                        } as React.CSSProperties}
+                        style={{ "--feedback-colour": feedbackVisual.colour } as React.CSSProperties}
                         role="status"
                     >
                         {feedbackVisual.icon
@@ -706,9 +812,7 @@ function LessonsApp() {
                             ? <button
                                 type="button"
                                 className={styles.hintButton}
-                                onClick={() => setHintCount(value => (
-                                    Math.min(value + 1, hints.length)
-                                ))}
+                                onClick={() => setHintCount(value => Math.min(value + 1, hints.length))}
                                 disabled={hintCount >= hints.length}
                             >
                                 {hintCount >= hints.length
@@ -731,7 +835,7 @@ function LessonsApp() {
                 </div>}
             </aside>
 
-            <section className={styles.boardColumn}>
+            <section className={`${styles.boardColumn} ${v3.boardColumnV3}`}>
                 {step.kind != "completion"
                     ? <LessonBoard
                         fen={boardFen}
@@ -744,15 +848,11 @@ function LessonsApp() {
                         coordinates={settings.themes.board.coordinates}
                         squareStyles={squareStyles}
                         arrows={activeHint?.arrows}
+                        brilliantSquare={brilliantSquare}
                         onSquareClick={handleSquareClick}
-                        onPieceDrop={(from, to) => tryMove(
-                            from as Square,
-                            to as Square
-                        )}
+                        onPieceDrop={(from, to) => tryMove(from as Square, to as Square)}
                         onPieceDragBegin={source => {
-                            if (step.kind == "move" && !resolved) {
-                                setSelectedFrom(source as Square);
-                            }
+                            if (step.kind == "move" && !resolved) setSelectedFrom(source as Square);
                         }}
                         onPieceDragEnd={() => {
                             if (!resolved) setSelectedFrom(undefined);
@@ -763,18 +863,14 @@ function LessonsApp() {
                         <span className={styles.eyebrow}>{t("lesson.completeKicker")}</span>
                         <h2>{t(step.titleKey)}</h2>
                         <p>{t(step.bodyKey)}</p>
-                        <button
-                            type="button"
-                            className={styles.nextButton}
-                            onClick={advance}
-                        >
+                        <button type="button" className={styles.nextButton} onClick={advance}>
                             {t("actions.finish")}
                         </button>
                     </section>}
             </section>
 
-            <aside className={styles.coachRail}>
-                {settings.coach.enabled && <div className={styles.coachCard}>
+            <aside className={`${styles.coachRail} ${v3.coachRailV3}`}>
+                {settings.coach.enabled && <div className={`${styles.coachCard} ${v3.coachCardV3}`}>
                     <button
                         type="button"
                         className={styles.coachPortraitButton}
@@ -787,10 +883,10 @@ function LessonsApp() {
                             baseExpression="idle"
                             speechText={coachText}
                             animationsEnabled={settings.coach.animations}
-                            className={styles.coachPortrait}
+                            className={`${styles.coachPortrait} ${v3.coachPortraitV3}`}
                         />
                     </button>
-                    <div className={styles.speechBubble}>
+                    <div className={`${styles.speechBubble} ${v3.speechBubbleV3}`}>
                         <span>{coach.name}</span>
                         <p>{coachText}</p>
                         <small>{t("coach.clickToChange")}</small>
