@@ -114,8 +114,23 @@ function makeFen(pieces: PieceMap, options: FenOptions = {}) {
     return `${ranks.join("/")} ${options.turn || "w"} ${options.castling || "-"} ${options.ep || "-"} 0 1`;
 }
 
+function firstFreeSquare(pieces: PieceMap, candidates: Square[]) {
+    return candidates.find(candidate => !pieces[candidate]) || candidates[0];
+}
+
 function baseKings(extra: PieceMap = {}): PieceMap {
-    return { a1: "K", h8: "k", ...extra };
+    const values = Object.values(extra);
+    const output: PieceMap = { ...extra };
+
+    if (!values.includes("K")) {
+        output[firstFreeSquare(output, ["a1", "h1", "b1", "g1", "a2", "h2"])] = "K";
+    }
+
+    if (!values.includes("k")) {
+        output[firstFreeSquare(output, ["h8", "a8", "g8", "b8", "h7", "a7"])] = "k";
+    }
+
+    return output;
 }
 
 function transformSquare(value: Square, transform: TransformName): Square {
@@ -398,8 +413,8 @@ function checkRules(id: string, count: number): PracticePosition[] {
 
     if (id.endsWith("king-safety-rule")) {
         const seeds = [
-            selectSeed("unsafe-one", { a1: "K", h8: "k", d4: "K", d8: "r" }, ["d5", "d3"], "selectConcept", { focusSquares: ["d4", "d8"] }),
-            selectSeed("unsafe-two", { a1: "K", h8: "k", e4: "K", h4: "r" }, ["f4"], "selectConcept", { focusSquares: ["e4", "h4"] })
+            selectSeed("unsafe-one", baseKings({ d4: "K", d8: "r" }), ["d5", "d3"], "selectConcept", { focusSquares: ["d4", "d8"] }),
+            selectSeed("unsafe-two", baseKings({ e4: "K", h4: "r" }), ["f4"], "selectConcept", { focusSquares: ["e4", "h4"] })
         ];
         return expand(seeds, count, ["identity", "mirrorFiles"]);
     }
