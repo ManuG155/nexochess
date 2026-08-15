@@ -7,9 +7,11 @@
     "selectConcept": "选择最能体现“{{lesson}}”的棋子或格子。",
     "selectMover": "选择轮到走棋一方的棋子。",
     "selectTarget": "点击标记的格子。",
+    "boardSquare": "找到 {{square}} 格。竖线从 a 到 h，横线从 1 到 8。",
     "choose": "为这个局面选择正确答案。"
   },
   "coach": "{{lesson}} · 第 {{current}} / {{total}} 个局面。读懂棋盘并解决它。",
+  "coachBoard": "先熟悉棋盘方向。根据竖线和横线找到 {{square}}。",
   "correct": "正确。继续下一个局面。",
   "illegal": "这个着法在当前局面中不合法。",
   "tryAgain": "这不是本题要练习的思路。再试一次，或使用提示。",
