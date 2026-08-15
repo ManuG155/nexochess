@@ -79,11 +79,6 @@ LessonBoardSquare.displayName = "LessonBoardSquare";
 
 const RANK_COORDINATES = ["8", "7", "6", "5", "4", "3", "2", "1"];
 const FILE_COORDINATES = ["a", "b", "c", "d", "e", "f", "g", "h"];
-
-/*
- * Organic route rather than a mechanical left/right alternation. The values
- * describe a slow, asymmetric drift across the learning landscape.
- */
 const TRAIL_X = [
     50, 35, 25, 29, 43, 63, 77, 74, 59, 40,
     26, 22, 34, 54, 73, 79, 68, 49, 31, 27
@@ -100,7 +95,6 @@ function buildTrailPath(count: number) {
         x: TRAIL_X[index % TRAIL_X.length] * 10,
         y: TRAIL_TOP + index * TRAIL_STEP
     }));
-
     if (points.length == 0) return "";
 
     let d = `M ${points[0].x} ${points[0].y}`;
@@ -229,7 +223,7 @@ function LessonBoard({
         renderedStyles[brilliantSquare] = {
             ...(renderedStyles[brilliantSquare] || {}),
             "--nexo-lesson-brilliant": "true"
-        } as React.CSSProperties;
+        } as Record<string, string | number>;
     }
 
     return <div
@@ -282,9 +276,7 @@ function LessonsApp() {
 
     const lessonTitles = useMemo(() => {
         const value = tc("lessonTitles", { returnObjects: true }) as unknown;
-        return Array.isArray(value)
-            ? value.map(item => String(item))
-            : [];
+        return Array.isArray(value) ? value.map(item => String(item)) : [];
     }, [i18n.resolvedLanguage, tc]);
 
     const [view, setView] = useState<View>("path");
@@ -303,16 +295,13 @@ function LessonsApp() {
 
     const coach = getCoachById(settings.appearance.selectedCoach);
     const step = rookLesson.steps[stepIndex];
-    const activeCurriculumLesson = curriculumLessons.find(
-        item => item.id == rookLesson.id
-    );
+    const activeCurriculumLesson = curriculumLessons.find(item => item.id == rookLesson.id);
     const activeTone = activeCurriculumLesson?.tone || "ice";
     const resolved = feedback ? isPositiveOutcome(feedback.outcome) : false;
     const hints = step.hints || [];
     const activeHint: LessonHint | undefined = hintCount > 0
         ? hints[Math.min(hintCount - 1, hints.length - 1)]
         : undefined;
-
     const coachText = feedback
         ? t(feedback.key)
         : t(step.coachKey, { coach: coach.name });
@@ -326,15 +315,13 @@ function LessonsApp() {
     }, [step.id]);
 
     useEffect(() => {
-        if (view != "lesson") return;
-        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+        if (view == "lesson") window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     }, [view]);
 
     function titleFor(item: CurriculumLessonEntry) {
         if (item.titleIndex >= 0 && lessonTitles[item.titleIndex]) {
             return lessonTitles[item.titleIndex];
         }
-
         const language = i18n.resolvedLanguage || i18n.language || "en";
         return language.startsWith("es")
             ? (item.titleEs || item.titleEn || item.id)
@@ -344,10 +331,7 @@ function LessonsApp() {
     function chooseCoach(id: CoachId) {
         setSettings(current => ({
             ...current,
-            appearance: {
-                ...current.appearance,
-                selectedCoach: id
-            }
+            appearance: { ...current.appearance, selectedCoach: id }
         }));
         setCoachPickerOpen(false);
     }
@@ -367,50 +351,40 @@ function LessonsApp() {
             setJumpTarget(item);
             return;
         }
-
         setProgress(current => setCurrentLesson(current, item.id));
-
         if (item.playable && item.id == rookLesson.id) {
             resetRookLesson();
             return;
         }
-
         setPlannedTarget(item);
     }
 
     function confirmJump() {
         if (!jumpTarget) return;
-
         const next = unlockLessonsThrough(
             progress,
             curriculumLessons.map(item => item.id),
             jumpTarget.id
         );
         setProgress(next);
-
         const target = jumpTarget;
         setJumpTarget(null);
-
         if (target.playable && target.id == rookLesson.id) {
             resetRookLesson();
             return;
         }
-
         requestAnimationFrame(() => {
             const number = curriculumLessons.findIndex(item => item.id == target.id) + 1;
-            document
-                .getElementById(`lesson-node-${number}`)
+            document.getElementById(`lesson-node-${number}`)
                 ?.scrollIntoView({ block: "center", behavior: "smooth" });
         });
     }
 
     function registerResult(result: AttemptResult) {
         setFeedback({ outcome: result.outcome, key: result.feedbackKey });
-
         if (isPositiveOutcome(result.outcome) && result.resultingFen) {
             setBoardFen(result.resultingFen);
         }
-
         if (isPositiveOutcome(result.outcome) && result.san) {
             playBoardMoveSound(result.san);
         }
@@ -421,57 +395,42 @@ function LessonsApp() {
         const result = evaluateMoveAttempt(step, from, to);
         registerResult(result);
         setSelectedFrom(undefined);
-
-        if (
-            isPositiveOutcome(result.outcome)
-            && activeCurriculumLesson?.brilliant
-        ) {
+        if (isPositiveOutcome(result.outcome) && activeCurriculumLesson?.brilliant) {
             setBrilliantSquare(to);
             window.setTimeout(() => setBrilliantSquare(undefined), 1350);
         }
-
         return isPositiveOutcome(result.outcome);
     }
 
     function handleSquareClick(name: string) {
         const square = name as Square;
-
         if (step.kind == "selectSquare" && !resolved) {
             registerResult(evaluateSquareAttempt(step, square));
             return;
         }
-
         if (step.kind != "move" || resolved) return;
-
         const board = new Chess(boardFen);
         const piece = board.get(square);
-
         if (!selectedFrom) {
             if (piece?.color == "w") setSelectedFrom(square);
             return;
         }
-
         if (selectedFrom == square) {
             setSelectedFrom(undefined);
             return;
         }
-
         if (piece?.color == "w") {
             setSelectedFrom(square);
             return;
         }
-
         tryMove(selectedFrom, square);
     }
 
     function answerChoice(optionId: string) {
         if (step.kind != "multipleChoice" || resolved) return;
-
-        if (optionId == step.correctOptionId) {
-            registerResult({ outcome: "success", feedbackKey: step.successKey });
-        } else {
-            registerResult({ outcome: "conceptualError", feedbackKey: step.errorKey });
-        }
+        registerResult(optionId == step.correctOptionId
+            ? { outcome: "success", feedbackKey: step.successKey }
+            : { outcome: "conceptualError", feedbackKey: step.errorKey });
     }
 
     function advance() {
@@ -480,8 +439,7 @@ function LessonsApp() {
             const targetId = newlyUnlockedId || justCompletedId || progress.currentLessonId;
             requestAnimationFrame(() => {
                 const number = curriculumLessons.findIndex(item => item.id == targetId) + 1;
-                document
-                    .getElementById(`lesson-node-${Math.max(1, number)}`)
+                document.getElementById(`lesson-node-${Math.max(1, number)}`)
                     ?.scrollIntoView({ block: "center", behavior: "smooth" });
             });
             window.setTimeout(() => {
@@ -490,12 +448,9 @@ function LessonsApp() {
             }, 1500);
             return;
         }
-
         if (step.kind != "message" && !resolved) return;
-
         const nextIndex = Math.min(stepIndex + 1, rookLesson.steps.length - 1);
         const nextStep = rookLesson.steps[nextIndex];
-
         if (nextStep.kind == "completion") {
             const nextCurriculumLesson = getNextCurriculumLesson(rookLesson.id);
             setProgress(current => markLessonComplete(
@@ -506,7 +461,6 @@ function LessonsApp() {
             setJustCompletedId(rookLesson.id);
             setNewlyUnlockedId(nextCurriculumLesson?.id);
         }
-
         setStepIndex(nextIndex);
     }
 
@@ -515,10 +469,7 @@ function LessonsApp() {
     > = {};
 
     function mergeSquareStyle(square: Square, style: React.CSSProperties) {
-        squareStyles[square] = {
-            ...(squareStyles[square] || {}),
-            ...style
-        };
+        squareStyles[square] = { ...(squareStyles[square] || {}), ...style };
     }
 
     if (
@@ -534,10 +485,7 @@ function LessonsApp() {
                 move.to as Square,
                 occupied
                     ? { boxShadow: "inset 0 0 0 5px rgba(18,24,34,.34)" }
-                    : {
-                        backgroundImage:
-                            "radial-gradient(circle, rgba(18,24,34,.42) 0 16%, transparent 17%)"
-                    }
+                    : { backgroundImage: "radial-gradient(circle, rgba(18,24,34,.42) 0 16%, transparent 17%)" }
             );
         });
     }
@@ -547,7 +495,6 @@ function LessonsApp() {
             boxShadow: "inset 0 0 0 4px rgba(96,151,255,.92)"
         });
     }
-
     activeHint?.highlightSquares?.forEach(square => {
         mergeSquareStyle(square, {
             boxShadow: "inset 0 0 0 5px rgba(94,184,255,.82)"
@@ -557,11 +504,9 @@ function LessonsApp() {
     const feedbackVisual = feedback
         ? getLessonFeedbackVisual(feedback.outcome)
         : undefined;
-
     const lessonProgressPercent = Math.round(
         stepIndex / Math.max(1, rookLesson.steps.length - 1) * 100
     );
-
     const completedCount = curriculumLessons.filter(
         item => progress.completedLessonIds.includes(item.id)
     ).length;
@@ -569,7 +514,6 @@ function LessonsApp() {
 
     if (view == "path") {
         let lessonNumber = 0;
-
         return <main className={`${styles.shell} ${styles.pathShell} ${v3.pathShellV3}`}>
             <section className={styles.pathHero}>
                 <div className={styles.heroCopy}>
@@ -577,7 +521,6 @@ function LessonsApp() {
                     <h1>{t("page.title")}</h1>
                     <p>{t("page.subtitle")}</p>
                 </div>
-
                 <div className={styles.heroProgress}>
                     <span>{t("path.progressLabel")}</span>
                     <strong>{completedCount} / {TOTAL_LESSONS}</strong>
@@ -592,7 +535,6 @@ function LessonsApp() {
                     {curriculumLevels.map((level, levelIndex) => {
                         const pathHeight = TRAIL_TOP + (level.lessons.length - 1) * TRAIL_STEP + 260;
                         const pathD = buildTrailPath(level.lessons.length);
-
                         return <section
                             key={level.id}
                             className={`${styles.levelSection} ${v3.levelSectionV3}`}
@@ -607,10 +549,7 @@ function LessonsApp() {
                                 <strong>{tc("levelLessonCount", { count: level.lessons.length })}</strong>
                             </header>
 
-                            <div
-                                className={v3.journeyCanvas}
-                                style={{ height: `${pathHeight}px` }}
-                            >
+                            <div className={v3.journeyCanvas} style={{ height: `${pathHeight}px` }}>
                                 <svg
                                     className={v3.journeyRail}
                                     viewBox={`0 0 1000 ${pathHeight}`}
@@ -620,7 +559,6 @@ function LessonsApp() {
                                     <path className={v3.journeyRailGlow} d={pathD}/>
                                     <path className={v3.journeyRailLine} d={pathD}/>
                                 </svg>
-
                                 <LevelArtwork levelIndex={levelIndex}/>
 
                                 {level.lessons.map((lessonEntry, index) => {
@@ -629,7 +567,6 @@ function LessonsApp() {
                                     const complete = progress.completedLessonIds.includes(lessonEntry.id);
                                     const unlocked = progress.unlockedLessonIds.includes(lessonEntry.id);
                                     const current = progress.currentLessonId == lessonEntry.id;
-
                                     const state: PathNodeState = complete
                                         ? "complete"
                                         : current
@@ -637,13 +574,11 @@ function LessonsApp() {
                                             : unlocked
                                                 ? "available"
                                                 : "locked";
-
                                     const item = {
                                         ...lessonEntry,
                                         levelId: level.id,
                                         tone: level.tone
                                     };
-
                                     return <PathNode
                                         key={lessonEntry.id}
                                         label={titleFor(item)}
@@ -743,12 +678,10 @@ function LessonsApp() {
                 <span aria-hidden="true">←</span>
                 {t("actions.back")}
             </button>
-
             <div className={`${styles.lessonHeading} ${v3.lessonHeadingV3}`}>
                 <span>{t(rookLesson.moduleKey)}</span>
                 <h1>{t(rookLesson.titleKey)}</h1>
             </div>
-
             <div className={styles.stepProgress}>
                 <strong>{t("lesson.step", {
                     current: Math.min(stepIndex + 1, rookLesson.steps.length),
@@ -764,17 +697,14 @@ function LessonsApp() {
             <aside className={`${styles.taskRail} ${v3.taskRailV3}`}>
                 {step.kind != "completion" && <div className={`${styles.challengeCard} ${v3.challengeCardV3}`}>
                     {step.kind == "message" && <p>{t(step.bodyKey)}</p>}
-
                     {step.kind == "move" && <>
                         <span className={styles.challengeLabel}>{t("lesson.yourTurn")}</span>
                         <p>{t(step.instructionKey)}</p>
                     </>}
-
                     {step.kind == "selectSquare" && <>
                         <span className={styles.challengeLabel}>{t("lesson.yourTurn")}</span>
                         <p>{t(step.instructionKey)}</p>
                     </>}
-
                     {step.kind == "multipleChoice" && <>
                         <span className={styles.challengeLabel}>{t("lesson.question")}</span>
                         <p>{t(step.questionKey)}</p>
@@ -784,17 +714,13 @@ function LessonsApp() {
                                 type="button"
                                 onClick={() => answerChoice(option.id)}
                                 disabled={resolved}
-                            >
-                                {t(option.labelKey)}
-                            </button>)}
+                            >{t(option.labelKey)}</button>)}
                         </div>
                     </>}
-
                     {activeHint && <div className={styles.hintPanel}>
                         <strong>{t("actions.hint")}</strong>
                         <p>{t(activeHint.textKey)}</p>
                     </div>}
-
                     {feedback && feedbackVisual && <div
                         className={styles.feedback}
                         data-tone={feedbackVisual.tone}
@@ -806,7 +732,6 @@ function LessonsApp() {
                             : <span aria-hidden="true">!</span>}
                         <p>{t(feedback.key)}</p>
                     </div>}
-
                     <div className={styles.lessonActions}>
                         {step.kind != "message" && hints.length > 0 && !resolved
                             ? <button
@@ -822,14 +747,12 @@ function LessonsApp() {
                                         : t("actions.hint")}
                             </button>
                             : <span/>}
-
                         {(step.kind == "message" || resolved) && <button
                             type="button"
                             className={styles.nextButton}
                             onClick={advance}
                         >
-                            {t("actions.next")}
-                            <span aria-hidden="true">→</span>
+                            {t("actions.next")} <span aria-hidden="true">→</span>
                         </button>}
                     </div>
                 </div>}
