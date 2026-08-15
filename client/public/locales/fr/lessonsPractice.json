@@ -15,8 +15,8 @@
   "pieceNames": {"piece":"la pièce","p":"le pion","n":"le cavalier","b":"le fou","r":"la tour","q":"la dame","k":"le roi"},
   "coachDynamic": {
     "check": "Aux {{side}} de jouer et leur roi est en échec : {{attacker}} en {{square}} l'attaque. Trouve la façon la plus propre de sortir de l'échec.",
-    "capture": "Aux {{side}} de jouer. {{piece}} en {{from}} peut agir sur {{target}} en {{to}}. Trouve le coup qui fait fonctionner {{lesson}} dans cette position.",
-    "position": "Aux {{side}} de jouer. Commence par observer {{piece}} en {{from}} et trouve le coup qui fait fonctionner {{lesson}} ici.",
+    "capture": "Aux {{side}} de jouer. Il y a de la tension autour de {{target}} en {{to}}. Trouve comment l'exploiter pour appliquer {{lesson}} sans te précipiter.",
+    "position": "Aux {{side}} de jouer. Lis d'abord toute la position et trouve l'occasion concrète qui permet d'appliquer {{lesson}}.",
     "choice": "Aux {{side}} de jouer. Lis toute la position avant de répondre pour {{lesson}}.",
     "hintCheck": "Indice : suis la ligne d'échec depuis {{attacker}} en {{square}} jusqu'à ton roi. Tu peux déplacer le roi, capturer la pièce qui donne échec ou interposer une pièce lorsque c'est possible.",
     "hintMove": "Indice : commence par {{piece}} en {{from}} et demande-toi ce qui change si cette pièce devient active. L'objectif est {{lesson}}.",
