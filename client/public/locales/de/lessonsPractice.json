@@ -1,37 +1,22 @@
 {
-  "positions": "{{count}} Stellungen",
-  "positionProgress": "Stellung {{current}} von {{total}}",
+  "positions": "{{count}} Positionen",
+  "positionProgress": "Position {{current}} von {{total}}",
   "prompts": {
-    "moveTarget": "Spiele den angegebenen Zug nach.",
+    "moveTarget": "Führe den angegebenen Zug aus.",
     "findMove": "Finde den Zug, der {{lesson}} zeigt.",
-    "selectConcept": "Wähle die Figur oder das Feld, das {{lesson}} am besten zeigt.",
+    "selectConcept": "Wähle die Figur oder das Feld, das {{lesson}} am besten darstellt.",
     "selectMover": "Wähle eine Figur der Seite, die am Zug ist.",
     "selectTarget": "Klicke auf das markierte Feld.",
-    "boardSquare": "Finde das Feld {{square}}. Die Linien gehen von a bis h und die Reihen von 1 bis 8.",
+    "boardSquare": "Ziehe die Figur nach {{square}}. Die Linien gehen von a bis h und die Reihen von 1 bis 8.",
     "choose": "Wähle die richtige Antwort für diese Stellung."
   },
-  "coach": "{{lesson}} · Stellung {{current}} von {{total}}. Lies das Brett und löse sie.",
-  "coachBoard": "Orientiere dich zuerst auf dem Brett. Finde {{square}} über Linie und Reihe.",
-  "correct": "Richtig. Weiter zur nächsten Stellung.",
+  "coach": "{{lesson}} · Position {{current}} von {{total}}. Lies das Brett und löse die Aufgabe.",
+  "coachBoard": "Orientiere dich auf dem Brett und ziehe die Figur anhand von Linie und Reihe nach {{square}}.",
+  "correct": "Richtig. Weiter zur nächsten Position.",
   "illegal": "Dieser Zug ist in dieser Stellung nicht legal.",
   "tryAgain": "Das ist nicht die Idee dieser Aufgabe. Versuch es erneut oder nutze einen Hinweis.",
   "completeLesson": "Lektion abschließen",
   "completed": "{{lesson}} abgeschlossen",
-  "completedBody": "Du hast alle Stellungen gelöst. Die nächste Lektion ist jetzt verfügbar.",
-  "choices": {
-    "yes": "Ja",
-    "no": "Nein",
-    "white": "Weiß",
-    "black": "Schwarz",
-    "one": "1",
-    "three": "3",
-    "five": "5",
-    "nine": "9",
-    "draw": "Remis",
-    "stalemate": "Patt",
-    "checkmate": "Schachmatt",
-    "continue": "Weiterspielen",
-    "resign": "Aufgeben",
-    "offerDraw": "Remis anbieten"
-  }
+  "completedBody": "Du hast alle Positionen gelöst. Die nächste Lektion ist jetzt verfügbar.",
+  "choices": {"yes":"Ja","no":"Nein","white":"Weiß","black":"Schwarz","one":"1","three":"3","five":"5","nine":"9","draw":"Remis","stalemate":"Patt","checkmate":"Schachmatt","continue":"Weiter","resign":"Aufgeben","offerDraw":"Remis anbieten"}
 }

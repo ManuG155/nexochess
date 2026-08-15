@@ -39,8 +39,10 @@ import * as polish from "./lessonsPolish.module.css";
 type View = "path" | "lesson";
 type PathNodeState = "complete" | "current" | "available" | "locked";
 type SessionResult = "success" | "error" | "illegal" | null;
+type PathLabelSide = "left" | "right";
 type CurriculumLessonEntry = (typeof curriculumLessons)[number];
 type BoardSquareStyle = Record<string, string | number>;
+type PathNodeStyle = React.CSSProperties & { "--label-shift-y"?: string };
 
 interface LessonBoardSquareProps {
     children: React.ReactNode;
@@ -80,8 +82,37 @@ const NODE_X = [
     61, 48, 35, 39, 54
 ];
 
+const LANDMARK_LABEL_ZONES: Array<{
+    start: number;
+    end: number;
+    side: PathLabelSide;
+}> = [
+    { start: 360, end: 680, side: "right" },
+    { start: 1060, end: 1435, side: "left" },
+    { start: 1740, end: 2145, side: "right" },
+    { start: 2380, end: 2860, side: "right" }
+];
+
 function nodeY(index: number) {
     return NODE_Y_START + index * NODE_Y_STEP;
+}
+
+function getPathLabelLayout(index: number, x: number, title: string) {
+    const y = nodeY(index);
+    let side: PathLabelSide = x >= 50 ? "right" : "left";
+    let shiftY = 0;
+    const obstacle = LANDMARK_LABEL_ZONES.find(zone => y >= zone.start && y <= zone.end);
+
+    if (obstacle?.side == side) {
+        side = side == "left" ? "right" : "left";
+        shiftY = index % 2 == 0 ? -42 : 42;
+    }
+
+    if (title.length >= 22) {
+        shiftY += index % 2 == 0 ? -12 : 12;
+    }
+
+    return { side, shiftY };
 }
 
 function buildRailPath(count: number) {
@@ -157,7 +188,7 @@ function LessonBoard({
         });
     }
 
-    if (selectedFrom && position.kind == "move" && !result && legalMoveHints) {
+    if (selectedFrom && position.kind == "move" && result != "success" && legalMoveHints) {
         try {
             const board = new Chess(fen);
             board.moves({ square: selectedFrom, verbose: true }).forEach(move => {
@@ -446,7 +477,10 @@ function LessonsApp() {
         const turn = board.turn();
 
         if (!selectedFrom) {
-            if (piece?.color == turn) setSelectedFrom(target);
+            if (piece?.color == turn) {
+                setResult(null);
+                setSelectedFrom(target);
+            }
             return;
         }
 
@@ -456,6 +490,7 @@ function LessonsApp() {
         }
 
         if (piece?.color == turn) {
+            setResult(null);
             setSelectedFrom(target);
             return;
         }
@@ -579,6 +614,7 @@ function LessonsApp() {
                                     levelId: level.id,
                                     tone: level.tone
                                 };
+                                const title = titleFor(entry);
                                 const complete = progress.completedLessonIds.includes(lesson.id);
                                 const unlocked = progress.unlockedLessonIds.includes(lesson.id);
                                 const current = progress.currentLessonId == lesson.id;
@@ -590,23 +626,29 @@ function LessonsApp() {
                                             ? "available"
                                             : "locked";
                                 const x = NODE_X[index % NODE_X.length];
+                                const labelLayout = getPathLabelLayout(index, x, title);
                                 const classNames = [styles.pathNodeWrap, polish.pathNodeSafe];
                                 if (recentlyUnlockedId == lesson.id) classNames.push(styles.unlockPulse);
                                 if (recentlyCompletedId == lesson.id) classNames.push(styles.completePulse);
+                                const nodeStyle: PathNodeStyle = {
+                                    left: `${x}%`,
+                                    top: `${nodeY(index)}px`,
+                                    "--label-shift-y": `${labelLayout.shiftY}px`
+                                };
 
                                 return <div
                                     id={`lesson-node-${lesson.id}`}
                                     key={lesson.id}
                                     className={classNames.join(" ")}
                                     data-state={state}
-                                    data-side={x > 54 ? "left" : "right"}
-                                    style={{ left: `${x}%`, top: `${nodeY(index)}px` }}
+                                    data-label-side={labelLayout.side}
+                                    style={nodeStyle}
                                 >
                                     <button
                                         type="button"
                                         className={styles.pathNodeButton}
                                         onClick={() => openLesson(entry)}
-                                        aria-label={titleFor(entry)}
+                                        aria-label={title}
                                     >
                                         <span className={styles.nodeSymbolV4} aria-hidden="true">
                                             {complete ? "✓" : lesson.symbol}
@@ -616,7 +658,7 @@ function LessonsApp() {
                                         </span>
                                     </button>
                                     <div className={`${styles.nodeCopyV4} ${polish.pathNodeCopy}`}>
-                                        <strong>{titleFor(entry)}</strong>
+                                        <strong>{title}</strong>
                                     </div>
                                 </div>;
                             })}
@@ -659,8 +701,8 @@ function LessonsApp() {
         </main>;
     }
 
-    const isBoardTour = activeLesson.id == "first-contact.board" && position?.kind == "select";
-    const boardTarget = isBoardTour ? position.acceptedSquares[0]?.toUpperCase() : undefined;
+    const isBoardTour = activeLesson.id == "first-contact.board" && position?.kind == "move";
+    const boardTarget = isBoardTour ? position.expected.to.toUpperCase() : undefined;
     const promptKey = isBoardTour
         ? "prompts.boardSquare"
         : position
@@ -677,12 +719,17 @@ function LessonsApp() {
             current: Math.min(positionIndex + 1, practiceLesson.positions.length),
             total: practiceLesson.positions.length
         });
+    const turn = (boardFen || position?.fen || "").split(" ")[1] == "b" ? "black" : "white";
 
     return <main
         className={`${styles.shellV4} ${styles.sessionPage} ${polish.sessionAtmosphere}`}
         data-tone={activeLesson.tone}
     >
-        <section className={styles.sessionHeaderV4}>
+        <div className={polish.sessionDecor} aria-hidden="true">
+            <span/><span/><span/><span/>
+        </div>
+
+        <section className={`${styles.sessionHeaderV4} ${polish.sessionHeaderCompact}`}>
             <button
                 type="button"
                 className={styles.sessionBack}
@@ -691,11 +738,6 @@ function LessonsApp() {
                 <span aria-hidden="true">←</span>
                 {t("actions.back")}
             </button>
-
-            <div className={styles.sessionHeadingV4}>
-                <span>{tc(activeLevel.titleKey)}</span>
-                <h1>{activeTitle}</h1>
-            </div>
 
             <div className={styles.sessionProgressV4}>
                 <strong>{tp("positionProgress", {
@@ -708,10 +750,17 @@ function LessonsApp() {
             </div>
         </section>
 
-        <div className={styles.sessionStage}>
+        <div className={`${styles.sessionStage} ${polish.sessionStageRich}`}>
             {!sessionComplete && position && <aside className={styles.taskRailV4}>
-                <div className={styles.taskCardV4}>
-                    <span className={styles.challengeEyebrow}>{t("lesson.yourTurn")}</span>
+                <div className={`${styles.taskCardV4} ${polish.taskCardRich}`}>
+                    <div className={polish.taskTopline}>
+                        <span className={styles.challengeEyebrow}>{t("lesson.yourTurn")}</span>
+                        <span className={polish.turnBadge} data-turn={turn}>
+                            <span aria-hidden="true">{turn == "white" ? "♙" : "♟"}</span>
+                            {tp(`choices.${turn}`)}
+                        </span>
+                    </div>
+                    <span className={polish.levelChip}>{tc(activeLevel.titleKey)}</span>
                     <h2>{activeTitle}</h2>
                     <p className={styles.promptText}>{tp(promptKey, {
                         lesson: activeTitle,
@@ -725,6 +774,8 @@ function LessonsApp() {
                     </div>}
 
                     {isBoardTour && boardTarget && <div className={styles.moveTarget}>
+                        <span>{position.expected.from.toUpperCase()}</span>
+                        <span aria-hidden="true">→</span>
                         <span>{boardTarget}</span>
                     </div>}
 
@@ -802,6 +853,7 @@ function LessonsApp() {
                         onPieceDrop={(from, to) => registerMove(from as Square, to as Square)}
                         onPieceDragBegin={source => {
                             if (position.kind == "move" && result != "success") {
+                                setResult(null);
                                 setSelectedFrom(source as Square);
                             }
                         }}
@@ -825,7 +877,7 @@ function LessonsApp() {
             </section>
 
             {!sessionComplete && <aside className={styles.coachRailV4}>
-                <div className={styles.coachCardV4}>
+                <div className={`${styles.coachCardV4} ${polish.coachCardRich}`}>
                     <button
                         type="button"
                         className={styles.coachPortraitButtonV4}

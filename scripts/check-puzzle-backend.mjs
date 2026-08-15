@@ -123,7 +123,8 @@ requireFragments("remoteVerifier", "The remote puzzle-data verifier", [
 
 requireFragments("deploymentVerifier", "The deployment puzzle smoke test", [
     "EXPECTED_PUZZLES = 6_057_356",
-    'fetch(`${puzzleOrigin}/catalogue.json`',
+    "fetchWithRetry(",
+    '`${puzzleOrigin}/catalogue.json`',
     "Number(catalogue.count) === EXPECTED_PUZZLES"
 ]);
 

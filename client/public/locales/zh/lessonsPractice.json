@@ -2,36 +2,21 @@
   "positions": "{{count}} 个局面",
   "positionProgress": "第 {{current}} / {{total}} 个局面",
   "prompts": {
-    "moveTarget": "按提示走出这个着法。",
+    "moveTarget": "走出指定的着法。",
     "findMove": "找出体现“{{lesson}}”的着法。",
     "selectConcept": "选择最能体现“{{lesson}}”的棋子或格子。",
     "selectMover": "选择轮到走棋一方的棋子。",
     "selectTarget": "点击标记的格子。",
-    "boardSquare": "找到 {{square}} 格。竖线从 a 到 h，横线从 1 到 8。",
+    "boardSquare": "把棋子走到 {{square}}。纵线从 a 到 h，横线从 1 到 8。",
     "choose": "为这个局面选择正确答案。"
   },
-  "coach": "{{lesson}} · 第 {{current}} / {{total}} 个局面。读懂棋盘并解决它。",
-  "coachBoard": "先熟悉棋盘方向。根据竖线和横线找到 {{square}}。",
+  "coach": "{{lesson}} · 第 {{current}} / {{total}} 个局面。观察棋盘并解题。",
+  "coachBoard": "先确定棋盘方向，再根据纵线和横线把棋子走到 {{square}}。",
   "correct": "正确。继续下一个局面。",
   "illegal": "这个着法在当前局面中不合法。",
   "tryAgain": "这不是本题要练习的思路。再试一次，或使用提示。",
   "completeLesson": "完成课程",
-  "completed": "已完成 {{lesson}}",
+  "completed": "已完成“{{lesson}}”",
   "completedBody": "你已经解决了所有局面。下一课现已解锁。",
-  "choices": {
-    "yes": "是",
-    "no": "否",
-    "white": "白方",
-    "black": "黑方",
-    "one": "1",
-    "three": "3",
-    "five": "5",
-    "nine": "9",
-    "draw": "和棋",
-    "stalemate": "逼和",
-    "checkmate": "将死",
-    "continue": "继续",
-    "resign": "认输",
-    "offerDraw": "提和"
-  }
+  "choices": {"yes":"是","no":"否","white":"白方","black":"黑方","one":"1","three":"3","five":"5","nine":"9","draw":"和棋","stalemate":"逼和","checkmate":"将死","continue":"继续","resign":"认输","offerDraw":"提议和棋"}
 }

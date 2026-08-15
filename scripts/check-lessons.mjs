@@ -101,14 +101,10 @@ try {
                     }
                 }
             } else if (position.kind === "select") {
-                if (!position.acceptedSquares.length) {
-                    fail(`${lesson.id}/${position.id} has no accepted squares.`);
-                }
-                for (const square of position.acceptedSquares) {
-                    if (!/^[a-h][1-8]$/.test(square)) {
-                        fail(`${lesson.id}/${position.id} contains invalid square ${square}.`);
-                    }
-                }
+                fail(
+                    `${lesson.id}/${position.id} still uses select-only board practice. `
+                    + "Lesson board exercises must be solved by moving a piece."
+                );
             } else if (!position.choices.includes(position.correctChoice)) {
                 fail(`${lesson.id}/${position.id} correct choice is not offered.`);
             }
@@ -135,7 +131,7 @@ try {
 
     console.log(
         `Lessons audit passed: ${ids.size} lessons, ${totalPositions} unique practice positions, `
-        + "valid FENs and legal expected moves."
+        + "move-first board exercises, valid FENs and legal expected moves."
     );
 } finally {
     fs.rmSync(tempRoot, { recursive: true, force: true });
