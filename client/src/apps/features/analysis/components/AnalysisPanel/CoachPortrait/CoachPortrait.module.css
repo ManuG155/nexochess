@@ -129,7 +129,7 @@
     position: absolute;
     z-index: 3;
 
-    top: 48.9%;
+    top: 50.1%;
     left: 42.6%;
 
     width: 14.8%;
@@ -180,8 +180,6 @@
     transform: scaleY(0.9);
 }
 
-
-
 .fogRoot {
     overflow: visible;
 }
@@ -218,7 +216,7 @@
     position: absolute;
     z-index: 3;
 
-    top: 47.65%;
+    top: 48.95%;
     left: 44.45%;
 
     width: 11.4%;
@@ -279,7 +277,6 @@
         transition: none;
     }
 }
-
 
 .cybeRoot {
     overflow: visible;
@@ -349,10 +346,6 @@
     transform: translate3d(0, 0, 0) scale(1);
 }
 
-/*
- * El marco se dibuja aparte para poder reducir únicamente el contorno
- * sin alterar el tamaño, la posición ni la animación de las cinco ondas.
- */
 .cybeMouth::before {
     content: "";
 
@@ -501,7 +494,6 @@
 
     transform: translate3d(0, 0, 0) scaleY(1);
 }
-
 
 @media (prefers-reduced-motion: reduce) {
     .maxRooksMouth {
