@@ -7,9 +7,11 @@
     "selectConcept": "Wybierz figurę lub pole, które najlepiej przedstawia {{lesson}}.",
     "selectMover": "Wybierz figurę strony, która jest na ruchu.",
     "selectTarget": "Kliknij zaznaczone pole.",
+    "boardSquare": "Znajdź pole {{square}}. Linie są oznaczone od a do h, a rzędy od 1 do 8.",
     "choose": "Wybierz poprawną odpowiedź dla tej pozycji."
   },
   "coach": "{{lesson}} · pozycja {{current}} z {{total}}. Odczytaj planszę i rozwiąż ją.",
+  "coachBoard": "Najpierw zorientuj się na szachownicy. Znajdź {{square}} po linii i rzędzie.",
   "correct": "Dobrze. Przejdź do następnej pozycji.",
   "illegal": "Ten ruch nie jest legalny w tej pozycji.",
   "tryAgain": "To nie jest idea tego ćwiczenia. Spróbuj ponownie albo użyj podpowiedzi.",

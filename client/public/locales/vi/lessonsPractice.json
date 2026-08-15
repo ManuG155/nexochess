@@ -7,9 +7,11 @@
     "selectConcept": "Chọn quân hoặc ô thể hiện rõ nhất {{lesson}}.",
     "selectMover": "Chọn một quân của bên đang tới lượt.",
     "selectTarget": "Nhấp vào ô được đánh dấu.",
+    "boardSquare": "Tìm ô {{square}}. Các cột đi từ a đến h và các hàng từ 1 đến 8.",
     "choose": "Chọn đáp án đúng cho thế cờ này."
   },
   "coach": "{{lesson}} · thế cờ {{current}} / {{total}}. Đọc bàn cờ và giải nó.",
+  "coachBoard": "Hãy bắt đầu bằng cách định hướng trên bàn cờ. Tìm {{square}} theo cột và hàng của nó.",
   "correct": "Chính xác. Tiếp tục với thế cờ tiếp theo.",
   "illegal": "Nước đi đó không hợp lệ trong thế cờ này.",
   "tryAgain": "Đó chưa phải ý tưởng của bài tập này. Hãy thử lại hoặc dùng gợi ý.",

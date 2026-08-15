@@ -7,9 +7,11 @@
     "selectConcept": "Sélectionne la pièce ou la case qui représente le mieux {{lesson}}.",
     "selectMover": "Sélectionne une pièce du camp qui doit jouer.",
     "selectTarget": "Clique sur la case indiquée.",
+    "boardSquare": "Trouve la case {{square}}. Les colonnes vont de a à h et les rangées de 1 à 8.",
     "choose": "Choisis la bonne réponse pour cette position."
   },
   "coach": "{{lesson}} · position {{current}} sur {{total}}. Lis l'échiquier et résous-la.",
+  "coachBoard": "Commence par t'orienter sur l'échiquier. Trouve {{square}} grâce à sa colonne et sa rangée.",
   "correct": "Correct. Passe à la position suivante.",
   "illegal": "Ce coup n'est pas légal dans cette position.",
   "tryAgain": "Ce n'est pas l'idée de l'exercice. Réessaie ou utilise un indice.",

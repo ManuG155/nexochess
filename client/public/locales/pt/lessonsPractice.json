@@ -7,9 +7,11 @@
     "selectConcept": "Seleciona a peça ou casa que melhor representa {{lesson}}.",
     "selectMover": "Seleciona uma peça do lado que está a jogar.",
     "selectTarget": "Clica na casa assinalada.",
+    "boardSquare": "Encontra a casa {{square}}. As colunas vão de a a h e as filas de 1 a 8.",
     "choose": "Escolhe a resposta correta para esta posição."
   },
   "coach": "{{lesson}} · posição {{current}} de {{total}}. Lê o tabuleiro e resolve-a.",
+  "coachBoard": "Começa por te orientar no tabuleiro. Localiza {{square}} usando a coluna e a fila.",
   "correct": "Correto. Continua para a próxima posição.",
   "illegal": "Esse lance não é legal nesta posição.",
   "tryAgain": "Essa não é a ideia deste exercício. Tenta novamente ou usa uma dica.",

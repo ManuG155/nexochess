@@ -7,9 +7,11 @@
     "selectConcept": "Selecciona la pieza o casilla que mejor representa {{lesson}}.",
     "selectMover": "Selecciona una pieza del bando al que le toca mover.",
     "selectTarget": "Clica en la casilla marcada.",
+    "boardSquare": "Encuentra la casilla {{square}}. Las columnas van de a a h y las filas de 1 a 8.",
     "choose": "Elige la respuesta correcta para esta posición."
   },
   "coach": "{{lesson}} · posición {{current}} de {{total}}. Mira el tablero y resuélvela.",
+  "coachBoard": "Empieza orientándote en el tablero. Localiza {{square}} usando su columna y su fila.",
   "correct": "Correcto. Continúa con la siguiente posición.",
   "illegal": "Ese movimiento no es legal en esta posición.",
   "tryAgain": "No es la idea de este ejercicio. Prueba otra vez o usa una pista.",

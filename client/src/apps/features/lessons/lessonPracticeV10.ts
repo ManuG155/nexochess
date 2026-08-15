@@ -1,6 +1,6 @@
 import type { CurriculumLesson } from "./curriculum";
 import { buildPracticeLesson as buildCheckpointPracticeLesson } from "./lessonPracticeV9";
-import type { MovePractice, PracticeLesson } from "./lessonPracticeBase";
+import type { MovePractice, PracticeLesson, SelectPractice } from "./lessonPracticeBase";
 
 function move(
     id: string,
@@ -18,6 +18,44 @@ function move(
         brilliant
     };
 }
+
+const boardTour: SelectPractice[] = [
+    {
+        id: "board-a1",
+        kind: "select",
+        fen: "8/6k1/8/8/8/8/1K6/8 w - - 0 1",
+        prompt: "selectConcept",
+        acceptedSquares: ["a1"]
+    },
+    {
+        id: "board-h1",
+        kind: "select",
+        fen: "8/6k1/8/8/8/8/1K6/8 w - - 0 1",
+        prompt: "selectConcept",
+        acceptedSquares: ["h1"]
+    },
+    {
+        id: "board-a8",
+        kind: "select",
+        fen: "8/6k1/8/8/8/8/1K6/8 w - - 0 1",
+        prompt: "selectConcept",
+        acceptedSquares: ["a8"]
+    },
+    {
+        id: "board-h8",
+        kind: "select",
+        fen: "8/6k1/8/8/8/8/1K6/8 w - - 0 1",
+        prompt: "selectConcept",
+        acceptedSquares: ["h8"]
+    },
+    {
+        id: "board-d4",
+        kind: "select",
+        fen: "8/6k1/8/8/8/8/1K6/8 w - - 0 1",
+        prompt: "selectConcept",
+        acceptedSquares: ["d4"]
+    }
+];
 
 const doubleAttacks: MovePractice[] = [
     move("double-queen-a7-h7", "6k1/r6b/8/8/3Q4/8/8/7K w - - 0 1", "d4", "d7"),
@@ -98,6 +136,9 @@ const sacrificeMate: MovePractice[] = [
 ];
 
 export function buildPracticeLesson(lesson: CurriculumLesson): PracticeLesson {
+    if (lesson.id == "first-contact.board") {
+        return { lessonId: lesson.id, positions: boardTour.slice(0, lesson.practiceCount) };
+    }
     if (lesson.id == "intermediate.double-attack") {
         return { lessonId: lesson.id, positions: doubleAttacks.slice(0, lesson.practiceCount) };
     }
