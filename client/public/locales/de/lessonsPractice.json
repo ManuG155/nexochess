@@ -15,8 +15,8 @@
   "pieceNames": {"piece":"die Figur","p":"der Bauer","n":"der Springer","b":"der Läufer","r":"der Turm","q":"die Dame","k":"der König"},
   "coachDynamic": {
     "check": "{{side}} sind am Zug und ihr König steht im Schach: {{attacker}} auf {{square}} greift ihn an. Finde den saubersten Weg aus dem Schach.",
-    "capture": "{{side}} sind am Zug. {{piece}} auf {{from}} kann auf {{target}} auf {{to}} einwirken. Finde den Zug, der {{lesson}} in dieser Stellung umsetzt.",
-    "position": "{{side}} sind am Zug. Beginne mit {{piece}} auf {{from}} und finde den Zug, der {{lesson}} in dieser Stellung umsetzt.",
+    "capture": "{{side}} sind am Zug. Rund um {{target}} auf {{to}} besteht konkrete Spannung. Finde, wie du sie nutzen kannst, um {{lesson}} umzusetzen, ohne die Lösung zu überstürzen.",
+    "position": "{{side}} sind am Zug. Lies zuerst die ganze Stellung und finde die konkrete Gelegenheit, mit der sich {{lesson}} umsetzen lässt.",
     "choice": "{{side}} sind am Zug. Lies die gesamte Stellung, bevor du die Antwort zu {{lesson}} entscheidest.",
     "hintCheck": "Hinweis: Verfolge das Schach von {{attacker}} auf {{square}} bis zu deinem König. Du kannst den König ziehen, den Schachgeber schlagen oder die Linie blockieren, wenn die Stellung es erlaubt.",
     "hintMove": "Hinweis: Beginne mit {{piece}} auf {{from}} und frage dich, was sich ändert, wenn die Figur aktiv wird. Das Ziel ist {{lesson}}.",
