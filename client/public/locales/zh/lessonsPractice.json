@@ -1,38 +1,9 @@
 {
-  "positions": "{{count}} 个局面",
-  "positionProgress": "第 {{current}} / {{total}} 个局面",
-  "prompts": {
-    "moveTarget": "走出指定的着法。",
-    "findMove": "找出体现“{{lesson}}”的着法。",
-    "selectConcept": "选择最能体现“{{lesson}}”的棋子或格子。",
-    "selectMover": "选择轮到走棋一方的棋子。",
-    "selectTarget": "点击标记的格子。",
-    "boardSquare": "把棋子走到 {{square}}。纵线从 a 到 h，横线从 1 到 8。",
-    "choose": "为这个局面选择正确答案。"
-  },
-  "coach": "{{lesson}} · 第 {{current}} / {{total}} 个局面。观察棋盘并解题。",
-  "coachBoard": "先确定棋盘方向，再根据纵线和横线把棋子走到 {{square}}。",
-  "pieceNames": {"piece":"棋子","p":"兵","n":"马","b":"象","r":"车","q":"后","k":"王"},
-  "coachDynamic": {
-    "check": "轮到{{side}}走棋，而且王正被将军：{{square}} 上的{{attacker}}正在攻击王。找出最干净的解将方式。",
-    "capture": "轮到{{side}}走棋。{{from}} 上的{{piece}}可以对 {{to}} 上的{{target}}采取行动。找出在这个局面中实现“{{lesson}}”的着法。",
-    "position": "轮到{{side}}走棋。先观察 {{from}} 上的{{piece}}，再找出在这个局面中实现“{{lesson}}”的着法。",
-    "choice": "轮到{{side}}走棋。回答“{{lesson}}”之前先完整阅读整个局面。",
-    "hintCheck": "提示：沿着 {{square}} 上{{attacker}}的将军路线看向你的王。根据局面，你可以移动王、吃掉将军棋子，或用棋子挡住攻击线。",
-    "hintMove": "提示：先看 {{from}} 上的{{piece}}，想一想它变得活跃后会改变什么。目标是“{{lesson}}”。",
-    "hintChoice": "提示：回答“{{lesson}}”前，比较双方王的安全、合法着法和眼前的威胁。",
-    "success1": "看得很准。这正是这个局面要求的着法。",
-    "success2": "很好。你正确读懂了局面并找到了关键思路。",
-    "success3": "发现得漂亮。这一步干净地解决了问题。",
-    "success4": "完美。你在看清整个局面的同时找到了正确答案。",
-    "error": "这步棋合法，但不是这里的正确解法。重新阅读局面，再尝试另一个思路。",
-    "illegal": "这步棋在这里不合法。重新选择棋子并检查它可以到达的格子。"
-  },
-  "correct": "着法正确。",
-  "illegal": "这步棋在这里不合法。",
-  "tryAgain": "这不是当前局面要求的着法。",
-  "completeLesson": "完成课程",
-  "completed": "已完成“{{lesson}}”",
-  "completedBody": "你已经解决了所有局面。下一课现已解锁。",
-  "choices": {"yes":"是","no":"否","white":"白方","black":"黑方","one":"1","three":"3","five":"5","nine":"9","draw":"和棋","stalemate":"逼和","checkmate":"将死","continue":"继续","resign":"认输","offerDraw":"提议和棋"}
+  "positions":"{{count}} 个局面","positionProgress":"第 {{current}} / {{total}} 个局面",
+  "prompts":{"moveTarget":"走出指定的着法。","findMove":"找出体现“{{lesson}}”的着法。","selectConcept":"选择最能体现“{{lesson}}”的棋子或格子。","selectMover":"选择轮到走棋一方的棋子。","selectTarget":"点击标记的格子。","boardSquare":"把棋子走到 {{square}}。纵线从 a 到 h，横线从 1 到 8。","choose":"为这个局面选择正确答案。"},
+  "coach":"{{lesson}} · 第 {{current}} / {{total}} 个局面。观察棋盘并解题。","coachBoard":"先确定棋盘方向，再根据纵线和横线把棋子走到 {{square}}。",
+  "pieceNames":{"piece":"棋子","p":"兵","n":"马","b":"象","r":"车","q":"后","k":"王"},
+  "coachDynamic":{"check":"轮到{{side}}走棋，而且王正被将军：{{square}} 上的{{attacker}}正在攻击王。找出最干净的解将方式。","capture":"轮到{{side}}走棋。{{to}} 上的{{target}}周围存在具体张力。找出如何利用它来实现“{{lesson}}”，不要急着下结论。","position":"轮到{{side}}走棋。先完整阅读整个局面，再找出能够实现“{{lesson}}”的具体机会。","choice":"轮到{{side}}走棋。回答“{{lesson}}”之前先完整阅读整个局面。","hintCheck":"提示：沿着 {{square}} 上{{attacker}}的将军路线看向你的王。根据局面，你可以移动王、吃掉将军棋子，或用棋子挡住攻击线。","hintMove":"提示：先看 {{from}} 上的{{piece}}，想一想它变得活跃后会改变什么。目标是“{{lesson}}”。","hintChoice":"提示：回答“{{lesson}}”前，比较双方王的安全、合法着法和眼前的威胁。","success1":"看得很准。这正是这个局面要求的着法。","success2":"很好。你正确读懂了局面并找到了关键思路。","success3":"发现得漂亮。这一步干净地解决了问题。","success4":"完美。你在看清整个局面的同时找到了正确答案。","error":"这步棋合法，但不是这里的正确解法。重新阅读局面，再尝试另一个思路。","illegal":"这步棋在这里不合法。重新选择棋子并检查它可以到达的格子。"},
+  "correct":"着法正确。","illegal":"这步棋在这里不合法。","tryAgain":"这不是当前局面要求的着法。","completeLesson":"完成课程","completed":"已完成“{{lesson}}”","completedBody":"你已经解决了所有局面。下一课现已解锁。",
+  "choices":{"yes":"是","no":"否","white":"白方","black":"黑方","one":"1","three":"3","five":"5","nine":"9","draw":"和棋","stalemate":"逼和","checkmate":"将死","continue":"继续","resign":"认输","offerDraw":"提议和棋"}
 }
