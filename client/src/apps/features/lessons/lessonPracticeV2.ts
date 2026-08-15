@@ -4,13 +4,13 @@ import type { Square } from "chess.js";
 import type { CurriculumLesson } from "./curriculum";
 import {
     buildPracticeLesson as buildBasePracticeLesson
-} from "./lessonPractice";
+} from "./lessonPracticeBase";
 import type {
     ChoicePractice,
     PracticeLesson,
     PracticePosition,
     SelectPractice
-} from "./lessonPractice";
+} from "./lessonPracticeBase";
 
 const MARKER_SQUARES: Square[] = [
     "a6", "h6", "b6", "g6", "a3", "h3", "b3", "g3",
@@ -126,7 +126,7 @@ function foundationalSidePractice(lessonId: string): PracticePosition[] {
     const whiteBack: Square[] = ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"];
     const whitePawns: Square[] = ["a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"];
 
-    const positions: PracticePosition[] = [
+    return [
         select(
             `${lessonId}-full`,
             "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
@@ -148,8 +148,6 @@ function foundationalSidePractice(lessonId: string): PracticePosition[] {
             ["e1", "c3", "f3", "d4"]
         )
     ];
-
-    return positions;
 }
 
 function drawPractice(): PracticePosition[] {
