@@ -23,8 +23,8 @@
   },
   "coachDynamic": {
     "check": "Juegan {{side}} y su rey está en jaque: {{attacker}} en {{square}} lo está atacando. Encuentra la forma más limpia de salir del jaque.",
-    "capture": "Juegan {{side}}. {{piece}} de {{from}} puede actuar sobre {{target}} en {{to}}. Encuentra la jugada que hace funcionar {{lesson}} en esta posición.",
-    "position": "Juegan {{side}}. Empieza mirando {{piece}} en {{from}} y encuentra la jugada que hace funcionar {{lesson}} en esta posición.",
+    "capture": "Juegan {{side}}. Hay tensión alrededor de {{target}} en {{to}}. Encuentra cómo aprovecharla para aplicar {{lesson}} sin precipitarte.",
+    "position": "Juegan {{side}}. Lee primero toda la posición y busca la oportunidad concreta que permite aplicar {{lesson}}.",
     "choice": "Juegan {{side}}. Lee toda la posición antes de decidir la respuesta para {{lesson}}.",
     "hintCheck": "Pista: sigue la línea del jaque desde {{attacker}} en {{square}} hasta tu rey. Puedes salir moviendo el rey, capturando la pieza que da jaque o bloqueando la línea cuando sea posible.",
     "hintMove": "Pista: empieza por {{piece}} en {{from}} y pregúntate qué cambia si entra en juego. El objetivo es {{lesson}}.",
