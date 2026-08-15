@@ -1,5 +1,4 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 import { createRequire } from "node:module";
 import { spawnSync } from "node:child_process";
@@ -10,7 +9,9 @@ const tscPath = require.resolve("typescript/bin/tsc");
 
 const root = path.resolve(import.meta.dirname, "..");
 const lessonsRoot = path.join(root, "client/src/apps/features/lessons");
-const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "nexochess-lessons-"));
+const tempRoot = path.join(root, `.nexochess-lessons-check-${process.pid}`);
+fs.rmSync(tempRoot, { recursive: true, force: true });
+fs.mkdirSync(tempRoot, { recursive: true });
 
 function fail(message) {
     throw new Error(`[Lessons] ${message}`);
