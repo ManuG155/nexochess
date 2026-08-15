@@ -198,7 +198,7 @@ function LessonBoard({
         renderedStyles[brilliantSquare] = {
             ...(renderedStyles[brilliantSquare] || {}),
             "--nexo-lesson-brilliant": "true"
-        } as unknown as React.CSSProperties;
+        } as BoardSquareStyle;
     }
 
     const arrows = hintVisible
