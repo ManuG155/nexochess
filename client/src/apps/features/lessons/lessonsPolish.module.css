@@ -194,11 +194,11 @@
 
 @media (max-width: 980px) {
     .levelAtmosphere {
-        min-height: 2980px !important;
+        min-height: 3220px !important;
     }
 
     .pathStageTall {
-        height: 2740px !important;
+        height: 2960px !important;
     }
 
     .pathNodeSafe {
