@@ -1,0 +1,35 @@
+{
+  "positions": "{{count}} Stellungen",
+  "positionProgress": "Stellung {{current}} von {{total}}",
+  "prompts": {
+    "moveTarget": "Spiele den angegebenen Zug nach.",
+    "findMove": "Finde den Zug, der {{lesson}} zeigt.",
+    "selectConcept": "Wähle die Figur oder das Feld, das {{lesson}} am besten zeigt.",
+    "selectMover": "Wähle eine Figur der Seite, die am Zug ist.",
+    "selectTarget": "Klicke auf das markierte Feld.",
+    "choose": "Wähle die richtige Antwort für diese Stellung."
+  },
+  "coach": "{{lesson}} · Stellung {{current}} von {{total}}. Lies das Brett und löse sie.",
+  "correct": "Richtig. Weiter zur nächsten Stellung.",
+  "illegal": "Dieser Zug ist in dieser Stellung nicht legal.",
+  "tryAgain": "Das ist nicht die Idee dieser Aufgabe. Versuch es erneut oder nutze einen Hinweis.",
+  "completeLesson": "Lektion abschließen",
+  "completed": "{{lesson}} abgeschlossen",
+  "completedBody": "Du hast alle Stellungen gelöst. Die nächste Lektion ist jetzt verfügbar.",
+  "choices": {
+    "yes": "Ja",
+    "no": "Nein",
+    "white": "Weiß",
+    "black": "Schwarz",
+    "one": "1",
+    "three": "3",
+    "five": "5",
+    "nine": "9",
+    "draw": "Remis",
+    "stalemate": "Patt",
+    "checkmate": "Schachmatt",
+    "continue": "Weiterspielen",
+    "resign": "Aufgeben",
+    "offerDraw": "Remis anbieten"
+  }
+}
