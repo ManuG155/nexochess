@@ -1,38 +1,9 @@
 {
-  "positions": "{{count}} thế cờ",
-  "positionProgress": "Thế cờ {{current}} / {{total}}",
-  "prompts": {
-    "moveTarget": "Thực hiện nước đi được chỉ định.",
-    "findMove": "Tìm nước đi thể hiện {{lesson}}.",
-    "selectConcept": "Chọn quân cờ hoặc ô thể hiện rõ nhất {{lesson}}.",
-    "selectMover": "Chọn một quân của bên đang tới lượt.",
-    "selectTarget": "Nhấp vào ô được đánh dấu.",
-    "boardSquare": "Di chuyển quân cờ đến {{square}}. Cột đi từ a đến h và hàng từ 1 đến 8.",
-    "choose": "Chọn câu trả lời đúng cho thế cờ này."
-  },
-  "coach": "{{lesson}} · thế cờ {{current}} / {{total}}. Quan sát bàn cờ và giải nó.",
-  "coachBoard": "Xác định hướng bàn cờ rồi di chuyển quân đến {{square}} theo cột và hàng.",
-  "pieceNames": {"piece":"quân cờ","p":"tốt","n":"mã","b":"tượng","r":"xe","q":"hậu","k":"vua"},
-  "coachDynamic": {
-    "check": "Đến lượt {{side}} và vua đang bị chiếu: {{attacker}} ở {{square}} đang tấn công vua. Hãy tìm cách thoát chiếu gọn nhất.",
-    "capture": "Đến lượt {{side}}. {{piece}} ở {{from}} có thể tác động lên {{target}} ở {{to}}. Hãy tìm nước đi làm cho {{lesson}} hoạt động trong thế cờ này.",
-    "position": "Đến lượt {{side}}. Hãy bắt đầu bằng {{piece}} ở {{from}} và tìm nước đi thể hiện {{lesson}} trong thế cờ này.",
-    "choice": "Đến lượt {{side}}. Hãy đọc toàn bộ thế cờ trước khi trả lời về {{lesson}}.",
-    "hintCheck": "Gợi ý: lần theo đường chiếu từ {{attacker}} ở {{square}} đến vua của bạn. Tùy thế cờ, bạn có thể di chuyển vua, bắt quân đang chiếu hoặc chặn đường chiếu.",
-    "hintMove": "Gợi ý: bắt đầu với {{piece}} ở {{from}} và tự hỏi điều gì thay đổi nếu quân đó trở nên tích cực. Mục tiêu là {{lesson}}.",
-    "hintChoice": "Gợi ý: so sánh độ an toàn của vua, các nước hợp lệ và những mối đe dọa trực tiếp trước khi trả lời {{lesson}}.",
-    "success1": "Quan sát tuyệt vời. Đó chính xác là nước đi mà thế cờ yêu cầu.",
-    "success2": "Rất tốt. Bạn đã đọc đúng thế cờ và tìm ra ý tưởng then chốt.",
-    "success3": "Nhìn ra rất hay. Nước đi đó giải quyết vấn đề gọn gàng.",
-    "success4": "Hoàn hảo. Bạn tìm đúng lời giải mà vẫn nhìn được toàn bộ thế cờ.",
-    "error": "Nước đi đó hợp lệ, nhưng không phải lời giải đúng ở đây. Hãy đọc lại thế cờ và thử một ý tưởng khác.",
-    "illegal": "Nước đi đó không hợp lệ ở đây. Hãy chọn lại quân cờ và kiểm tra các ô có thể đi."
-  },
-  "correct": "Nước đi chính xác.",
-  "illegal": "Nước đi đó không hợp lệ ở đây.",
-  "tryAgain": "Đó không phải nước đi mà thế cờ này yêu cầu.",
-  "completeLesson": "Hoàn thành bài học",
-  "completed": "Đã hoàn thành {{lesson}}",
-  "completedBody": "Bạn đã giải tất cả các thế cờ. Bài học tiếp theo đã được mở.",
-  "choices": {"yes":"Có","no":"Không","white":"Trắng","black":"Đen","one":"1","three":"3","five":"5","nine":"9","draw":"Hòa","stalemate":"Hết nước","checkmate":"Chiếu hết","continue":"Tiếp tục","resign":"Đầu hàng","offerDraw":"Đề nghị hòa"}
+  "positions":"{{count}} thế cờ","positionProgress":"Thế cờ {{current}} / {{total}}",
+  "prompts":{"moveTarget":"Thực hiện nước đi được chỉ định.","findMove":"Tìm nước đi thể hiện {{lesson}}.","selectConcept":"Chọn quân cờ hoặc ô thể hiện rõ nhất {{lesson}}.","selectMover":"Chọn một quân của bên đang tới lượt.","selectTarget":"Nhấp vào ô được đánh dấu.","boardSquare":"Di chuyển quân cờ đến {{square}}. Cột đi từ a đến h và hàng từ 1 đến 8.","choose":"Chọn câu trả lời đúng cho thế cờ này."},
+  "coach":"{{lesson}} · thế cờ {{current}} / {{total}}. Quan sát bàn cờ và giải nó.","coachBoard":"Xác định hướng bàn cờ rồi di chuyển quân đến {{square}} theo cột và hàng.",
+  "pieceNames":{"piece":"quân cờ","p":"tốt","n":"mã","b":"tượng","r":"xe","q":"hậu","k":"vua"},
+  "coachDynamic":{"check":"Đến lượt {{side}} và vua đang bị chiếu: {{attacker}} ở {{square}} đang tấn công vua. Hãy tìm cách thoát chiếu gọn nhất.","capture":"Đến lượt {{side}}. Có sự căng thẳng quanh {{target}} ở {{to}}. Hãy tìm cách khai thác nó để áp dụng {{lesson}} mà không vội vàng.","position":"Đến lượt {{side}}. Hãy đọc toàn bộ thế cờ trước rồi tìm cơ hội cụ thể để áp dụng {{lesson}}.","choice":"Đến lượt {{side}}. Hãy đọc toàn bộ thế cờ trước khi trả lời về {{lesson}}.","hintCheck":"Gợi ý: lần theo đường chiếu từ {{attacker}} ở {{square}} đến vua của bạn. Tùy thế cờ, bạn có thể di chuyển vua, bắt quân đang chiếu hoặc chặn đường chiếu.","hintMove":"Gợi ý: bắt đầu với {{piece}} ở {{from}} và tự hỏi điều gì thay đổi nếu quân đó trở nên tích cực. Mục tiêu là {{lesson}}.","hintChoice":"Gợi ý: so sánh độ an toàn của vua, các nước hợp lệ và những mối đe dọa trực tiếp trước khi trả lời {{lesson}}.","success1":"Quan sát tuyệt vời. Đó chính xác là nước đi mà thế cờ yêu cầu.","success2":"Rất tốt. Bạn đã đọc đúng thế cờ và tìm ra ý tưởng then chốt.","success3":"Nhìn ra rất hay. Nước đi đó giải quyết vấn đề gọn gàng.","success4":"Hoàn hảo. Bạn tìm đúng lời giải mà vẫn nhìn được toàn bộ thế cờ.","error":"Nước đi đó hợp lệ, nhưng không phải lời giải đúng ở đây. Hãy đọc lại thế cờ và thử một ý tưởng khác.","illegal":"Nước đi đó không hợp lệ ở đây. Hãy chọn lại quân cờ và kiểm tra các ô có thể đi."},
+  "correct":"Nước đi chính xác.","illegal":"Nước đi đó không hợp lệ ở đây.","tryAgain":"Đó không phải nước đi mà thế cờ này yêu cầu.","completeLesson":"Hoàn thành bài học","completed":"Đã hoàn thành {{lesson}}","completedBody":"Bạn đã giải tất cả các thế cờ. Bài học tiếp theo đã được mở.",
+  "choices":{"yes":"Có","no":"Không","white":"Trắng","black":"Đen","one":"1","three":"3","five":"5","nine":"9","draw":"Hòa","stalemate":"Hết nước","checkmate":"Chiếu hết","continue":"Tiếp tục","resign":"Đầu hàng","offerDraw":"Đề nghị hòa"}
 }
