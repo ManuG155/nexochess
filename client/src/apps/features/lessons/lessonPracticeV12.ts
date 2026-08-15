@@ -1,6 +1,6 @@
 import type { CurriculumLesson } from "./curriculum";
 import { buildPracticeLesson as buildMoveFirstPracticeLesson } from "./lessonPracticeV11";
-import type { MovePractice, PracticeLesson } from "./lessonPracticeBase";
+import type { MovePractice, PracticeLesson, PracticePosition } from "./lessonPracticeBase";
 
 const kingSafetyMoves: MovePractice[] = [
     { id: "king-safety-rook-d", kind: "move", fen: "3r3k/8/8/8/3K4/8/8/8 w - - 0 1", prompt: "findMove", expected: { from: "d4", to: "c3" } },
@@ -53,11 +53,34 @@ const trappedPieceMoves: MovePractice[] = [
     { id: "trapped-bishop-e6", kind: "move", fen: "7k/8/4b3/8/8/8/8/K3R3 w - - 0 1", prompt: "findMove", expected: { from: "e1", to: "e6" } }
 ];
 
-export function buildPracticeLesson(lesson: CurriculumLesson): PracticeLesson {
+function buildDirectLesson(lesson: CurriculumLesson): PracticeLesson {
     if (lesson.id == "first-contact.king-safety-rule") return { lessonId: lesson.id, positions: kingSafetyMoves.slice(0, lesson.practiceCount) };
     if (lesson.id == "intermediate.threats") return { lessonId: lesson.id, positions: threatMoves.slice(0, lesson.practiceCount) };
     if (lesson.id == "intermediate.remove-defender") return { lessonId: lesson.id, positions: removeDefenderMoves.slice(0, lesson.practiceCount) };
     if (lesson.id == "intermediate.interference") return { lessonId: lesson.id, positions: interferenceMoves.slice(0, lesson.practiceCount) };
     if (lesson.id == "intermediate.trapped-piece") return { lessonId: lesson.id, positions: trappedPieceMoves.slice(0, lesson.practiceCount) };
     return buildMoveFirstPracticeLesson(lesson);
+}
+
+function buildCheckpoint(lesson: CurriculumLesson): PracticeLesson | undefined {
+    const sourceIds = lesson.id == "intermediate.checkpoint"
+        ? ["intermediate.remove-defender", "intermediate.pin", "intermediate.interference", "intermediate.fork", "intermediate.mating-net"]
+        : lesson.id == "ready.final-checkpoint"
+            ? ["ready.opposition", "ready.king-rook-mate", "intermediate.activity", "intermediate.remove-defender", "ready.outside-passer"]
+            : undefined;
+    if (!sourceIds) return undefined;
+
+    const positions: PracticePosition[] = [];
+    for (const sourceId of sourceIds) {
+        const sourceLesson: CurriculumLesson = { ...lesson, id: sourceId, practiceCount: 2 };
+        const source = buildDirectLesson(sourceLesson);
+        source.positions.forEach((position, index) => {
+            positions.push({ ...position, id: `${lesson.id}-${sourceId}-${index}` });
+        });
+    }
+    return { lessonId: lesson.id, positions: positions.slice(0, lesson.practiceCount) };
+}
+
+export function buildPracticeLesson(lesson: CurriculumLesson): PracticeLesson {
+    return buildCheckpoint(lesson) || buildDirectLesson(lesson);
 }
