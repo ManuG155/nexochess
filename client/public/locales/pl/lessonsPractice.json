@@ -1,0 +1,35 @@
+{
+  "positions": "{{count}} pozycji",
+  "positionProgress": "Pozycja {{current}} z {{total}}",
+  "prompts": {
+    "moveTarget": "Odtwórz wskazany ruch.",
+    "findMove": "Znajdź ruch pokazujący motyw {{lesson}}.",
+    "selectConcept": "Wybierz figurę lub pole, które najlepiej przedstawia {{lesson}}.",
+    "selectMover": "Wybierz figurę strony, która jest na ruchu.",
+    "selectTarget": "Kliknij zaznaczone pole.",
+    "choose": "Wybierz poprawną odpowiedź dla tej pozycji."
+  },
+  "coach": "{{lesson}} · pozycja {{current}} z {{total}}. Odczytaj planszę i rozwiąż ją.",
+  "correct": "Dobrze. Przejdź do następnej pozycji.",
+  "illegal": "Ten ruch nie jest legalny w tej pozycji.",
+  "tryAgain": "To nie jest idea tego ćwiczenia. Spróbuj ponownie albo użyj podpowiedzi.",
+  "completeLesson": "Ukończ lekcję",
+  "completed": "{{lesson}} ukończona",
+  "completedBody": "Rozwiązałeś wszystkie pozycje. Następna lekcja jest już dostępna.",
+  "choices": {
+    "yes": "Tak",
+    "no": "Nie",
+    "white": "Białe",
+    "black": "Czarne",
+    "one": "1",
+    "three": "3",
+    "five": "5",
+    "nine": "9",
+    "draw": "Remis",
+    "stalemate": "Pat",
+    "checkmate": "Mat",
+    "continue": "Kontynuuj",
+    "resign": "Poddaj się",
+    "offerDraw": "Zaproponuj remis"
+  }
+}

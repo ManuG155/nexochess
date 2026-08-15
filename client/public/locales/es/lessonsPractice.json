@@ -1,0 +1,35 @@
+{
+  "positions": "{{count}} posiciones",
+  "positionProgress": "Posición {{current}} de {{total}}",
+  "prompts": {
+    "moveTarget": "Reproduce el movimiento indicado.",
+    "findMove": "Encuentra la jugada que demuestra {{lesson}}.",
+    "selectConcept": "Selecciona la pieza o casilla que mejor representa {{lesson}}.",
+    "selectMover": "Selecciona una pieza del bando al que le toca mover.",
+    "selectTarget": "Clica en la casilla marcada.",
+    "choose": "Elige la respuesta correcta para esta posición."
+  },
+  "coach": "{{lesson}} · posición {{current}} de {{total}}. Mira el tablero y resuélvela.",
+  "correct": "Correcto. Continúa con la siguiente posición.",
+  "illegal": "Ese movimiento no es legal en esta posición.",
+  "tryAgain": "No es la idea de este ejercicio. Prueba otra vez o usa una pista.",
+  "completeLesson": "Completar lección",
+  "completed": "{{lesson}} completada",
+  "completedBody": "Has resuelto todas las posiciones. La siguiente lección ya está disponible.",
+  "choices": {
+    "yes": "Sí",
+    "no": "No",
+    "white": "Blancas",
+    "black": "Negras",
+    "one": "1",
+    "three": "3",
+    "five": "5",
+    "nine": "9",
+    "draw": "Tablas",
+    "stalemate": "Ahogado",
+    "checkmate": "Jaque mate",
+    "continue": "Continuar",
+    "resign": "Rendirse",
+    "offerDraw": "Ofrecer tablas"
+  }
+}

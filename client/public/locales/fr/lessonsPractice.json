@@ -1,0 +1,35 @@
+{
+  "positions": "{{count}} positions",
+  "positionProgress": "Position {{current}} sur {{total}}",
+  "prompts": {
+    "moveTarget": "Reproduis le coup indiqué.",
+    "findMove": "Trouve le coup qui illustre {{lesson}}.",
+    "selectConcept": "Sélectionne la pièce ou la case qui représente le mieux {{lesson}}.",
+    "selectMover": "Sélectionne une pièce du camp qui doit jouer.",
+    "selectTarget": "Clique sur la case indiquée.",
+    "choose": "Choisis la bonne réponse pour cette position."
+  },
+  "coach": "{{lesson}} · position {{current}} sur {{total}}. Lis l'échiquier et résous-la.",
+  "correct": "Correct. Passe à la position suivante.",
+  "illegal": "Ce coup n'est pas légal dans cette position.",
+  "tryAgain": "Ce n'est pas l'idée de l'exercice. Réessaie ou utilise un indice.",
+  "completeLesson": "Terminer la leçon",
+  "completed": "{{lesson}} terminée",
+  "completedBody": "Tu as résolu toutes les positions. La leçon suivante est maintenant disponible.",
+  "choices": {
+    "yes": "Oui",
+    "no": "Non",
+    "white": "Blancs",
+    "black": "Noirs",
+    "one": "1",
+    "three": "3",
+    "five": "5",
+    "nine": "9",
+    "draw": "Nulle",
+    "stalemate": "Pat",
+    "checkmate": "Échec et mat",
+    "continue": "Continuer",
+    "resign": "Abandonner",
+    "offerDraw": "Proposer la nulle"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "positions": "{{count}} posições",
+  "positionProgress": "Posição {{current}} de {{total}}",
+  "prompts": {
+    "moveTarget": "Reproduz o lance indicado.",
+    "findMove": "Encontra o lance que demonstra {{lesson}}.",
+    "selectConcept": "Seleciona a peça ou casa que melhor representa {{lesson}}.",
+    "selectMover": "Seleciona uma peça do lado que está a jogar.",
+    "selectTarget": "Clica na casa assinalada.",
+    "choose": "Escolhe a resposta correta para esta posição."
+  },
+  "coach": "{{lesson}} · posição {{current}} de {{total}}. Lê o tabuleiro e resolve-a.",
+  "correct": "Correto. Continua para a próxima posição.",
+  "illegal": "Esse lance não é legal nesta posição.",
+  "tryAgain": "Essa não é a ideia deste exercício. Tenta novamente ou usa uma dica.",
+  "completeLesson": "Concluir lição",
+  "completed": "{{lesson}} concluída",
+  "completedBody": "Resolveste todas as posições. A próxima lição já está disponível.",
+  "choices": {
+    "yes": "Sim",
+    "no": "Não",
+    "white": "Brancas",
+    "black": "Pretas",
+    "one": "1",
+    "three": "3",
+    "five": "5",
+    "nine": "9",
+    "draw": "Empate",
+    "stalemate": "Afogamento",
+    "checkmate": "Xeque-mate",
+    "continue": "Continuar",
+    "resign": "Desistir",
+    "offerDraw": "Oferecer empate"
+  }
+}
