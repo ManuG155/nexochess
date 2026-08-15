@@ -21,195 +21,125 @@ import {
     getNextCurriculumLesson,
     TOTAL_LESSONS
 } from "./curriculum";
-import {
-    evaluateMoveAttempt,
-    evaluateSquareAttempt
-} from "./lessonEngine";
-import { getLessonFeedbackVisual } from "./feedbackAdapter";
+import type { CurriculumLesson, CurriculumTone } from "./curriculum";
 import {
     loadLessonsProgress,
     markLessonComplete,
     setCurrentLesson,
     unlockLessonsThrough
 } from "./progress";
-import { rookLesson } from "./rookLesson";
+import {
+    buildPracticeLesson
+} from "./lessonPractice";
 import type {
-    AttemptResult,
-    LessonHint,
-    LessonOutcome
-} from "./lessonModel";
+    PracticeChoice,
+    PracticePosition
+} from "./lessonPractice";
+import LessonLandmark from "./LessonLandmarks";
+import type { LandmarkVariant } from "./LessonLandmarks";
 
-import * as styles from "./lessons.module.css";
-import * as v3 from "./lessonsV3.module.css";
+import * as styles from "./lessonsV4.module.css";
 
 type View = "path" | "lesson";
-type CurriculumLessonEntry = (typeof curriculumLessons)[number];
 type PathNodeState = "complete" | "current" | "available" | "locked";
+type SessionResult = "success" | "error" | "illegal" | null;
+type CurriculumLessonEntry = (typeof curriculumLessons)[number];
 
-interface FeedbackState {
-    outcome: LessonOutcome;
-    key: string;
-}
+type BoardSquareStyle = Record<string, string | number>;
 
 interface LessonBoardSquareProps {
     children: React.ReactNode;
     square: Square;
     squareColor: "white" | "black";
-    style: Record<string, string | number>;
+    style: BoardSquareStyle;
 }
 
-const LessonBoardSquare = React.forwardRef<
-    HTMLDivElement,
-    LessonBoardSquareProps
->(({ children, style }, ref) => {
-    const brilliant = style["--nexo-lesson-brilliant"];
-    const squareStyle = { ...style };
-    delete squareStyle["--nexo-lesson-brilliant"];
+const LessonBoardSquare = React.forwardRef<HTMLDivElement, LessonBoardSquareProps>(
+    ({ children, style }, ref) => {
+        const brilliant = style["--nexo-lesson-brilliant"];
+        const squareStyle = { ...style };
+        delete squareStyle["--nexo-lesson-brilliant"];
 
-    return <div ref={ref} style={{ ...squareStyle, position: "relative" }}>
-        {brilliant && <>
-            <span className={v3.lessonSquareFeedback} aria-hidden="true"/>
-            <span className={v3.lessonBrilliantBadge} aria-hidden="true">!!</span>
-        </>}
-        {children}
-    </div>;
-});
+        return <div ref={ref} style={{ ...squareStyle, position: "relative" }}>
+            {brilliant && <>
+                <span className={styles.lessonSquareFeedback} aria-hidden="true"/>
+                <span className={styles.lessonBrilliantBadge} aria-hidden="true">!!</span>
+            </>}
+            {children}
+        </div>;
+    }
+);
 
 LessonBoardSquare.displayName = "LessonBoardSquare";
 
 const RANK_COORDINATES = ["8", "7", "6", "5", "4", "3", "2", "1"];
 const FILE_COORDINATES = ["a", "b", "c", "d", "e", "f", "g", "h"];
-const TRAIL_X = [
-    50, 35, 25, 29, 43, 63, 77, 74, 59, 40,
-    26, 22, 34, 54, 73, 79, 68, 49, 31, 27
+const PATH_WIDTH = 880;
+const PATH_HEIGHT = 2240;
+const NODE_Y_START = 170;
+const NODE_Y_STEP = 102;
+const NODE_X = [
+    49, 40, 32, 34, 45,
+    58, 67, 64, 53, 40,
+    31, 35, 48, 62, 69,
+    61, 48, 35, 39, 54
 ];
-const TRAIL_STEP = 126;
-const TRAIL_TOP = 150;
 
-function isPositiveOutcome(outcome: LessonOutcome) {
-    return outcome == "success" || outcome == "acceptedAlternative";
+function nodeY(index: number) {
+    return NODE_Y_START + index * NODE_Y_STEP;
 }
 
-function buildTrailPath(count: number) {
+function buildRailPath(count: number) {
+    if (!count) return "";
+
     const points = Array.from({ length: count }, (_, index) => ({
-        x: TRAIL_X[index % TRAIL_X.length] * 10,
-        y: TRAIL_TOP + index * TRAIL_STEP
+        x: NODE_X[index % NODE_X.length] / 100 * PATH_WIDTH,
+        y: nodeY(index)
     }));
-    if (points.length == 0) return "";
 
     let d = `M ${points[0].x} ${points[0].y}`;
-    for (let index = 1; index < points.length; index++) {
+
+    for (let index = 1; index < points.length; index += 1) {
         const previous = points[index - 1];
         const current = points[index];
-        const midY = (previous.y + current.y) / 2;
-        d += ` C ${previous.x} ${midY}, ${current.x} ${midY}, ${current.x} ${current.y}`;
+        const middleY = (previous.y + current.y) / 2;
+        d += ` C ${previous.x} ${middleY}, ${current.x} ${middleY}, ${current.x} ${current.y}`;
     }
+
     return d;
 }
 
-function LevelArtwork({ levelIndex }: { levelIndex: number }) {
-    const art = levelIndex == 0
-        ? ["observatory", "garden", "observatory"]
-        : levelIndex == 1
-            ? ["garden", "sanctum", "garden"]
-            : levelIndex == 2
-                ? ["forge", "observatory", "forge"]
-                : ["sanctum", "forge", "sanctum"];
-
-    return <div className={v3.levelArtwork} aria-hidden="true">
-        {art.map((kind, index) => <div
-            key={`${kind}-${index}`}
-            className={v3.artScene}
-            data-art={kind}
-        >
-            <span className={v3.artHalo}/>
-            <span className={v3.artCore}/>
-            <span className={v3.artSpire}/>
-            <span className={v3.artPedestal}/>
-        </div>)}
-    </div>;
-}
-
-function PathNode({
-    label,
-    symbol,
-    number,
-    practiceCount,
-    brilliant,
-    state,
-    xPercent,
-    y,
-    justCompleted,
-    newlyUnlocked,
-    onClick
-}: {
-    label: string;
-    symbol: string;
-    number: number;
-    practiceCount: number;
-    brilliant?: boolean;
-    state: PathNodeState;
-    xPercent: number;
-    y: number;
-    justCompleted: boolean;
-    newlyUnlocked: boolean;
-    onClick: () => void;
-}) {
-    return <div
-        id={`lesson-node-${number}`}
-        className={v3.journeyNode}
-        data-state={state}
-        data-just-completed={justCompleted || undefined}
-        data-newly-unlocked={newlyUnlocked || undefined}
-        style={{
-            "--node-x": `${xPercent}%`,
-            "--node-y": `${y}px`
-        } as React.CSSProperties}
-    >
-        <button
-            type="button"
-            className={v3.journeyNodeButton}
-            onClick={onClick}
-            aria-label={`${number}. ${label}`}
-        >
-            <span className={v3.nodeNumberV3}>{String(number).padStart(2, "0")}</span>
-            <span className={v3.nodeSymbolV3} aria-hidden="true">
-                {state == "complete" ? "✓" : symbol}
-            </span>
-            {brilliant && <span className={v3.brilliantMark} aria-hidden="true">!!</span>}
-        </button>
-        <strong className={v3.nodeLabelV3}>{label}</strong>
-        <span className={v3.practiceBadge} aria-hidden="true">◫ {practiceCount}</span>
-    </div>;
+function getToneLevel(tone: CurriculumTone) {
+    return curriculumLevels.find(level => level.tone == tone) || curriculumLevels[0];
 }
 
 function LessonBoard({
+    position,
     fen,
     selectedFrom,
-    resolved,
-    stepKind,
+    result,
     pieces,
     darkSquareColour,
     lightSquareColour,
     coordinates,
-    squareStyles,
-    arrows,
+    legalMoveHints,
+    hintVisible,
     brilliantSquare,
     onSquareClick,
     onPieceDrop,
     onPieceDragBegin,
     onPieceDragEnd
 }: {
+    position: PracticePosition;
     fen: string;
     selectedFrom?: Square;
-    resolved: boolean;
-    stepKind: string;
+    result: SessionResult;
     pieces: ReturnType<typeof createCustomPieces>;
     darkSquareColour: string;
     lightSquareColour: string;
     coordinates: "inside" | "outside";
-    squareStyles: NonNullable<React.ComponentProps<typeof Chessboard>["customSquareStyles"]>;
-    arrows?: Array<[Square, Square]>;
+    legalMoveHints: boolean;
+    hintVisible: boolean;
     brilliantSquare?: Square;
     onSquareClick: (square: string) => void;
     onPieceDrop: (from: string, to: string) => boolean;
@@ -217,47 +147,106 @@ function LessonBoard({
     onPieceDragEnd: () => void;
 }) {
     const outside = coordinates == "outside";
-    const renderedStyles = { ...squareStyles };
+    const squareStyles: NonNullable<React.ComponentProps<typeof Chessboard>["customSquareStyles"]> = {};
 
+    function mergeSquareStyle(square: Square, style: React.CSSProperties) {
+        squareStyles[square] = {
+            ...(squareStyles[square] || {}),
+            ...style
+        };
+    }
+
+    if (selectedFrom) {
+        mergeSquareStyle(selectedFrom, {
+            boxShadow: "inset 0 0 0 4px rgba(109, 169, 255, .9)"
+        });
+    }
+
+    if (selectedFrom && position.kind == "move" && !result && legalMoveHints) {
+        try {
+            const board = new Chess(fen);
+            board.moves({ square: selectedFrom, verbose: true }).forEach(move => {
+                const target = move.to as Square;
+                const occupied = board.get(target);
+                mergeSquareStyle(
+                    target,
+                    occupied
+                        ? { boxShadow: "inset 0 0 0 5px rgba(15, 23, 34, .36)" }
+                        : {
+                            backgroundImage:
+                                "radial-gradient(circle, rgba(15, 23, 34, .43) 0 16%, transparent 17%)"
+                        }
+                );
+            });
+        } catch {
+            // An invalid teaching position must not break the whole page.
+        }
+    }
+
+    const shouldRevealFocus = hintVisible || position.prompt == "selectTarget";
+    if (shouldRevealFocus) {
+        const hintSquares = position.focusSquares
+            || (position.kind == "move"
+                ? [position.expected.from, position.expected.to]
+                : position.kind == "select"
+                    ? position.acceptedSquares
+                    : []);
+
+        hintSquares.forEach(value => {
+            mergeSquareStyle(value, {
+                boxShadow: "inset 0 0 0 5px rgba(118, 211, 255, .78)"
+            });
+        });
+    }
+
+    const renderedStyles = { ...squareStyles };
     if (brilliantSquare) {
         renderedStyles[brilliantSquare] = {
             ...(renderedStyles[brilliantSquare] || {}),
             "--nexo-lesson-brilliant": "true"
-        } as Record<string, string | number>;
+        } as unknown as React.CSSProperties;
     }
 
+    const arrows = hintVisible
+        ? position.arrows
+            || (position.kind == "move"
+                ? [[position.expected.from, position.expected.to] as [Square, Square]]
+                : [])
+        : [];
+
     return <div
-        className={`${styles.boardShell} ${v3.boardShellV3}`}
+        className={styles.boardShellV4}
         data-coordinates={coordinates}
-        data-selected={Boolean(selectedFrom)}
     >
-        {outside && <div className={styles.rankCoordinates} aria-hidden="true">
+        {outside && <div className={styles.rankCoordinatesV4} aria-hidden="true">
             {RANK_COORDINATES.map(rank => <span key={rank}>{rank}</span>)}
         </div>}
 
-        <div className={`${styles.boardFrame} ${v3.boardFrameV3}`}>
+        <div className={styles.boardFrameV4}>
             <Chessboard
-                id="nexochess-lessons-board"
+                id="nexochess-lessons-board-v4"
                 position={fen}
+                arePiecesDraggable={position.kind == "move" && result != "success"}
                 onPieceDrop={onPieceDrop}
                 onPieceDragBegin={(_piece, source) => onPieceDragBegin(source)}
                 onPieceDragEnd={onPieceDragEnd}
                 onSquareClick={onSquareClick}
-                arePiecesDraggable={stepKind == "move" && !resolved}
                 customPieces={pieces}
-                customSquare={LessonBoardSquare as unknown as NonNullable<
-                    React.ComponentProps<typeof Chessboard>["customSquare"]
-                >}
-                customDarkSquareStyle={{ backgroundColor: darkSquareColour }}
                 customLightSquareStyle={{ backgroundColor: lightSquareColour }}
+                customDarkSquareStyle={{ backgroundColor: darkSquareColour }}
                 customSquareStyles={renderedStyles}
                 customArrows={arrows}
+                customSquare={
+                    LessonBoardSquare as unknown as NonNullable<
+                        React.ComponentProps<typeof Chessboard>["customSquare"]
+                    >
+                }
                 showBoardNotation={!outside}
                 snapToCursor
             />
         </div>
 
-        {outside && <div className={styles.fileCoordinates} aria-hidden="true">
+        {outside && <div className={styles.fileCoordinatesV4} aria-hidden="true">
             {FILE_COORDINATES.map(file => <span key={file}>{file}</span>)}
         </div>}
     </div>;
@@ -280,383 +269,392 @@ function LessonsApp() {
     }, [i18n.resolvedLanguage, tc]);
 
     const [view, setView] = useState<View>("path");
-    const [stepIndex, setStepIndex] = useState(0);
-    const [boardFen, setBoardFen] = useState(rookLesson.steps[0].fen);
-    const [feedback, setFeedback] = useState<FeedbackState | null>(null);
-    const [hintCount, setHintCount] = useState(0);
+    const [progress, setProgress] = useState(loadLessonsProgress);
+    const [activeLessonId, setActiveLessonId] = useState(progress.currentLessonId);
+    const [positionIndex, setPositionIndex] = useState(0);
+    const [boardFen, setBoardFen] = useState("");
     const [selectedFrom, setSelectedFrom] = useState<Square>();
+    const [result, setResult] = useState<SessionResult>(null);
+    const [hintVisible, setHintVisible] = useState(false);
+    const [brilliantSquare, setBrilliantSquare] = useState<Square>();
+    const [sessionComplete, setSessionComplete] = useState(false);
     const [coachPickerOpen, setCoachPickerOpen] = useState(false);
     const [jumpTarget, setJumpTarget] = useState<CurriculumLessonEntry | null>(null);
-    const [plannedTarget, setPlannedTarget] = useState<CurriculumLessonEntry | null>(null);
-    const [progress, setProgress] = useState(loadLessonsProgress);
-    const [justCompletedId, setJustCompletedId] = useState<string>();
-    const [newlyUnlockedId, setNewlyUnlockedId] = useState<string>();
-    const [brilliantSquare, setBrilliantSquare] = useState<Square>();
+    const [recentlyUnlockedId, setRecentlyUnlockedId] = useState<string>();
+    const [recentlyCompletedId, setRecentlyCompletedId] = useState<string>();
 
     const coach = getCoachById(settings.appearance.selectedCoach);
-    const step = rookLesson.steps[stepIndex];
-    const activeCurriculumLesson = curriculumLessons.find(item => item.id == rookLesson.id);
-    const activeTone = activeCurriculumLesson?.tone || "ice";
-    const resolved = feedback ? isPositiveOutcome(feedback.outcome) : false;
-    const hints = step.hints || [];
-    const activeHint: LessonHint | undefined = hintCount > 0
-        ? hints[Math.min(hintCount - 1, hints.length - 1)]
-        : undefined;
-    const coachText = feedback
-        ? t(feedback.key)
-        : t(step.coachKey, { coach: coach.name });
+    const activeLesson = curriculumLessons.find(item => item.id == activeLessonId)
+        || curriculumLessons[0];
+    const practiceLesson = useMemo(
+        () => buildPracticeLesson(activeLesson),
+        [activeLesson.id]
+    );
+    const position = practiceLesson.positions[Math.min(
+        positionIndex,
+        Math.max(0, practiceLesson.positions.length - 1)
+    )];
+    const activeLevel = getToneLevel(activeLesson.tone);
 
-    useEffect(() => {
-        setBoardFen(step.fen);
-        setFeedback(null);
-        setHintCount(0);
-        setSelectedFrom(undefined);
-        setBrilliantSquare(undefined);
-    }, [step.id]);
-
-    useEffect(() => {
-        if (view == "lesson") window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-    }, [view]);
-
-    function titleFor(item: CurriculumLessonEntry) {
-        if (item.titleIndex >= 0 && lessonTitles[item.titleIndex]) {
-            return lessonTitles[item.titleIndex];
+    function titleFor(lesson: CurriculumLessonEntry | CurriculumLesson) {
+        if (lesson.titleIndex >= 0) {
+            return lessonTitles[lesson.titleIndex] || lesson.titleEn || lesson.id;
         }
-        const language = i18n.resolvedLanguage || i18n.language || "en";
-        return language.startsWith("es")
-            ? (item.titleEs || item.titleEn || item.id)
-            : (item.titleEn || item.titleEs || item.id);
+
+        const language = i18n.resolvedLanguage || i18n.language;
+        if (language?.toLowerCase().startsWith("es") && lesson.titleEs) {
+            return lesson.titleEs;
+        }
+        return lesson.titleEn || lesson.titleEs || lesson.id;
     }
+
+    const activeTitle = titleFor(activeLesson);
+
+    useEffect(() => {
+        if (!position) return;
+        setBoardFen(position.fen);
+        setSelectedFrom(undefined);
+        setResult(null);
+        setHintVisible(false);
+        setBrilliantSquare(undefined);
+    }, [position?.id]);
+
+    useEffect(() => {
+        if (view == "lesson") {
+            window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+        }
+    }, [view, activeLessonId]);
 
     function chooseCoach(id: CoachId) {
         setSettings(current => ({
             ...current,
-            appearance: { ...current.appearance, selectedCoach: id }
+            appearance: {
+                ...current.appearance,
+                selectedCoach: id
+            }
         }));
         setCoachPickerOpen(false);
     }
 
-    function resetRookLesson() {
-        setStepIndex(0);
-        setBoardFen(rookLesson.steps[0].fen);
-        setFeedback(null);
-        setHintCount(0);
+    function startLesson(lesson: CurriculumLessonEntry) {
+        const nextProgress = setCurrentLesson(progress, lesson.id);
+        setProgress(nextProgress);
+        setActiveLessonId(lesson.id);
+        setPositionIndex(0);
+        setSessionComplete(false);
+        setResult(null);
+        setHintVisible(false);
         setSelectedFrom(undefined);
         setBrilliantSquare(undefined);
         setView("lesson");
     }
 
-    function openCurriculumLesson(item: CurriculumLessonEntry) {
-        if (!progress.unlockedLessonIds.includes(item.id)) {
-            setJumpTarget(item);
+    function openLesson(lesson: CurriculumLessonEntry) {
+        if (!progress.unlockedLessonIds.includes(lesson.id)) {
+            setJumpTarget(lesson);
             return;
         }
-        setProgress(current => setCurrentLesson(current, item.id));
-        if (item.playable && item.id == rookLesson.id) {
-            resetRookLesson();
-            return;
-        }
-        setPlannedTarget(item);
+        startLesson(lesson);
     }
 
     function confirmJump() {
         if (!jumpTarget) return;
+
+        const target = jumpTarget;
         const next = unlockLessonsThrough(
             progress,
             curriculumLessons.map(item => item.id),
-            jumpTarget.id
+            target.id
         );
         setProgress(next);
-        const target = jumpTarget;
         setJumpTarget(null);
-        if (target.playable && target.id == rookLesson.id) {
-            resetRookLesson();
-            return;
-        }
-        requestAnimationFrame(() => {
-            const number = curriculumLessons.findIndex(item => item.id == target.id) + 1;
-            document.getElementById(`lesson-node-${number}`)
-                ?.scrollIntoView({ block: "center", behavior: "smooth" });
-        });
-    }
-
-    function registerResult(result: AttemptResult) {
-        setFeedback({ outcome: result.outcome, key: result.feedbackKey });
-        if (isPositiveOutcome(result.outcome) && result.resultingFen) {
-            setBoardFen(result.resultingFen);
-        }
-        if (isPositiveOutcome(result.outcome) && result.san) {
-            playBoardMoveSound(result.san);
-        }
-    }
-
-    function tryMove(from: Square, to: Square) {
-        if (step.kind != "move" || resolved) return false;
-        const result = evaluateMoveAttempt(step, from, to);
-        registerResult(result);
+        setActiveLessonId(target.id);
+        setPositionIndex(0);
+        setSessionComplete(false);
+        setResult(null);
+        setHintVisible(false);
         setSelectedFrom(undefined);
-        if (isPositiveOutcome(result.outcome) && activeCurriculumLesson?.brilliant) {
-            setBrilliantSquare(to);
-            window.setTimeout(() => setBrilliantSquare(undefined), 1350);
+        setBrilliantSquare(undefined);
+        setView("lesson");
+    }
+
+    function movesMatch(a: { from: Square; to: Square }, b: { from: Square; to: Square }) {
+        return a.from == b.from && a.to == b.to;
+    }
+
+    function registerMove(from: Square, to: Square) {
+        if (!position || position.kind != "move" || result == "success") return false;
+
+        const attempted = { from, to };
+        const correct = movesMatch(attempted, position.expected)
+            || Boolean(position.accepted?.some(move => movesMatch(attempted, move)));
+
+        let board: Chess;
+        try {
+            board = new Chess(boardFen);
+        } catch {
+            setResult("illegal");
+            return false;
         }
-        return isPositiveOutcome(result.outcome);
+
+        let move;
+        try {
+            move = board.move({ from, to, promotion: "q" });
+        } catch {
+            setResult("illegal");
+            setSelectedFrom(undefined);
+            return false;
+        }
+
+        if (!move) {
+            setResult("illegal");
+            setSelectedFrom(undefined);
+            return false;
+        }
+
+        if (!correct) {
+            setResult("error");
+            setSelectedFrom(undefined);
+            return false;
+        }
+
+        setBoardFen(board.fen());
+        setResult("success");
+        setSelectedFrom(undefined);
+        playBoardMoveSound(move.san);
+
+        if (position.brilliant || activeLesson.brilliant) {
+            setBrilliantSquare(to);
+            window.setTimeout(() => setBrilliantSquare(undefined), 1380);
+        }
+
+        return true;
     }
 
     function handleSquareClick(name: string) {
-        const square = name as Square;
-        if (step.kind == "selectSquare" && !resolved) {
-            registerResult(evaluateSquareAttempt(step, square));
+        if (!position || result == "success") return;
+        const target = name as Square;
+
+        if (position.kind == "select") {
+            setResult(position.acceptedSquares.includes(target) ? "success" : "error");
             return;
         }
-        if (step.kind != "move" || resolved) return;
-        const board = new Chess(boardFen);
-        const piece = board.get(square);
+
+        if (position.kind != "move") return;
+
+        let board: Chess;
+        try {
+            board = new Chess(boardFen);
+        } catch {
+            setResult("illegal");
+            return;
+        }
+
+        const piece = board.get(target);
+        const turn = board.turn();
+
         if (!selectedFrom) {
-            if (piece?.color == "w") setSelectedFrom(square);
+            if (piece?.color == turn) setSelectedFrom(target);
             return;
         }
-        if (selectedFrom == square) {
+
+        if (selectedFrom == target) {
             setSelectedFrom(undefined);
             return;
         }
-        if (piece?.color == "w") {
-            setSelectedFrom(square);
+
+        if (piece?.color == turn) {
+            setSelectedFrom(target);
             return;
         }
-        tryMove(selectedFrom, square);
+
+        registerMove(selectedFrom, target);
     }
 
-    function answerChoice(optionId: string) {
-        if (step.kind != "multipleChoice" || resolved) return;
-        registerResult(optionId == step.correctOptionId
-            ? { outcome: "success", feedbackKey: step.successKey }
-            : { outcome: "conceptualError", feedbackKey: step.errorKey });
+    function answerChoice(choice: PracticeChoice) {
+        if (!position || position.kind != "choice" || result == "success") return;
+        setResult(choice == position.correctChoice ? "success" : "error");
     }
 
-    function advance() {
-        if (step.kind == "completion") {
-            setView("path");
-            const targetId = newlyUnlockedId || justCompletedId || progress.currentLessonId;
-            requestAnimationFrame(() => {
-                const number = curriculumLessons.findIndex(item => item.id == targetId) + 1;
-                document.getElementById(`lesson-node-${Math.max(1, number)}`)
-                    ?.scrollIntoView({ block: "center", behavior: "smooth" });
-            });
-            window.setTimeout(() => {
-                setJustCompletedId(undefined);
-                setNewlyUnlockedId(undefined);
-            }, 1500);
+    function advancePosition() {
+        if (result != "success") return;
+
+        if (positionIndex + 1 < practiceLesson.positions.length) {
+            setPositionIndex(value => value + 1);
             return;
         }
-        if (step.kind != "message" && !resolved) return;
-        const nextIndex = Math.min(stepIndex + 1, rookLesson.steps.length - 1);
-        const nextStep = rookLesson.steps[nextIndex];
-        if (nextStep.kind == "completion") {
-            const nextCurriculumLesson = getNextCurriculumLesson(rookLesson.id);
-            setProgress(current => markLessonComplete(
-                current,
-                rookLesson.id,
-                nextCurriculumLesson?.id
-            ));
-            setJustCompletedId(rookLesson.id);
-            setNewlyUnlockedId(nextCurriculumLesson?.id);
-        }
-        setStepIndex(nextIndex);
+
+        const nextLesson = getNextCurriculumLesson(activeLesson.id);
+        const nextProgress = markLessonComplete(
+            progress,
+            activeLesson.id,
+            nextLesson?.id
+        );
+
+        setProgress(nextProgress);
+        setRecentlyCompletedId(activeLesson.id);
+        setRecentlyUnlockedId(nextLesson?.id);
+        setSessionComplete(true);
     }
 
-    const squareStyles: NonNullable<
-        React.ComponentProps<typeof Chessboard>["customSquareStyles"]
-    > = {};
+    function finishLesson() {
+        const nextLesson = getNextCurriculumLesson(activeLesson.id);
+        setView("path");
 
-    function mergeSquareStyle(square: Square, style: React.CSSProperties) {
-        squareStyles[square] = { ...(squareStyles[square] || {}), ...style };
+        window.setTimeout(() => {
+            const targetId = nextLesson?.id || activeLesson.id;
+            document
+                .getElementById(`lesson-node-${targetId}`)
+                ?.scrollIntoView({ block: "center", behavior: "smooth" });
+        }, 90);
     }
 
-    if (
-        selectedFrom
-        && step.kind == "move"
-        && !resolved
-        && settings.themes.board.legalMoveHints
-    ) {
-        const board = new Chess(boardFen);
-        board.moves({ square: selectedFrom, verbose: true }).forEach(move => {
-            const occupied = board.get(move.to as Square);
-            mergeSquareStyle(
-                move.to as Square,
-                occupied
-                    ? { boxShadow: "inset 0 0 0 5px rgba(18,24,34,.34)" }
-                    : { backgroundImage: "radial-gradient(circle, rgba(18,24,34,.42) 0 16%, transparent 17%)" }
-            );
-        });
-    }
-
-    if (selectedFrom) {
-        mergeSquareStyle(selectedFrom, {
-            boxShadow: "inset 0 0 0 4px rgba(96,151,255,.92)"
-        });
-    }
-    activeHint?.highlightSquares?.forEach(square => {
-        mergeSquareStyle(square, {
-            boxShadow: "inset 0 0 0 5px rgba(94,184,255,.82)"
-        });
-    });
-
-    const feedbackVisual = feedback
-        ? getLessonFeedbackVisual(feedback.outcome)
-        : undefined;
-    const lessonProgressPercent = Math.round(
-        stepIndex / Math.max(1, rookLesson.steps.length - 1) * 100
-    );
     const completedCount = curriculumLessons.filter(
-        item => progress.completedLessonIds.includes(item.id)
+        lesson => progress.completedLessonIds.includes(lesson.id)
     ).length;
     const pathProgressPercent = Math.round(completedCount / TOTAL_LESSONS * 100);
+    const lessonProgressPercent = practiceLesson.positions.length
+        ? Math.round((positionIndex + (result == "success" ? 1 : 0)) / practiceLesson.positions.length * 100)
+        : 0;
 
     if (view == "path") {
-        let lessonNumber = 0;
-        return <main className={`${styles.shell} ${styles.pathShell} ${v3.pathShellV3}`}>
-            <section className={styles.pathHero}>
-                <div className={styles.heroCopy}>
-                    <span className={styles.eyebrow}>{t("page.eyebrow")}</span>
+        return <main className={`${styles.shellV4} ${styles.pathPage}`} data-tone="ice">
+            <section className={styles.pathHeroV4}>
+                <div className={styles.heroCopyV4}>
+                    <span>{t("page.eyebrow")}</span>
                     <h1>{t("page.title")}</h1>
                     <p>{t("page.subtitle")}</p>
                 </div>
-                <div className={styles.heroProgress}>
+
+                <div className={styles.heroProgressV4}>
                     <span>{t("path.progressLabel")}</span>
                     <strong>{completedCount} / {TOTAL_LESSONS}</strong>
-                    <div className={`${styles.progressTrack} ${v3.pathProgressV3}`}>
+                    <div className={styles.progressTrackV4}>
                         <i style={{ width: `${pathProgressPercent}%` }}/>
                     </div>
                 </div>
             </section>
 
-            <div className={`${styles.pathExperience} ${v3.pathExperienceV3}`}>
-                <div className={styles.pathStack}>
-                    {curriculumLevels.map((level, levelIndex) => {
-                        const pathHeight = TRAIL_TOP + (level.lessons.length - 1) * TRAIL_STEP + 260;
-                        const pathD = buildTrailPath(level.lessons.length);
-                        return <section
-                            key={level.id}
-                            className={`${styles.levelSection} ${v3.levelSectionV3}`}
-                            data-tone={level.tone}
-                        >
-                            <header className={`${styles.levelHeader} ${v3.levelHeaderV3}`}>
-                                <div>
-                                    <span>{tc(level.kickerKey)}</span>
-                                    <h2>{tc(level.titleKey)}</h2>
-                                    <p>{tc(level.descriptionKey)}</p>
-                                </div>
-                                <strong>{tc("levelLessonCount", { count: level.lessons.length })}</strong>
-                            </header>
+            <div className={styles.pathWorld}>
+                {curriculumLevels.map(level => {
+                    const rail = buildRailPath(level.lessons.length);
 
-                            <div className={v3.journeyCanvas} style={{ height: `${pathHeight}px` }}>
-                                <svg
-                                    className={v3.journeyRail}
-                                    viewBox={`0 0 1000 ${pathHeight}`}
-                                    preserveAspectRatio="none"
-                                    aria-hidden="true"
-                                >
-                                    <path className={v3.journeyRailGlow} d={pathD}/>
-                                    <path className={v3.journeyRailLine} d={pathD}/>
-                                </svg>
-                                <LevelArtwork levelIndex={levelIndex}/>
-
-                                {level.lessons.map((lessonEntry, index) => {
-                                    lessonNumber += 1;
-                                    const number = lessonNumber;
-                                    const complete = progress.completedLessonIds.includes(lessonEntry.id);
-                                    const unlocked = progress.unlockedLessonIds.includes(lessonEntry.id);
-                                    const current = progress.currentLessonId == lessonEntry.id;
-                                    const state: PathNodeState = complete
-                                        ? "complete"
-                                        : current
-                                            ? "current"
-                                            : unlocked
-                                                ? "available"
-                                                : "locked";
-                                    const item = {
-                                        ...lessonEntry,
-                                        levelId: level.id,
-                                        tone: level.tone
-                                    };
-                                    return <PathNode
-                                        key={lessonEntry.id}
-                                        label={titleFor(item)}
-                                        symbol={lessonEntry.symbol}
-                                        number={number}
-                                        practiceCount={lessonEntry.practiceCount}
-                                        brilliant={lessonEntry.brilliant}
-                                        state={state}
-                                        xPercent={TRAIL_X[index % TRAIL_X.length]}
-                                        y={TRAIL_TOP + index * TRAIL_STEP}
-                                        justCompleted={justCompletedId == lessonEntry.id}
-                                        newlyUnlocked={newlyUnlockedId == lessonEntry.id}
-                                        onClick={() => openCurriculumLesson(item)}
-                                    />;
-                                })}
+                    return <section
+                        key={level.id}
+                        className={styles.levelSection}
+                        data-tone={level.tone}
+                    >
+                        <header className={styles.levelHeaderV4}>
+                            <div>
+                                <span>{tc(level.kickerKey)}</span>
+                                <h2>{tc(level.titleKey)}</h2>
+                                <p>{tc(level.descriptionKey)}</p>
                             </div>
-                        </section>;
-                    })}
-                </div>
+                            <strong>{tc("levelLessonCount", { count: level.lessons.length })}</strong>
+                        </header>
 
-                <aside className={styles.pathCoachRail}>
-                    {settings.coach.enabled && <div className={`${styles.coachCard} ${v3.coachCardV3}`}>
-                        <button
-                            type="button"
-                            className={styles.coachPortraitButton}
-                            onClick={() => setCoachPickerOpen(true)}
-                            aria-label={t("coach.change", { coach: coach.name })}
-                            title={t("coach.change", { coach: coach.name })}
-                        >
-                            <CoachPortrait
-                                coach={coach}
-                                baseExpression="idle"
-                                speechText={t("coach.pathIntro")}
-                                animationsEnabled={settings.coach.animations}
-                                className={`${styles.coachPortrait} ${v3.coachPortraitV3}`}
-                            />
-                        </button>
-                        <div className={`${styles.speechBubble} ${v3.speechBubbleV3}`}>
-                            <span>{coach.name}</span>
-                            <p>{t("coach.pathIntro")}</p>
-                            <small>{t("coach.clickToChange")}</small>
+                        <div className={styles.pathStage}>
+                            <svg
+                                className={styles.pathRailSvg}
+                                viewBox={`0 0 ${PATH_WIDTH} ${PATH_HEIGHT}`}
+                                preserveAspectRatio="none"
+                                aria-hidden="true"
+                            >
+                                <path className={styles.pathRailShadow} d={rail}/>
+                                <path className={styles.pathRailBase} d={rail}/>
+                                <path className={styles.pathRailLight} d={rail}/>
+                            </svg>
+
+                            {[0, 1, 2, 3].map(slot => <div
+                                key={slot}
+                                className={styles.landmarkSlot}
+                                data-slot={slot}
+                                aria-hidden="true"
+                            >
+                                <LessonLandmark
+                                    tone={level.tone}
+                                    variant={slot as LandmarkVariant}
+                                />
+                            </div>)}
+
+                            {level.lessons.map((lesson, index) => {
+                                const entry = {
+                                    ...lesson,
+                                    levelId: level.id,
+                                    tone: level.tone
+                                };
+                                const complete = progress.completedLessonIds.includes(lesson.id);
+                                const unlocked = progress.unlockedLessonIds.includes(lesson.id);
+                                const current = progress.currentLessonId == lesson.id;
+                                const state: PathNodeState = complete
+                                    ? "complete"
+                                    : current
+                                        ? "current"
+                                        : unlocked
+                                            ? "available"
+                                            : "locked";
+                                const x = NODE_X[index % NODE_X.length];
+                                const classNames = [styles.pathNodeWrap];
+                                if (recentlyUnlockedId == lesson.id) classNames.push(styles.unlockPulse);
+                                if (recentlyCompletedId == lesson.id) classNames.push(styles.completePulse);
+
+                                return <div
+                                    id={`lesson-node-${lesson.id}`}
+                                    key={lesson.id}
+                                    className={classNames.join(" ")}
+                                    data-state={state}
+                                    data-side={x > 54 ? "left" : "right"}
+                                    style={{
+                                        left: `${x}%`,
+                                        top: `${nodeY(index)}px`
+                                    }}
+                                >
+                                    <button
+                                        type="button"
+                                        className={styles.pathNodeButton}
+                                        onClick={() => openLesson(entry)}
+                                        aria-label={titleFor(entry)}
+                                    >
+                                        <span className={styles.nodeSymbolV4} aria-hidden="true">
+                                            {complete ? "✓" : lesson.symbol}
+                                        </span>
+                                        <span className={styles.nodeNumberV4} aria-hidden="true">
+                                            {String(curriculumLessons.findIndex(item => item.id == lesson.id) + 1).padStart(2, "0")}
+                                        </span>
+                                    </button>
+                                    <div className={styles.nodeCopyV4}>
+                                        <strong>{titleFor(entry)}</strong>
+                                        <small>{t("practice.positions", { count: lesson.practiceCount })}</small>
+                                    </div>
+                                </div>;
+                            })}
                         </div>
-                    </div>}
-                </aside>
+                    </section>;
+                })}
             </div>
 
-            {jumpTarget && <div className={styles.modalOverlay} onClick={() => setJumpTarget(null)}>
+            {jumpTarget && <div
+                className={styles.modalOverlayV4}
+                onClick={() => setJumpTarget(null)}
+            >
                 <section
-                    className={styles.pathDialog}
+                    className={styles.jumpDialogV4}
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="lessons-jump-title"
                     onClick={event => event.stopPropagation()}
                 >
-                    <span className={styles.dialogKicker}>{tc("jump.kicker")}</span>
+                    <span>{tc("jump.kicker")}</span>
                     <h2 id="lessons-jump-title">{tc("jump.title")}</h2>
                     <strong>{titleFor(jumpTarget)}</strong>
                     <p>{tc("jump.body")}</p>
-                    <div className={styles.dialogActions}>
-                        <button type="button" onClick={() => setJumpTarget(null)}>{tc("cancel")}</button>
-                        <button type="button" data-primary="true" onClick={confirmJump}>{tc("jump.confirm")}</button>
-                    </div>
-                </section>
-            </div>}
-
-            {plannedTarget && <div className={styles.modalOverlay} onClick={() => setPlannedTarget(null)}>
-                <section
-                    className={styles.pathDialog}
-                    role="dialog"
-                    aria-modal="true"
-                    aria-labelledby="lessons-planned-title"
-                    onClick={event => event.stopPropagation()}
-                >
-                    <span className={styles.dialogKicker}>{tc("planned.kicker")}</span>
-                    <h2 id="lessons-planned-title">{titleFor(plannedTarget)}</h2>
-                    <p>{tc("planned.body")}</p>
-                    <div className={styles.dialogActions}>
-                        <button type="button" data-primary="true" onClick={() => setPlannedTarget(null)}>{tc("close")}</button>
+                    <div className={styles.dialogActionsV4}>
+                        <button type="button" onClick={() => setJumpTarget(null)}>
+                            {tc("cancel")}
+                        </button>
+                        <button type="button" data-primary="true" onClick={confirmJump}>
+                            {tc("jump.confirm")}
+                        </button>
                     </div>
                 </section>
             </div>}
@@ -669,134 +667,159 @@ function LessonsApp() {
         </main>;
     }
 
+    const promptKey = position
+        ? `practice.prompts.${position.prompt}`
+        : "practice.prompts.findMove";
+    const coachText = t("practice.coach", {
+        lesson: activeTitle,
+        current: Math.min(positionIndex + 1, practiceLesson.positions.length),
+        total: practiceLesson.positions.length
+    });
+
     return <main
-        className={`${styles.shell} ${styles.lessonShell} ${v3.lessonShellV3}`}
-        data-tone={activeTone}
+        className={`${styles.shellV4} ${styles.sessionPage}`}
+        data-tone={activeLesson.tone}
     >
-        <section className={`${styles.lessonHeader} ${v3.lessonHeaderV3}`}>
-            <button type="button" className={styles.backButton} onClick={() => setView("path")}>
+        <section className={styles.sessionHeaderV4}>
+            <button
+                type="button"
+                className={styles.sessionBack}
+                onClick={() => setView("path")}
+            >
                 <span aria-hidden="true">←</span>
                 {t("actions.back")}
             </button>
-            <div className={`${styles.lessonHeading} ${v3.lessonHeadingV3}`}>
-                <span>{t(rookLesson.moduleKey)}</span>
-                <h1>{t(rookLesson.titleKey)}</h1>
+
+            <div className={styles.sessionHeadingV4}>
+                <span>{tc(activeLevel.titleKey)}</span>
+                <h1>{activeTitle}</h1>
             </div>
-            <div className={styles.stepProgress}>
-                <strong>{t("lesson.step", {
-                    current: Math.min(stepIndex + 1, rookLesson.steps.length),
-                    total: rookLesson.steps.length
+
+            <div className={styles.sessionProgressV4}>
+                <strong>{t("practice.positionProgress", {
+                    current: Math.min(positionIndex + 1, practiceLesson.positions.length),
+                    total: practiceLesson.positions.length
                 })}</strong>
-                <div className={`${styles.progressTrack} ${v3.stepProgressV3}`}>
+                <div className={styles.progressTrackV4}>
                     <i style={{ width: `${lessonProgressPercent}%` }}/>
                 </div>
             </div>
         </section>
 
-        <div className={`${styles.lessonViewport} ${v3.lessonViewportV3}`}>
-            <aside className={`${styles.taskRail} ${v3.taskRailV3}`}>
-                {step.kind != "completion" && <div className={`${styles.challengeCard} ${v3.challengeCardV3}`}>
-                    {step.kind == "message" && <p>{t(step.bodyKey)}</p>}
-                    {step.kind == "move" && <>
-                        <span className={styles.challengeLabel}>{t("lesson.yourTurn")}</span>
-                        <p>{t(step.instructionKey)}</p>
-                    </>}
-                    {step.kind == "selectSquare" && <>
-                        <span className={styles.challengeLabel}>{t("lesson.yourTurn")}</span>
-                        <p>{t(step.instructionKey)}</p>
-                    </>}
-                    {step.kind == "multipleChoice" && <>
-                        <span className={styles.challengeLabel}>{t("lesson.question")}</span>
-                        <p>{t(step.questionKey)}</p>
-                        <div className={styles.choiceRow}>
-                            {step.options.map(option => <button
-                                key={option.id}
-                                type="button"
-                                onClick={() => answerChoice(option.id)}
-                                disabled={resolved}
-                            >{t(option.labelKey)}</button>)}
-                        </div>
-                    </>}
-                    {activeHint && <div className={styles.hintPanel}>
-                        <strong>{t("actions.hint")}</strong>
-                        <p>{t(activeHint.textKey)}</p>
+        <div className={styles.sessionStage}>
+            {!sessionComplete && position && <aside className={styles.taskRailV4}>
+                <div className={styles.taskCardV4}>
+                    <span className={styles.challengeEyebrow}>{t("lesson.yourTurn")}</span>
+                    <h2>{activeTitle}</h2>
+                    <p className={styles.promptText}>{t(promptKey, { lesson: activeTitle })}</p>
+
+                    {position.kind == "move" && position.revealTarget && <div className={styles.moveTarget}>
+                        <span>{position.expected.from}</span>
+                        <span aria-hidden="true">→</span>
+                        <span>{position.expected.to}</span>
                     </div>}
-                    {feedback && feedbackVisual && <div
-                        className={styles.feedback}
-                        data-tone={feedbackVisual.tone}
-                        style={{ "--feedback-colour": feedbackVisual.colour } as React.CSSProperties}
+
+                    {position.kind == "choice" && <div className={styles.choiceGrid}>
+                        {position.choices.map(choice => <button
+                            key={choice}
+                            type="button"
+                            className={styles.choiceButton}
+                            onClick={() => answerChoice(choice)}
+                            disabled={result == "success"}
+                        >
+                            {t(`practice.choices.${choice}`)}
+                        </button>)}
+                    </div>}
+
+                    <div className={styles.positionMeta}>
+                        <span>{t("practice.positions", { count: practiceLesson.positions.length })}</span>
+                        <span>{positionIndex + 1}/{practiceLesson.positions.length}</span>
+                    </div>
+
+                    {result && <div
+                        className={styles.feedbackV4}
+                        data-result={result == "success" ? "success" : "error"}
                         role="status"
                     >
-                        {feedbackVisual.icon
-                            ? <img src={feedbackVisual.icon} alt="" aria-hidden="true"/>
-                            : <span aria-hidden="true">!</span>}
-                        <p>{t(feedback.key)}</p>
+                        <span className={styles.feedbackIcon} aria-hidden="true">
+                            {result == "success" ? "✓" : "!"}
+                        </span>
+                        <span>
+                            {result == "success"
+                                ? t("practice.correct")
+                                : result == "illegal"
+                                    ? t("practice.illegal")
+                                    : t("practice.tryAgain")}
+                        </span>
                     </div>}
-                    <div className={styles.lessonActions}>
-                        {step.kind != "message" && hints.length > 0 && !resolved
-                            ? <button
-                                type="button"
-                                className={styles.hintButton}
-                                onClick={() => setHintCount(value => Math.min(value + 1, hints.length))}
-                                disabled={hintCount >= hints.length}
-                            >
-                                {hintCount >= hints.length
-                                    ? t("actions.solutionShown")
-                                    : hintCount + 1 == hints.length
-                                        ? t("actions.showSolution")
-                                        : t("actions.hint")}
-                            </button>
-                            : <span/>}
-                        {(step.kind == "message" || resolved) && <button
+
+                    <div className={styles.taskActions}>
+                        <button
                             type="button"
-                            className={styles.nextButton}
-                            onClick={advance}
+                            className={styles.secondaryButton}
+                            onClick={() => setHintVisible(value => !value)}
                         >
-                            {t("actions.next")} <span aria-hidden="true">→</span>
+                            {t("actions.hint")}
+                        </button>
+
+                        {result == "success" && <button
+                            type="button"
+                            className={styles.primaryButton}
+                            onClick={advancePosition}
+                        >
+                            {positionIndex + 1 < practiceLesson.positions.length
+                                ? t("actions.next")
+                                : t("practice.completeLesson")}
                         </button>}
                     </div>
-                </div>}
-            </aside>
+                </div>
+            </aside>}
 
-            <section className={`${styles.boardColumn} ${v3.boardColumnV3}`}>
-                {step.kind != "completion"
+            <section className={styles.boardStageV4}>
+                {!sessionComplete && position
                     ? <LessonBoard
-                        fen={boardFen}
+                        position={position}
+                        fen={boardFen || position.fen}
                         selectedFrom={selectedFrom}
-                        resolved={resolved}
-                        stepKind={step.kind}
+                        result={result}
                         pieces={pieces}
                         darkSquareColour={settings.themes.board.darkSquareColour}
                         lightSquareColour={settings.themes.board.lightSquareColour}
                         coordinates={settings.themes.board.coordinates}
-                        squareStyles={squareStyles}
-                        arrows={activeHint?.arrows}
+                        legalMoveHints={settings.themes.board.legalMoveHints}
+                        hintVisible={hintVisible}
                         brilliantSquare={brilliantSquare}
                         onSquareClick={handleSquareClick}
-                        onPieceDrop={(from, to) => tryMove(from as Square, to as Square)}
+                        onPieceDrop={(from, to) => registerMove(from as Square, to as Square)}
                         onPieceDragBegin={source => {
-                            if (step.kind == "move" && !resolved) setSelectedFrom(source as Square);
+                            if (position.kind == "move" && result != "success") {
+                                setSelectedFrom(source as Square);
+                            }
                         }}
                         onPieceDragEnd={() => {
-                            if (!resolved) setSelectedFrom(undefined);
+                            if (result != "success") setSelectedFrom(undefined);
                         }}
                     />
-                    : <section className={styles.completionCard}>
-                        <span className={styles.completionIcon}>✓</span>
-                        <span className={styles.eyebrow}>{t("lesson.completeKicker")}</span>
-                        <h2>{t(step.titleKey)}</h2>
-                        <p>{t(step.bodyKey)}</p>
-                        <button type="button" className={styles.nextButton} onClick={advance}>
+                    : <section className={styles.completionStage}>
+                        <span className={styles.completionMark} aria-hidden="true">✓</span>
+                        <span className={styles.completionEyebrow}>{t("lesson.completeKicker")}</span>
+                        <h2>{t("practice.completed", { lesson: activeTitle })}</h2>
+                        <p>{t("practice.completedBody")}</p>
+                        <button
+                            type="button"
+                            className={styles.primaryButton}
+                            onClick={finishLesson}
+                        >
                             {t("actions.finish")}
                         </button>
                     </section>}
             </section>
 
-            <aside className={`${styles.coachRail} ${v3.coachRailV3}`}>
-                {settings.coach.enabled && <div className={`${styles.coachCard} ${v3.coachCardV3}`}>
+            {!sessionComplete && <aside className={styles.coachRailV4}>
+                {settings.coach.enabled && <div className={styles.coachCardV4}>
                     <button
                         type="button"
-                        className={styles.coachPortraitButton}
+                        className={styles.coachPortraitButtonV4}
                         onClick={() => setCoachPickerOpen(true)}
                         aria-label={t("coach.change", { coach: coach.name })}
                         title={t("coach.change", { coach: coach.name })}
@@ -806,16 +829,16 @@ function LessonsApp() {
                             baseExpression="idle"
                             speechText={coachText}
                             animationsEnabled={settings.coach.animations}
-                            className={`${styles.coachPortrait} ${v3.coachPortraitV3}`}
+                            className={styles.coachPortraitV4}
                         />
                     </button>
-                    <div className={`${styles.speechBubble} ${v3.speechBubbleV3}`}>
-                        <span>{coach.name}</span>
+                    <div className={styles.coachBubbleV4}>
+                        <strong>{coach.name}</strong>
                         <p>{coachText}</p>
                         <small>{t("coach.clickToChange")}</small>
                     </div>
                 </div>}
-            </aside>
+            </aside>}
         </div>
 
         {coachPickerOpen && <CoachPicker
