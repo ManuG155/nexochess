@@ -23,8 +23,8 @@
   },
   "coachDynamic": {
     "check": "{{side}} are in check: {{attacker}} on {{square}} is attacking the king. Find the cleanest way out of check.",
-    "capture": "{{side}} to move. {{piece}} on {{from}} can act on {{target}} on {{to}}. Find the move that makes {{lesson}} work here.",
-    "position": "{{side}} to move. Start with {{piece}} on {{from}} and find the move that makes {{lesson}} work in this position.",
+    "capture": "{{side}} to move. There is tension around {{target}} on {{to}}. Find how to exploit it to apply {{lesson}} without rushing.",
+    "position": "{{side}} to move. Read the whole position first and find the concrete opportunity that lets you apply {{lesson}}.",
     "choice": "{{side}} to move. Read the whole position before deciding the answer for {{lesson}}.",
     "hintCheck": "Hint: trace the check from {{attacker}} on {{square}} to your king. You can escape by moving the king, capturing the checker or blocking the line when the position allows it.",
     "hintMove": "Hint: begin with {{piece}} on {{from}} and ask what changes if it becomes active. The goal is {{lesson}}.",
