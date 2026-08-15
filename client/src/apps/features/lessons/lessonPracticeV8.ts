@@ -55,7 +55,7 @@ const removeDefenders: PracticePosition[] = [
     select("defender-queen-d6", "7k/8/3q3b/8/8/8/8/K6Q w - - 0 1", ["d6"]),
     select("defender-pawn-b7", "7k/1p6/2n5/8/8/5B2/8/K7 w - - 0 1", ["b7"]),
     select("defender-bishop-d5", "r6k/8/8/3b4/8/8/8/R6K w - - 0 1", ["d5"]),
-    select("defender-rook-h6", "7q/8/7r/8/8/8/8/K6R w - - 0 1", ["h6"]),
+    select("defender-rook-h6", "6kq/8/7r/8/8/8/8/K6R w - - 0 1", ["h6"]),
     select("defender-queen-c6", "2b4k/8/2q5/8/8/8/8/K1R5 w - - 0 1", ["c6"]),
     select("defender-pawn-e7", "7k/4p3/5n2/6B1/8/8/8/K7 w - - 0 1", ["e7"])
 ];
