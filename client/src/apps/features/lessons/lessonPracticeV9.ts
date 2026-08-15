@@ -37,11 +37,11 @@ function beginnerCheckpoint(count: number) {
 
 function tacticalCheckpoint(count: number) {
     return checkpoint("intermediate.checkpoint", [
-        ...positionsFrom("intermediate.double-attack", 2),
-        ...positionsFrom("intermediate.fork", 2),
         ...positionsFrom("intermediate.remove-defender", 2),
         ...positionsFrom("intermediate.mating-net", 2),
-        ...positionsFrom("intermediate.interference", 2)
+        ...positionsFrom("intermediate.interference", 2),
+        ...positionsFrom("intermediate.activity", 2),
+        ...positionsFrom("ready.king-rook-mate", 2)
     ], count);
 }
 
@@ -50,8 +50,8 @@ function finalCheckpoint(count: number) {
         ...positionsFrom("ready.opposition", 2),
         ...positionsFrom("ready.king-rook-mate", 2),
         ...positionsFrom("intermediate.activity", 2),
-        ...positionsFrom("intermediate.double-attack", 2),
-        ...positionsFrom("intermediate.fork", 2)
+        ...positionsFrom("intermediate.remove-defender", 2),
+        ...positionsFrom("intermediate.mating-net", 2)
     ], count);
 }
 
