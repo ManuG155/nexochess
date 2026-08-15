@@ -174,12 +174,6 @@
     height: 2960px !important;
 }
 
-/*
- * The rail coordinate is the node's centre. Keep the button exactly on that
- * coordinate and place the title absolutely on the OUTER side of the path.
- * `data-side="left"` is emitted for nodes on the right half of the rail and
- * vice versa, so the rules below intentionally place copy on the opposite side.
- */
 .pathNodeSafe {
     display: block !important;
     width: 68px !important;
@@ -191,48 +185,54 @@
 .pathNodeCopy {
     position: absolute;
     top: 50%;
-    width: 210px;
-    max-width: 210px !important;
-    transform: translateY(-50%);
     z-index: 8;
+    width: 196px;
+    max-width: 196px !important;
+    padding: 5px 8px 6px;
     pointer-events: none;
+    border-radius: 10px;
+    background: linear-gradient(90deg, rgba(7,17,28,.9), rgba(7,17,28,.58));
+    box-shadow: 0 7px 22px rgba(1,7,13,.18);
+    transform: translateY(calc(-50% + var(--label-shift-y, 0px)));
 }
 
 .pathNodeCopy strong {
     display: block;
-    font-size: 1.17rem !important;
-    line-height: 1.3 !important;
+    font-size: 1.19rem !important;
+    line-height: 1.25 !important;
     letter-spacing: -.012em;
     white-space: normal;
-    overflow-wrap: anywhere;
+    overflow-wrap: normal;
+    word-break: normal;
     text-wrap: balance;
 }
 
-.pathNodeSafe[data-side="left"] .pathNodeCopy {
-    left: 92px;
+.pathNodeSafe[data-label-side="right"] .pathNodeCopy {
+    left: 88px;
     right: auto;
     text-align: left;
 }
 
-.pathNodeSafe[data-side="right"] .pathNodeCopy {
-    right: 92px;
+.pathNodeSafe[data-label-side="left"] .pathNodeCopy {
+    right: 88px;
     left: auto;
     text-align: right;
+    background: linear-gradient(270deg, rgba(7,17,28,.9), rgba(7,17,28,.58));
 }
 
-.pathNodeSafe[data-side="left"] .nodeNumberSafe {
+.pathNodeSafe[data-label-side="right"] .nodeNumberSafe {
     right: auto !important;
     left: -11px !important;
 }
 
-.pathNodeSafe[data-side="right"] .nodeNumberSafe {
+.pathNodeSafe[data-label-side="left"] .nodeNumberSafe {
     right: -11px !important;
     left: auto !important;
 }
 
 .landmarkSlotSpread {
     z-index: 2 !important;
-    opacity: .84;
+    opacity: .78;
 }
 
 .landmarkSlotSpread[data-slot="0"] {
@@ -262,9 +262,9 @@
 .sessionAtmosphere {
     isolation: isolate;
     background:
-        radial-gradient(ellipse at 50% 28%, color-mix(in srgb, var(--level-accent) 13%, transparent), transparent 34%),
-        radial-gradient(ellipse at 9% 54%, color-mix(in srgb, var(--level-accent) 8%, transparent), transparent 25%),
-        radial-gradient(ellipse at 91% 54%, color-mix(in srgb, var(--level-accent) 8%, transparent), transparent 25%),
+        radial-gradient(ellipse at 50% 22%, color-mix(in srgb, var(--level-accent) 16%, transparent), transparent 32%),
+        radial-gradient(ellipse at 8% 50%, color-mix(in srgb, var(--level-accent) 10%, transparent), transparent 28%),
+        radial-gradient(ellipse at 92% 48%, color-mix(in srgb, var(--level-accent) 10%, transparent), transparent 28%),
         linear-gradient(180deg, #07121d 0%, #06101a 100%) !important;
 }
 
@@ -275,20 +275,14 @@
     inset: 0;
     pointer-events: none;
     background:
-        linear-gradient(115deg,
-            transparent 0 14%,
-            color-mix(in srgb, var(--level-accent) 7%, transparent) 20%,
-            transparent 29%),
-        linear-gradient(245deg,
-            transparent 0 14%,
-            color-mix(in srgb, var(--level-accent) 6%, transparent) 20%,
-            transparent 29%),
-        radial-gradient(circle at 16% 23%, color-mix(in srgb, var(--level-accent) 9%, transparent) 0 1px, transparent 2px),
-        radial-gradient(circle at 84% 36%, color-mix(in srgb, var(--level-accent) 8%, transparent) 0 1px, transparent 2px),
-        radial-gradient(ellipse at 50% 62%, color-mix(in srgb, var(--level-accent) 9%, transparent), transparent 34%),
-        linear-gradient(180deg, transparent 0 66%, rgba(0,0,0,.22) 100%);
+        linear-gradient(115deg, transparent 0 12%, color-mix(in srgb, var(--level-accent) 8%, transparent) 20%, transparent 31%),
+        linear-gradient(245deg, transparent 0 12%, color-mix(in srgb, var(--level-accent) 7%, transparent) 20%, transparent 31%),
+        radial-gradient(circle at 16% 23%, color-mix(in srgb, var(--level-accent) 10%, transparent) 0 1px, transparent 2px),
+        radial-gradient(circle at 84% 36%, color-mix(in srgb, var(--level-accent) 9%, transparent) 0 1px, transparent 2px),
+        radial-gradient(ellipse at 50% 66%, color-mix(in srgb, var(--level-accent) 12%, transparent), transparent 36%),
+        linear-gradient(180deg, transparent 0 63%, rgba(0,0,0,.25) 100%);
     background-size: auto, auto, 122px 122px, 146px 146px, auto, auto;
-    opacity: .9;
+    opacity: .95;
 }
 
 .sessionAtmosphere::after {
@@ -296,27 +290,191 @@
     position: absolute;
     z-index: 0;
     left: 50%;
-    bottom: -17%;
-    width: 128%;
-    height: 48%;
+    bottom: -19%;
+    width: 132%;
+    height: 52%;
     pointer-events: none;
     background:
-        repeating-linear-gradient(90deg,
-            transparent 0 88px,
-            color-mix(in srgb, var(--level-accent) 10%, transparent) 89px 91px),
-        repeating-linear-gradient(0deg,
-            transparent 0 88px,
-            color-mix(in srgb, var(--level-accent) 8%, transparent) 89px 91px),
-        linear-gradient(180deg, transparent, color-mix(in srgb, var(--level-accent) 7%, transparent));
-    opacity: .46;
+        repeating-linear-gradient(90deg, transparent 0 88px, color-mix(in srgb, var(--level-accent) 11%, transparent) 89px 91px),
+        repeating-linear-gradient(0deg, transparent 0 88px, color-mix(in srgb, var(--level-accent) 9%, transparent) 89px 91px),
+        linear-gradient(180deg, transparent, color-mix(in srgb, var(--level-accent) 9%, transparent));
+    opacity: .5;
     transform: translateX(-50%) perspective(700px) rotateX(66deg) scale(1.38);
     transform-origin: 50% 100%;
-    mask-image: linear-gradient(180deg, transparent, #000 44%);
+    mask-image: linear-gradient(180deg, transparent, #000 42%);
 }
 
-/* CoachPortrait's image layers are absolutely positioned and require a real
- * height on their root. The shared component renders that root as a span; keep
- * the fix local to Lessons and size the actual span instead of a non-existent div. */
+.sessionDecor {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.sessionDecor span {
+    position: absolute;
+    display: block;
+}
+
+.sessionDecor span:nth-child(1),
+.sessionDecor span:nth-child(2) {
+    top: 7%;
+    width: 150px;
+    height: 76%;
+    border: 1px solid color-mix(in srgb, var(--level-accent) 10%, transparent);
+    border-radius: 80px 80px 18px 18px;
+    background:
+        linear-gradient(180deg, color-mix(in srgb, var(--level-accent) 11%, transparent), transparent 28%),
+        repeating-linear-gradient(180deg, rgba(255,255,255,.018) 0 2px, transparent 2px 44px);
+    box-shadow: inset 0 0 55px color-mix(in srgb, var(--level-accent) 7%, transparent);
+    opacity: .5;
+}
+
+.sessionDecor span:nth-child(1) { left: 3.5%; }
+.sessionDecor span:nth-child(2) { right: 3.5%; }
+
+.sessionDecor span:nth-child(3) {
+    top: 8%;
+    left: 50%;
+    width: min(920px, 62vw);
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, color-mix(in srgb, var(--level-accent) 16%, transparent), transparent 70%);
+    filter: blur(28px);
+    opacity: .72;
+    transform: translateX(-50%);
+}
+
+.sessionDecor span:nth-child(4) {
+    left: 50%;
+    bottom: 2%;
+    width: min(1120px, 76vw);
+    height: 170px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, color-mix(in srgb, var(--level-accent) 13%, transparent), transparent 72%);
+    filter: blur(25px);
+    opacity: .62;
+    transform: translateX(-50%);
+}
+
+.sessionHeaderCompact {
+    grid-template-columns: 1fr 1fr !important;
+    min-height: 52px !important;
+    margin-bottom: 0 !important;
+}
+
+.sessionHeaderCompact > :last-child {
+    grid-column: 2;
+    justify-self: end;
+}
+
+.sessionStageRich {
+    z-index: 3 !important;
+    min-height: calc(100dvh - 132px) !important;
+    padding: 4px 0 22px;
+}
+
+.sessionStageRich::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 1%;
+    bottom: 3%;
+    left: 50%;
+    width: min(1480px, 94vw);
+    border: 1px solid color-mix(in srgb, var(--level-accent) 9%, transparent);
+    border-radius: 38px;
+    background:
+        radial-gradient(ellipse at 50% 40%, color-mix(in srgb, var(--level-accent) 8%, transparent), transparent 58%),
+        linear-gradient(90deg, rgba(255,255,255,.018), transparent 18% 82%, rgba(255,255,255,.018));
+    box-shadow:
+        inset 0 1px rgba(255,255,255,.025),
+        inset 0 -80px 120px rgba(0,0,0,.13),
+        0 26px 80px rgba(0,0,0,.12);
+    pointer-events: none;
+    transform: translateX(-50%);
+}
+
+.taskCardRich,
+.coachCardRich {
+    border-color: color-mix(in srgb, var(--level-accent) 15%, rgba(255,255,255,.07)) !important;
+    box-shadow:
+        0 28px 76px rgba(0,0,0,.3),
+        0 0 40px color-mix(in srgb, var(--level-accent) 5%, transparent),
+        inset 0 1px rgba(255,255,255,.035) !important;
+}
+
+.taskCardRich {
+    position: relative;
+    overflow: hidden;
+}
+
+.taskCardRich::before,
+.coachCardRich::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 18px;
+    right: 18px;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, var(--level-accent), transparent);
+    opacity: .42;
+}
+
+.coachCardRich {
+    position: relative;
+}
+
+.taskTopline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.turnBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 9px;
+    color: rgba(244,249,255,.9);
+    border: 1px solid color-mix(in srgb, var(--level-accent) 22%, transparent);
+    border-radius: 999px;
+    background: rgba(4,13,22,.52);
+    font-size: .74rem;
+    font-weight: 820;
+    white-space: nowrap;
+}
+
+.turnBadge > span {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.turnBadge[data-turn="white"] > span {
+    color: #f4f7fb;
+    text-shadow: 0 1px 4px rgba(0,0,0,.8);
+}
+
+.turnBadge[data-turn="black"] > span {
+    color: #172231;
+    filter: drop-shadow(0 0 1px rgba(255,255,255,.75));
+}
+
+.levelChip {
+    display: inline-flex;
+    margin-top: 13px;
+    color: var(--level-accent);
+    font-size: .69rem;
+    font-weight: 820;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+}
+
+/* CoachPortrait image layers are absolutely positioned. Give the real span root
+ * an explicit stage so the selected coach is visible immediately. */
 .sessionAtmosphere aside:last-child > div > button:first-child {
     display: block;
     width: 100%;
@@ -337,18 +495,23 @@
 
 @media (max-width: 1240px) {
     .pathNodeCopy {
-        width: 185px;
-        max-width: 185px !important;
+        width: 178px;
+        max-width: 178px !important;
     }
 
     .pathNodeCopy strong {
-        font-size: 1.08rem !important;
+        font-size: 1.09rem !important;
     }
 
     .sessionAtmosphere aside:last-child > div > button:first-child,
     .sessionAtmosphere aside:last-child > div > button:first-child > span {
         min-height: 220px !important;
         height: 220px !important;
+    }
+
+    .sessionDecor span:nth-child(1),
+    .sessionDecor span:nth-child(2) {
+        opacity: .32;
     }
 }
 
@@ -370,25 +533,30 @@
     }
 
     .pathNodeCopy {
-        width: 165px;
-        max-width: 165px !important;
+        width: 154px;
+        max-width: 154px !important;
     }
 
     .pathNodeCopy strong {
         font-size: 1rem !important;
     }
 
-    .pathNodeSafe[data-side="left"] .pathNodeCopy {
-        left: 82px;
+    .pathNodeSafe[data-label-side="right"] .pathNodeCopy {
+        left: 80px;
     }
 
-    .pathNodeSafe[data-side="right"] .pathNodeCopy {
-        right: 82px;
+    .pathNodeSafe[data-label-side="left"] .pathNodeCopy {
+        right: 80px;
     }
 
     .landmarkSlotSpread {
-        opacity: .34 !important;
-        transform: scale(.9);
+        opacity: .3 !important;
+        transform: scale(.88);
+    }
+
+    .sessionDecor span:nth-child(1),
+    .sessionDecor span:nth-child(2) {
+        display: none;
     }
 }
 
@@ -406,21 +574,22 @@
     }
 
     .pathNodeCopy {
-        width: 128px;
-        max-width: 128px !important;
+        width: 122px;
+        max-width: 122px !important;
+        padding: 4px 6px;
     }
 
     .pathNodeCopy strong {
         font-size: .91rem !important;
-        line-height: 1.26 !important;
+        line-height: 1.24 !important;
     }
 
-    .pathNodeSafe[data-side="left"] .pathNodeCopy {
-        left: 76px;
+    .pathNodeSafe[data-label-side="right"] .pathNodeCopy {
+        left: 74px;
     }
 
-    .pathNodeSafe[data-side="right"] .pathNodeCopy {
-        right: 76px;
+    .pathNodeSafe[data-label-side="left"] .pathNodeCopy {
+        right: 74px;
     }
 
     .environmentLayer span:nth-child(1),
@@ -430,5 +599,10 @@
 
     .environmentLayer span:nth-child(3) {
         opacity: .34;
+    }
+
+    .turnBadge {
+        padding: 5px 7px;
+        font-size: .68rem;
     }
 }
