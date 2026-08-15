@@ -43,10 +43,21 @@ const interferenceMoves: MovePractice[] = [
     { id: "interference-rank-c3", kind: "move", fen: "7k/8/8/8/8/q6r/1B6/1K6 w - - 0 1", prompt: "findMove", expected: { from: "b2", to: "c3" } }
 ];
 
+const trappedPieceMoves: MovePractice[] = [
+    { id: "trapped-queen-a8", kind: "move", fen: "q6k/8/2B5/8/8/8/8/7K w - - 0 1", prompt: "findMove", expected: { from: "c6", to: "a8" } },
+    { id: "trapped-rook-h8", kind: "move", fen: "k6r/5N2/8/8/8/8/8/7K w - - 0 1", prompt: "findMove", expected: { from: "f7", to: "h8" } },
+    { id: "trapped-bishop-f5", kind: "move", fen: "7k/8/8/5b2/3N4/8/8/K7 w - - 0 1", prompt: "findMove", expected: { from: "d4", to: "f5" } },
+    { id: "trapped-queen-b8", kind: "move", fen: "1q5k/8/8/8/8/8/8/KR6 w - - 0 1", prompt: "findMove", expected: { from: "b1", to: "b8" } },
+    { id: "trapped-rook-g7", kind: "move", fen: "7k/6r1/8/8/8/2B5/8/K7 w - - 0 1", prompt: "findMove", expected: { from: "c3", to: "g7" } },
+    { id: "trapped-knight-c6", kind: "move", fen: "7k/8/2n5/8/8/8/6B1/K7 w - - 0 1", prompt: "findMove", expected: { from: "g2", to: "c6" } },
+    { id: "trapped-bishop-e6", kind: "move", fen: "7k/8/4b3/8/8/8/8/K3R3 w - - 0 1", prompt: "findMove", expected: { from: "e1", to: "e6" } }
+];
+
 export function buildPracticeLesson(lesson: CurriculumLesson): PracticeLesson {
     if (lesson.id == "first-contact.king-safety-rule") return { lessonId: lesson.id, positions: kingSafetyMoves.slice(0, lesson.practiceCount) };
     if (lesson.id == "intermediate.threats") return { lessonId: lesson.id, positions: threatMoves.slice(0, lesson.practiceCount) };
     if (lesson.id == "intermediate.remove-defender") return { lessonId: lesson.id, positions: removeDefenderMoves.slice(0, lesson.practiceCount) };
     if (lesson.id == "intermediate.interference") return { lessonId: lesson.id, positions: interferenceMoves.slice(0, lesson.practiceCount) };
+    if (lesson.id == "intermediate.trapped-piece") return { lessonId: lesson.id, positions: trappedPieceMoves.slice(0, lesson.practiceCount) };
     return buildMoveFirstPracticeLesson(lesson);
 }
