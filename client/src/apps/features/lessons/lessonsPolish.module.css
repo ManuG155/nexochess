@@ -1,0 +1,238 @@
+.pathShell {
+    background:
+        radial-gradient(circle at 14% 4%, rgba(88, 171, 222, .13), transparent 24%),
+        radial-gradient(circle at 86% 12%, rgba(65, 116, 176, .09), transparent 26%),
+        linear-gradient(180deg, #08131f 0%, #06101a 100%);
+}
+
+.levelAtmosphere {
+    min-height: 3220px !important;
+    isolation: isolate;
+}
+
+.levelAtmosphere::after {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse at 50% 8%, var(--level-accent-soft), transparent 34%),
+        radial-gradient(ellipse at 12% 36%, var(--level-accent-faint), transparent 30%),
+        radial-gradient(ellipse at 88% 64%, var(--level-accent-faint), transparent 30%),
+        linear-gradient(180deg, transparent 0 72%, rgba(0, 0, 0, .18) 100%);
+}
+
+.environmentLayer {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.environmentLayer::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 3%;
+    width: 130%;
+    height: 34%;
+    background:
+        repeating-linear-gradient(90deg, transparent 0 78px, color-mix(in srgb, var(--level-accent) 8%, transparent) 79px 80px),
+        repeating-linear-gradient(0deg, transparent 0 78px, color-mix(in srgb, var(--level-accent) 7%, transparent) 79px 80px),
+        linear-gradient(180deg, transparent, color-mix(in srgb, var(--level-accent-strong) 7%, transparent));
+    opacity: .48;
+    transform: translateX(-50%) perspective(620px) rotateX(67deg) scale(1.35);
+    transform-origin: 50% 100%;
+    mask-image: linear-gradient(180deg, transparent, #000 42%, #000 100%);
+}
+
+.environmentLayer::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 16%;
+    width: 86%;
+    height: 58%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, var(--level-accent-faint), transparent 66%);
+    filter: blur(48px);
+    opacity: .8;
+    transform: translateX(-50%);
+}
+
+.environmentLayer span {
+    position: absolute;
+    display: block;
+    border-radius: 50%;
+    background: var(--level-accent-soft);
+    filter: blur(72px);
+    opacity: .36;
+}
+
+.environmentLayer span:nth-child(1) {
+    top: 16%;
+    left: -7%;
+    width: 330px;
+    height: 520px;
+}
+
+.environmentLayer span:nth-child(2) {
+    top: 44%;
+    right: -8%;
+    width: 390px;
+    height: 620px;
+}
+
+.environmentLayer span:nth-child(3) {
+    bottom: 8%;
+    left: 18%;
+    width: 520px;
+    height: 290px;
+    opacity: .24;
+}
+
+.levelHeaderLarge {
+    width: min(900px, calc(100% - 64px)) !important;
+    padding-top: 52px !important;
+}
+
+.levelHeaderLarge h2 {
+    margin-top: 6px !important;
+    font-size: clamp(2.65rem, 5vw, 4rem) !important;
+    line-height: 1.02;
+}
+
+.levelHeaderLarge p {
+    max-width: 680px !important;
+    font-size: 1.04rem;
+    line-height: 1.64 !important;
+}
+
+.pathStageTall {
+    height: 2960px !important;
+}
+
+.pathNodeSafe {
+    width: 360px !important;
+    gap: 18px !important;
+}
+
+.pathNodeCopy {
+    max-width: 238px !important;
+}
+
+.pathNodeCopy strong {
+    font-size: 1.02rem !important;
+    line-height: 1.32 !important;
+    text-wrap: balance;
+}
+
+.pathNodeSafe[data-side="right"] .nodeNumberSafe {
+    right: auto !important;
+    left: -9px !important;
+}
+
+.pathNodeSafe[data-side="left"] .nodeNumberSafe {
+    right: -9px !important;
+    left: auto !important;
+}
+
+.landmarkSlotSpread[data-slot="0"] {
+    top: 430px !important;
+}
+
+.landmarkSlotSpread[data-slot="1"] {
+    top: 1130px !important;
+}
+
+.landmarkSlotSpread[data-slot="2"] {
+    top: 1830px !important;
+}
+
+.landmarkSlotSpread[data-slot="3"] {
+    top: 2480px !important;
+}
+
+.sessionAtmosphere {
+    isolation: isolate;
+    background:
+        radial-gradient(circle at 50% 22%, var(--level-accent-faint), transparent 34%),
+        linear-gradient(180deg, #07121d 0%, #06101a 100%) !important;
+}
+
+.sessionAtmosphere::before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse at 12% 48%, var(--level-accent-faint), transparent 24%),
+        radial-gradient(ellipse at 88% 48%, var(--level-accent-faint), transparent 24%),
+        linear-gradient(180deg, transparent 0 68%, rgba(0,0,0,.2) 100%);
+}
+
+.sessionAtmosphere::after {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    left: 50%;
+    bottom: -18%;
+    width: 120%;
+    height: 42%;
+    pointer-events: none;
+    background:
+        repeating-linear-gradient(90deg, transparent 0 92px, color-mix(in srgb, var(--level-accent) 7%, transparent) 93px 94px),
+        repeating-linear-gradient(0deg, transparent 0 92px, color-mix(in srgb, var(--level-accent) 6%, transparent) 93px 94px);
+    opacity: .32;
+    transform: translateX(-50%) perspective(700px) rotateX(66deg) scale(1.35);
+    transform-origin: 50% 100%;
+    mask-image: linear-gradient(180deg, transparent, #000 48%);
+}
+
+@media (max-width: 980px) {
+    .levelAtmosphere {
+        min-height: 2980px !important;
+    }
+
+    .pathStageTall {
+        height: 2740px !important;
+    }
+
+    .pathNodeSafe {
+        width: 300px !important;
+        gap: 14px !important;
+    }
+
+    .pathNodeCopy {
+        max-width: 190px !important;
+    }
+
+    .levelHeaderLarge h2 {
+        font-size: clamp(2.35rem, 9vw, 3.4rem) !important;
+    }
+
+    .landmarkSlotSpread {
+        opacity: .42 !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .pathNodeSafe {
+        width: 250px !important;
+    }
+
+    .pathNodeCopy {
+        max-width: 145px !important;
+    }
+
+    .pathNodeCopy strong {
+        font-size: .92rem !important;
+    }
+
+    .environmentLayer span {
+        opacity: .18;
+    }
+}
