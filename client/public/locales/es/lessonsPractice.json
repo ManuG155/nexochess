@@ -10,8 +10,8 @@
     "boardSquare": "Mueve la pieza hasta {{square}}. Las columnas van de a a h y las filas de 1 a 8.",
     "choose": "Elige la respuesta correcta para esta posición."
   },
-  "coach": "{{lesson}} · posición {{current}} de {{total}}. Mira el tablero y resuélvela.",
-  "coachBoard": "Oriéntate en el tablero y mueve la pieza hasta {{square}} usando su columna y su fila.",
+  "coach": "{{lesson}}, posición {{current}} de {{total}}. Lee la posición completa antes de mover: hay una idea concreta que encontrar aquí.",
+  "coachBoard": "Vamos a orientarnos primero: lleva la pieza hasta {{square}} usando la columna y la fila como referencia.",
   "pieceNames": {
     "piece": "la pieza",
     "p": "el peón",
@@ -22,19 +22,19 @@
     "k": "el rey"
   },
   "coachDynamic": {
-    "check": "Juegan {{side}} y su rey está en jaque: {{attacker}} en {{square}} lo está atacando. Encuentra la forma más limpia de salir del jaque.",
-    "capture": "Juegan {{side}}. Hay tensión alrededor de {{target}} en {{to}}. Encuentra cómo aprovecharla para aplicar {{lesson}} sin precipitarte.",
-    "position": "Juegan {{side}}. Lee primero toda la posición y busca la oportunidad concreta que permite aplicar {{lesson}}.",
-    "choice": "Juegan {{side}}. Lee toda la posición antes de decidir la respuesta para {{lesson}}.",
-    "hintCheck": "Pista: sigue la línea del jaque desde {{attacker}} en {{square}} hasta tu rey. Puedes salir moviendo el rey, capturando la pieza que da jaque o bloqueando la línea cuando sea posible.",
-    "hintMove": "Pista: empieza por {{piece}} en {{from}} y pregúntate qué cambia si entra en juego. El objetivo es {{lesson}}.",
-    "hintChoice": "Pista: compara la seguridad de los reyes, los movimientos legales y las amenazas inmediatas antes de responder {{lesson}}.",
-    "success1": "Fantástica visión. Esa es exactamente la jugada que pedía la posición.",
-    "success2": "Muy bien. Has leído correctamente la posición y has encontrado la idea clave.",
-    "success3": "Bien visto. Esa jugada resuelve el problema de forma limpia.",
-    "success4": "Perfecto. Has encontrado la respuesta correcta sin perder de vista la posición.",
-    "error": "Ese movimiento es legal, pero no es la solución correcta aquí. Vuelve a leer la posición y prueba otra idea.",
-    "illegal": "Ese movimiento no es legal aquí. Selecciona de nuevo la pieza y revisa sus casillas disponibles."
+    "check": "Juegan {{side}}. {{attacker}} en {{square}} está dando jaque al rey. No muevas por inercia: busca la mejor manera de neutralizar el jaque y dejar una posición sana.",
+    "capture": "Juegan {{side}}. Hay una tensión concreta alrededor de {{target}} en {{to}} y aquí se puede aplicar {{lesson}}. Mira qué piezas están atacadas y defendidas antes de decidir.",
+    "position": "Juegan {{side}}. Esta es una posición de partida, no un ejercicio de memoria: revisa jaques, capturas y amenazas y encuentra la jugada que mejor aplica {{lesson}}.",
+    "choice": "Juegan {{side}}. Lee la posición como si estuvieras jugando una partida y decide qué opción encaja mejor con {{lesson}}.",
+    "hintCheck": "Pista: sigue la línea del jaque desde {{attacker}} en {{square}} hasta tu rey. Comprueba si puedes mover el rey, capturar al atacante o interponer una pieza.",
+    "hintMove": "Pista: presta especial atención a {{piece}} en {{from}}. Pregúntate qué cambia en la posición si esa pieza entra en juego y cómo conecta con {{lesson}}.",
+    "hintChoice": "Pista para {{lesson}}: compara la seguridad de los reyes, las amenazas inmediatas y las piezas sin defender antes de responder.",
+    "success1": "Muy buena. Has leído bien la posición y has encontrado la idea correcta.",
+    "success2": "Perfecto, esa era la jugada. Buena visión de lo que estaba pasando en el tablero.",
+    "success3": "Bien visto. Esa jugada resuelve exactamente el problema de la posición.",
+    "success4": "Fantástica visión. Has encontrado la respuesta limpia sin perder de vista el resto del tablero.",
+    "error": "Ese movimiento es legal, pero no resuelve bien lo que está pasando en esta posición. Revisa la amenaza principal y prueba otra idea.",
+    "illegal": "Ese movimiento no es legal aquí. Vuelve a seleccionar la pieza y mira con calma sus casillas disponibles."
   },
   "correct": "Movimiento correcto.",
   "illegal": "Ese movimiento no es legal aquí.",
