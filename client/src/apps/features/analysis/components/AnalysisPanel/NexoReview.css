@@ -4,14 +4,17 @@
 }
 
 .nexo-review-card {
-    --review-bg: #0d141e;
+    --review-bg: #09121d;
     --review-surface: rgba(255, 255, 255, 0.035);
-    --review-surface-hover: rgba(255, 255, 255, 0.055);
-    --review-line: rgba(130, 164, 220, 0.13);
-    --review-line-strong: rgba(117, 162, 242, 0.34);
-    --review-blue: #79a6f3;
-    --review-text: #f2f5fa;
-    --review-muted: rgba(222, 229, 240, 0.66);
+    --review-surface-strong: rgba(255, 255, 255, 0.055);
+    --review-surface-hover: rgba(103, 178, 255, 0.09);
+    --review-line: rgba(111, 165, 255, 0.18);
+    --review-line-soft: rgba(255, 255, 255, 0.075);
+    --review-line-strong: rgba(116, 176, 255, 0.30);
+    --review-blue: #86b8ff;
+    --review-cyan: #68c8f2;
+    --review-text: rgba(255, 255, 255, 0.98);
+    --review-muted: rgba(220, 231, 245, 0.66);
 
     position: relative;
 
@@ -24,23 +27,45 @@
     min-height: 0;
 
     border: 1px solid var(--review-line) !important;
-    border-radius: 17px !important;
+    border-radius: 22px !important;
 
     background:
         radial-gradient(
-            circle at 92% 0%,
-            rgba(74, 119, 188, 0.09),
-            transparent 27rem
+            circle at 88% -8%,
+            rgba(67, 139, 255, 0.16),
+            transparent 28rem
         ),
         linear-gradient(
-            160deg,
-            #111a26 0%,
-            var(--review-bg) 54%,
-            #0b1119 100%
+            145deg,
+            rgba(18, 32, 48, 0.98),
+            rgba(9, 18, 29, 0.99) 58%,
+            rgba(8, 16, 26, 1)
         ) !important;
-    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.25);
+
+    box-shadow:
+        0 24px 70px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.045) !important;
 
     overflow: hidden;
+    isolation: isolate;
+}
+
+.nexo-review-card::before {
+    content: "";
+
+    position: absolute;
+    top: -150px;
+    right: -95px;
+    z-index: -1;
+
+    width: 360px;
+    height: 360px;
+
+    border-radius: 999px;
+    background: rgba(67, 139, 255, 0.13);
+    filter: blur(76px);
+
+    pointer-events: none;
 }
 
 .nexo-review-content {
@@ -67,13 +92,13 @@
 
     padding: 0 0 13px;
 
-    border-bottom: 1px solid var(--review-line);
+    border-bottom: 1px solid var(--review-line-soft);
 }
 
 .nexo-review-header::after {
     content: "";
 
-    width: 48px;
+    width: 60px;
     height: 3px;
 
     margin-left: 12px;
@@ -82,42 +107,46 @@
 
     background: linear-gradient(
         90deg,
-        #6d9cea,
-        rgba(109, 156, 234, 0.16)
+        rgba(103, 178, 255, 0.95),
+        rgba(103, 178, 255, 0.18)
     );
 }
 
 .nexo-review-back {
-    width: 36px !important;
-    height: 36px !important;
+    width: 38px !important;
+    height: 38px !important;
 
-    border: 0 !important;
-    border-radius: 10px !important;
+    border: 1px solid rgba(116, 176, 255, 0.16) !important;
+    border-radius: 11px !important;
 
-    background: rgba(255, 255, 255, 0.045) !important;
-    color: rgba(234, 241, 251, 0.84) !important;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(72, 139, 232, 0.13),
+            rgba(39, 77, 127, 0.06)
+        ) !important;
+    color: rgba(234, 241, 251, 0.88) !important;
 
-    box-shadow: none !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.04),
+        0 8px 18px rgba(0, 0, 0, 0.14) !important;
 
     transition:
+        border-color 150ms ease,
         background-color 150ms ease,
         color 150ms ease,
         transform 150ms ease !important;
 }
 
 .nexo-review-back:hover {
-    background: rgba(117, 162, 242, 0.13) !important;
+    border-color: rgba(116, 176, 255, 0.30) !important;
+    background: rgba(103, 178, 255, 0.12) !important;
     color: #fff !important;
 
     transform: translateX(-1px) !important;
 }
 
-/*
- * Stockfish keeps running in Review so the board, evaluation bar and manual
- * variations continue to update, but its raw suggestion lines are not part of
- * the Review UI. display:none removes their layout footprint without
- * unmounting RealtimeEngineArea.
- */
+/* Keep Stockfish alive for board/evaluation updates without showing raw lines. */
 .nexo-review-engine {
     display: none !important;
 }
@@ -127,9 +156,10 @@
 
     padding: 12px 0 14px;
 
-    border-bottom: 1px solid var(--review-line);
+    border-bottom: 1px solid var(--review-line-soft);
 }
 
+/* Preserve the existing coach position and speech geometry. */
 .nexo-review-coach > section {
     align-items: flex-start !important;
     gap: 14px !important;
@@ -151,12 +181,14 @@
     margin: 0 0 5px;
     padding: 15px 17px !important;
 
-    border: 1px solid rgba(72, 112, 173, 0.34) !important;
+    border: 1px solid rgba(116, 176, 255, 0.24) !important;
     border-radius: 14px !important;
 
-    background: #ffffff !important;
-    color: #302e2b !important;
-    box-shadow: 0 7px 18px rgba(0, 0, 0, 0.13) !important;
+    background: rgba(7, 14, 23, 0.72) !important;
+    color: #edf4fd !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.025),
+        0 8px 22px rgba(0, 0, 0, 0.16) !important;
 
     font-size: 1rem !important;
     font-weight: 620 !important;
@@ -164,11 +196,11 @@
 }
 
 .nexo-review-coach > section > div::before {
-    background: rgba(72, 112, 173, 0.52) !important;
+    background: rgba(116, 176, 255, 0.40) !important;
 }
 
 .nexo-review-coach > section > div::after {
-    background: #ffffff !important;
+    background: #0b1622 !important;
 }
 
 .nexo-review-graph {
@@ -177,13 +209,20 @@
     box-sizing: border-box;
 
     margin: 12px 0;
-    padding: 7px !important;
+    padding: 8px !important;
 
-    border: 0 !important;
-    border-radius: 12px !important;
+    border: 1px solid var(--review-line-soft) !important;
+    border-radius: 15px !important;
 
-    background: var(--review-surface);
-    box-shadow: none !important;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.040),
+            rgba(255, 255, 255, 0.014)
+        ) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.025),
+        0 12px 26px rgba(0, 0, 0, 0.15) !important;
 
     overflow: hidden;
 }
@@ -197,32 +236,45 @@
 
     min-height: 0 !important;
 
-    padding: 6px 0 8px;
+    padding: 7px 8px 9px !important;
 
-    border: 0 !important;
-    border-top: 1px solid var(--review-line) !important;
-    border-bottom: 1px solid var(--review-line) !important;
-    border-radius: 0 !important;
+    border: 1px solid var(--review-line-soft) !important;
+    border-radius: 15px !important;
 
-    background: rgba(255, 255, 255, 0.012) !important;
-    box-shadow: none !important;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.026),
+            rgba(255, 255, 255, 0.010)
+        ) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.018) !important;
 
     overflow-y: auto !important;
     overflow-x: hidden !important;
     overscroll-behavior: contain;
 
-    scrollbar-color: rgba(117, 162, 242, 0.3) transparent !important;
+    scrollbar-color: rgba(103, 178, 255, 0.34) transparent !important;
 }
 
 .nexo-review-moves::-webkit-scrollbar {
     width: 7px !important;
 }
 
+.nexo-review-moves::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
 .nexo-review-moves::-webkit-scrollbar-thumb {
     border: 2px solid transparent;
     border-radius: 999px;
 
-    background: rgba(117, 162, 242, 0.3) !important;
+    background: rgba(103, 178, 255, 0.34) !important;
+    background-clip: padding-box !important;
+}
+
+.nexo-review-moves::-webkit-scrollbar-thumb:hover {
+    background: rgba(103, 178, 255, 0.52) !important;
     background-clip: padding-box !important;
 }
 
@@ -242,9 +294,10 @@
     margin: 0 !important;
     padding: 12px 22px 16px !important;
 
-    border-top: 1px solid var(--review-line);
+    border-top: 1px solid var(--review-line-soft);
 
-    background: rgba(8, 13, 20, 0.56);
+    background: rgba(7, 14, 23, 0.54);
+    backdrop-filter: blur(10px);
 }
 
 .nexo-review-traverser {
@@ -257,33 +310,46 @@
 .nexo-review-traverser button {
     height: 50px !important;
 
-    border: 1px solid rgba(255, 255, 255, 0.055) !important;
-    border-radius: 10px !important;
+    border: 1px solid rgba(255, 255, 255, 0.07) !important;
+    border-radius: 12px !important;
 
-    background: rgba(255, 255, 255, 0.045) !important;
-    color: rgba(224, 233, 246, 0.76) !important;
-    box-shadow: none !important;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.055),
+            rgba(255, 255, 255, 0.030)
+        ) !important;
+    color: rgba(224, 233, 246, 0.82) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.025) !important;
 }
 
 .nexo-review-traverser button:hover {
-    border-color: rgba(117, 162, 242, 0.26) !important;
+    border-color: rgba(116, 176, 255, 0.28) !important;
 
-    background: rgba(117, 162, 242, 0.11) !important;
+    background: rgba(103, 178, 255, 0.11) !important;
     color: #fff !important;
 
     transform: translateY(-1px) !important;
 }
 
 .nexo-review-traverser button:nth-child(3) {
-    border-color: rgba(146, 183, 248, 0.25) !important;
+    border-color: rgba(146, 217, 248, 0.26) !important;
 
-    background: linear-gradient(180deg, #548bea, #3f78d8) !important;
-    color: #fff !important;
-    box-shadow: 0 8px 20px rgba(36, 82, 158, 0.18) !important;
+    background:
+        linear-gradient(
+            180deg,
+            #68c8f2,
+            #45aedd
+        ) !important;
+    color: #07131d !important;
+    box-shadow:
+        0 4px 0 #2e82ab,
+        0 10px 24px rgba(59, 167, 219, 0.20) !important;
 }
 
 .nexo-review-traverser button:nth-child(3):hover {
-    background: linear-gradient(180deg, #6196ef, #477fdf) !important;
+    filter: brightness(1.035) !important;
 }
 
 @media (max-width: 900px) {
@@ -298,6 +364,10 @@
 }
 
 @media (max-width: 640px) {
+    .nexo-review-card {
+        border-radius: 17px !important;
+    }
+
     .nexo-review-content {
         padding: 12px 12px 7px !important;
     }
