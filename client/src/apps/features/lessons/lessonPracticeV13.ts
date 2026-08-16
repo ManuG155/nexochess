@@ -65,31 +65,11 @@ const escapeCheckMoves: MovePractice[] = [
     }
 ];
 
+// Only exercises whose concept genuinely benefits from a stripped board stay sparse.
+// Ordinary movement, tactical and strategic lessons are presented inside game-like positions.
 const INTENTIONAL_SPARSE_LESSONS = new Set([
     "first-contact.board",
-    "first-contact.sides",
-    "first-contact.rook",
-    "first-contact.bishop",
-    "first-contact.queen",
-    "first-contact.king",
-    "first-contact.knight",
-    "first-contact.pawn",
-    "first-contact.white-first",
-    "first-contact.turns",
-    "first-contact.capture",
-    "first-contact.capture-optional",
-    "first-contact.blocking",
-    "first-contact.knight-jumps",
-    "first-contact.checkmate",
-    "first-contact.mate-vs-stalemate",
-    "first-contact.setup",
     "beginner.promotion",
-    "beginner.en-passant",
-    "beginner.draws",
-    "intermediate.back-rank",
-    "intermediate.ladder-mate",
-    "intermediate.smothered-mate",
-    "intermediate.mating-net",
     "ready.active-king",
     "ready.square-rule",
     "ready.opposition",
@@ -156,7 +136,11 @@ const CONTEXT_PIECES: ContextPiece[] = [
     { square: "b1", type: "n", color: "w" },
     { square: "b8", type: "n", color: "b" },
     { square: "g1", type: "n", color: "w" },
-    { square: "g8", type: "n", color: "b" }
+    { square: "g8", type: "n", color: "b" },
+    { square: "b3", type: "p", color: "w" },
+    { square: "b6", type: "p", color: "b" },
+    { square: "g3", type: "p", color: "w" },
+    { square: "g6", type: "p", color: "b" }
 ];
 
 const STANDARD_LIMITS: Record<ContextPiece["type"], number> = {
@@ -186,6 +170,41 @@ function keepsTeachingMoveLegal(board: Chess, position: MovePractice) {
     const legal = new Set(legalMoveSet(board));
     if (!legal.has(`${position.expected.from}${position.expected.to}`)) return false;
     return (position.accepted || []).every(move => legal.has(`${move.from}${move.to}`));
+}
+
+function expectedOutcome(board: Chess, position: MovePractice) {
+    try {
+        const clone = new Chess(board.fen());
+        const move = clone.move({
+            from: position.expected.from,
+            to: position.expected.to,
+            promotion: "q"
+        });
+        if (!move) return undefined;
+        return {
+            check: clone.isCheck(),
+            mate: clone.isCheckmate(),
+            stalemate: clone.isStalemate()
+        };
+    } catch {
+        return undefined;
+    }
+}
+
+function sameTeachingShape(
+    board: Chess,
+    position: MovePractice,
+    initialCheck: boolean,
+    originalOutcome: ReturnType<typeof expectedOutcome>
+) {
+    if (board.isCheck() != initialCheck) return false;
+    if (!keepsTeachingMoveLegal(board, position)) return false;
+
+    const outcome = expectedOutcome(board, position);
+    if (!outcome || !originalOutcome) return false;
+    return outcome.check == originalOutcome.check
+        && outcome.mate == originalOutcome.mate
+        && outcome.stalemate == originalOutcome.stalemate;
 }
 
 function nearbySquares(square: Square) {
@@ -218,9 +237,28 @@ function protectedSquares(position: MovePractice) {
     return protectedSet;
 }
 
+function hashId(value: string) {
+    let hash = 0;
+    for (let index = 0; index < value.length; index += 1) {
+        hash = (hash * 31 + value.charCodeAt(index)) >>> 0;
+    }
+    return hash;
+}
+
+function orderedContextPieces(positionId: string) {
+    const offset = hashId(positionId) % CONTEXT_PIECES.length;
+    return [
+        ...CONTEXT_PIECES.slice(offset),
+        ...CONTEXT_PIECES.slice(0, offset)
+    ];
+}
+
 export function lessonNeedsGameContext(lessonId: string, positionId = "") {
     if (INTENTIONAL_SPARSE_LESSONS.has(lessonId)) return false;
-    if (lessonId == "ready.final-checkpoint" && ENDGAME_CHECKPOINT_MARKERS.some(marker => positionId.includes(marker))) {
+    if (
+        lessonId == "ready.final-checkpoint"
+        && ENDGAME_CHECKPOINT_MARKERS.some(marker => positionId.includes(marker))
+    ) {
         return false;
     }
     return true;
@@ -236,16 +274,21 @@ function addGameContext(position: PracticePosition, lessonId: string): PracticeP
         return position;
     }
 
-    if (countPieces(board) >= 12) return position;
+    const originalOutcome = expectedOutcome(board, position);
+    if (!originalOutcome) return position;
+
+    const initialCheck = board.isCheck();
+    const targetPieceCount = lessonId.startsWith("first-contact.") ? 14 : 16;
+    if (countPieces(board) >= targetPieceCount) return position;
 
     const blocked = protectedSquares(position);
-    for (const candidate of CONTEXT_PIECES) {
-        if (countPieces(board) >= 12) break;
+    for (const candidate of orderedContextPieces(position.id)) {
+        if (countPieces(board) >= targetPieceCount) break;
         if (blocked.has(candidate.square) || board.get(candidate.square)) continue;
         if (countPieceType(board, candidate.type, candidate.color) >= STANDARD_LIMITS[candidate.type]) continue;
 
         const placed = board.put({ type: candidate.type, color: candidate.color }, candidate.square);
-        if (!placed || !keepsTeachingMoveLegal(board, position)) {
+        if (!placed || !sameTeachingShape(board, position, initialCheck, originalOutcome)) {
             board.remove(candidate.square);
             continue;
         }
