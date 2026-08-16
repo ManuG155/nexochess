@@ -1,8 +1,8 @@
 {
-  "nav": "Engine",
-  "eyebrow": "GEGEN STOCKFISH SPIELEN",
-  "title": "Spiele gegen die Engine",
-  "subtitle": "Wähle Spielstärke und Farbe und spiele eine komplette Partie gegen Stockfish. Deine Züge erhalten sofortiges Feedback, ohne den Spielfluss zu unterbrechen, außer wenn ein neuer Versuch sinnvoll ist.",
+  "nav": "Duell",
+  "eyebrow": "DUELL GEGEN STOCKFISH",
+  "title": "Duell",
+  "subtitle": "Wähle Spielstärke und Farbe und spiele eine komplette Partie gegen Stockfish mit deinem ausgewählten Trainer als Gegner. Deine Züge erhalten fast sofort Feedback; wichtige Fehler kannst du erneut versuchen.",
   "thinking": "Denkt…",
   "you": "Du",
   "white": "Weiß",
@@ -28,13 +28,14 @@
     "elite": "Elite"
   },
   "coach": {
-    "setup": "Ich bin Stockfish. Wähle Spielstärke und Farbe, dann spielen wir eine echte Partie.",
+    "setup": "Ich bin {{coach}}. Wähle die Stockfish-Stärke und deine Farbe, dann spielen wir eine vollständige Partie.",
+    "changeHint": "Klicke auf den Trainer, um ihn zu wechseln.",
     "reading": "Ich prüfe die Stellung vor deinem Zug. Einen Moment.",
     "yourTurn": "Du bist am Zug. Spiele die Stellung wie in einer normalen Partie.",
     "thinking": "Ich bin am Zug und berechne meine Antwort.",
     "engineMove": "Ich habe {{move}} gespielt. Du bist wieder am Zug.",
     "engineError": "Ich konnte die Berechnung nicht abschließen. Du kannst die Partie über die Einstellungen neu starten.",
-    "intro": "Bereit. Du spielst gegen meine ungefähre Stärke von {{elo}}.",
+    "intro": "Bereit. Ich bin {{coach}} und spiele mit einer ungefähren Stärke von {{elo}}.",
     "checking": "Du hast {{move}} gespielt. Ich prüfe, was sich in der Stellung verändert hat.",
     "retry": "Gut. Wir sind zur Stellung vor deinem Zug zurückgekehrt. Probiere eine andere Idee.",
     "quality": {
@@ -46,7 +47,7 @@
       "blunder": "{{move}} ist ein schwerer Fehler. Der rote Pfeil zeigt die taktische Antwort, die du zugelassen hast."
     },
     "end": {
-      "win": "Partie beendet. Du hast Stockfish auf dieser Stufe geschlagen. Stark gespielt.",
+      "win": "Partie beendet. Du hast dieses Duell gewonnen. Stark gespielt.",
       "loss": "Partie beendet. Diese Partie gewinne ich, aber die vollständige Analyse zeigt dir, wo sie gekippt ist.",
       "draw": "Partie beendet. Remis. Die Analyse kann trotzdem die kritischen Momente zeigen."
     }
@@ -73,22 +74,22 @@
   },
   "game": {
     "title": "Partie",
-    "vs": "gegen Stockfish {{elo}}",
+    "vs": "gegen {{coach}} · {{elo}}",
     "noMoves": "Die Züge erscheinen hier im Verlauf der Partie."
   },
   "end": {
-    "kicker": "PARTIE BEENDET",
+    "kicker": "DUELL BEENDET",
     "win": {
       "title": "Sieg",
-      "body": "Du hast Stockfish {{elo}} besiegt. Du kannst jetzt das vollständige PGN analysieren oder direkt erneut spielen."
+      "body": "Du hast {{coach}} auf Stärke {{elo}} besiegt. Du kannst jetzt das vollständige PGN analysieren oder direkt erneut spielen."
     },
     "loss": {
-      "title": "Stockfish gewinnt",
-      "body": "Stockfish {{elo}} hat diese Partie gewonnen. Analysiere das PGN für die entscheidenden Momente oder spiele sofort noch einmal."
+      "title": "{{coach}} gewinnt",
+      "body": "{{coach}} hat dieses Duell auf Stärke {{elo}} gewonnen. Analysiere das PGN für die entscheidenden Momente oder spiele sofort noch einmal."
     },
     "draw": {
       "title": "Remis",
-      "body": "Du hast gegen Stockfish {{elo}} remis gespielt. Das vollständige PGN ist bereit zur Analyse."
+      "body": "Du hast gegen {{coach}} auf Stärke {{elo}} remis gespielt. Das vollständige PGN ist bereit zur Analyse."
     },
     "analysing": "Das vollständige PGN wird mit deinen NexoChess-Analyseeinstellungen ausgewertet…",
     "analysisError": "Die Partie konnte nicht analysiert werden. Du kannst es erneut versuchen oder die Züge hier weiter ansehen."
