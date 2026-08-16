@@ -3,11 +3,9 @@ import { useTranslation } from "react-i18next";
 import { Move } from "chess.js";
 
 import { addChildMove } from "shared/types/game/position/StateTreeNode";
-import AnalysisTab from "@analysis/constants/AnalysisTab";
 import AnalysisStatus from "@analysis/constants/AnalysisStatus";
 import useSettingsStore from "@/stores/SettingsStore";
 import useAnalysisGameStore from "@analysis/stores/AnalysisGameStore";
-import useAnalysisTabStore from "@analysis/stores/AnalysisTabStore";
 import useAnalysisBoardStore from "@analysis/stores/AnalysisBoardStore";
 import useAnalysisProgressStore from "@analysis/stores/AnalysisProgressStore";
 import Board from "@analysis/components/Board";
@@ -24,11 +22,8 @@ function BoardArea() {
 
     const {
         analysisGame,
-        gameAnalysisOpen,
-        setGameAnalysisOpen
+        gameAnalysisOpen
     } = useAnalysisGameStore();
-
-    const setActiveTab = useAnalysisTabStore(state => state.setActiveTab);
 
     const analysisStatus = useAnalysisProgressStore(
         state => state.analysisStatus
@@ -48,10 +43,9 @@ function BoardArea() {
     const flipBoardLabel = t("optionsToolbar.flipBoard");
 
     function addMove(move: Move) {
-        if (!gameAnalysisOpen) {
-            setGameAnalysisOpen(true);
-            setActiveTab(AnalysisTab.ANALYSIS);
-        }
+        // The board shown on the Analysis landing screen is a preview only.
+        // A real game must be loaded before users can branch or enter Analysis.
+        if (!gameAnalysisOpen) return false;
 
         setCurrentStateTreeNode(prev => {
             const createdNode = addChildMove(prev, move.san);
@@ -106,9 +100,10 @@ function BoardArea() {
             node={currentStateTreeNode}
             flipped={boardFlipped}
             evaluation={evaluation}
-            arrows={suggestionArrows}
+            arrows={gameAnalysisOpen ? suggestionArrows : []}
             piecesDraggable={
-                analysisStatus == AnalysisStatus.INACTIVE
+                gameAnalysisOpen
+                && analysisStatus == AnalysisStatus.INACTIVE
                 && !autoplayEnabled
             }
             enableClassifications={!settings.classifications.hide}
