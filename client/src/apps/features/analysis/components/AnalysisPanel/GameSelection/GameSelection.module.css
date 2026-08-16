@@ -1,84 +1,262 @@
 .wrapper {
+    position: relative;
+
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
 
     box-sizing: border-box;
     width: 100%;
     min-height: 0;
-    overflow: visible;
-    overscroll-behavior: contain;
+    overflow: hidden;
 
-    padding: 20px;
+    padding: 22px;
 
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: 15px;
+    border: 1px solid rgba(111, 165, 255, 0.18);
+    border-radius: 22px;
     background:
-        radial-gradient(
-            circle at 80% -15%,
-            rgba(70, 125, 232, 0.16),
-            transparent 42%
-        ),
-        #292620;
+        linear-gradient(
+            145deg,
+            rgba(18, 32, 48, 0.98),
+            rgba(9, 18, 29, 0.99) 58%,
+            rgba(8, 16, 26, 1)
+        );
 
-    box-shadow: 0 22px 44px rgba(0, 0, 0, 0.2);
+    box-shadow:
+        0 24px 70px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.045);
+
+    isolation: isolate;
+}
+
+.ambientGlow {
+    position: absolute;
+    top: -150px;
+    right: -95px;
+
+    z-index: -1;
+
+    width: 360px;
+    height: 360px;
+
+    border-radius: 999px;
+    background: rgba(67, 139, 255, 0.17);
+    filter: blur(76px);
+    pointer-events: none;
 }
 
 .intro {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+
+    padding: 2px 2px 4px;
+}
+
+.introMark {
+    display: grid;
+    place-items: center;
+
+    width: 48px;
+    height: 48px;
+
+    margin-top: 2px;
+
+    border: 1px solid rgba(116, 176, 255, 0.3);
+    border-radius: 14px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(72, 139, 232, 0.2),
+            rgba(39, 77, 127, 0.08)
+        );
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+.introMark img {
+    width: 27px;
+    height: 27px;
+    opacity: 0.92;
+}
+
+.introCopy {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 7px;
+    gap: 6px;
+
+    min-width: 0;
 }
 
 .eyebrow {
-    color: #8da9e2;
+    color: #86b8ff;
 
-    font-size: 0.69rem;
+    font-size: 0.72rem;
     font-weight: 900;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
 }
 
 .intro h1 {
+    max-width: 17ch;
     margin: 0;
 
-    color: rgba(255, 255, 255, 0.97);
+    color: rgba(255, 255, 255, 0.98);
 
-    font-size: clamp(1.55rem, 3vw, 2rem);
-    line-height: 1.08;
+    font-size: clamp(1.75rem, 3.1vw, 2.25rem);
+    font-weight: 800;
+    line-height: 1.04;
+    letter-spacing: -0.025em;
 }
 
 .intro p {
-    max-width: 48ch;
-    margin: 0;
+    max-width: 52ch;
+    margin: 2px 0 0;
 
-    color: rgba(255, 255, 255, 0.55);
+    color: rgba(220, 231, 245, 0.66);
 
-    font-size: 0.86rem;
-    line-height: 1.5;
+    font-size: 0.9rem;
+    line-height: 1.48;
+}
+
+.workspace {
+    position: relative;
+
+    min-height: 0;
+    padding: 13px;
+
+    border: 1px solid rgba(255, 255, 255, 0.075);
+    border-radius: 17px;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.035),
+            rgba(255, 255, 255, 0.012)
+        );
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.035),
+        0 14px 30px rgba(0, 0, 0, 0.17);
+}
+
+.workspaceAccent {
+    position: absolute;
+    top: -1px;
+    left: 22px;
+
+    width: 92px;
+    height: 2px;
+
+    border-radius: 999px;
+    background: linear-gradient(
+        90deg,
+        rgba(103, 178, 255, 0),
+        rgba(103, 178, 255, 0.9),
+        rgba(103, 178, 255, 0)
+    );
+
+    pointer-events: none;
+}
+
+.actionDock {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    padding: 2px 1px 0;
+}
+
+.actionDock > :first-child {
+    min-height: 58px;
+
+    border-radius: 14px !important;
+    background:
+        linear-gradient(
+            180deg,
+            #68c8f2,
+            #45aedd
+        ) !important;
+
+    box-shadow:
+        0 5px 0 #2e82ab,
+        0 12px 26px rgba(59, 167, 219, 0.22) !important;
+
+    color: #07131d !important;
+    font-size: 1.1rem !important;
+    font-weight: 850 !important;
+}
+
+.actionDock > :first-child:hover:not(:disabled) {
+    filter: brightness(1.035) !important;
+}
+
+.actionDock > :first-child:disabled {
+    background: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: none !important;
+    color: rgba(255, 255, 255, 0.38) !important;
 }
 
 .localNote,
 .statusMessage {
     width: 100%;
-    margin: -2px 0 0;
+    margin: 0;
 
-    color: rgba(255, 255, 255, 0.35);
-    font-size: 0.67rem;
+    color: rgba(204, 218, 236, 0.43);
+    font-size: 0.69rem;
     line-height: 1.4;
     text-align: center;
 }
 
 .statusMessage {
-    color: #93a9d5;
+    padding: 7px 10px;
+
+    border: 1px solid rgba(114, 178, 255, 0.15);
+    border-radius: 10px;
+    background: rgba(53, 112, 174, 0.09);
+
+    color: #a9c8ed;
+    font-style: normal;
+}
+
+.errorMessage {
+    overflow: hidden;
+    border-radius: 11px;
 }
 
 @media (max-width: 500px) {
     .wrapper {
+        gap: 12px;
         padding: 16px;
         border-right: 0;
         border-left: 0;
         border-radius: 0;
+    }
+
+    .intro {
+        grid-template-columns: 40px minmax(0, 1fr);
+        gap: 11px;
+    }
+
+    .introMark {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+    }
+
+    .introMark img {
+        width: 23px;
+        height: 23px;
+    }
+
+    .intro h1 {
+        font-size: 1.65rem;
+    }
+
+    .workspace {
+        padding: 10px;
     }
 }
