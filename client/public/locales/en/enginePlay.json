@@ -11,7 +11,7 @@
   "setup": {
     "difficulty": "Difficulty",
     "playAs": "Play as",
-    "eloNote": "The Elo labels are an approximate playing-strength guide. Lower levels deliberately choose weaker Stockfish candidate lines."
+    "eloNote": "The Elo labels are an approximate playing-strength guide. Lower levels still play sound opening moves and then choose among progressively wider Stockfish candidates."
   },
   "levels": {
     "initiation": "Initiation",
@@ -39,6 +39,7 @@
     "checking": "You played {{move}}. I am checking what changed in the position.",
     "retry": "Good. We have returned to the position before your move. Try another idea.",
     "quality": {
+      "theory": "{{move}} is theory. It is a known opening move and keeps us on established paths.",
       "best": "{{move}} is the best move I found. Excellent reading of the position.",
       "excellent": "{{move}} is excellent. It keeps almost all of the position's potential.",
       "okay": "{{move}} is playable. There may be a more precise option, but the position remains healthy.",
@@ -53,6 +54,7 @@
     }
   },
   "quality": {
+    "theory": "Theory",
     "best": "Best",
     "excellent": "Excellent",
     "okay": "Good",
@@ -66,6 +68,8 @@
     "play": "Play",
     "retry": "Retry",
     "continue": "Continue",
+    "undo": "Undo",
+    "redo": "Redo",
     "result": "Result",
     "resign": "Resign",
     "close": "Close",
