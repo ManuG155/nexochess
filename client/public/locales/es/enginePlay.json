@@ -1,0 +1,96 @@
+{
+  "nav": "Motor",
+  "eyebrow": "JUEGA CONTRA STOCKFISH",
+  "title": "Juega contra el motor",
+  "subtitle": "Elige nivel y color y juega una partida completa contra Stockfish. Tus jugadas reciben feedback inmediato sin cortar el ritmo salvo cuando merece la pena darte la opción de reintentar.",
+  "thinking": "Pensando…",
+  "you": "Tú",
+  "white": "Blancas",
+  "black": "Negras",
+  "moveQuality": "Calidad de la jugada",
+  "setup": {
+    "difficulty": "Dificultad",
+    "playAs": "Jugar con",
+    "eloNote": "Los valores Elo son una referencia aproximada de fuerza. En los niveles bajos Stockfish elige deliberadamente líneas candidatas más débiles."
+  },
+  "levels": {
+    "initiation": "Iniciación",
+    "beginner": "Principiante",
+    "novice": "Novato",
+    "club": "Aficionado",
+    "competent": "Competente",
+    "intermediate": "Intermedio",
+    "advanced": "Avanzado",
+    "expert": "Experto",
+    "candidate": "Candidato a maestro",
+    "master": "Maestro",
+    "grandmaster": "Gran Maestro",
+    "elite": "Élite"
+  },
+  "coach": {
+    "setup": "Soy Stockfish. Elige la fuerza y el color que quieras y jugaremos una partida de verdad.",
+    "reading": "Estoy leyendo la posición antes de tu turno. Dame un momento.",
+    "yourTurn": "Tu turno. Juega la posición como lo harías en una partida normal.",
+    "thinking": "Me toca. Estoy calculando mi respuesta.",
+    "engineMove": "He jugado {{move}}. La posición vuelve a ser tuya.",
+    "engineError": "No he podido terminar ese cálculo. Puedes reiniciar la partida desde la configuración.",
+    "intro": "Listo. Vas a jugar contra mi nivel aproximado de {{elo}}.",
+    "checking": "Has jugado {{move}}. Estoy comprobando qué ha cambiado en la posición.",
+    "retry": "Bien. Hemos vuelto a la posición anterior a tu jugada. Prueba otra idea.",
+    "quality": {
+      "best": "{{move}} es la mejor jugada que encuentro. Excelente lectura de la posición.",
+      "excellent": "{{move}} es excelente. Conserva prácticamente todo el potencial de la posición.",
+      "okay": "{{move}} es jugable. Puede haber algo más preciso, pero la posición sigue sana.",
+      "inaccuracy": "{{move}} es una pequeña imprecisión. No es grave, pero has cedido parte de la posición.",
+      "mistake": "{{move}} es un error. Ahora tengo una respuesta concreta; la flecha roja muestra la amenaza principal.",
+      "blunder": "{{move}} es un error grave. La flecha roja muestra la respuesta táctica que has permitido."
+    },
+    "end": {
+      "win": "Se acabó. Has ganado a Stockfish en este nivel. Muy buena partida.",
+      "loss": "Se acabó. Esta me la llevo yo, pero la revisión completa puede enseñarte exactamente dónde cambió la partida.",
+      "draw": "Se acabó. Tablas. Aun así, la revisión puede descubrir los momentos críticos."
+    }
+  },
+  "quality": {
+    "best": "Mejor",
+    "excellent": "Excelente",
+    "okay": "Buena",
+    "inaccuracy": "Imprecisión",
+    "mistake": "Error",
+    "blunder": "Error grave"
+  },
+  "actions": {
+    "changeSetup": "Cambiar configuración",
+    "returnLive": "Volver a la partida",
+    "play": "Jugar",
+    "retry": "Reintentar",
+    "continue": "Continuar",
+    "result": "Resultado",
+    "resign": "Rendirse",
+    "close": "Cerrar",
+    "analyse": "Analizar partida",
+    "playAgain": "Jugar otra vez"
+  },
+  "game": {
+    "title": "Partida",
+    "vs": "contra Stockfish {{elo}}",
+    "noMoves": "Las jugadas aparecerán aquí a medida que avance la partida."
+  },
+  "end": {
+    "kicker": "PARTIDA TERMINADA",
+    "win": {
+      "title": "Victoria",
+      "body": "Has derrotado a Stockfish {{elo}}. Puedes analizar ahora el PGN completo o jugar otra partida."
+    },
+    "loss": {
+      "title": "Gana Stockfish",
+      "body": "Stockfish {{elo}} ha ganado esta partida. Analiza el PGN para encontrar los momentos decisivos o vuelve a jugar inmediatamente."
+    },
+    "draw": {
+      "title": "Tablas",
+      "body": "Has hecho tablas con Stockfish {{elo}}. El PGN completo está preparado si quieres revisar la partida."
+    },
+    "analysing": "Analizando el PGN completo con tus ajustes de revisión de NexoChess…",
+    "analysisError": "No se ha podido analizar la partida. Puedes volver a intentarlo o seguir revisando las jugadas aquí."
+  }
+}
