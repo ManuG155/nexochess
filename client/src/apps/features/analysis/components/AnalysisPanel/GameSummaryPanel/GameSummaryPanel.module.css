@@ -1,12 +1,17 @@
 .wrapper {
-    --summary-bg: #0d141e;
+    --summary-bg: #08101a;
+    --summary-bg-soft: #122030;
     --summary-surface: rgba(255, 255, 255, 0.035);
-    --summary-surface-hover: rgba(255, 255, 255, 0.055);
-    --summary-line: rgba(130, 164, 220, 0.13);
-    --summary-line-strong: rgba(117, 162, 242, 0.34);
-    --summary-blue: #79a6f3;
-    --summary-text: #f2f5fa;
-    --summary-muted: rgba(222, 229, 240, 0.66);
+    --summary-surface-hover: rgba(255, 255, 255, 0.06);
+    --summary-line: rgba(111, 165, 255, 0.18);
+    --summary-line-soft: rgba(255, 255, 255, 0.075);
+    --summary-line-strong: rgba(116, 176, 255, 0.3);
+    --summary-blue: #86b8ff;
+    --summary-cyan: #68c8f2;
+    --summary-text: rgba(255, 255, 255, 0.98);
+    --summary-muted: rgba(220, 231, 245, 0.66);
+
+    position: relative;
 
     display: flex;
     flex: 1;
@@ -19,13 +24,27 @@
     min-height: 0;
 
     border: 1px solid var(--summary-line);
-    border-radius: 17px;
+    border-radius: 22px;
 
     background:
-        linear-gradient(160deg, #111a26 0%, var(--summary-bg) 54%, #0b1119 100%);
-    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.25);
+        radial-gradient(
+            circle at 88% -14%,
+            rgba(67, 139, 255, 0.18),
+            rgba(67, 139, 255, 0) 38%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(18, 32, 48, 0.98),
+            rgba(9, 18, 29, 0.99) 58%,
+            rgba(8, 16, 26, 1)
+        );
+
+    box-shadow:
+        0 24px 70px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.045);
 
     overflow: hidden;
+    isolation: isolate;
 }
 
 .scrollArea {
@@ -33,12 +52,12 @@
 
     width: 100%;
 
-    padding: 22px 22px 28px;
+    padding: 18px 18px 24px;
 
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-width: thin;
-    scrollbar-color: rgba(117, 162, 242, 0.3) transparent;
+    scrollbar-color: rgba(103, 178, 255, 0.38) transparent;
 }
 
 .scrollArea::-webkit-scrollbar {
@@ -53,42 +72,48 @@
     border: 2px solid transparent;
     border-radius: 999px;
 
-    background: rgba(117, 162, 242, 0.3);
+    background: rgba(103, 178, 255, 0.38);
     background-clip: padding-box;
 }
 
 .scrollArea::-webkit-scrollbar-thumb:hover {
-    background: rgba(117, 162, 242, 0.48);
+    background: rgba(103, 178, 255, 0.58);
     background-clip: padding-box;
 }
 
 .title {
     position: relative;
 
-    margin: 0 0 18px;
-    padding-bottom: 13px;
+    margin: 0 0 14px;
+    padding: 2px 4px 13px;
+
+    border-bottom: 1px solid var(--summary-line-soft);
 
     color: var(--summary-text);
 
-    font-size: clamp(1.42rem, 2vw, 1.68rem);
+    font-size: clamp(1.5rem, 2vw, 1.78rem);
     font-weight: 820;
     letter-spacing: -0.025em;
-    line-height: 1.15;
+    line-height: 1.08;
 }
 
 .title::after {
     content: "";
 
     position: absolute;
-    left: 0;
-    bottom: 0;
+    left: 4px;
+    bottom: -1px;
 
-    width: 48px;
-    height: 3px;
+    width: 92px;
+    height: 2px;
 
     border-radius: 999px;
-
-    background: linear-gradient(90deg, #6d9cea, rgba(109, 156, 234, 0.18));
+    background: linear-gradient(
+        90deg,
+        rgba(103, 178, 255, 0),
+        rgba(103, 178, 255, 0.9),
+        rgba(103, 178, 255, 0)
+    );
 }
 
 .analysisProgressBridge {
@@ -104,7 +129,7 @@
     margin-bottom: 12px;
     padding: 2px 4px 14px;
 
-    border-bottom: 1px solid var(--summary-line);
+    border-bottom: 1px solid var(--summary-line-soft);
 }
 
 .coachPortraitButton {
@@ -156,10 +181,19 @@
     margin-bottom: 5px;
     padding: 15px 17px;
 
-    border: 1px solid rgba(117, 162, 242, 0.25);
+    border: 1px solid var(--summary-line-strong);
     border-radius: 14px;
 
-    background: rgba(7, 12, 19, 0.52);
+    background:
+        linear-gradient(
+            145deg,
+            rgba(19, 34, 51, 0.94),
+            rgba(8, 17, 27, 0.94)
+        );
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        0 10px 24px rgba(0, 0, 0, 0.17);
 }
 
 .coachBubble::before,
@@ -177,7 +211,7 @@
 }
 
 .coachBubble::before {
-    background: rgba(117, 162, 242, 0.48);
+    background: rgba(116, 176, 255, 0.46);
 }
 
 .coachBubble::after {
@@ -187,13 +221,13 @@
     width: 15px;
     height: 23px;
 
-    background: #0b121b;
+    background: #0d1a28;
 }
 
 .coachMessage {
     margin: 0;
 
-    color: #edf2f9;
+    color: #edf4fc;
 
     font-size: 1rem;
     font-weight: 620;
@@ -206,7 +240,7 @@
 
     border-radius: 999px;
 
-    background: rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.08);
 
     overflow: hidden;
 }
@@ -216,13 +250,15 @@
 
     border-radius: inherit;
 
-    background: linear-gradient(90deg, #4f83dc, #82acf4);
+    background: linear-gradient(90deg, #4daede, #78d1f4);
+
+    box-shadow: 0 0 14px rgba(77, 174, 222, 0.26);
 
     transition: width 180ms ease;
 }
 
 .coachProgressPercentage {
-    color: var(--summary-blue);
+    color: #8bcfff;
 
     font-size: 0.82rem;
     font-weight: 760;
@@ -233,11 +269,21 @@
 
 .graphCard {
     margin-bottom: 12px;
-    padding: 7px;
+    padding: 10px;
 
-    border-radius: 12px;
+    border: 1px solid var(--summary-line-soft);
+    border-radius: 17px;
 
-    background: var(--summary-surface);
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.04),
+            rgba(255, 255, 255, 0.014)
+        );
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.035),
+        0 14px 30px rgba(0, 0, 0, 0.17);
 
     overflow: hidden;
 }
@@ -247,17 +293,26 @@
 }
 
 .playersSection {
-    margin-bottom: 8px;
-    padding: 14px 0;
+    margin-bottom: 10px;
+    padding: 10px;
 
-    border-top: 1px solid var(--summary-line);
-    border-bottom: 1px solid var(--summary-line);
+    border: 1px solid var(--summary-line-soft);
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.032),
+            rgba(255, 255, 255, 0.012)
+        );
+
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .playersGrid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 22px;
+    gap: 10px;
     align-items: stretch;
 }
 
@@ -276,7 +331,12 @@
 
     width: 100%;
     min-width: 0;
-    padding: 4px 6px;
+    padding: 8px 9px;
+
+    border: 1px solid rgba(255, 255, 255, 0.055);
+    border-radius: 13px;
+
+    background: rgba(7, 15, 24, 0.38);
 }
 
 .playerName {
@@ -305,12 +365,14 @@
     width: 52px;
     height: 52px;
 
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(116, 176, 255, 0.18);
     border-radius: 13px;
 
     object-fit: cover;
 
     background-color: #e7ebf1;
+
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
 }
 
 .accuracyBox {
@@ -322,10 +384,11 @@
 
     padding: 4px 9px;
 
+    border: 1px solid rgba(103, 178, 255, 0.12);
     border-radius: 999px;
 
-    background: rgba(86, 132, 210, 0.14);
-    color: #dce8fb;
+    background: rgba(68, 144, 214, 0.14);
+    color: #dcecff;
 
     font-size: 1.02rem;
     font-weight: 810;
@@ -339,13 +402,24 @@
     display: flex;
     flex-direction: column;
 
-    padding: 8px 0;
+    border: 1px solid var(--summary-line-soft);
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.03),
+            rgba(255, 255, 255, 0.01)
+        );
+
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
 }
 
 .moveTableSection {
-    gap: 0;
+    gap: 1px;
 
-    border-bottom: 1px solid var(--summary-line);
+    margin-bottom: 10px;
+    padding: 6px;
 }
 
 .moveRow {
@@ -356,9 +430,11 @@
     min-height: 40px;
     padding: 3px 8px;
 
-    border-radius: 8px;
+    border-radius: 9px;
 
-    transition: background-color 140ms ease;
+    transition:
+        background-color 140ms ease,
+        box-shadow 140ms ease;
 }
 
 .moveRow:nth-child(even) {
@@ -367,11 +443,12 @@
 
 .moveRow:hover {
     background: var(--summary-surface-hover);
+    box-shadow: inset 0 0 0 1px rgba(116, 176, 255, 0.05);
 }
 
 .moveLabel,
 .phaseLabel {
-    color: rgba(239, 243, 250, 0.84);
+    color: rgba(239, 246, 255, 0.86);
 
     font-size: 0.95rem;
     font-weight: 610;
@@ -420,7 +497,7 @@
 .phaseSection {
     gap: 1px;
 
-    padding-top: 10px;
+    padding: 6px;
 }
 
 .phaseRow {
@@ -431,7 +508,7 @@
     min-height: 41px;
     padding: 3px 8px;
 
-    border-radius: 8px;
+    border-radius: 9px;
 }
 
 .phaseRow:hover {
@@ -441,7 +518,8 @@
 .phaseRow:first-child {
     margin-bottom: 3px;
 
-    background: rgba(86, 132, 210, 0.075);
+    border: 1px solid rgba(103, 178, 255, 0.08);
+    background: rgba(68, 144, 214, 0.09);
 }
 
 .noPhase {
@@ -457,10 +535,11 @@
 
     padding: 5px 7px;
 
-    border-radius: 8px;
+    border: 1px solid rgba(103, 178, 255, 0.1);
+    border-radius: 9px;
 
-    background: rgba(86, 132, 210, 0.11);
-    color: #e4edfb;
+    background: rgba(68, 144, 214, 0.12);
+    color: #e5f1ff;
 
     font-size: 1rem;
     font-weight: 800;
@@ -471,52 +550,62 @@
 .footer {
     flex-shrink: 0;
 
-    padding: 13px 20px 17px;
+    padding: 11px 18px 17px;
 
-    border-top: 1px solid var(--summary-line);
+    border-top: 1px solid var(--summary-line-soft);
 
-    background: rgba(8, 13, 20, 0.58);
+    background: rgba(8, 16, 26, 0.82);
+    backdrop-filter: blur(10px);
 }
 
 .startReviewButton {
     width: 100%;
 
+    min-height: 52px;
     padding: 14px 18px;
 
-    border: 1px solid rgba(146, 183, 248, 0.24);
-    border-radius: 11px;
+    border: 0;
+    border-radius: 14px;
 
-    background: linear-gradient(180deg, #548bea, #3f78d8);
-    color: #fff;
+    background: linear-gradient(180deg, #68c8f2, #45aedd);
+    color: #07131d;
 
     font-family: inherit;
-    font-size: 1.03rem;
-    font-weight: 790;
+    font-size: 1.06rem;
+    font-weight: 850;
 
     cursor: pointer;
 
-    box-shadow: 0 8px 20px rgba(36, 82, 158, 0.2);
+    box-shadow:
+        0 5px 0 #2e82ab,
+        0 12px 26px rgba(59, 167, 219, 0.22);
 
     transition:
-        background-color 150ms ease,
+        filter 150ms ease,
         transform 150ms ease,
         box-shadow 150ms ease;
 }
 
 .startReviewButton:hover {
-    background: linear-gradient(180deg, #6196ef, #477fdf);
-    box-shadow: 0 10px 24px rgba(36, 82, 158, 0.26);
+    filter: brightness(1.035);
+    box-shadow:
+        0 5px 0 #2e82ab,
+        0 14px 30px rgba(59, 167, 219, 0.28);
 
     transform: translateY(-1px);
 }
 
 .startReviewButton:active {
-    transform: translateY(0);
+    box-shadow:
+        0 3px 0 #2e82ab,
+        0 9px 20px rgba(59, 167, 219, 0.2);
+
+    transform: translateY(2px);
 }
 
 .startReviewButton:focus-visible {
-    outline: 2px solid rgba(130, 177, 255, 0.78);
-    outline-offset: 2px;
+    outline: 2px solid rgba(130, 209, 255, 0.82);
+    outline-offset: 3px;
 }
 
 .scrollAreaWithoutCoach {
@@ -573,7 +662,7 @@
         gap: 4px 8px;
         justify-content: center;
 
-        padding-inline: 2px;
+        padding-inline: 6px;
     }
 
     .playerAvatar {
