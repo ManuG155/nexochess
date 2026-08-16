@@ -29,6 +29,7 @@ const PAGE_ROUTES = new Map([
     ["/about", "about.html"],
     ["/faq", "faq.html"],
     ["/analysis", "features/analysis.html"],
+    ["/engine", "features/engine.html"],
     ["/archive", "features/archive.html"],
     ["/academy", "features/academy.html"],
     ["/lessons", "features/lessons.html"],

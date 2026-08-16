@@ -23,6 +23,7 @@ module.exports = {
         about: "./src/apps/about/index.tsx",
         faq: "./src/apps/faq/index.tsx",
         analysis: "./src/apps/features/analysis/index.tsx",
+        enginePlay: "./src/apps/features/enginePlay/index.tsx",
         archive: "./src/apps/features/archive/index.tsx",
         academy: "./src/apps/features/academy/index.tsx",
         lessons: "./src/apps/features/lessons/index.tsx",

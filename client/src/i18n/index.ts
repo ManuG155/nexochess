@@ -15,7 +15,7 @@ import {
 
 const namespaces = [
     "common", "academy", "lessons", "lessonsCatalog", "lessonsPractice",
-    "puzzles", "repertoire", "repertoireCourse", "analysis", "settings",
+    "enginePlay", "puzzles", "repertoire", "repertoireCourse", "analysis", "settings",
     "otherPages", "helpCenter", "coach", "legal", "guides"
 ] as const;
 

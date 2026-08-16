@@ -1,0 +1,96 @@
+{
+  "nav": "Silnik",
+  "eyebrow": "ZAGRAJ ZE STOCKFISHEM",
+  "title": "Zagraj z silnikiem",
+  "subtitle": "Wybierz poziom i kolor, a następnie rozegraj pełną partię przeciwko Stockfishowi. Twoje ruchy otrzymują natychmiastową ocenę bez przerywania rytmu gry, chyba że warto spróbować ponownie.",
+  "thinking": "Myśli…",
+  "you": "Ty",
+  "white": "Białe",
+  "black": "Czarne",
+  "moveQuality": "Jakość ruchu",
+  "setup": {
+    "difficulty": "Trudność",
+    "playAs": "Graj jako",
+    "eloNote": "Wartości Elo są przybliżonym wskaźnikiem siły. Na niższych poziomach Stockfish celowo wybiera słabsze warianty kandydujące."
+  },
+  "levels": {
+    "initiation": "Wprowadzenie",
+    "beginner": "Początkujący",
+    "novice": "Nowicjusz",
+    "club": "Gracz klubowy",
+    "competent": "Solidny",
+    "intermediate": "Średniozaawansowany",
+    "advanced": "Zaawansowany",
+    "expert": "Ekspert",
+    "candidate": "Kandydat na mistrza",
+    "master": "Mistrz",
+    "grandmaster": "Arcymistrz",
+    "elite": "Elita"
+  },
+  "coach": {
+    "setup": "Jestem Stockfish. Wybierz siłę i kolor, a potem zagramy prawdziwą partię.",
+    "reading": "Analizuję pozycję przed twoim ruchem. Chwila.",
+    "yourTurn": "Twój ruch. Graj tak, jak w normalnej partii.",
+    "thinking": "Mój ruch. Obliczam odpowiedź.",
+    "engineMove": "Zagrałem {{move}}. Teraz znowu twój ruch.",
+    "engineError": "Nie udało mi się dokończyć obliczeń. Możesz zacząć partię ponownie z ekranu ustawień.",
+    "intro": "Gotowe. Grasz przeciwko mojemu przybliżonemu poziomowi {{elo}}.",
+    "checking": "Zagrałeś {{move}}. Sprawdzam, co zmieniło się w pozycji.",
+    "retry": "Dobrze. Wróciliśmy do pozycji sprzed twojego ruchu. Spróbuj innego pomysłu.",
+    "quality": {
+      "best": "{{move}} to najlepszy ruch, jaki znajduję. Świetne odczytanie pozycji.",
+      "excellent": "{{move}} jest znakomity. Zachowuje prawie cały potencjał pozycji.",
+      "okay": "{{move}} jest grywalny. Być może istnieje dokładniejsza opcja, ale pozycja pozostaje zdrowa.",
+      "inaccuracy": "{{move}} to drobna niedokładność. Nic katastrofalnego, ale oddajesz część pozycji.",
+      "mistake": "{{move}} to błąd. Mam teraz konkretną odpowiedź; czerwona strzałka pokazuje główne zagrożenie.",
+      "blunder": "{{move}} to poważny błąd. Czerwona strzałka pokazuje taktyczną odpowiedź, na którą pozwoliłeś."
+    },
+    "end": {
+      "win": "Koniec partii. Pokonałeś Stockfisha na tym poziomie. Dobra robota.",
+      "loss": "Koniec partii. Tę wygrywam ja, ale pełna analiza pokaże dokładnie, gdzie partia się odwróciła.",
+      "draw": "Koniec partii. Remis. Analiza nadal może wskazać krytyczne momenty."
+    }
+  },
+  "quality": {
+    "best": "Najlepszy",
+    "excellent": "Znakomity",
+    "okay": "Dobry",
+    "inaccuracy": "Niedokładność",
+    "mistake": "Błąd",
+    "blunder": "Poważny błąd"
+  },
+  "actions": {
+    "changeSetup": "Zmień ustawienia",
+    "returnLive": "Wróć do partii",
+    "play": "Graj",
+    "retry": "Spróbuj ponownie",
+    "continue": "Kontynuuj",
+    "result": "Wynik",
+    "resign": "Poddaj się",
+    "close": "Zamknij",
+    "analyse": "Analizuj partię",
+    "playAgain": "Zagraj ponownie"
+  },
+  "game": {
+    "title": "Partia",
+    "vs": "przeciw Stockfish {{elo}}",
+    "noMoves": "Ruchy będą pojawiać się tutaj w trakcie partii."
+  },
+  "end": {
+    "kicker": "PARTIA ZAKOŃCZONA",
+    "win": {
+      "title": "Zwycięstwo",
+      "body": "Pokonałeś Stockfisha {{elo}}. Możesz teraz przeanalizować pełny PGN albo zagrać kolejną partię."
+    },
+    "loss": {
+      "title": "Stockfish wygrywa",
+      "body": "Stockfish {{elo}} wygrał tę partię. Przeanalizuj PGN, aby znaleźć decydujące momenty, albo zagraj od razu ponownie."
+    },
+    "draw": {
+      "title": "Remis",
+      "body": "Zremisowałeś ze Stockfishem {{elo}}. Pełny PGN jest gotowy do przeglądu."
+    },
+    "analysing": "Analizowanie pełnego PGN przy użyciu twoich ustawień przeglądu NexoChess…",
+    "analysisError": "Nie udało się przeanalizować partii. Możesz spróbować ponownie lub dalej przeglądać ruchy tutaj."
+  }
+}
