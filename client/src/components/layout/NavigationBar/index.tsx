@@ -24,6 +24,7 @@ const ShareDialog = lazy(loadShareDialog);
 type IconName =
     | "academy"
     | "analysis"
+    | "engine"
     | "lessons"
     | "archive"
     | "login"
@@ -50,6 +51,15 @@ function NavIcon({ name }: NavIconProps) {
             <path d="M7 15V9.5" />
             <path d="M12 15V4" />
             <path d="M17 15v-7" />
+        </>,
+        engine: <>
+            <path d="M12 3v2.5" />
+            <circle cx="12" cy="2.5" r="1" />
+            <rect x="5" y="6" width="14" height="12" rx="3" />
+            <circle cx="9" cy="11" r="1.2" />
+            <circle cx="15" cy="11" r="1.2" />
+            <path d="M9 15h6" />
+            <path d="M5 10H3v5h2M19 10h2v5h-2" />
         </>,
         archive: <>
             <path d="M4.5 8.5h15v11h-15z" />
@@ -87,7 +97,7 @@ function NavIcon({ name }: NavIconProps) {
         </>,
         settings: <>
             <circle cx="12" cy="12" r="3" />
-            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.09a2 2 0 0 1 1 1.74v.5a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2Z" />
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.09a2 2 0 0 1 1 1.74v.5a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 0-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2Z" />
         </>,
         user: <>
             <circle cx="12" cy="8" r="3.5" />
@@ -150,7 +160,7 @@ function NavigationAction({ children, icon, onClick }: NavigationActionProps) {
 }
 
 function NavigationBar() {
-    const { t } = useTranslation(["common", "analysis", "lessons", "repertoire"]);
+    const { t } = useTranslation(["common", "analysis", "lessons", "enginePlay", "repertoire"]);
     const { profile, status } = useAuthedProfile();
     const [sidebarMounted, setSidebarMounted] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -158,6 +168,7 @@ function NavigationBar() {
     const currentPathname = parseLanguagePathname(location.pathname).basePathname;
 
     const onAnalysisPage = currentPathname.startsWith("/analysis");
+    const onEnginePage = currentPathname.startsWith("/engine");
     const onLessonsPage = currentPathname.startsWith("/lessons");
     const onArchivePage = currentPathname.startsWith("/archive");
     const onAcademyPage = currentPathname.startsWith("/academy");
@@ -290,6 +301,9 @@ function NavigationBar() {
             </NavigationItem>
             <NavigationItem icon="analysis" url="/analysis" current={onAnalysisPage}>
                 {t("sidebar.analysis", { ns: "common" })}
+            </NavigationItem>
+            <NavigationItem icon="engine" url="/engine" current={onEnginePage}>
+                {t("nav", { ns: "enginePlay" })}
             </NavigationItem>
             <NavigationItem icon="archive" url="/archive" current={onArchivePage}>
                 {t("sidebar.archive", { ns: "common" })}
