@@ -1,0 +1,96 @@
+{
+  "nav": "引擎",
+  "eyebrow": "对战 STOCKFISH",
+  "title": "与引擎对弈",
+  "subtitle": "选择等级和执棋颜色，与 Stockfish 完成一盘完整对局。你的每一步都会立即获得反馈，只有在值得重试时才会暂时停下来。",
+  "thinking": "思考中…",
+  "you": "你",
+  "white": "白方",
+  "black": "黑方",
+  "moveQuality": "着法质量",
+  "setup": {
+    "difficulty": "难度",
+    "playAs": "执棋",
+    "eloNote": "Elo 数值仅用于大致表示棋力。较低等级会让 Stockfish 有意选择较弱的候选变化。"
+  },
+  "levels": {
+    "initiation": "入门",
+    "beginner": "初学者",
+    "novice": "新手",
+    "club": "业余棋手",
+    "competent": "熟练",
+    "intermediate": "中级",
+    "advanced": "高级",
+    "expert": "专家",
+    "candidate": "候选大师",
+    "master": "大师",
+    "grandmaster": "特级大师",
+    "elite": "精英"
+  },
+  "coach": {
+    "setup": "我是 Stockfish。选择你想挑战的强度和颜色，然后我们来下一盘真正的棋。",
+    "reading": "我正在你走棋前评估局面，请稍等。",
+    "yourTurn": "轮到你了。像正常对局一样思考并走棋。",
+    "thinking": "轮到我了。我正在计算回应。",
+    "engineMove": "我走了 {{move}}。现在又轮到你。",
+    "engineError": "这次计算没有完成。你可以从设置中重新开始对局。",
+    "intro": "准备好了。你正在挑战我大约 {{elo}} 的等级。",
+    "checking": "你走了 {{move}}。我正在检查局面发生了什么变化。",
+    "retry": "很好。我们已经回到你走棋前的局面，试试另一种想法。",
+    "quality": {
+      "best": "{{move}} 是我找到的最佳着法。你对局面的判断非常准确。",
+      "excellent": "{{move}} 非常优秀，几乎保留了局面的全部潜力。",
+      "okay": "{{move}} 可以下。可能还有更精确的选择，但局面依然健康。",
+      "inaccuracy": "{{move}} 是一个小失误。不致命，但你让出了一部分局面优势。",
+      "mistake": "{{move}} 是一个错误。现在我有明确的回应；红色箭头显示主要威胁。",
+      "blunder": "{{move}} 是严重失误。红色箭头显示你允许的战术回应。"
+    },
+    "end": {
+      "win": "对局结束。你在这个等级击败了 Stockfish，干得漂亮。",
+      "loss": "对局结束。这盘我赢了，但完整复盘会告诉你局面究竟在哪里发生了变化。",
+      "draw": "对局结束，和棋。复盘仍然可以找出关键时刻。"
+    }
+  },
+  "quality": {
+    "best": "最佳",
+    "excellent": "优秀",
+    "okay": "良好",
+    "inaccuracy": "不精确",
+    "mistake": "错误",
+    "blunder": "严重错误"
+  },
+  "actions": {
+    "changeSetup": "更改设置",
+    "returnLive": "回到实战",
+    "play": "开始对局",
+    "retry": "重试",
+    "continue": "继续",
+    "result": "结果",
+    "resign": "认输",
+    "close": "关闭",
+    "analyse": "分析对局",
+    "playAgain": "再来一盘"
+  },
+  "game": {
+    "title": "对局",
+    "vs": "对阵 Stockfish {{elo}}",
+    "noMoves": "随着对局进行，着法会显示在这里。"
+  },
+  "end": {
+    "kicker": "对局结束",
+    "win": {
+      "title": "胜利",
+      "body": "你击败了 Stockfish {{elo}}。现在可以分析完整 PGN，或立即再来一盘。"
+    },
+    "loss": {
+      "title": "Stockfish 获胜",
+      "body": "Stockfish {{elo}} 赢得了这盘棋。分析 PGN 找出决定性时刻，或立即再战。"
+    },
+    "draw": {
+      "title": "和棋",
+      "body": "你与 Stockfish {{elo}} 战成和棋。完整 PGN 已准备好供你复盘。"
+    },
+    "analysing": "正在使用你的 NexoChess 复盘设置分析完整 PGN…",
+    "analysisError": "无法分析这盘棋。你可以重试，或继续在这里查看着法。"
+  }
+}
