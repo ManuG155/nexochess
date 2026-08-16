@@ -1,8 +1,8 @@
 {
-  "nav": "Motor",
-  "eyebrow": "JUEGA CONTRA STOCKFISH",
-  "title": "Juega contra el motor",
-  "subtitle": "Elige nivel y color y juega una partida completa contra Stockfish. Tus jugadas reciben feedback inmediato sin cortar el ritmo salvo cuando merece la pena darte la opción de reintentar.",
+  "nav": "Duelo",
+  "eyebrow": "DUELO CONTRA STOCKFISH",
+  "title": "Duelo",
+  "subtitle": "Elige nivel y color y juega una partida completa contra Stockfish con tu entrenador como rival. Tus jugadas reciben feedback casi inmediato y podrás reintentar los errores importantes.",
   "thinking": "Pensando…",
   "you": "Tú",
   "white": "Blancas",
@@ -28,13 +28,14 @@
     "elite": "Élite"
   },
   "coach": {
-    "setup": "Soy Stockfish. Elige la fuerza y el color que quieras y jugaremos una partida de verdad.",
+    "setup": "Soy {{coach}}. Elige la fuerza de Stockfish y el color que quieras y jugaremos una partida.",
+    "changeHint": "Clica en el entrenador para cambiarlo.",
     "reading": "Estoy leyendo la posición antes de tu turno. Dame un momento.",
     "yourTurn": "Tu turno. Juega la posición como lo harías en una partida normal.",
     "thinking": "Me toca. Estoy calculando mi respuesta.",
     "engineMove": "He jugado {{move}}. La posición vuelve a ser tuya.",
     "engineError": "No he podido terminar ese cálculo. Puedes reiniciar la partida desde la configuración.",
-    "intro": "Listo. Vas a jugar contra mi nivel aproximado de {{elo}}.",
+    "intro": "Listo. Soy {{coach}} y jugaré con una fuerza aproximada de {{elo}}.",
     "checking": "Has jugado {{move}}. Estoy comprobando qué ha cambiado en la posición.",
     "retry": "Bien. Hemos vuelto a la posición anterior a tu jugada. Prueba otra idea.",
     "quality": {
@@ -46,7 +47,7 @@
       "blunder": "{{move}} es un error grave. La flecha roja muestra la respuesta táctica que has permitido."
     },
     "end": {
-      "win": "Se acabó. Has ganado a Stockfish en este nivel. Muy buena partida.",
+      "win": "Se acabó. Has ganado este duelo. Muy buena partida.",
       "loss": "Se acabó. Esta me la llevo yo, pero la revisión completa puede enseñarte exactamente dónde cambió la partida.",
       "draw": "Se acabó. Tablas. Aun así, la revisión puede descubrir los momentos críticos."
     }
@@ -73,22 +74,22 @@
   },
   "game": {
     "title": "Partida",
-    "vs": "contra Stockfish {{elo}}",
+    "vs": "contra {{coach}} · {{elo}}",
     "noMoves": "Las jugadas aparecerán aquí a medida que avance la partida."
   },
   "end": {
-    "kicker": "PARTIDA TERMINADA",
+    "kicker": "DUELO TERMINADO",
     "win": {
       "title": "Victoria",
-      "body": "Has derrotado a Stockfish {{elo}}. Puedes analizar ahora el PGN completo o jugar otra partida."
+      "body": "Has derrotado a {{coach}} con fuerza {{elo}}. Puedes analizar ahora el PGN completo o jugar otra partida."
     },
     "loss": {
-      "title": "Gana Stockfish",
-      "body": "Stockfish {{elo}} ha ganado esta partida. Analiza el PGN para encontrar los momentos decisivos o vuelve a jugar inmediatamente."
+      "title": "Gana {{coach}}",
+      "body": "{{coach}} ha ganado este duelo con fuerza {{elo}}. Analiza el PGN para encontrar los momentos decisivos o vuelve a jugar inmediatamente."
     },
     "draw": {
       "title": "Tablas",
-      "body": "Has hecho tablas con Stockfish {{elo}}. El PGN completo está preparado si quieres revisar la partida."
+      "body": "Has hecho tablas con {{coach}} a fuerza {{elo}}. El PGN completo está preparado si quieres revisar la partida."
     },
     "analysing": "Analizando el PGN completo con tus ajustes de revisión de NexoChess…",
     "analysisError": "No se ha podido analizar la partida. Puedes volver a intentarlo o seguir revisando las jugadas aquí."

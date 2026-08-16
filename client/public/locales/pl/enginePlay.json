@@ -1,8 +1,8 @@
 {
-  "nav": "Silnik",
-  "eyebrow": "ZAGRAJ ZE STOCKFISHEM",
-  "title": "Zagraj z silnikiem",
-  "subtitle": "Wybierz poziom i kolor, a następnie rozegraj pełną partię przeciwko Stockfishowi. Twoje ruchy otrzymują natychmiastową ocenę bez przerywania rytmu gry, chyba że warto spróbować ponownie.",
+  "nav": "Pojedynek",
+  "eyebrow": "POJEDYNEK ZE STOCKFISHEM",
+  "title": "Pojedynek",
+  "subtitle": "Wybierz poziom i kolor, a następnie rozegraj pełną partię przeciwko Stockfishowi z wybranym trenerem jako przeciwnikiem. Twoje ruchy otrzymują niemal natychmiastową ocenę, a ważne błędy możesz spróbować zagrać ponownie.",
   "thinking": "Myśli…",
   "you": "Ty",
   "white": "Białe",
@@ -28,13 +28,14 @@
     "elite": "Elita"
   },
   "coach": {
-    "setup": "Jestem Stockfish. Wybierz siłę i kolor, a potem zagramy prawdziwą partię.",
+    "setup": "Jestem {{coach}}. Wybierz siłę Stockfisha i kolor, a potem zagramy pełną partię.",
+    "changeHint": "Kliknij trenera, aby go zmienić.",
     "reading": "Analizuję pozycję przed twoim ruchem. Chwila.",
     "yourTurn": "Twój ruch. Graj tak, jak w normalnej partii.",
     "thinking": "Mój ruch. Obliczam odpowiedź.",
     "engineMove": "Zagrałem {{move}}. Teraz znowu twój ruch.",
     "engineError": "Nie udało mi się dokończyć obliczeń. Możesz zacząć partię ponownie z ekranu ustawień.",
-    "intro": "Gotowe. Grasz przeciwko mojemu przybliżonemu poziomowi {{elo}}.",
+    "intro": "Gotowe. Jestem {{coach}} i gram z przybliżoną siłą {{elo}}.",
     "checking": "Zagrałeś {{move}}. Sprawdzam, co zmieniło się w pozycji.",
     "retry": "Dobrze. Wróciliśmy do pozycji sprzed twojego ruchu. Spróbuj innego pomysłu.",
     "quality": {
@@ -46,7 +47,7 @@
       "blunder": "{{move}} to poważny błąd. Czerwona strzałka pokazuje taktyczną odpowiedź, na którą pozwoliłeś."
     },
     "end": {
-      "win": "Koniec partii. Pokonałeś Stockfisha na tym poziomie. Dobra robota.",
+      "win": "Koniec partii. Wygrałeś ten pojedynek. Dobra robota.",
       "loss": "Koniec partii. Tę wygrywam ja, ale pełna analiza pokaże dokładnie, gdzie partia się odwróciła.",
       "draw": "Koniec partii. Remis. Analiza nadal może wskazać krytyczne momenty."
     }
@@ -73,22 +74,22 @@
   },
   "game": {
     "title": "Partia",
-    "vs": "przeciw Stockfish {{elo}}",
+    "vs": "przeciw {{coach}} · {{elo}}",
     "noMoves": "Ruchy będą pojawiać się tutaj w trakcie partii."
   },
   "end": {
-    "kicker": "PARTIA ZAKOŃCZONA",
+    "kicker": "POJEDYNEK ZAKOŃCZONY",
     "win": {
       "title": "Zwycięstwo",
-      "body": "Pokonałeś Stockfisha {{elo}}. Możesz teraz przeanalizować pełny PGN albo zagrać kolejną partię."
+      "body": "Pokonałeś {{coach}} na poziomie {{elo}}. Możesz teraz przeanalizować pełny PGN albo zagrać kolejną partię."
     },
     "loss": {
-      "title": "Stockfish wygrywa",
-      "body": "Stockfish {{elo}} wygrał tę partię. Przeanalizuj PGN, aby znaleźć decydujące momenty, albo zagraj od razu ponownie."
+      "title": "{{coach}} wygrywa",
+      "body": "{{coach}} wygrał ten pojedynek na poziomie {{elo}}. Przeanalizuj PGN, aby znaleźć decydujące momenty, albo zagraj od razu ponownie."
     },
     "draw": {
       "title": "Remis",
-      "body": "Zremisowałeś ze Stockfishem {{elo}}. Pełny PGN jest gotowy do przeglądu."
+      "body": "Zremisowałeś z {{coach}} na poziomie {{elo}}. Pełny PGN jest gotowy do przeglądu."
     },
     "analysing": "Analizowanie pełnego PGN przy użyciu twoich ustawień przeglądu NexoChess…",
     "analysisError": "Nie udało się przeanalizować partii. Możesz spróbować ponownie lub dalej przeglądać ruchy tutaj."

@@ -1,8 +1,8 @@
 {
-  "nav": "Máy",
+  "nav": "Đấu cờ",
   "eyebrow": "ĐẤU VỚI STOCKFISH",
-  "title": "Chơi với máy",
-  "subtitle": "Chọn cấp độ và màu quân rồi chơi một ván hoàn chỉnh với Stockfish. Mỗi nước đi nhận phản hồi ngay mà không làm gián đoạn nhịp chơi, trừ khi đáng để bạn thử lại.",
+  "title": "Đấu cờ",
+  "subtitle": "Chọn cấp độ và màu quân rồi chơi một ván hoàn chỉnh với Stockfish, với huấn luyện viên bạn chọn làm đối thủ. Mỗi nước đi nhận phản hồi gần như ngay lập tức và những lỗi quan trọng có thể được thử lại.",
   "thinking": "Đang tính…",
   "you": "Bạn",
   "white": "Trắng",
@@ -28,13 +28,14 @@
     "elite": "Tinh hoa"
   },
   "coach": {
-    "setup": "Tôi là Stockfish. Hãy chọn sức chơi và màu quân, rồi chúng ta chơi một ván thật sự.",
+    "setup": "Tôi là {{coach}}. Hãy chọn sức chơi của Stockfish và màu quân, rồi chúng ta chơi một ván hoàn chỉnh.",
+    "changeHint": "Nhấn vào huấn luyện viên để đổi.",
     "reading": "Tôi đang đọc thế cờ trước lượt của bạn. Chờ một chút.",
     "yourTurn": "Đến lượt bạn. Hãy chơi như trong một ván bình thường.",
     "thinking": "Đến lượt tôi. Tôi đang tính nước đáp trả.",
     "engineMove": "Tôi đã đi {{move}}. Bây giờ lại đến lượt bạn.",
     "engineError": "Tôi không thể hoàn tất phép tính này. Bạn có thể khởi động lại từ phần thiết lập.",
-    "intro": "Sẵn sàng. Bạn đang đấu với mức gần {{elo}} của tôi.",
+    "intro": "Sẵn sàng. Tôi là {{coach}} và sẽ chơi với sức mạnh xấp xỉ {{elo}}.",
     "checking": "Bạn vừa đi {{move}}. Tôi đang kiểm tra thế cờ đã thay đổi thế nào.",
     "retry": "Tốt. Chúng ta đã quay lại vị trí trước nước đi của bạn. Hãy thử ý tưởng khác.",
     "quality": {
@@ -46,7 +47,7 @@
       "blunder": "{{move}} là lỗi nặng. Mũi tên đỏ cho thấy đòn chiến thuật bạn đã cho phép."
     },
     "end": {
-      "win": "Ván cờ kết thúc. Bạn đã thắng Stockfish ở cấp độ này. Rất tốt.",
+      "win": "Ván cờ kết thúc. Bạn đã thắng cuộc đấu này. Rất tốt.",
       "loss": "Ván cờ kết thúc. Ván này tôi thắng, nhưng phần phân tích đầy đủ sẽ cho bạn biết chính xác lúc nào thế cờ đổi chiều.",
       "draw": "Ván cờ kết thúc. Hòa. Phân tích vẫn có thể chỉ ra các thời điểm quan trọng."
     }
@@ -73,22 +74,22 @@
   },
   "game": {
     "title": "Ván đấu",
-    "vs": "đấu Stockfish {{elo}}",
+    "vs": "đấu {{coach}} · {{elo}}",
     "noMoves": "Các nước đi sẽ xuất hiện ở đây khi ván đấu diễn ra."
   },
   "end": {
-    "kicker": "VÁN ĐẤU KẾT THÚC",
+    "kicker": "CUỘC ĐẤU KẾT THÚC",
     "win": {
       "title": "Chiến thắng",
-      "body": "Bạn đã đánh bại Stockfish {{elo}}. Bây giờ có thể phân tích toàn bộ PGN hoặc chơi ván khác."
+      "body": "Bạn đã đánh bại {{coach}} ở sức mạnh {{elo}}. Bây giờ có thể phân tích toàn bộ PGN hoặc chơi ván khác."
     },
     "loss": {
-      "title": "Stockfish thắng",
-      "body": "Stockfish {{elo}} đã thắng ván này. Hãy phân tích PGN để tìm thời điểm quyết định hoặc chơi lại ngay."
+      "title": "{{coach}} thắng",
+      "body": "{{coach}} đã thắng cuộc đấu này ở sức mạnh {{elo}}. Hãy phân tích PGN để tìm thời điểm quyết định hoặc chơi lại ngay."
     },
     "draw": {
       "title": "Hòa",
-      "body": "Bạn hòa với Stockfish {{elo}}. PGN đầy đủ đã sẵn sàng nếu bạn muốn xem lại."
+      "body": "Bạn hòa với {{coach}} ở sức mạnh {{elo}}. PGN đầy đủ đã sẵn sàng nếu bạn muốn xem lại."
     },
     "analysing": "Đang phân tích PGN đầy đủ bằng cài đặt xem lại NexoChess của bạn…",
     "analysisError": "Không thể phân tích ván cờ. Bạn có thể thử lại hoặc tiếp tục xem các nước đi tại đây."

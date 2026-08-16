@@ -25,6 +25,14 @@ import {
     classificationColours,
     classificationImages
 } from "@analysis/constants/classifications";
+import {
+    getCoachById,
+    getCoachReaction,
+    getCoachSpokenLine
+} from "@analysis/lib/coach";
+import type { CoachExpression, CoachId } from "@analysis/lib/coach";
+import CoachPicker from "@analysis/components/AnalysisPanel/CoachPicker";
+import CoachPortrait from "@analysis/components/AnalysisPanel/CoachPortrait";
 
 import { ENGINE_LEVELS, getEngineLevel } from "./engineLevels";
 import * as styles from "./enginePlay.module.css";
@@ -49,13 +57,14 @@ type PlayedMove = {
 type MoveFeedback = {
     quality: LiveQuality;
     san: string;
+    to: Square;
     threat?: [Square, Square, string];
     decisionRequired: boolean;
 };
 
 const START_FEN = new Chess().fen();
-const QUALITY_DEPTH = 12;
-const QUALITY_TIME_MS = 260;
+const QUALITY_DEPTH = 10;
+const QUALITY_TIME_MS = 140;
 const BAD_MOVE_QUALITIES = new Set<LiveQuality>([
     Classification.MISTAKE,
     Classification.BLUNDER
@@ -104,24 +113,31 @@ function threatArrow(line?: EngineLine): MoveFeedback["threat"] {
     return [uci.slice(0, 2) as Square, uci.slice(2, 4) as Square, "#ef5350"];
 }
 
-function RobotAvatar({ compact = false }: { compact?: boolean }) {
-    return <div className={compact ? styles.robotCompact : styles.robotAvatar} aria-hidden="true">
-        <svg viewBox="0 0 120 120" role="img">
-            <path d="M60 17v12"/>
-            <circle cx="60" cy="13" r="6"/>
-            <rect x="24" y="29" width="72" height="62" rx="20"/>
-            <circle cx="47" cy="56" r="7"/>
-            <circle cx="73" cy="56" r="7"/>
-            <path d="M44 75h32"/>
-            <path d="M24 51H13v22h11M96 51h11v22H96"/>
-            <path d="M40 91v13M80 91v13M32 104h16M72 104h16"/>
-        </svg>
-    </div>;
+function coachExpressionFor(
+    thinking: boolean,
+    feedback: MoveFeedback | undefined,
+    gameResult: "win" | "loss" | "draw" | undefined
+): CoachExpression {
+    if (gameResult == "win") return "surprised";
+    if (gameResult == "loss") return "celebrating";
+    if (gameResult == "draw") return "approving";
+    if (thinking) return "thinking";
+    if (feedback?.quality == Classification.BLUNDER) return "error";
+    if (feedback?.quality == Classification.MISTAKE) return "worried";
+    if (feedback?.quality == Classification.INACCURACY) return "explaining";
+    if (
+        feedback?.quality == Classification.BEST
+        || feedback?.quality == Classification.EXCELLENT
+    ) return "approving";
+    return "idle";
 }
 
 function EnginePlayApp() {
     const { t } = useTranslation("enginePlay");
+    const { t: coachT } = useTranslation("coach", { useSuspense: false });
     const settings = useSettingsStore(state => state.settings);
+    const setSettings = useSettingsStore(state => state.setSettings);
+    const selectedCoach = getCoachById(settings.appearance.selectedCoach);
     const pieces = useMemo(
         () => createCustomPieces(normalisePieceTheme(settings.themes.piece)),
         [settings.themes.piece]
@@ -136,7 +152,8 @@ function EnginePlayApp() {
     const [viewIndex, setViewIndex] = useState(0);
     const [selectedFrom, setSelectedFrom] = useState<Square>();
     const [thinking, setThinking] = useState(false);
-    const [coachText, setCoachText] = useState(t("coach.setup"));
+    const [coachText, setCoachText] = useState("");
+    const [coachPickerOpen, setCoachPickerOpen] = useState(false);
     const [feedback, setFeedback] = useState<MoveFeedback>();
     const [gameResult, setGameResult] = useState<"win" | "loss" | "draw">();
     const [endDialogOpen, setEndDialogOpen] = useState(false);
@@ -161,6 +178,11 @@ function EnginePlayApp() {
     const files = boardOrientation == "white"
         ? ["a", "b", "c", "d", "e", "f", "g", "h"]
         : ["h", "g", "f", "e", "d", "c", "b", "a"];
+    const coachExpression = coachExpressionFor(thinking, feedback, gameResult);
+
+    function spoken(line: string, seed: string) {
+        return getCoachSpokenLine(selectedCoach, line, seed, coachT);
+    }
 
     useEffect(() => () => {
         qualityEngineRef.current?.terminate();
@@ -168,8 +190,14 @@ function EnginePlayApp() {
     }, []);
 
     useEffect(() => {
-        if (phase == "setup") setCoachText(t("coach.setup"));
-    }, [t, phase]);
+        if (phase != "setup") return;
+        setCoachText(getCoachSpokenLine(
+            selectedCoach,
+            t("coach.setup", { coach: selectedCoach.name }),
+            `rival-setup-${selectedCoach.id}`,
+            coachT
+        ));
+    }, [coachT, phase, selectedCoach.id, selectedCoach.name, t]);
 
     function createSessionEngines() {
         qualityEngineRef.current?.terminate();
@@ -199,11 +227,11 @@ function EnginePlayApp() {
     async function primePlayerTurn(session: number) {
         if (session != sessionRef.current || gameRef.current.isGameOver()) return;
         setThinking(true);
-        setCoachText(t("coach.reading"));
+        setCoachText(spoken(t("coach.reading"), `reading-${moves.length}`));
         baselineRef.current = await strongEvaluation(gameRef.current.fen(), session);
         if (session != sessionRef.current) return;
         setThinking(false);
-        setCoachText(t("coach.yourTurn"));
+        setCoachText(spoken(t("coach.yourTurn"), `your-turn-${moves.length}`));
     }
 
     function appendMove(move: PlayedMove, nextFen: string) {
@@ -241,7 +269,10 @@ function EnginePlayApp() {
         setGameResult(resolved);
         setThinking(false);
         setFeedback(undefined);
-        setCoachText(t(`coach.end.${resolved}`));
+        setCoachText(spoken(
+            t(`coach.end.${resolved}`, { coach: selectedCoach.name }),
+            `end-${resolved}-${moves.length}`
+        ));
         setEndDialogOpen(true);
     }
 
@@ -264,7 +295,9 @@ function EnginePlayApp() {
             count: lineCount,
             source: EngineVersion.STOCKFISH_17_LITE
         });
-        const candidates = lineSet?.length ? lineSet : [getTopEngineLine(lines)].filter(Boolean) as EngineLine[];
+        const candidates = lineSet?.length
+            ? lineSet
+            : [getTopEngineLine(lines)].filter(Boolean) as EngineLine[];
         if (!candidates.length) return undefined;
 
         const strength = (level.elo - 250) / 2750;
@@ -274,10 +307,9 @@ function EnginePlayApp() {
 
     async function playEngineMove(session: number) {
         if (session != sessionRef.current || gameRef.current.isGameOver()) return;
-        setFeedback(undefined);
         setThinking(true);
         setSelectedFrom(undefined);
-        setCoachText(t("coach.thinking"));
+        setCoachText(spoken(t("coach.thinking"), `thinking-${moves.length}`));
 
         try {
             const uci = await chooseEngineMove(session);
@@ -294,7 +326,11 @@ function EnginePlayApp() {
                 colour: playerColour == "white" ? "black" : "white"
             }, nextFen);
             playBoardMoveSound(move.san);
-            setCoachText(t("coach.engineMove", { move: move.san }));
+            setFeedback(undefined);
+            setCoachText(spoken(
+                t("coach.engineMove", { move: move.san }),
+                `engine-move-${move.san}-${moves.length}`
+            ));
 
             if (gameRef.current.isGameOver()) {
                 finishGame();
@@ -306,7 +342,7 @@ function EnginePlayApp() {
             console.error(error);
             if (session == sessionRef.current) {
                 setThinking(false);
-                setCoachText(t("coach.engineError"));
+                setCoachText(spoken(t("coach.engineError"), "engine-error"));
             }
         }
     }
@@ -317,13 +353,21 @@ function EnginePlayApp() {
 
         const board = new Chess();
         const date = new Date().toISOString().slice(0, 10).replaceAll("-", ".");
-        const stockfishName = `Stockfish ${selectedElo}`;
-        board.setHeader("Event", "NexoChess Motor");
+        board.setHeader("Event", "NexoChess Rival");
         board.setHeader("Site", "NexoChess");
         board.setHeader("Date", date);
-        board.setHeader("White", playerColour == "white" ? "NexoChess Player" : stockfishName);
-        board.setHeader("Black", playerColour == "black" ? "NexoChess Player" : stockfishName);
-        board.setHeader(playerColour == "white" ? "BlackElo" : "WhiteElo", String(selectedElo));
+        board.setHeader(
+            "White",
+            playerColour == "white" ? t("you") : selectedCoach.name
+        );
+        board.setHeader(
+            "Black",
+            playerColour == "black" ? t("you") : selectedCoach.name
+        );
+        board.setHeader(
+            playerColour == "white" ? "BlackElo" : "WhiteElo",
+            String(selectedElo)
+        );
         board.setHeader("Result", "*");
         gameRef.current = board;
         baselineRef.current = undefined;
@@ -339,7 +383,10 @@ function EnginePlayApp() {
         setEndDialogOpen(false);
         setAnalysisBusy(false);
         setAnalysisError(undefined);
-        setCoachText(t("coach.intro", { elo: selectedElo }));
+        setCoachText(spoken(
+            t("coach.intro", { elo: selectedElo, coach: selectedCoach.name }),
+            `intro-${selectedCoach.id}-${selectedElo}`
+        ));
 
         if (playerColour == "white") {
             await primePlayerTurn(session);
@@ -348,10 +395,7 @@ function EnginePlayApp() {
         }
     }
 
-    async function acceptUserMove(
-        source: Square,
-        target: Square
-    ) {
+    async function acceptUserMove(source: Square, target: Square) {
         if (
             phase != "playing"
             || thinking
@@ -372,6 +416,7 @@ function EnginePlayApp() {
         }
         if (!move) return false;
 
+        setFeedback(undefined);
         const nextFen = gameRef.current.fen();
         appendMove({
             san: move.san,
@@ -381,7 +426,10 @@ function EnginePlayApp() {
         playBoardMoveSound(move.san);
         setSelectedFrom(undefined);
         setThinking(true);
-        setCoachText(t("coach.checking", { move: move.san }));
+        setCoachText(spoken(
+            t("coach.checking", { move: move.san }),
+            `checking-${move.san}-${moves.length}`
+        ));
 
         if (gameRef.current.isGameOver()) {
             setLastMoveQuality(Classification.BEST);
@@ -397,18 +445,28 @@ function EnginePlayApp() {
             const nextFeedback: MoveFeedback = {
                 quality,
                 san: move.san,
+                to: move.to as Square,
                 decisionRequired,
                 threat: decisionRequired ? threatArrow(afterLine) : undefined
             };
+            const dynamicComment = t(`coach.quality.${quality}`, { move: move.san });
+            const reaction = getCoachReaction(
+                selectedCoach,
+                quality,
+                dynamicComment,
+                `${move.san}-${quality}-${moves.length}`,
+                coachT
+            ) || dynamicComment;
+
             setLastMoveQuality(quality);
             setFeedback(nextFeedback);
             setThinking(false);
-            setCoachText(t(`coach.quality.${quality}`, { move: move.san }));
+            setCoachText(reaction);
 
             if (!decisionRequired) {
                 window.setTimeout(() => {
                     if (session == sessionRef.current) void playEngineMove(session);
-                }, 720);
+                }, 650);
             }
         } catch (error) {
             console.error(error);
@@ -434,7 +492,7 @@ function EnginePlayApp() {
         setFen(gameRef.current.fen());
         setFeedback(undefined);
         setSelectedFrom(undefined);
-        setCoachText(t("coach.retry"));
+        setCoachText(spoken(t("coach.retry"), `retry-${moves.length}`));
     }
 
     function continueAfterError() {
@@ -480,7 +538,11 @@ function EnginePlayApp() {
     }
 
     function moveListRows() {
-        const rows: Array<{ number: number; white?: { move: PlayedMove; index: number }; black?: { move: PlayedMove; index: number } }> = [];
+        const rows: Array<{
+            number: number;
+            white?: { move: PlayedMove; index: number };
+            black?: { move: PlayedMove; index: number };
+        }> = [];
         moves.forEach((move, index) => {
             const rowIndex = Math.floor(index / 2);
             if (!rows[rowIndex]) rows[rowIndex] = { number: rowIndex + 1 };
@@ -489,6 +551,38 @@ function EnginePlayApp() {
             else rows[rowIndex].black = entry;
         });
         return rows;
+    }
+
+    function confirmCoach(coachId: CoachId) {
+        const nextCoach = getCoachById(coachId);
+        setSettings(current => ({
+            ...current,
+            appearance: {
+                ...current.appearance,
+                selectedCoach: coachId
+            }
+        }));
+
+        if (phase == "playing") {
+            gameRef.current.setHeader(
+                playerColour == "white" ? "Black" : "White",
+                nextCoach.name
+            );
+            setCoachText(getCoachSpokenLine(
+                nextCoach,
+                t("coach.yourTurn"),
+                `coach-change-${coachId}`,
+                coachT
+            ));
+        } else {
+            setCoachText(getCoachSpokenLine(
+                nextCoach,
+                t("coach.setup", { coach: nextCoach.name }),
+                `rival-setup-${coachId}`,
+                coachT
+            ));
+        }
+        setCoachPickerOpen(false);
     }
 
     async function analyseFinishedGame() {
@@ -563,43 +657,41 @@ function EnginePlayApp() {
         }
     }
 
+    if (feedback && viewIndex == latestIndex) {
+        squareStyles[feedback.to] = {
+            boxShadow: `inset 0 0 0 4px ${classificationColours[feedback.quality]}b8`,
+            backgroundImage: `url("${classificationImages[feedback.quality]}")`,
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "right 5px top 5px",
+            backgroundSize: "30% auto"
+        };
+    }
+
     const boardArrows = feedback?.threat && viewIndex == latestIndex
         ? [feedback.threat]
         : [];
 
-    return <main className={styles.shell}>
-        <header className={styles.hero}>
-            <div>
-                <span>{t("eyebrow")}</span>
+    return <main className={styles.shell} data-phase={phase}>
+        {phase == "setup" && <header className={styles.hero}>
+            <span>{t("eyebrow")}</span>
+            <div className={styles.heroLine}>
                 <h1>{t("title")}</h1>
                 <p>{t("subtitle")}</p>
             </div>
-            {phase == "playing" && <button
-                type="button"
-                className={styles.changeGameButton}
-                onClick={() => {
-                    ++sessionRef.current;
-                    qualityEngineRef.current?.terminate();
-                    opponentEngineRef.current?.terminate();
-                    setPhase("setup");
-                    setThinking(false);
-                    setFeedback(undefined);
-                    setGameResult(undefined);
-                    setFen(START_FEN);
-                    setPositions([START_FEN]);
-                    setViewIndex(0);
-                }}
-            >
-                {t("actions.changeSetup")}
-            </button>}
-        </header>
+        </header>}
 
         <section className={styles.stage}>
+            <div className={styles.stageBalance} aria-hidden="true" />
+
             <div className={styles.boardColumn}>
                 <div className={styles.playerStrip} data-side="opponent">
-                    <RobotAvatar compact/>
+                    <img
+                        className={styles.opponentMiniPortrait}
+                        src={selectedCoach.imagePath}
+                        alt=""
+                    />
                     <div>
-                        <strong>Stockfish</strong>
+                        <strong>{selectedCoach.name}</strong>
                         <span>{t(`levels.${level.labelKey}`)} · {selectedElo}</span>
                     </div>
                     {thinking && <i className={styles.thinkingDot}>{t("thinking")}</i>}
@@ -656,67 +748,74 @@ function EnginePlayApp() {
             </div>
 
             <aside className={styles.sidePanel}>
-                {phase == "setup" ? <>
-                    <div className={styles.coachCard}>
-                        <RobotAvatar/>
-                        <div className={styles.coachBubble}>
-                            <strong>Stockfish</strong>
-                            <p>{t("coach.setup")}</p>
+                <div className={styles.coachCard}>
+                    <button
+                        type="button"
+                        className={styles.coachPortraitButton}
+                        onClick={() => setCoachPickerOpen(true)}
+                        aria-label={selectedCoach.name}
+                    >
+                        <CoachPortrait
+                            className={styles.coachPortrait}
+                            coach={selectedCoach}
+                            baseExpression={coachExpression}
+                            speechText={settings.coach.animations ? coachText : ""}
+                            animationsEnabled={settings.coach.animations}
+                        />
+                    </button>
+                    <div className={styles.coachBubble}>
+                        <div className={styles.coachNameLine}>
+                            <strong>{selectedCoach.name}</strong>
+                            <span>Stockfish · {selectedElo}</span>
                         </div>
+                        <p>{coachText}</p>
+                        <small>{t("coach.changeHint")}</small>
+                    </div>
+                </div>
+
+                {phase == "setup" ? <section className={styles.setupCard}>
+                    <div className={styles.setupHeading}>
+                        <span>{t("setup.difficulty")}</span>
+                        <strong>{t(`levels.${level.labelKey}`)} · {selectedElo}</strong>
+                    </div>
+                    <div className={styles.levelList}>
+                        {ENGINE_LEVELS.map(item => <button
+                            key={item.elo}
+                            type="button"
+                            data-selected={selectedElo == item.elo}
+                            onClick={() => setSelectedElo(item.elo)}
+                        >
+                            <span>{t(`levels.${item.labelKey}`)}</span>
+                            <b>{item.elo}</b>
+                        </button>)}
                     </div>
 
-                    <section className={styles.setupCard}>
-                        <div className={styles.setupHeading}>
-                            <span>{t("setup.difficulty")}</span>
-                            <strong>{t(`levels.${level.labelKey}`)} · {selectedElo}</strong>
-                        </div>
-                        <div className={styles.levelList}>
-                            {ENGINE_LEVELS.map(item => <button
-                                key={item.elo}
+                    <div className={styles.colourPicker}>
+                        <span>{t("setup.playAs")}</span>
+                        <div>
+                            <button
                                 type="button"
-                                data-selected={selectedElo == item.elo}
-                                onClick={() => setSelectedElo(item.elo)}
-                            >
-                                <span>{t(`levels.${item.labelKey}`)}</span>
-                                <b>{item.elo}</b>
-                            </button>)}
-                        </div>
-
-                        <div className={styles.colourPicker}>
-                            <span>{t("setup.playAs")}</span>
-                            <div>
-                                <button
-                                    type="button"
-                                    data-selected={playerColour == "white"}
-                                    onClick={() => setPlayerColour("white")}
-                                >♔ {t("white")}</button>
-                                <button
-                                    type="button"
-                                    data-selected={playerColour == "black"}
-                                    onClick={() => setPlayerColour("black")}
-                                >♚ {t("black")}</button>
-                            </div>
-                        </div>
-
-                        <p className={styles.eloNote}>{t("setup.eloNote")}</p>
-                        <button type="button" className={styles.primaryButton} onClick={() => void startGame()}>
-                            {t("actions.play")}
-                        </button>
-                    </section>
-                </> : <>
-                    <div className={styles.coachCard}>
-                        <RobotAvatar/>
-                        <div className={styles.coachBubble}>
-                            <strong>Stockfish</strong>
-                            <p>{coachText}</p>
+                                data-selected={playerColour == "white"}
+                                onClick={() => setPlayerColour("white")}
+                            >♔ {t("white")}</button>
+                            <button
+                                type="button"
+                                data-selected={playerColour == "black"}
+                                onClick={() => setPlayerColour("black")}
+                            >♚ {t("black")}</button>
                         </div>
                     </div>
 
+                    <p className={styles.eloNote}>{t("setup.eloNote")}</p>
+                    <button type="button" className={styles.primaryButton} onClick={() => void startGame()}>
+                        {t("actions.play")}
+                    </button>
+                </section> : <>
                     {feedback && <section
                         className={styles.feedbackCard}
                         style={{ borderColor: classificationColours[feedback.quality] }}
                     >
-                        <img src={classificationImages[feedback.quality]} alt=""/>
+                        <img src={classificationImages[feedback.quality]} alt="" />
                         <div>
                             <span>{t("moveQuality")}</span>
                             <strong style={{ color: classificationColours[feedback.quality] }}>
@@ -734,11 +833,33 @@ function EnginePlayApp() {
                         <header>
                             <div>
                                 <span>{t("game.title")}</span>
-                                <strong>{t("game.vs", { elo: selectedElo })}</strong>
+                                <strong>{t("game.vs", {
+                                    coach: selectedCoach.name,
+                                    elo: selectedElo
+                                })}</strong>
                             </div>
-                            {gameResult && !endDialogOpen && <button type="button" onClick={() => setEndDialogOpen(true)}>
-                                {t("actions.result")}
-                            </button>}
+                            <div className={styles.headerActions}>
+                                {gameResult && !endDialogOpen && <button type="button" onClick={() => setEndDialogOpen(true)}>
+                                    {t("actions.result")}
+                                </button>}
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        ++sessionRef.current;
+                                        qualityEngineRef.current?.terminate();
+                                        opponentEngineRef.current?.terminate();
+                                        setPhase("setup");
+                                        setThinking(false);
+                                        setFeedback(undefined);
+                                        setGameResult(undefined);
+                                        setFen(START_FEN);
+                                        setPositions([START_FEN]);
+                                        setViewIndex(0);
+                                    }}
+                                >
+                                    {t("actions.changeSetup")}
+                                </button>
+                            </div>
                         </header>
 
                         <div className={styles.moveList}>
@@ -751,9 +872,12 @@ function EnginePlayApp() {
                                         type="button"
                                         data-active={viewIndex == entry.index + 1}
                                         onClick={() => setViewIndex(entry.index + 1)}
+                                        style={entry.move.quality ? {
+                                            color: classificationColours[entry.move.quality],
+                                            fontWeight: 900
+                                        } : undefined}
                                     >
                                         {entry.move.san}
-                                        {entry.move.quality && <i style={{ background: classificationColours[entry.move.quality] }}/>} 
                                     </button>
                                     : <span key={`${row.number}-${slot}`} />)}
                             </div>)}
@@ -783,7 +907,13 @@ function EnginePlayApp() {
         {endDialogOpen && gameResult && <div className={styles.modalOverlay} onMouseDown={event => {
             if (event.target == event.currentTarget && !analysisBusy) setEndDialogOpen(false);
         }}>
-            <section className={styles.endDialog} role="dialog" aria-modal="true" aria-labelledby="engine-result-title">
+            <section
+                className={styles.endDialog}
+                data-result={gameResult}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="engine-result-title"
+            >
                 <button
                     type="button"
                     className={styles.closeButton}
@@ -791,15 +921,47 @@ function EnginePlayApp() {
                     disabled={analysisBusy}
                     aria-label={t("actions.close")}
                 >×</button>
-                <RobotAvatar/>
+
                 <span className={styles.endKicker}>{t("end.kicker")}</span>
-                <h2 id="engine-result-title">{t(`end.${gameResult}.title`)}</h2>
-                <p>{t(`end.${gameResult}.body`, { elo: selectedElo })}</p>
+                <h2 id="engine-result-title">
+                    {t(`end.${gameResult}.title`, { coach: selectedCoach.name })}
+                </h2>
+
+                <div className={styles.endMatchup}>
+                    <div className={styles.endPlayer}>
+                        <span className={styles.endPlayerIcon}>♟</span>
+                        <strong>{t("you")}</strong>
+                        <small>{playerColour == "white" ? t("white") : t("black")}</small>
+                    </div>
+                    <div className={styles.endResultMark} aria-hidden="true">
+                        {gameResult == "win" ? "✓" : gameResult == "loss" ? "×" : "½"}
+                    </div>
+                    <div className={styles.endPlayer}>
+                        <div className={styles.endCoachWrap}>
+                            <CoachPortrait
+                                className={styles.endCoachPortrait}
+                                coach={selectedCoach}
+                                baseExpression={coachExpression}
+                                speechText=""
+                                animationsEnabled={false}
+                            />
+                        </div>
+                        <strong>{selectedCoach.name}</strong>
+                        <small>{t(`levels.${level.labelKey}`)} · {selectedElo}</small>
+                    </div>
+                </div>
+
+                <p>{t(`end.${gameResult}.body`, {
+                    coach: selectedCoach.name,
+                    elo: selectedElo
+                })}</p>
+
                 {analysisBusy && <div className={styles.analysisProgress}>
-                    <i/>
+                    <i />
                     <span>{t("end.analysing")}</span>
                 </div>}
                 {analysisError && <p className={styles.analysisError}>{analysisError}</p>}
+
                 <div className={styles.endActions}>
                     <button
                         type="button"
@@ -826,6 +988,13 @@ function EnginePlayApp() {
                 </div>
             </section>
         </div>}
+
+        {coachPickerOpen && <CoachPicker
+            selectedCoach={selectedCoach}
+            onClose={() => setCoachPickerOpen(false)}
+            onConfirm={confirmCoach}
+            forceVisible
+        />}
     </main>;
 }
 
