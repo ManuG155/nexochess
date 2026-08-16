@@ -2,15 +2,18 @@
     position: relative;
 
     display: flex;
+    flex: 1 1 auto;
     flex-direction: column;
-    gap: 14px;
+    gap: 10px;
 
     box-sizing: border-box;
     width: 100%;
+    height: 100%;
     min-height: 0;
+    max-height: 100%;
     overflow: hidden;
 
-    padding: 22px;
+    padding: 18px;
 
     border: 1px solid rgba(111, 165, 255, 0.18);
     border-radius: 22px;
@@ -47,24 +50,25 @@
 
 .intro {
     display: grid;
-    grid-template-columns: 48px minmax(0, 1fr);
-    gap: 14px;
+    flex: 0 0 auto;
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 12px;
     align-items: start;
 
-    padding: 2px 2px 4px;
+    padding: 0 2px 2px;
 }
 
 .introMark {
     display: grid;
     place-items: center;
 
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
 
     margin-top: 2px;
 
     border: 1px solid rgba(116, 176, 255, 0.3);
-    border-radius: 14px;
+    border-radius: 13px;
     background:
         linear-gradient(
             145deg,
@@ -78,8 +82,8 @@
 }
 
 .introMark img {
-    width: 27px;
-    height: 27px;
+    width: 25px;
+    height: 25px;
     opacity: 0.92;
 }
 
@@ -87,7 +91,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
+    gap: 5px;
 
     min-width: 0;
 }
@@ -95,7 +99,7 @@
 .eyebrow {
     color: #86b8ff;
 
-    font-size: 0.72rem;
+    font-size: 0.69rem;
     font-weight: 900;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -107,7 +111,7 @@
 
     color: rgba(255, 255, 255, 0.98);
 
-    font-size: clamp(1.75rem, 3.1vw, 2.25rem);
+    font-size: clamp(1.6rem, 2.7vw, 2rem);
     font-weight: 800;
     line-height: 1.04;
     letter-spacing: -0.025em;
@@ -115,19 +119,23 @@
 
 .intro p {
     max-width: 52ch;
-    margin: 2px 0 0;
+    margin: 1px 0 0;
 
     color: rgba(220, 231, 245, 0.66);
 
-    font-size: 0.9rem;
-    line-height: 1.48;
+    font-size: 0.82rem;
+    line-height: 1.4;
 }
 
 .workspace {
     position: relative;
 
+    display: flex;
+    flex: 1 1 auto;
     min-height: 0;
-    padding: 13px;
+    overflow: hidden;
+
+    padding: 10px;
 
     border: 1px solid rgba(255, 255, 255, 0.075);
     border-radius: 17px;
@@ -141,6 +149,52 @@
     box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.035),
         0 14px 30px rgba(0, 0, 0, 0.17);
+}
+
+/*
+ * The selector is a fixed-height workspace on desktop. Its editor receives
+ * the flexible part of the column, so the Analyse action never gets pushed
+ * below the viewport when a PGN preview is present.
+ */
+.workspace > div {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 8px;
+
+    min-height: 0;
+    overflow: hidden;
+}
+
+.workspace > div > div:first-child {
+    flex: 0 0 auto;
+}
+
+.workspace > div > div:nth-child(2) {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+
+    min-height: 0;
+    overflow: hidden;
+}
+
+.workspace textarea {
+    flex: 1 1 auto;
+
+    min-height: 86px !important;
+    max-height: none !important;
+
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    line-height: 1.42;
+    resize: none;
+}
+
+.workspace [role="tablist"] button {
+    padding-top: 7px;
+    padding-bottom: 7px;
 }
 
 .workspaceAccent {
@@ -163,15 +217,19 @@
 }
 
 .actionDock {
+    position: relative;
+    z-index: 3;
+
     display: flex;
+    flex: 0 0 auto;
     flex-direction: column;
-    gap: 8px;
+    gap: 7px;
 
     padding: 2px 1px 0;
 }
 
 .actionDock > :first-child {
-    min-height: 58px;
+    min-height: 52px;
 
     border-radius: 14px !important;
     background:
@@ -186,7 +244,7 @@
         0 12px 26px rgba(59, 167, 219, 0.22) !important;
 
     color: #07131d !important;
-    font-size: 1.1rem !important;
+    font-size: 1.06rem !important;
     font-weight: 850 !important;
 }
 
@@ -206,13 +264,14 @@
     margin: 0;
 
     color: rgba(204, 218, 236, 0.43);
-    font-size: 0.69rem;
-    line-height: 1.4;
+    font-size: 0.66rem;
+    line-height: 1.35;
     text-align: center;
 }
 
 .statusMessage {
-    padding: 7px 10px;
+    flex: 0 0 auto;
+    padding: 6px 9px;
 
     border: 1px solid rgba(114, 178, 255, 0.15);
     border-radius: 10px;
@@ -223,8 +282,122 @@
 }
 
 .errorMessage {
+    flex: 0 0 auto;
     overflow: hidden;
     border-radius: 11px;
+}
+
+@media (min-width: 901px) and (max-height: 850px) {
+    .wrapper {
+        gap: 8px;
+        padding: 13px;
+        border-radius: 18px;
+    }
+
+    .intro {
+        grid-template-columns: 40px minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .introMark {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+    }
+
+    .introMark img {
+        width: 22px;
+        height: 22px;
+    }
+
+    .introCopy {
+        gap: 3px;
+    }
+
+    .eyebrow {
+        font-size: 0.64rem;
+    }
+
+    .intro h1 {
+        font-size: 1.48rem;
+    }
+
+    .intro p {
+        display: none;
+    }
+
+    .workspace {
+        padding: 8px;
+    }
+
+    .workspace > div {
+        gap: 6px;
+    }
+
+    .workspace textarea {
+        min-height: 72px !important;
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+
+    .workspace [role="tablist"] button {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    .actionDock {
+        gap: 4px;
+    }
+
+    .actionDock > :first-child {
+        min-height: 48px;
+    }
+
+    .localNote {
+        display: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .wrapper {
+        height: auto;
+        max-height: none;
+        overflow: visible;
+    }
+
+    .workspace {
+        display: block;
+        overflow: visible;
+    }
+
+    .workspace > div {
+        display: flex;
+        height: auto;
+        overflow: visible;
+    }
+
+    .workspace > div > div:nth-child(2) {
+        display: block;
+        overflow: hidden;
+    }
+
+    .workspace textarea {
+        min-height: 164px !important;
+        max-height: 300px !important;
+        resize: vertical;
+    }
+
+    .actionDock {
+        position: sticky;
+        bottom: 8px;
+
+        padding: 8px;
+        margin: 0 -8px -8px;
+
+        border-radius: 14px;
+        background: rgba(8, 16, 26, 0.96);
+        backdrop-filter: blur(10px);
+    }
 }
 
 @media (max-width: 500px) {
@@ -254,6 +427,10 @@
 
     .intro h1 {
         font-size: 1.65rem;
+    }
+
+    .intro p {
+        display: block;
     }
 
     .workspace {
