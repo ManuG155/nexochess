@@ -1,8 +1,8 @@
 {
-  "nav": "Engine",
-  "eyebrow": "PLAY STOCKFISH",
-  "title": "Play the engine",
-  "subtitle": "Choose a level, pick your colour and play a full game against Stockfish. Your moves get immediate feedback without interrupting the game unless there is something worth retrying.",
+  "nav": "Duel",
+  "eyebrow": "DUEL STOCKFISH",
+  "title": "Duel",
+  "subtitle": "Choose a level and colour, then play a full game against Stockfish with your selected coach as the rival. Your moves get near-instant feedback, and important errors can be retried.",
   "thinking": "Thinking…",
   "you": "You",
   "white": "White",
@@ -28,13 +28,14 @@
     "elite": "Elite"
   },
   "coach": {
-    "setup": "I am Stockfish. Choose the strength and colour you want, then we will play a real game.",
+    "setup": "I’m {{coach}}. Choose Stockfish’s strength and the colour you want, then we’ll play a full game.",
+    "changeHint": "Click the coach to change them.",
     "reading": "I am reading the position before your turn. One moment.",
     "yourTurn": "Your turn. Play the position as you would in a normal game.",
     "thinking": "My turn. I am calculating my reply.",
     "engineMove": "I played {{move}}. The position is yours again.",
     "engineError": "I could not finish that calculation. You can restart the game from the setup.",
-    "intro": "Ready. You are playing against my approximate {{elo}} level.",
+    "intro": "Ready. I’m {{coach}}, playing at an approximate strength of {{elo}}.",
     "checking": "You played {{move}}. I am checking what changed in the position.",
     "retry": "Good. We have returned to the position before your move. Try another idea.",
     "quality": {
@@ -46,7 +47,7 @@
       "blunder": "{{move}} is a serious blunder. The red arrow shows the tactical reply you have allowed."
     },
     "end": {
-      "win": "Game over. You beat Stockfish at this level. Nice work.",
+      "win": "Game over. You won this duel. Nice work.",
       "loss": "Game over. I won this one, but the full review can show exactly where the game changed.",
       "draw": "Game over. Draw. The review can still reveal the critical moments."
     }
@@ -73,22 +74,22 @@
   },
   "game": {
     "title": "Game",
-    "vs": "vs. Stockfish {{elo}}",
+    "vs": "vs. {{coach}} · {{elo}}",
     "noMoves": "The moves will appear here as the game progresses."
   },
   "end": {
-    "kicker": "GAME FINISHED",
+    "kicker": "DUEL FINISHED",
     "win": {
       "title": "Victory",
-      "body": "You defeated Stockfish {{elo}}. You can analyse the complete PGN now or play another game."
+      "body": "You defeated {{coach}} at strength {{elo}}. You can analyse the complete PGN now or play another game."
     },
     "loss": {
-      "title": "Stockfish wins",
-      "body": "Stockfish {{elo}} won this game. Analyse the PGN to find the decisive moments, or play again immediately."
+      "title": "{{coach}} wins",
+      "body": "{{coach}} won this duel at strength {{elo}}. Analyse the PGN to find the decisive moments, or play again immediately."
     },
     "draw": {
       "title": "Draw",
-      "body": "You drew with Stockfish {{elo}}. The complete PGN is ready if you want to review the game."
+      "body": "You drew with {{coach}} at strength {{elo}}. The complete PGN is ready if you want to review the game."
     },
     "analysing": "Analysing the complete PGN with your NexoChess review settings…",
     "analysisError": "The game could not be analysed. You can try again or keep reviewing the moves here."
