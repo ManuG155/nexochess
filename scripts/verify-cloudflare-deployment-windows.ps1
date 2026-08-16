@@ -307,8 +307,10 @@ Write-Host "OK public API error handling"
 
 $catalogue = Invoke-NexoRequest "$puzzleOrigin/catalogue.json"
 Assert-True ($catalogue.StatusCode -eq 200) "Puzzle catalogue is unavailable."
-$catalogueJson = $catalogue.Content | ConvertFrom-Json
-Assert-True ([int64]$catalogueJson.count -eq $expectedPuzzles) "Puzzle catalogue contains $($catalogueJson.count) instead of $expectedPuzzles."
+$countMatch = [regex]::Match($catalogue.Content, '"count"\s*:\s*(\d+)')
+Assert-True $countMatch.Success "Puzzle catalogue does not expose a numeric count field."
+$catalogueCount = [int64]$countMatch.Groups[1].Value
+Assert-True ($catalogueCount -eq $expectedPuzzles) "Puzzle catalogue contains $catalogueCount instead of $expectedPuzzles."
 Write-Host "OK puzzle data: 6.057.356 puzzles"
 
 Write-Host ""
