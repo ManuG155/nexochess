@@ -26,6 +26,10 @@ const enPassantMoves: MovePractice[] = [
 const INTENTIONAL_SPARSE_LESSONS = new Set([
     "first-contact.board",
     "beginner.promotion",
+    "intermediate.back-rank",
+    "intermediate.ladder-mate",
+    "intermediate.smothered-mate",
+    "intermediate.mating-net",
     "ready.active-king",
     "ready.square-rule",
     "ready.opposition",
@@ -66,92 +70,53 @@ const CONTEXT_PIECES: ContextPiece[] = [
 ];
 
 const STANDARD_LIMITS: Record<ContextPiece["type"], number> = { p: 8, n: 2, b: 2, r: 2, q: 1 };
-
-function countPieces(board: Chess) {
-    return ALL_SQUARES.reduce((count, square) => count + (board.get(square) ? 1 : 0), 0);
-}
-
+function countPieces(board: Chess) { return ALL_SQUARES.reduce((count, square) => count + (board.get(square) ? 1 : 0), 0); }
 function countPieceType(board: Chess, type: ContextPiece["type"], color: ContextPiece["color"]) {
-    return ALL_SQUARES.reduce((count, square) => {
-        const piece = board.get(square);
-        return count + (piece?.type == type && piece.color == color ? 1 : 0);
-    }, 0);
+    return ALL_SQUARES.reduce((count, square) => { const piece = board.get(square); return count + (piece?.type == type && piece.color == color ? 1 : 0); }, 0);
 }
-
-function legalMoveSet(board: Chess) {
-    return board.moves({ verbose: true }).map(move => `${move.from}${move.to}`);
-}
-
+function legalMoveSet(board: Chess) { return board.moves({ verbose: true }).map(move => `${move.from}${move.to}`); }
 function keepsTeachingMoveLegal(board: Chess, position: MovePractice) {
     const legal = new Set(legalMoveSet(board));
     if (!legal.has(`${position.expected.from}${position.expected.to}`)) return false;
     return (position.accepted || []).every(move => legal.has(`${move.from}${move.to}`));
 }
-
 function expectedOutcome(board: Chess, position: MovePractice) {
     try {
         const clone = new Chess(board.fen());
         const played = clone.move({ from: position.expected.from, to: position.expected.to, promotion: "q" });
         if (!played) return undefined;
         return { check: clone.isCheck(), mate: clone.isCheckmate(), stalemate: clone.isStalemate() };
-    } catch {
-        return undefined;
-    }
+    } catch { return undefined; }
 }
-
 function sameTeachingShape(board: Chess, position: MovePractice, initialCheck: boolean, originalOutcome: ReturnType<typeof expectedOutcome>) {
     if (board.isCheck() != initialCheck || !keepsTeachingMoveLegal(board, position)) return false;
     const outcome = expectedOutcome(board, position);
-    return Boolean(outcome && originalOutcome
-        && outcome.check == originalOutcome.check
-        && outcome.mate == originalOutcome.mate
-        && outcome.stalemate == originalOutcome.stalemate);
+    return Boolean(outcome && originalOutcome && outcome.check == originalOutcome.check && outcome.mate == originalOutcome.mate && outcome.stalemate == originalOutcome.stalemate);
 }
-
 function nearbySquares(square: Square) {
-    const file = FILES.indexOf(square[0]);
-    const rank = Number(square[1]) - 1;
-    const output = new Set<Square>();
+    const file = FILES.indexOf(square[0]); const rank = Number(square[1]) - 1; const output = new Set<Square>();
     for (let dx = -1; dx <= 1; dx += 1) for (let dy = -1; dy <= 1; dy += 1) {
-        const nextFile = file + dx;
-        const nextRank = rank + dy;
+        const nextFile = file + dx; const nextRank = rank + dy;
         if (nextFile >= 0 && nextFile <= 7 && nextRank >= 0 && nextRank <= 7) output.add(`${FILES[nextFile]}${nextRank + 1}` as Square);
     }
     return output;
 }
-
 function protectedSquares(position: MovePractice) {
     const protectedSet = new Set<Square>([position.expected.from, position.expected.to, ...(position.focusSquares || []), ...(position.arrows || []).flatMap(([from, to]) => [from, to])]);
-    nearbySquares(position.expected.from).forEach(square => protectedSet.add(square));
-    nearbySquares(position.expected.to).forEach(square => protectedSet.add(square));
-    return protectedSet;
+    nearbySquares(position.expected.from).forEach(square => protectedSet.add(square)); nearbySquares(position.expected.to).forEach(square => protectedSet.add(square)); return protectedSet;
 }
-
-function hashId(value: string) {
-    let hash = 0;
-    for (let index = 0; index < value.length; index += 1) hash = (hash * 31 + value.charCodeAt(index)) >>> 0;
-    return hash;
-}
-
-function orderedContextPieces(positionId: string) {
-    const offset = hashId(positionId) % CONTEXT_PIECES.length;
-    return [...CONTEXT_PIECES.slice(offset), ...CONTEXT_PIECES.slice(0, offset)];
-}
-
+function hashId(value: string) { let hash = 0; for (let index = 0; index < value.length; index += 1) hash = (hash * 31 + value.charCodeAt(index)) >>> 0; return hash; }
+function orderedContextPieces(positionId: string) { const offset = hashId(positionId) % CONTEXT_PIECES.length; return [...CONTEXT_PIECES.slice(offset), ...CONTEXT_PIECES.slice(0, offset)]; }
 export function lessonNeedsGameContext(lessonId: string, positionId = "") {
     if (INTENTIONAL_SPARSE_LESSONS.has(lessonId)) return false;
     if (lessonId == "ready.final-checkpoint" && ENDGAME_CHECKPOINT_MARKERS.some(marker => positionId.includes(marker))) return false;
     return true;
 }
-
 function addGameContext(position: PracticePosition, lessonId: string): PracticePosition {
     if (position.kind != "move" || !lessonNeedsGameContext(lessonId, position.id)) return position;
-    let board: Chess;
-    try { board = new Chess(position.fen); } catch { return position; }
-    const originalOutcome = expectedOutcome(board, position);
-    if (!originalOutcome) return position;
-    const initialCheck = board.isCheck();
-    const targetPieceCount = lessonId.startsWith("first-contact.") ? 14 : 16;
+    let board: Chess; try { board = new Chess(position.fen); } catch { return position; }
+    const originalOutcome = expectedOutcome(board, position); if (!originalOutcome) return position;
+    const initialCheck = board.isCheck(); const targetPieceCount = lessonId.startsWith("first-contact.") ? 14 : 16;
     if (countPieces(board) >= targetPieceCount) return position;
     const blocked = protectedSquares(position);
     for (const candidate of orderedContextPieces(position.id)) {
@@ -163,13 +128,11 @@ function addGameContext(position: PracticePosition, lessonId: string): PracticeP
     }
     return { ...position, fen: board.fen() };
 }
-
 function buildDirectLesson(lesson: CurriculumLesson): PracticeLesson {
     if (lesson.id == "first-contact.escape-check") return { lessonId: lesson.id, positions: escapeCheckMoves.slice(0, lesson.practiceCount) };
     if (lesson.id == "beginner.en-passant") return { lessonId: lesson.id, positions: enPassantMoves.slice(0, lesson.practiceCount) };
     return buildPreviousPracticeLesson(lesson);
 }
-
 export function buildPracticeLesson(lesson: CurriculumLesson): PracticeLesson {
     const generated = buildDirectLesson(lesson);
     return { lessonId: generated.lessonId, positions: generated.positions.map(position => addGameContext(position, lesson.id)) };
