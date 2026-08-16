@@ -1,8 +1,8 @@
 {
-  "nav": "引擎",
-  "eyebrow": "对战 STOCKFISH",
-  "title": "与引擎对弈",
-  "subtitle": "选择等级和执棋颜色，与 Stockfish 完成一盘完整对局。你的每一步都会立即获得反馈，只有在值得重试时才会暂时停下来。",
+  "nav": "对弈",
+  "eyebrow": "与 STOCKFISH 对弈",
+  "title": "对弈",
+  "subtitle": "选择等级和执棋颜色，与 Stockfish 完成一盘完整对局，并由你选择的教练作为对手形象。你的每一步都会近乎立即获得反馈，重要错误还可以重试。",
   "thinking": "思考中…",
   "you": "你",
   "white": "白方",
@@ -28,13 +28,14 @@
     "elite": "精英"
   },
   "coach": {
-    "setup": "我是 Stockfish。选择你想挑战的强度和颜色，然后我们来下一盘真正的棋。",
+    "setup": "我是 {{coach}}。选择 Stockfish 的强度和你想执的颜色，然后我们来下一盘完整对局。",
+    "changeHint": "点击教练即可更换。",
     "reading": "我正在你走棋前评估局面，请稍等。",
     "yourTurn": "轮到你了。像正常对局一样思考并走棋。",
     "thinking": "轮到我了。我正在计算回应。",
     "engineMove": "我走了 {{move}}。现在又轮到你。",
     "engineError": "这次计算没有完成。你可以从设置中重新开始对局。",
-    "intro": "准备好了。你正在挑战我大约 {{elo}} 的等级。",
+    "intro": "准备好了。我是 {{coach}}，将以大约 {{elo}} 的强度与你对弈。",
     "checking": "你走了 {{move}}。我正在检查局面发生了什么变化。",
     "retry": "很好。我们已经回到你走棋前的局面，试试另一种想法。",
     "quality": {
@@ -46,7 +47,7 @@
       "blunder": "{{move}} 是严重失误。红色箭头显示你允许的战术回应。"
     },
     "end": {
-      "win": "对局结束。你在这个等级击败了 Stockfish，干得漂亮。",
+      "win": "对局结束。你赢下了这场对弈，干得漂亮。",
       "loss": "对局结束。这盘我赢了，但完整复盘会告诉你局面究竟在哪里发生了变化。",
       "draw": "对局结束，和棋。复盘仍然可以找出关键时刻。"
     }
@@ -73,22 +74,22 @@
   },
   "game": {
     "title": "对局",
-    "vs": "对阵 Stockfish {{elo}}",
+    "vs": "对阵 {{coach}} · {{elo}}",
     "noMoves": "随着对局进行，着法会显示在这里。"
   },
   "end": {
-    "kicker": "对局结束",
+    "kicker": "对弈结束",
     "win": {
       "title": "胜利",
-      "body": "你击败了 Stockfish {{elo}}。现在可以分析完整 PGN，或立即再来一盘。"
+      "body": "你击败了强度为 {{elo}} 的 {{coach}}。现在可以分析完整 PGN，或立即再来一盘。"
     },
     "loss": {
-      "title": "Stockfish 获胜",
-      "body": "Stockfish {{elo}} 赢得了这盘棋。分析 PGN 找出决定性时刻，或立即再战。"
+      "title": "{{coach}} 获胜",
+      "body": "{{coach}} 以 {{elo}} 强度赢得了这盘棋。分析 PGN 找出决定性时刻，或立即再战。"
     },
     "draw": {
       "title": "和棋",
-      "body": "你与 Stockfish {{elo}} 战成和棋。完整 PGN 已准备好供你复盘。"
+      "body": "你与强度为 {{elo}} 的 {{coach}} 战成和棋。完整 PGN 已准备好供你复盘。"
     },
     "analysing": "正在使用你的 NexoChess 复盘设置分析完整 PGN…",
     "analysisError": "无法分析这盘棋。你可以重试，或继续在这里查看着法。"
