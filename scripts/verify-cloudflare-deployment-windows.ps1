@@ -21,6 +21,112 @@ $environments = @{
 $origin = $environments[$Environment].Origin.TrimEnd("/")
 $puzzleOrigin = $environments[$Environment].PuzzleOrigin.TrimEnd("/")
 $expectedPuzzles = 6057356
+$nativeAttempts = 3
+$nativeDelayMs = 900
+
+function ConvertFrom-CurlHeaders {
+    param([Parameter(Mandatory = $true)][string]$RawHeaders)
+
+    $blocks = $RawHeaders -split "(?:\r?\n){2,}"
+    $headerBlock = $blocks |
+        Where-Object { $_ -match "(?m)^HTTP/" } |
+        Select-Object -Last 1
+
+    $headers = @{}
+    if ($null -eq $headerBlock) {
+        return $headers
+    }
+
+    foreach ($line in ($headerBlock -split "\r?\n" | Select-Object -Skip 1)) {
+        if ($line -match "^([^:]+):\s*(.*)$") {
+            $headers[$matches[1].Trim()] = $matches[2].Trim()
+        }
+    }
+
+    return $headers
+}
+
+function Invoke-NexoCurlRequest {
+    param(
+        [Parameter(Mandatory = $true)][string]$Url,
+        [int]$TimeoutSec = 25
+    )
+
+    $curl = Get-Command curl.exe -ErrorAction SilentlyContinue
+    if ($null -eq $curl) {
+        throw "curl.exe is unavailable, so the DNS-over-HTTPS fallback cannot run."
+    }
+
+    $headerPath = [System.IO.Path]::GetTempFileName()
+    $bodyPath = [System.IO.Path]::GetTempFileName()
+    $providers = @(
+        @{
+            Name = "Cloudflare DoH"
+            Url = "https://cloudflare-dns.com/dns-query"
+            Resolve = $null
+        },
+        @{
+            Name = "Cloudflare DoH bootstrap"
+            Url = "https://cloudflare-dns.com/dns-query"
+            Resolve = "cloudflare-dns.com:443:1.1.1.1"
+        },
+        @{
+            Name = "Google DoH bootstrap"
+            Url = "https://dns.google/dns-query"
+            Resolve = "dns.google:443:8.8.8.8"
+        }
+    )
+
+    $lastFailure = "Unknown curl failure."
+
+    try {
+        foreach ($provider in $providers) {
+            Set-Content -LiteralPath $headerPath -Value "" -NoNewline
+            Set-Content -LiteralPath $bodyPath -Value "" -NoNewline
+
+            $arguments = @(
+                "--silent",
+                "--show-error",
+                "--connect-timeout", "10",
+                "--max-time", [string]$TimeoutSec,
+                "--dump-header", $headerPath,
+                "--output", $bodyPath,
+                "--write-out", "%{http_code}",
+                "--doh-url", $provider.Url
+            )
+
+            if ($null -ne $provider.Resolve) {
+                $arguments += @("--resolve", $provider.Resolve)
+            }
+
+            $arguments += $Url
+
+            $curlOutput = & $curl.Source @arguments 2>&1
+            $exitCode = $LASTEXITCODE
+            $statusText = (($curlOutput | ForEach-Object { [string]$_ }) -join "").Trim()
+
+            if ($exitCode -eq 0 -and $statusText -match "^\d{3}$") {
+                $headersRaw = Get-Content -LiteralPath $headerPath -Raw
+                $content = Get-Content -LiteralPath $bodyPath -Raw
+                Write-Warning "Local Windows DNS failed; verified via $($provider.Name)."
+
+                return [pscustomobject]@{
+                    StatusCode = [int]$statusText
+                    Headers = ConvertFrom-CurlHeaders $headersRaw
+                    Content = $content
+                }
+            }
+
+            $lastFailure = "$($provider.Name) failed with curl exit code $exitCode: $statusText"
+        }
+    }
+    finally {
+        Remove-Item -LiteralPath $headerPath -Force -ErrorAction SilentlyContinue
+        Remove-Item -LiteralPath $bodyPath -Force -ErrorAction SilentlyContinue
+    }
+
+    throw $lastFailure
+}
 
 function Invoke-NexoRequest {
     param(
@@ -28,37 +134,60 @@ function Invoke-NexoRequest {
         [int]$TimeoutSec = 25
     )
 
-    try {
-        return Invoke-WebRequest -Uri $Url -UseBasicParsing -TimeoutSec $TimeoutSec
-    }
-    catch {
-        $response = $_.Exception.Response
-        if ($null -ne $response) {
-            $statusCode = [int]$response.StatusCode
-            $headers = @{}
-            foreach ($key in $response.Headers.AllKeys) {
-                $headers[$key] = $response.Headers[$key]
-            }
+    $lastNativeError = $null
 
-            $body = ""
-            try {
-                $stream = $response.GetResponseStream()
-                if ($null -ne $stream) {
-                    $reader = New-Object System.IO.StreamReader($stream)
-                    $body = $reader.ReadToEnd()
-                    $reader.Dispose()
+    for ($attempt = 1; $attempt -le $nativeAttempts; $attempt += 1) {
+        try {
+            return Invoke-WebRequest -Uri $Url -UseBasicParsing -TimeoutSec $TimeoutSec
+        }
+        catch {
+            $response = $_.Exception.Response
+            if ($null -ne $response) {
+                $statusCode = [int]$response.StatusCode
+                $headers = @{}
+                foreach ($key in $response.Headers.AllKeys) {
+                    $headers[$key] = $response.Headers[$key]
+                }
+
+                $body = ""
+                try {
+                    $stream = $response.GetResponseStream()
+                    if ($null -ne $stream) {
+                        $reader = New-Object System.IO.StreamReader($stream)
+                        $body = $reader.ReadToEnd()
+                        $reader.Dispose()
+                    }
+                }
+                catch {}
+
+                return [pscustomobject]@{
+                    StatusCode = $statusCode
+                    Headers = $headers
+                    Content = $body
                 }
             }
-            catch {}
 
-            return [pscustomobject]@{
-                StatusCode = $statusCode
-                Headers = $headers
-                Content = $body
+            $lastNativeError = $_
+            if ($attempt -lt $nativeAttempts) {
+                Write-Warning "Windows request failed ($attempt/$nativeAttempts): $($_.Exception.Message). Retrying..."
+                Start-Sleep -Milliseconds ($nativeDelayMs * $attempt)
             }
         }
+    }
 
-        throw
+    Write-Warning "Windows native request could not reach $Url. Trying DNS-over-HTTPS fallback."
+
+    try {
+        return Invoke-NexoCurlRequest -Url $Url -TimeoutSec $TimeoutSec
+    }
+    catch {
+        $nativeMessage = if ($null -ne $lastNativeError) {
+            $lastNativeError.Exception.Message
+        }
+        else {
+            "unknown native request failure"
+        }
+        throw "Unable to reach $Url. Native Windows request: $nativeMessage. DNS-over-HTTPS fallback: $($_.Exception.Message)"
     }
 }
 
