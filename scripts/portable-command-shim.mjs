@@ -17,6 +17,22 @@ function pinNpxPackage(commandName, args) {
     return args;
 }
 
+function addWindowsSystemCa(commandName, args, platform) {
+    const isNode = commandName === "node" || commandName === "node.exe";
+    const verifiesCloudflare = args.includes("scripts/verify-cloudflare-deployment.mjs");
+
+    if (
+        platform === "win32"
+        && isNode
+        && verifiesCloudflare
+        && !args.includes("--use-system-ca")
+    ) {
+        return ["--use-system-ca", ...args];
+    }
+
+    return args;
+}
+
 export function preparePortableSpawn(
     executable,
     args = [],
@@ -28,12 +44,13 @@ export function preparePortableSpawn(
 ) {
     const commandName = basename(String(executable)).toLowerCase();
     const pinnedArgs = pinNpxPackage(commandName, args);
+    const preparedArgs = addWindowsSystemCa(commandName, pinnedArgs, platform);
 
     if (
         platform !== "win32"
         || (commandName !== "npm.cmd" && commandName !== "npx.cmd")
     ) {
-        return { executable, args: pinnedArgs };
+        return { executable, args: preparedArgs };
     }
 
     if (!npmExecPath) {
