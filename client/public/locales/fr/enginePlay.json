@@ -11,7 +11,7 @@
   "setup": {
     "difficulty": "Difficulté",
     "playAs": "Jouer avec",
-    "eloNote": "Les valeurs Elo sont une indication approximative de force. Aux niveaux faibles, Stockfish choisit volontairement des lignes candidates moins fortes."
+    "eloNote": "Les valeurs Elo donnent une indication approximative. Les niveaux faibles jouent tout de même des ouvertures cohérentes, puis choisissent dans un éventail progressivement plus large de coups candidats de Stockfish."
   },
   "levels": {
     "initiation": "Initiation",
@@ -39,6 +39,7 @@
     "checking": "Vous avez joué {{move}}. Je vérifie ce qui a changé dans la position.",
     "retry": "Bien. Nous sommes revenus à la position avant votre coup. Essayez une autre idée.",
     "quality": {
+      "theory": "{{move}} est de la théorie. C'est un coup d'ouverture connu qui nous maintient dans des variantes bien étudiées.",
       "best": "{{move}} est le meilleur coup que je trouve. Excellente lecture de la position.",
       "excellent": "{{move}} est excellent. Il conserve presque tout le potentiel de la position.",
       "okay": "{{move}} est jouable. Il existe peut-être plus précis, mais la position reste saine.",
@@ -53,6 +54,7 @@
     }
   },
   "quality": {
+    "theory": "Théorie",
     "best": "Meilleur",
     "excellent": "Excellent",
     "okay": "Bon",
@@ -66,6 +68,8 @@
     "play": "Jouer",
     "retry": "Réessayer",
     "continue": "Continuer",
+    "undo": "Annuler",
+    "redo": "Rétablir",
     "result": "Résultat",
     "resign": "Abandonner",
     "close": "Fermer",
