@@ -11,7 +11,7 @@
   "setup": {
     "difficulty": "Schwierigkeit",
     "playAs": "Spielen als",
-    "eloNote": "Die Elo-Werte sind eine ungefähre Orientierung. Auf niedrigeren Stufen wählt Stockfish bewusst schwächere Kandidatenzüge."
+    "eloNote": "Die Elo-Werte sind eine ungefähre Orientierung. Niedrige Stufen spielen weiterhin vernünftige Eröffnungszüge und wählen danach aus einem zunehmend größeren Feld von Stockfish-Kandidaten."
   },
   "levels": {
     "initiation": "Einstieg",
@@ -39,6 +39,7 @@
     "checking": "Du hast {{move}} gespielt. Ich prüfe, was sich in der Stellung verändert hat.",
     "retry": "Gut. Wir sind zur Stellung vor deinem Zug zurückgekehrt. Probiere eine andere Idee.",
     "quality": {
+      "theory": "{{move}} ist Theorie. Das ist ein bekannter Eröffnungszug und wir bleiben auf gut erforschten Wegen.",
       "best": "{{move}} ist der beste Zug, den ich finde. Sehr gut gelesen.",
       "excellent": "{{move}} ist ausgezeichnet. Der Zug erhält fast das gesamte Potenzial der Stellung.",
       "okay": "{{move}} ist spielbar. Es gibt vielleicht etwas Präziseres, aber die Stellung bleibt gesund.",
@@ -53,6 +54,7 @@
     }
   },
   "quality": {
+    "theory": "Theorie",
     "best": "Bester",
     "excellent": "Ausgezeichnet",
     "okay": "Gut",
@@ -66,6 +68,8 @@
     "play": "Spielen",
     "retry": "Erneut versuchen",
     "continue": "Weiterspielen",
+    "undo": "Rückgängig",
+    "redo": "Wiederholen",
     "result": "Ergebnis",
     "resign": "Aufgeben",
     "close": "Schließen",
