@@ -71,9 +71,18 @@ type MoveFeedback = {
     decisionRequired: boolean;
 };
 
+type PersistedDuel = {
+    version: 1;
+    selectedElo: number;
+    playerColour: PlayerColour;
+    moves: PlayedMove[];
+    redoStack: PlayedMove[];
+};
+
 const START_FEN = new Chess().fen();
 const QUALITY_DEPTH = 10;
 const QUALITY_TIME_MS = 140;
+const DUEL_STORAGE_KEY = "nexochess_duel_active_v1";
 const BAD_MOVE_QUALITIES = new Set<LiveQuality>([
     Classification.MISTAKE,
     Classification.BLUNDER
@@ -101,6 +110,26 @@ function historyUci(board: Chess) {
 
 function isLegalUci(board: Chess, uci: string) {
     return board.moves({ verbose: true }).some(move => uciFromMove(move) == uci.toLowerCase());
+}
+
+function isPlayedMove(value: unknown): value is PlayedMove {
+    if (!value || typeof value != "object") return false;
+    const candidate = value as Partial<PlayedMove>;
+    return typeof candidate.san == "string"
+        && typeof candidate.uci == "string"
+        && (candidate.colour == "white" || candidate.colour == "black");
+}
+
+function isPersistedDuel(value: unknown): value is PersistedDuel {
+    if (!value || typeof value != "object") return false;
+    const candidate = value as Partial<PersistedDuel>;
+    return candidate.version == 1
+        && typeof candidate.selectedElo == "number"
+        && (candidate.playerColour == "white" || candidate.playerColour == "black")
+        && Array.isArray(candidate.moves)
+        && candidate.moves.every(isPlayedMove)
+        && Array.isArray(candidate.redoStack)
+        && candidate.redoStack.every(isPlayedMove);
 }
 
 function evaluationScore(line?: EngineLine) {
@@ -159,7 +188,7 @@ function coachExpressionFor(
 }
 
 function EnginePlayApp() {
-    const { t } = useTranslation("enginePlay");
+    const { t, i18n } = useTranslation("enginePlay");
     const { t: coachT } = useTranslation("coach", { useSuspense: false });
     const settings = useSettingsStore(state => state.settings);
     const setSettings = useSettingsStore(state => state.setSettings);
@@ -186,12 +215,15 @@ function EnginePlayApp() {
     const [endDialogOpen, setEndDialogOpen] = useState(false);
     const [analysisBusy, setAnalysisBusy] = useState(false);
     const [analysisError, setAnalysisError] = useState<string>();
+    const [persistenceReady, setPersistenceReady] = useState(false);
 
     const gameRef = useRef(new Chess());
     const qualityEngineRef = useRef<Engine>();
     const opponentEngineRef = useRef<Engine>();
     const baselineRef = useRef<EngineLine>();
     const sessionRef = useRef(0);
+    const resumeTimerRef = useRef<number>();
+    const pendingRestoreRef = useRef(false);
 
     const level = getEngineLevel(selectedElo);
     const latestIndex = positions.length - 1;
@@ -211,7 +243,133 @@ function EnginePlayApp() {
         return getCoachSpokenLine(selectedCoach, line, seed, coachT);
     }
 
+    useEffect(() => {
+        document.title = `NexoChess · ${t("nav")}`;
+    }, [i18n.resolvedLanguage, t]);
+
+    useEffect(() => {
+        try {
+            const stored = window.localStorage.getItem(DUEL_STORAGE_KEY);
+            if (!stored) {
+                setPersistenceReady(true);
+                return;
+            }
+
+            const parsed: unknown = JSON.parse(stored);
+            if (!isPersistedDuel(parsed) || !ENGINE_LEVELS.some(item => item.elo == parsed.selectedElo)) {
+                window.localStorage.removeItem(DUEL_STORAGE_KEY);
+                setPersistenceReady(true);
+                return;
+            }
+
+            const board = new Chess();
+            const restoredPositions = [board.fen()];
+            const restoredMoves: PlayedMove[] = [];
+            for (const storedMove of parsed.moves) {
+                const replayed = board.move(moveFromUci(storedMove.uci));
+                if (!replayed) throw new Error("invalid_persisted_move");
+                restoredMoves.push({
+                    ...storedMove,
+                    san: replayed.san,
+                    uci: uciFromMove(replayed)
+                });
+                restoredPositions.push(board.fen());
+            }
+
+            if (board.isGameOver()) {
+                window.localStorage.removeItem(DUEL_STORAGE_KEY);
+                setPersistenceReady(true);
+                return;
+            }
+
+            const date = new Date().toISOString().slice(0, 10).replaceAll("-", ".");
+            board.setHeader("Event", "NexoChess Duelo");
+            board.setHeader("Site", "NexoChess");
+            board.setHeader("Date", date);
+            board.setHeader("White", parsed.playerColour == "white" ? t("you") : selectedCoach.name);
+            board.setHeader("Black", parsed.playerColour == "black" ? t("you") : selectedCoach.name);
+            board.setHeader(parsed.playerColour == "white" ? "BlackElo" : "WhiteElo", String(parsed.selectedElo));
+            board.setHeader("Result", "*");
+            gameRef.current = board;
+            baselineRef.current = undefined;
+
+            const lastMove = restoredMoves[restoredMoves.length - 1];
+            const restoredFeedback = lastMove?.colour == parsed.playerColour && lastMove.quality
+                ? {
+                    quality: lastMove.quality,
+                    san: lastMove.san,
+                    to: lastMove.uci.slice(2, 4) as Square,
+                    decisionRequired: Boolean(lastMove.decisionRequired),
+                    threat: lastMove.threat,
+                    forcedReplyUci: lastMove.forcedReplyUci
+                } satisfies MoveFeedback
+                : undefined;
+
+            setSelectedElo(parsed.selectedElo);
+            setPlayerColour(parsed.playerColour);
+            setPhase("playing");
+            setFen(board.fen());
+            setPositions(restoredPositions);
+            setMoves(restoredMoves);
+            setRedoStack(parsed.redoStack);
+            setViewIndex(restoredPositions.length - 1);
+            setSelectedFrom(undefined);
+            setFeedback(restoredFeedback);
+            setGameResult(undefined);
+            setEndDialogOpen(false);
+            setAnalysisBusy(false);
+            setAnalysisError(undefined);
+            pendingRestoreRef.current = true;
+            setPersistenceReady(true);
+        } catch (error) {
+            console.error(error);
+            window.localStorage.removeItem(DUEL_STORAGE_KEY);
+            setPersistenceReady(true);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!persistenceReady || phase != "playing" || !pendingRestoreRef.current) return;
+        pendingRestoreRef.current = false;
+        const session = ++sessionRef.current;
+
+        if (feedback?.decisionRequired) {
+            setThinking(false);
+            setCoachText(spoken(
+                t(`coach.quality.${feedback.quality}`, { move: feedback.san }),
+                `restore-feedback-${feedback.san}`
+            ));
+            return;
+        }
+
+        createSessionEngines();
+        if (colourFromTurn(gameRef.current.turn()) == playerColour) {
+            void primePlayerTurn(session);
+        } else {
+            void playEngineMove(session);
+        }
+    }, [persistenceReady, phase, playerColour]);
+
+    useEffect(() => {
+        if (!persistenceReady) return;
+        if (gameResult) {
+            window.localStorage.removeItem(DUEL_STORAGE_KEY);
+            return;
+        }
+        if (phase != "playing") return;
+
+        const snapshot: PersistedDuel = {
+            version: 1,
+            selectedElo,
+            playerColour,
+            moves,
+            redoStack
+        };
+        window.localStorage.setItem(DUEL_STORAGE_KEY, JSON.stringify(snapshot));
+    }, [gameResult, moves, persistenceReady, phase, playerColour, redoStack, selectedElo]);
+
     useEffect(() => () => {
+        if (resumeTimerRef.current) window.clearTimeout(resumeTimerRef.current);
         qualityEngineRef.current?.terminate();
         opponentEngineRef.current?.terminate();
     }, []);
@@ -227,6 +385,10 @@ function EnginePlayApp() {
     }, [coachT, phase, selectedCoach.id, selectedCoach.name, t]);
 
     function stopEngines() {
+        if (resumeTimerRef.current) {
+            window.clearTimeout(resumeTimerRef.current);
+            resumeTimerRef.current = undefined;
+        }
         qualityEngineRef.current?.terminate();
         opponentEngineRef.current?.terminate();
         qualityEngineRef.current = undefined;
@@ -314,6 +476,7 @@ function EnginePlayApp() {
                 ? "1-0"
                 : "0-1";
         gameRef.current.setHeader("Result", notation);
+        window.localStorage.removeItem(DUEL_STORAGE_KEY);
         setGameResult(resolved);
         setThinking(false);
         setFeedback(undefined);
@@ -363,8 +526,6 @@ function EnginePlayApp() {
             : [getTopEngineLine(lines)].filter(Boolean) as EngineLine[];
         if (!candidates.length) return undefined;
 
-        // Weak levels still play coherent chess: they choose among a small set of
-        // sensible candidates instead of deliberately taking the 6th-8th PV.
         const candidateIndex = Math.min(
             candidates.length - 1,
             Math.max(0, Math.round((3000 - level.elo) / 750))
@@ -414,8 +575,39 @@ function EnginePlayApp() {
         }
     }
 
+    function resumeEditedPosition(session: number, restoredFeedback?: MoveFeedback) {
+        if (session != sessionRef.current || gameRef.current.isGameOver()) return;
+
+        if (restoredFeedback?.decisionRequired) {
+            setThinking(false);
+            setCoachText(spoken(
+                t(`coach.quality.${restoredFeedback.quality}`, { move: restoredFeedback.san }),
+                `history-feedback-${restoredFeedback.san}`
+            ));
+            return;
+        }
+
+        createSessionEngines();
+        if (colourFromTurn(gameRef.current.turn()) == playerColour) {
+            void primePlayerTurn(session);
+            return;
+        }
+
+        setThinking(true);
+        setCoachText(spoken(t("coach.thinking"), `history-thinking-${historyUci(gameRef.current).length}`));
+        resumeTimerRef.current = window.setTimeout(() => {
+            resumeTimerRef.current = undefined;
+            if (session == sessionRef.current) {
+                setFeedback(undefined);
+                void playEngineMove(session);
+            }
+        }, 650);
+    }
+
     async function startGame() {
         const session = ++sessionRef.current;
+        pendingRestoreRef.current = false;
+        window.localStorage.removeItem(DUEL_STORAGE_KEY);
         createSessionEngines();
 
         const board = new Chess();
@@ -461,6 +653,25 @@ function EnginePlayApp() {
         } else {
             await playEngineMove(session);
         }
+    }
+
+    function returnToSetup() {
+        ++sessionRef.current;
+        stopEngines();
+        gameRef.current = new Chess();
+        baselineRef.current = undefined;
+        setPhase("setup");
+        setThinking(false);
+        setFeedback(undefined);
+        setGameResult(undefined);
+        setEndDialogOpen(false);
+        setAnalysisError(undefined);
+        setSelectedFrom(undefined);
+        setFen(START_FEN);
+        setPositions([START_FEN]);
+        setMoves([]);
+        setRedoStack([]);
+        setViewIndex(0);
     }
 
     async function acceptUserMove(source: Square, target: Square) {
@@ -639,13 +850,7 @@ function EnginePlayApp() {
         setEndDialogOpen(false);
         setAnalysisError(undefined);
 
-        if (
-            !gameRef.current.isGameOver()
-            && colourFromTurn(gameRef.current.turn()) == playerColour
-        ) {
-            createSessionEngines();
-            void primePlayerTurn(session);
-        }
+        resumeEditedPosition(session);
     }
 
     function redoLiveMove() {
@@ -702,29 +907,7 @@ function EnginePlayApp() {
             return;
         }
 
-        if (restoredFeedback?.decisionRequired && !remaining.length) {
-            setCoachText(spoken(
-                t(`coach.quality.${restoredFeedback.quality}`, { move: restoredFeedback.san }),
-                `redo-feedback-${restoredFeedback.san}`
-            ));
-            return;
-        }
-
-        if (remaining.length) {
-            if (colourFromTurn(gameRef.current.turn()) == playerColour) {
-                createSessionEngines();
-                void primePlayerTurn(session);
-            }
-            return;
-        }
-
-        createSessionEngines();
-        if (colourFromTurn(gameRef.current.turn()) == playerColour) {
-            void primePlayerTurn(session);
-        } else {
-            setFeedback(undefined);
-            void playEngineMove(session);
-        }
+        resumeEditedPosition(session, restoredFeedback);
     }
 
     function handleSquareClick(squareName: string) {
@@ -1066,20 +1249,10 @@ function EnginePlayApp() {
                                 </button>}
                                 <button
                                     type="button"
-                                    onClick={() => {
-                                        ++sessionRef.current;
-                                        stopEngines();
-                                        setPhase("setup");
-                                        setThinking(false);
-                                        setFeedback(undefined);
-                                        setGameResult(undefined);
-                                        setFen(START_FEN);
-                                        setPositions([START_FEN]);
-                                        setMoves([]);
-                                        setRedoStack([]);
-                                        setViewIndex(0);
-                                    }}
+                                    className={styles.backToSetupButton}
+                                    onClick={returnToSetup}
                                 >
+                                    <span aria-hidden="true">←</span>
                                     {t("actions.changeSetup")}
                                 </button>
                             </div>
