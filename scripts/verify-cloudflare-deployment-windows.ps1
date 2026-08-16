@@ -117,7 +117,7 @@ function Invoke-NexoCurlRequest {
                 }
             }
 
-            $lastFailure = "$($provider.Name) failed with curl exit code $exitCode: $statusText"
+            $lastFailure = "$($provider.Name) failed with curl exit code ${exitCode}: $statusText"
         }
     }
     finally {
