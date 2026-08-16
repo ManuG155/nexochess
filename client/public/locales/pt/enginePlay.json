@@ -1,0 +1,96 @@
+{
+  "nav": "Motor",
+  "eyebrow": "JOGUE CONTRA O STOCKFISH",
+  "title": "Jogue contra o motor",
+  "subtitle": "Escolha o nível e a cor e jogue uma partida completa contra o Stockfish. As suas jogadas recebem feedback imediato sem quebrar o ritmo, exceto quando vale a pena tentar outra vez.",
+  "thinking": "Pensando…",
+  "you": "Você",
+  "white": "Brancas",
+  "black": "Pretas",
+  "moveQuality": "Qualidade da jogada",
+  "setup": {
+    "difficulty": "Dificuldade",
+    "playAs": "Jogar com",
+    "eloNote": "Os valores Elo são uma referência aproximada de força. Nos níveis baixos, o Stockfish escolhe deliberadamente linhas candidatas mais fracas."
+  },
+  "levels": {
+    "initiation": "Iniciação",
+    "beginner": "Principiante",
+    "novice": "Novato",
+    "club": "Amador",
+    "competent": "Competente",
+    "intermediate": "Intermédio",
+    "advanced": "Avançado",
+    "expert": "Especialista",
+    "candidate": "Candidato a mestre",
+    "master": "Mestre",
+    "grandmaster": "Grande Mestre",
+    "elite": "Elite"
+  },
+  "coach": {
+    "setup": "Sou o Stockfish. Escolha a força e a cor que quiser e vamos jogar uma partida a sério.",
+    "reading": "Estou a ler a posição antes do seu turno. Um momento.",
+    "yourTurn": "É a sua vez. Jogue a posição como faria numa partida normal.",
+    "thinking": "É a minha vez. Estou a calcular a resposta.",
+    "engineMove": "Joguei {{move}}. A posição volta a ser sua.",
+    "engineError": "Não consegui terminar esse cálculo. Pode reiniciar a partida a partir da configuração.",
+    "intro": "Pronto. Vai jogar contra o meu nível aproximado de {{elo}}.",
+    "checking": "Jogou {{move}}. Estou a verificar o que mudou na posição.",
+    "retry": "Boa. Voltámos à posição anterior à sua jogada. Tente outra ideia.",
+    "quality": {
+      "best": "{{move}} é a melhor jogada que encontro. Excelente leitura da posição.",
+      "excellent": "{{move}} é excelente. Mantém quase todo o potencial da posição.",
+      "okay": "{{move}} é jogável. Pode haver algo mais preciso, mas a posição continua saudável.",
+      "inaccuracy": "{{move}} é uma pequena imprecisão. Não é grave, mas cedeu parte da posição.",
+      "mistake": "{{move}} é um erro. Agora tenho uma resposta concreta; a seta vermelha mostra a principal ameaça.",
+      "blunder": "{{move}} é um erro grave. A seta vermelha mostra a resposta tática que permitiu."
+    },
+    "end": {
+      "win": "Partida terminada. Venceu o Stockfish neste nível. Muito bem.",
+      "loss": "Partida terminada. Esta ficou comigo, mas a análise completa pode mostrar exatamente onde a partida mudou.",
+      "draw": "Partida terminada. Empate. Mesmo assim, a análise pode revelar os momentos críticos."
+    }
+  },
+  "quality": {
+    "best": "Melhor",
+    "excellent": "Excelente",
+    "okay": "Boa",
+    "inaccuracy": "Imprecisão",
+    "mistake": "Erro",
+    "blunder": "Erro grave"
+  },
+  "actions": {
+    "changeSetup": "Alterar configuração",
+    "returnLive": "Voltar à partida",
+    "play": "Jogar",
+    "retry": "Tentar novamente",
+    "continue": "Continuar",
+    "result": "Resultado",
+    "resign": "Desistir",
+    "close": "Fechar",
+    "analyse": "Analisar partida",
+    "playAgain": "Jogar novamente"
+  },
+  "game": {
+    "title": "Partida",
+    "vs": "contra Stockfish {{elo}}",
+    "noMoves": "As jogadas vão aparecer aqui à medida que a partida avança."
+  },
+  "end": {
+    "kicker": "PARTIDA TERMINADA",
+    "win": {
+      "title": "Vitória",
+      "body": "Derrotou o Stockfish {{elo}}. Pode analisar agora o PGN completo ou jogar outra partida."
+    },
+    "loss": {
+      "title": "Stockfish vence",
+      "body": "O Stockfish {{elo}} venceu esta partida. Analise o PGN para encontrar os momentos decisivos ou jogue novamente."
+    },
+    "draw": {
+      "title": "Empate",
+      "body": "Empatou com o Stockfish {{elo}}. O PGN completo está pronto se quiser rever a partida."
+    },
+    "analysing": "A analisar o PGN completo com as suas definições de revisão do NexoChess…",
+    "analysisError": "Não foi possível analisar a partida. Pode tentar novamente ou continuar a rever as jogadas aqui."
+  }
+}
