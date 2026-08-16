@@ -1,0 +1,96 @@
+{
+  "nav": "Engine",
+  "eyebrow": "GEGEN STOCKFISH SPIELEN",
+  "title": "Spiele gegen die Engine",
+  "subtitle": "Wähle Spielstärke und Farbe und spiele eine komplette Partie gegen Stockfish. Deine Züge erhalten sofortiges Feedback, ohne den Spielfluss zu unterbrechen, außer wenn ein neuer Versuch sinnvoll ist.",
+  "thinking": "Denkt…",
+  "you": "Du",
+  "white": "Weiß",
+  "black": "Schwarz",
+  "moveQuality": "Zugqualität",
+  "setup": {
+    "difficulty": "Schwierigkeit",
+    "playAs": "Spielen als",
+    "eloNote": "Die Elo-Werte sind eine ungefähre Orientierung. Auf niedrigeren Stufen wählt Stockfish bewusst schwächere Kandidatenzüge."
+  },
+  "levels": {
+    "initiation": "Einstieg",
+    "beginner": "Anfänger",
+    "novice": "Neuling",
+    "club": "Vereinsspieler",
+    "competent": "Solide",
+    "intermediate": "Mittelstufe",
+    "advanced": "Fortgeschritten",
+    "expert": "Experte",
+    "candidate": "Meisterkandidat",
+    "master": "Meister",
+    "grandmaster": "Großmeister",
+    "elite": "Elite"
+  },
+  "coach": {
+    "setup": "Ich bin Stockfish. Wähle Spielstärke und Farbe, dann spielen wir eine echte Partie.",
+    "reading": "Ich prüfe die Stellung vor deinem Zug. Einen Moment.",
+    "yourTurn": "Du bist am Zug. Spiele die Stellung wie in einer normalen Partie.",
+    "thinking": "Ich bin am Zug und berechne meine Antwort.",
+    "engineMove": "Ich habe {{move}} gespielt. Du bist wieder am Zug.",
+    "engineError": "Ich konnte die Berechnung nicht abschließen. Du kannst die Partie über die Einstellungen neu starten.",
+    "intro": "Bereit. Du spielst gegen meine ungefähre Stärke von {{elo}}.",
+    "checking": "Du hast {{move}} gespielt. Ich prüfe, was sich in der Stellung verändert hat.",
+    "retry": "Gut. Wir sind zur Stellung vor deinem Zug zurückgekehrt. Probiere eine andere Idee.",
+    "quality": {
+      "best": "{{move}} ist der beste Zug, den ich finde. Sehr gut gelesen.",
+      "excellent": "{{move}} ist ausgezeichnet. Der Zug erhält fast das gesamte Potenzial der Stellung.",
+      "okay": "{{move}} ist spielbar. Es gibt vielleicht etwas Präziseres, aber die Stellung bleibt gesund.",
+      "inaccuracy": "{{move}} ist eine kleine Ungenauigkeit. Nicht schlimm, aber du gibst etwas von deiner Stellung ab.",
+      "mistake": "{{move}} ist ein Fehler. Jetzt habe ich eine konkrete Antwort; der rote Pfeil zeigt die Hauptdrohung.",
+      "blunder": "{{move}} ist ein schwerer Fehler. Der rote Pfeil zeigt die taktische Antwort, die du zugelassen hast."
+    },
+    "end": {
+      "win": "Partie beendet. Du hast Stockfish auf dieser Stufe geschlagen. Stark gespielt.",
+      "loss": "Partie beendet. Diese Partie gewinne ich, aber die vollständige Analyse zeigt dir, wo sie gekippt ist.",
+      "draw": "Partie beendet. Remis. Die Analyse kann trotzdem die kritischen Momente zeigen."
+    }
+  },
+  "quality": {
+    "best": "Bester",
+    "excellent": "Ausgezeichnet",
+    "okay": "Gut",
+    "inaccuracy": "Ungenauigkeit",
+    "mistake": "Fehler",
+    "blunder": "Grober Fehler"
+  },
+  "actions": {
+    "changeSetup": "Einstellungen ändern",
+    "returnLive": "Zurück zur Partie",
+    "play": "Spielen",
+    "retry": "Erneut versuchen",
+    "continue": "Weiterspielen",
+    "result": "Ergebnis",
+    "resign": "Aufgeben",
+    "close": "Schließen",
+    "analyse": "Partie analysieren",
+    "playAgain": "Noch einmal spielen"
+  },
+  "game": {
+    "title": "Partie",
+    "vs": "gegen Stockfish {{elo}}",
+    "noMoves": "Die Züge erscheinen hier im Verlauf der Partie."
+  },
+  "end": {
+    "kicker": "PARTIE BEENDET",
+    "win": {
+      "title": "Sieg",
+      "body": "Du hast Stockfish {{elo}} besiegt. Du kannst jetzt das vollständige PGN analysieren oder direkt erneut spielen."
+    },
+    "loss": {
+      "title": "Stockfish gewinnt",
+      "body": "Stockfish {{elo}} hat diese Partie gewonnen. Analysiere das PGN für die entscheidenden Momente oder spiele sofort noch einmal."
+    },
+    "draw": {
+      "title": "Remis",
+      "body": "Du hast gegen Stockfish {{elo}} remis gespielt. Das vollständige PGN ist bereit zur Analyse."
+    },
+    "analysing": "Das vollständige PGN wird mit deinen NexoChess-Analyseeinstellungen ausgewertet…",
+    "analysisError": "Die Partie konnte nicht analysiert werden. Du kannst es erneut versuchen oder die Züge hier weiter ansehen."
+  }
+}
