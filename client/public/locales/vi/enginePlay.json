@@ -11,7 +11,7 @@
   "setup": {
     "difficulty": "Độ khó",
     "playAs": "Chơi bên",
-    "eloNote": "Các mức Elo chỉ là ước lượng sức chơi. Ở cấp thấp, Stockfish chủ động chọn những biến ứng viên yếu hơn."
+    "eloNote": "Các mức Elo chỉ là ước lượng sức chơi. Cấp thấp vẫn chơi khai cuộc hợp lý, sau đó mới chọn trong một nhóm nước ứng viên Stockfish rộng dần."
   },
   "levels": {
     "initiation": "Nhập môn",
@@ -39,6 +39,7 @@
     "checking": "Bạn vừa đi {{move}}. Tôi đang kiểm tra thế cờ đã thay đổi thế nào.",
     "retry": "Tốt. Chúng ta đã quay lại vị trí trước nước đi của bạn. Hãy thử ý tưởng khác.",
     "quality": {
+      "theory": "{{move}} là lý thuyết khai cuộc. Đây là một nước đã biết và chúng ta vẫn ở trong những biến được nghiên cứu kỹ.",
       "best": "{{move}} là nước tốt nhất tôi tìm thấy. Bạn đọc vị trí rất chính xác.",
       "excellent": "{{move}} rất xuất sắc. Nó giữ gần như toàn bộ tiềm năng của thế cờ.",
       "okay": "{{move}} chơi được. Có thể có nước chính xác hơn, nhưng vị trí vẫn ổn.",
@@ -53,6 +54,7 @@
     }
   },
   "quality": {
+    "theory": "Lý thuyết",
     "best": "Tốt nhất",
     "excellent": "Xuất sắc",
     "okay": "Tốt",
@@ -66,6 +68,8 @@
     "play": "Chơi",
     "retry": "Thử lại",
     "continue": "Tiếp tục",
+    "undo": "Hoàn tác",
+    "redo": "Làm lại",
     "result": "Kết quả",
     "resign": "Xin thua",
     "close": "Đóng",
