@@ -35,11 +35,14 @@ import CoachPicker from "@analysis/components/AnalysisPanel/CoachPicker";
 import CoachPortrait from "@analysis/components/AnalysisPanel/CoachPortrait";
 
 import { ENGINE_LEVELS, getEngineLevel } from "./engineLevels";
+import { getTheoryMoves, isTheoryMove } from "./openingBook";
 import * as styles from "./enginePlay.module.css";
+import * as v3 from "./enginePlayV3.module.css";
 
 type PlayerColour = "white" | "black";
 type Phase = "setup" | "playing";
 type LiveQuality =
+    | Classification.THEORY
     | Classification.BEST
     | Classification.EXCELLENT
     | Classification.OKAY
@@ -47,18 +50,24 @@ type LiveQuality =
     | Classification.MISTAKE
     | Classification.BLUNDER;
 
+type ThreatArrow = [Square, Square, string];
+
 type PlayedMove = {
     san: string;
     uci: string;
     colour: PlayerColour;
     quality?: LiveQuality;
+    decisionRequired?: boolean;
+    threat?: ThreatArrow;
+    forcedReplyUci?: string;
 };
 
 type MoveFeedback = {
     quality: LiveQuality;
     san: string;
     to: Square;
-    threat?: [Square, Square, string];
+    threat?: ThreatArrow;
+    forcedReplyUci?: string;
     decisionRequired: boolean;
 };
 
@@ -75,7 +84,23 @@ function colourFromTurn(turn: "w" | "b"): PlayerColour {
 }
 
 function uciFromMove(move: { from: string; to: string; promotion?: string }) {
-    return `${move.from}${move.to}${move.promotion || ""}`;
+    return `${move.from}${move.to}${move.promotion || ""}`.toLowerCase();
+}
+
+function moveFromUci(uci: string) {
+    return {
+        from: uci.slice(0, 2),
+        to: uci.slice(2, 4),
+        promotion: uci[4] || "q"
+    };
+}
+
+function historyUci(board: Chess) {
+    return board.history({ verbose: true }).map(uciFromMove);
+}
+
+function isLegalUci(board: Chess, uci: string) {
+    return board.moves({ verbose: true }).some(move => uciFromMove(move) == uci.toLowerCase());
 }
 
 function evaluationScore(line?: EngineLine) {
@@ -107,7 +132,7 @@ function classifyPlayerMove(
     return Classification.BLUNDER;
 }
 
-function threatArrow(line?: EngineLine): MoveFeedback["threat"] {
+function threatArrow(line?: EngineLine): ThreatArrow | undefined {
     const uci = line?.moves[0]?.uci;
     if (!uci || uci.length < 4) return undefined;
     return [uci.slice(0, 2) as Square, uci.slice(2, 4) as Square, "#ef5350"];
@@ -126,7 +151,8 @@ function coachExpressionFor(
     if (feedback?.quality == Classification.MISTAKE) return "worried";
     if (feedback?.quality == Classification.INACCURACY) return "explaining";
     if (
-        feedback?.quality == Classification.BEST
+        feedback?.quality == Classification.THEORY
+        || feedback?.quality == Classification.BEST
         || feedback?.quality == Classification.EXCELLENT
     ) return "approving";
     return "idle";
@@ -149,6 +175,7 @@ function EnginePlayApp() {
     const [fen, setFen] = useState(START_FEN);
     const [positions, setPositions] = useState<string[]>([START_FEN]);
     const [moves, setMoves] = useState<PlayedMove[]>([]);
+    const [redoStack, setRedoStack] = useState<PlayedMove[]>([]);
     const [viewIndex, setViewIndex] = useState(0);
     const [selectedFrom, setSelectedFrom] = useState<Square>();
     const [thinking, setThinking] = useState(false);
@@ -194,14 +221,20 @@ function EnginePlayApp() {
         setCoachText(getCoachSpokenLine(
             selectedCoach,
             t("coach.setup", { coach: selectedCoach.name }),
-            `rival-setup-${selectedCoach.id}`,
+            `duel-setup-${selectedCoach.id}`,
             coachT
         ));
     }, [coachT, phase, selectedCoach.id, selectedCoach.name, t]);
 
-    function createSessionEngines() {
+    function stopEngines() {
         qualityEngineRef.current?.terminate();
         opponentEngineRef.current?.terminate();
+        qualityEngineRef.current = undefined;
+        opponentEngineRef.current = undefined;
+    }
+
+    function createSessionEngines() {
+        stopEngines();
 
         const qualityEngine = new Engine(EngineVersion.STOCKFISH_17_LITE);
         qualityEngine.setLineCount(1);
@@ -227,21 +260,36 @@ function EnginePlayApp() {
     async function primePlayerTurn(session: number) {
         if (session != sessionRef.current || gameRef.current.isGameOver()) return;
         setThinking(true);
-        setCoachText(spoken(t("coach.reading"), `reading-${moves.length}`));
+        setCoachText(spoken(t("coach.reading"), `reading-${historyUci(gameRef.current).length}`));
         baselineRef.current = await strongEvaluation(gameRef.current.fen(), session);
         if (session != sessionRef.current) return;
         setThinking(false);
-        setCoachText(spoken(t("coach.yourTurn"), `your-turn-${moves.length}`));
+        setCoachText(spoken(t("coach.yourTurn"), `your-turn-${historyUci(gameRef.current).length}`));
     }
 
-    function appendMove(move: PlayedMove, nextFen: string) {
+    function appendMove(move: PlayedMove, nextFen: string, clearRedo = true) {
         setMoves(current => [...current, move]);
         setPositions(current => {
             const next = [...current, nextFen];
             setViewIndex(next.length - 1);
             return next;
         });
+        if (clearRedo) setRedoStack([]);
         setFen(nextFen);
+    }
+
+    function updateLastMoveFeedback(nextFeedback: MoveFeedback) {
+        setMoves(current => current.map((move, index) => (
+            index == current.length - 1
+                ? {
+                    ...move,
+                    quality: nextFeedback.quality,
+                    decisionRequired: nextFeedback.decisionRequired,
+                    threat: nextFeedback.threat,
+                    forcedReplyUci: nextFeedback.forcedReplyUci
+                }
+                : move
+        )));
     }
 
     function setLastMoveQuality(quality: LiveQuality) {
@@ -271,15 +319,30 @@ function EnginePlayApp() {
         setFeedback(undefined);
         setCoachText(spoken(
             t(`coach.end.${resolved}`, { coach: selectedCoach.name }),
-            `end-${resolved}-${moves.length}`
+            `end-${resolved}-${historyUci(gameRef.current).length}`
         ));
         setEndDialogOpen(true);
+    }
+
+    function chooseBookMove() {
+        const board = gameRef.current;
+        const history = historyUci(board);
+        const legalBookMoves = getTheoryMoves(history).filter(uci => isLegalUci(board, uci));
+        if (!legalBookMoves.length) return undefined;
+
+        const seedText = `${selectedElo}:${history.join("")}`;
+        let seed = 0;
+        for (const character of seedText) seed = ((seed * 31) + character.charCodeAt(0)) >>> 0;
+        return legalBookMoves[seed % legalBookMoves.length];
     }
 
     async function chooseEngineMove(session: number) {
         const engine = opponentEngineRef.current;
         const board = gameRef.current;
         if (!engine || session != sessionRef.current || board.isGameOver()) return undefined;
+
+        const bookMove = chooseBookMove();
+        if (bookMove) return bookMove;
 
         const currentFen = board.fen();
         engine.setPosition(currentFen);
@@ -300,25 +363,29 @@ function EnginePlayApp() {
             : [getTopEngineLine(lines)].filter(Boolean) as EngineLine[];
         if (!candidates.length) return undefined;
 
-        const strength = (level.elo - 250) / 2750;
-        const candidateIndex = Math.round((1 - strength) * (candidates.length - 1));
-        return candidates[Math.min(candidateIndex, candidates.length - 1)]?.moves[0]?.uci;
+        // Weak levels still play coherent chess: they choose among a small set of
+        // sensible candidates instead of deliberately taking the 6th-8th PV.
+        const candidateIndex = Math.min(
+            candidates.length - 1,
+            Math.max(0, Math.round((3000 - level.elo) / 750))
+        );
+        return candidates[candidateIndex]?.moves[0]?.uci;
     }
 
-    async function playEngineMove(session: number) {
+    async function playEngineMove(session: number, forcedReplyUci?: string) {
         if (session != sessionRef.current || gameRef.current.isGameOver()) return;
         setThinking(true);
         setSelectedFrom(undefined);
-        setCoachText(spoken(t("coach.thinking"), `thinking-${moves.length}`));
+        setCoachText(spoken(t("coach.thinking"), `thinking-${historyUci(gameRef.current).length}`));
 
         try {
-            const uci = await chooseEngineMove(session);
+            const forced = forcedReplyUci && isLegalUci(gameRef.current, forcedReplyUci)
+                ? forcedReplyUci
+                : undefined;
+            const uci = forced || await chooseEngineMove(session);
             if (!uci || session != sessionRef.current) return;
-            const move = gameRef.current.move({
-                from: uci.slice(0, 2),
-                to: uci.slice(2, 4),
-                promotion: uci[4] || "q"
-            });
+
+            const move = gameRef.current.move(moveFromUci(uci));
             const nextFen = gameRef.current.fen();
             appendMove({
                 san: move.san,
@@ -329,7 +396,7 @@ function EnginePlayApp() {
             setFeedback(undefined);
             setCoachText(spoken(
                 t("coach.engineMove", { move: move.san }),
-                `engine-move-${move.san}-${moves.length}`
+                `engine-move-${move.san}-${historyUci(gameRef.current).length}`
             ));
 
             if (gameRef.current.isGameOver()) {
@@ -353,7 +420,7 @@ function EnginePlayApp() {
 
         const board = new Chess();
         const date = new Date().toISOString().slice(0, 10).replaceAll("-", ".");
-        board.setHeader("Event", "NexoChess Rival");
+        board.setHeader("Event", "NexoChess Duelo");
         board.setHeader("Site", "NexoChess");
         board.setHeader("Date", date);
         board.setHeader(
@@ -376,6 +443,7 @@ function EnginePlayApp() {
         setFen(board.fen());
         setPositions([board.fen()]);
         setMoves([]);
+        setRedoStack([]);
         setViewIndex(0);
         setSelectedFrom(undefined);
         setFeedback(undefined);
@@ -407,6 +475,7 @@ function EnginePlayApp() {
 
         const session = sessionRef.current;
         const beforeLine = baselineRef.current;
+        const historyBefore = historyUci(gameRef.current);
         let move;
         try {
             move = gameRef.current.move({ from: source, to: target, promotion: "q" });
@@ -416,11 +485,14 @@ function EnginePlayApp() {
         }
         if (!move) return false;
 
+        const playedUci = uciFromMove(move);
+        const theoryMove = isTheoryMove(historyBefore, playedUci);
         setFeedback(undefined);
+        setRedoStack([]);
         const nextFen = gameRef.current.fen();
         appendMove({
             san: move.san,
-            uci: uciFromMove(move),
+            uci: playedUci,
             colour: playerColour
         }, nextFen);
         playBoardMoveSound(move.san);
@@ -428,7 +500,7 @@ function EnginePlayApp() {
         setThinking(true);
         setCoachText(spoken(
             t("coach.checking", { move: move.san }),
-            `checking-${move.san}-${moves.length}`
+            `checking-${move.san}-${historyBefore.length}`
         ));
 
         if (gameRef.current.isGameOver()) {
@@ -437,16 +509,45 @@ function EnginePlayApp() {
             return true;
         }
 
+        if (theoryMove) {
+            const theoryFeedback: MoveFeedback = {
+                quality: Classification.THEORY,
+                san: move.san,
+                to: move.to as Square,
+                decisionRequired: false
+            };
+            const dynamicComment = t("coach.quality.theory", { move: move.san });
+            const reaction = getCoachReaction(
+                selectedCoach,
+                Classification.THEORY,
+                dynamicComment,
+                `${move.san}-theory-${historyBefore.length}`,
+                coachT
+            ) || dynamicComment;
+
+            baselineRef.current = undefined;
+            updateLastMoveFeedback(theoryFeedback);
+            setFeedback(theoryFeedback);
+            setThinking(false);
+            setCoachText(reaction);
+            window.setTimeout(() => {
+                if (session == sessionRef.current) void playEngineMove(session);
+            }, 480);
+            return true;
+        }
+
         try {
             const afterLine = await strongEvaluation(nextFen, session);
             if (session != sessionRef.current) return true;
             const quality = classifyPlayerMove(beforeLine, afterLine, playerColour);
             const decisionRequired = BAD_MOVE_QUALITIES.has(quality);
+            const forcedReplyUci = decisionRequired ? afterLine?.moves[0]?.uci : undefined;
             const nextFeedback: MoveFeedback = {
                 quality,
                 san: move.san,
                 to: move.to as Square,
                 decisionRequired,
+                forcedReplyUci,
                 threat: decisionRequired ? threatArrow(afterLine) : undefined
             };
             const dynamicComment = t(`coach.quality.${quality}`, { move: move.san });
@@ -454,11 +555,11 @@ function EnginePlayApp() {
                 selectedCoach,
                 quality,
                 dynamicComment,
-                `${move.san}-${quality}-${moves.length}`,
+                `${move.san}-${quality}-${historyBefore.length}`,
                 coachT
             ) || dynamicComment;
 
-            setLastMoveQuality(quality);
+            updateLastMoveFeedback(nextFeedback);
             setFeedback(nextFeedback);
             setThinking(false);
             setCoachText(reaction);
@@ -482,25 +583,148 @@ function EnginePlayApp() {
 
     function retryMove() {
         if (!feedback?.decisionRequired || thinking) return;
+        const session = ++sessionRef.current;
+        stopEngines();
         gameRef.current.undo();
+        gameRef.current.setHeader("Result", "*");
+        baselineRef.current = undefined;
         setMoves(current => current.slice(0, -1));
         setPositions(current => {
             const next = current.slice(0, -1);
             setViewIndex(Math.max(0, next.length - 1));
             return next;
         });
+        setRedoStack([]);
         setFen(gameRef.current.fen());
         setFeedback(undefined);
+        setGameResult(undefined);
+        setEndDialogOpen(false);
         setSelectedFrom(undefined);
-        setCoachText(spoken(t("coach.retry"), `retry-${moves.length}`));
+        setCoachText(spoken(t("coach.retry"), `retry-${historyUci(gameRef.current).length}`));
+        createSessionEngines();
+        void primePlayerTurn(session);
     }
 
     function continueAfterError() {
         if (!feedback?.decisionRequired || thinking) return;
         const session = sessionRef.current;
+        const forcedReply = feedback.forcedReplyUci;
         baselineRef.current = undefined;
         setFeedback(undefined);
-        void playEngineMove(session);
+        void playEngineMove(session, forcedReply);
+    }
+
+    function undoLiveMove() {
+        if (phase != "playing" || !moves.length || analysisBusy) return;
+
+        const session = ++sessionRef.current;
+        stopEngines();
+        setThinking(false);
+        const lastMove = moves[moves.length - 1];
+        const undone = gameRef.current.undo();
+        if (!undone) return;
+
+        const nextMoves = moves.slice(0, -1);
+        const nextPositions = positions.slice(0, -1);
+        gameRef.current.setHeader("Result", "*");
+        baselineRef.current = undefined;
+        setMoves(nextMoves);
+        setPositions(nextPositions);
+        setRedoStack(current => [lastMove, ...current]);
+        setFen(gameRef.current.fen());
+        setViewIndex(Math.max(0, nextPositions.length - 1));
+        setSelectedFrom(undefined);
+        setFeedback(undefined);
+        setGameResult(undefined);
+        setEndDialogOpen(false);
+        setAnalysisError(undefined);
+
+        if (
+            !gameRef.current.isGameOver()
+            && colourFromTurn(gameRef.current.turn()) == playerColour
+        ) {
+            createSessionEngines();
+            void primePlayerTurn(session);
+        }
+    }
+
+    function redoLiveMove() {
+        if (phase != "playing" || !redoStack.length || analysisBusy) return;
+
+        const session = ++sessionRef.current;
+        stopEngines();
+        setThinking(false);
+        const [restored, ...remaining] = redoStack;
+        let replayed;
+        try {
+            replayed = gameRef.current.move(moveFromUci(restored.uci));
+        } catch {
+            setRedoStack([]);
+            return;
+        }
+        if (!replayed) {
+            setRedoStack([]);
+            return;
+        }
+
+        const nextFen = gameRef.current.fen();
+        const restoredMove: PlayedMove = {
+            ...restored,
+            san: replayed.san,
+            uci: uciFromMove(replayed)
+        };
+        const nextMoves = [...moves, restoredMove];
+        const nextPositions = [...positions, nextFen];
+        setMoves(nextMoves);
+        setPositions(nextPositions);
+        setRedoStack(remaining);
+        setFen(nextFen);
+        setViewIndex(nextPositions.length - 1);
+        setSelectedFrom(undefined);
+        setGameResult(undefined);
+        setEndDialogOpen(false);
+        baselineRef.current = undefined;
+
+        const restoredFeedback = restoredMove.colour == playerColour && restoredMove.quality
+            ? {
+                quality: restoredMove.quality,
+                san: restoredMove.san,
+                to: restoredMove.uci.slice(2, 4) as Square,
+                decisionRequired: Boolean(restoredMove.decisionRequired),
+                threat: restoredMove.threat,
+                forcedReplyUci: restoredMove.forcedReplyUci
+            } satisfies MoveFeedback
+            : undefined;
+        setFeedback(restoredFeedback);
+
+        if (gameRef.current.isGameOver()) {
+            finishGame();
+            return;
+        }
+
+        if (restoredFeedback?.decisionRequired && !remaining.length) {
+            setCoachText(spoken(
+                t(`coach.quality.${restoredFeedback.quality}`, { move: restoredFeedback.san }),
+                `redo-feedback-${restoredFeedback.san}`
+            ));
+            return;
+        }
+
+        if (remaining.length) {
+            if (colourFromTurn(gameRef.current.turn()) == playerColour) {
+                createSessionEngines();
+                void primePlayerTurn(session);
+            }
+            return;
+        }
+
+        createSessionEngines();
+        if (colourFromTurn(gameRef.current.turn()) == playerColour) {
+            void primePlayerTurn(session);
+        } else {
+            setFeedback(undefined);
+            void playEngineMove(session);
+        }
     }
 
     function handleSquareClick(squareName: string) {
@@ -578,7 +802,7 @@ function EnginePlayApp() {
             setCoachText(getCoachSpokenLine(
                 nextCoach,
                 t("coach.setup", { coach: nextCoach.name }),
-                `rival-setup-${coachId}`,
+                `duel-setup-${coachId}`,
                 coachT
             ));
         }
@@ -680,10 +904,8 @@ function EnginePlayApp() {
             </div>
         </header>}
 
-        <section className={styles.stage}>
-            <div className={styles.stageBalance} aria-hidden="true" />
-
-            <div className={styles.boardColumn}>
+        <section className={`${styles.stage} ${v3.stage}`}>
+            <div className={`${styles.boardColumn} ${v3.boardColumn}`}>
                 <div className={styles.playerStrip} data-side="opponent">
                     <img
                         className={styles.opponentMiniPortrait}
@@ -747,16 +969,16 @@ function EnginePlayApp() {
                 </div>
             </div>
 
-            <aside className={styles.sidePanel}>
-                <div className={styles.coachCard}>
+            <aside className={`${styles.sidePanel} ${v3.sidePanel}`}>
+                <div className={`${styles.coachCard} ${v3.coachCard}`}>
                     <button
                         type="button"
-                        className={styles.coachPortraitButton}
+                        className={`${styles.coachPortraitButton} ${v3.coachPortraitButton}`}
                         onClick={() => setCoachPickerOpen(true)}
                         aria-label={selectedCoach.name}
                     >
                         <CoachPortrait
-                            className={styles.coachPortrait}
+                            className={`${styles.coachPortrait} ${v3.coachPortrait}`}
                             coach={selectedCoach}
                             baseExpression={coachExpression}
                             speechText={settings.coach.animations ? coachText : ""}
@@ -846,14 +1068,15 @@ function EnginePlayApp() {
                                     type="button"
                                     onClick={() => {
                                         ++sessionRef.current;
-                                        qualityEngineRef.current?.terminate();
-                                        opponentEngineRef.current?.terminate();
+                                        stopEngines();
                                         setPhase("setup");
                                         setThinking(false);
                                         setFeedback(undefined);
                                         setGameResult(undefined);
                                         setFen(START_FEN);
                                         setPositions([START_FEN]);
+                                        setMoves([]);
+                                        setRedoStack([]);
                                         setViewIndex(0);
                                     }}
                                 >
@@ -889,6 +1112,29 @@ function EnginePlayApp() {
                             <span>{viewIndex} / {latestIndex}</span>
                             <button type="button" onClick={() => setViewIndex(index => Math.min(latestIndex, index + 1))} disabled={viewIndex == latestIndex}>›</button>
                             <button type="button" onClick={() => setViewIndex(latestIndex)} disabled={viewIndex == latestIndex}>›|</button>
+                        </div>
+
+                        <div className={v3.editControls}>
+                            <button
+                                type="button"
+                                onClick={undoLiveMove}
+                                disabled={!moves.length || analysisBusy}
+                                title={t("actions.undo")}
+                                aria-label={t("actions.undo")}
+                            >
+                                <span aria-hidden="true">↶</span>
+                                {t("actions.undo")}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={redoLiveMove}
+                                disabled={!redoStack.length || analysisBusy}
+                                title={t("actions.redo")}
+                                aria-label={t("actions.redo")}
+                            >
+                                <span aria-hidden="true">↷</span>
+                                {t("actions.redo")}
+                            </button>
                         </div>
 
                         {!gameResult && <button
