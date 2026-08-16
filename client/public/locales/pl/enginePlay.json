@@ -11,7 +11,7 @@
   "setup": {
     "difficulty": "Trudność",
     "playAs": "Graj jako",
-    "eloNote": "Wartości Elo są przybliżonym wskaźnikiem siły. Na niższych poziomach Stockfish celowo wybiera słabsze warianty kandydujące."
+    "eloNote": "Wartości Elo są przybliżonym wskaźnikiem siły. Niższe poziomy nadal grają sensowne ruchy debiutowe, a potem wybierają z coraz szerszej puli kandydatów Stockfisha."
   },
   "levels": {
     "initiation": "Wprowadzenie",
@@ -39,6 +39,7 @@
     "checking": "Zagrałeś {{move}}. Sprawdzam, co zmieniło się w pozycji.",
     "retry": "Dobrze. Wróciliśmy do pozycji sprzed twojego ruchu. Spróbuj innego pomysłu.",
     "quality": {
+      "theory": "{{move}} to teoria debiutowa. To znany ruch i nadal pozostajemy w dobrze zbadanych wariantach.",
       "best": "{{move}} to najlepszy ruch, jaki znajduję. Świetne odczytanie pozycji.",
       "excellent": "{{move}} jest znakomity. Zachowuje prawie cały potencjał pozycji.",
       "okay": "{{move}} jest grywalny. Być może istnieje dokładniejsza opcja, ale pozycja pozostaje zdrowa.",
@@ -53,6 +54,7 @@
     }
   },
   "quality": {
+    "theory": "Teoria",
     "best": "Najlepszy",
     "excellent": "Znakomity",
     "okay": "Dobry",
@@ -66,6 +68,8 @@
     "play": "Graj",
     "retry": "Spróbuj ponownie",
     "continue": "Kontynuuj",
+    "undo": "Cofnij",
+    "redo": "Ponów",
     "result": "Wynik",
     "resign": "Poddaj się",
     "close": "Zamknij",
