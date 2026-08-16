@@ -278,7 +278,7 @@ function NavigationBar() {
 
             <a
                 className={styles.logoLink}
-                href="/home"
+                href={currentLanguageHref("/analysis")}
                 aria-label="NexoChess"
             >
                 <Typography
