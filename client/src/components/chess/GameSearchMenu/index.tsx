@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { StatusCodes } from "http-status-codes";
@@ -53,7 +54,7 @@ function GameSearchMenu({
     const [ isLongFetch, setIsLongFetch ] = useState(false);
 
     const { data: games, status, fetchStatus, error } = useQuery({
-        queryKey: ["games", gameSource.key, username, month, year], 
+        queryKey: ["games", gameSource.key, username, month, year],
         queryFn: async () => {
             if (longFetchTimerRef.current != null) {
                 clearTimeout(longFetchTimerRef.current);
@@ -98,7 +99,7 @@ function GameSearchMenu({
         onClose();
     }
 
-    return <Dialog
+    const menu = <Dialog
         className={styles.dialog}
         onClose={onClose}
         closeOnBackdrop
@@ -140,7 +141,7 @@ function GameSearchMenu({
             {fetchStatus == "fetching"
                 && <div className={styles.loadingMessage}>
                     <Loader/>
-                    
+
                     <span>
                         {t("gameSearchMenu.loading")}
                     </span>
@@ -168,6 +169,11 @@ function GameSearchMenu({
             }
         </div>
     </Dialog>;
+
+    // Render outside the fixed-height Analysis panel. This prevents the
+    // selector dialog and its close button from being clipped by the landing
+    // workspace and guarantees that board controls stay behind the backdrop.
+    return createPortal(menu, document.body);
 }
 
 export default GameSearchMenu;
