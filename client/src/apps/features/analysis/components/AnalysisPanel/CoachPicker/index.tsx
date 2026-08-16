@@ -19,12 +19,14 @@ interface CoachPickerProps {
     selectedCoach: CoachOption;
     onClose: () => void;
     onConfirm: (coachId: CoachId) => void;
+    forceVisible?: boolean;
 }
 
 function CoachPicker({
     selectedCoach,
     onClose,
-    onConfirm
+    onConfirm,
+    forceVisible = false
 }: CoachPickerProps) {
     const { t, i18n } = useTranslation("coach", {
         useSuspense: false
@@ -47,7 +49,7 @@ function CoachPicker({
         ) as Record<CoachId, string>
     ), [i18n.resolvedLanguage, t]);
 
-    if (!coachSettings.enabled) return null;
+    if (!forceVisible && !coachSettings.enabled) return null;
 
     const pendingCoach = getCoachById(pendingCoachId);
     const pickerLine = pickerLines[pendingCoachId];
