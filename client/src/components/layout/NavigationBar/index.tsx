@@ -339,22 +339,23 @@ function NavigationBar() {
             </div>}
 
             <div className={styles.accountArea}>
-                <button
-                    type="button"
+                <a
                     className={styles.utilityButton}
+                    href="https://ko-fi.com/nexochess"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     aria-label={t("navigationBar.tooltips.support", { ns: "common" })}
-                    aria-disabled="true"
                     data-tooltip-id="navigation-bar-support"
                     style={{
                         color: "#f4bd5c",
                         background: "linear-gradient(180deg, rgba(244, 189, 92, 0.12), rgba(184, 121, 32, 0.08))",
                         borderColor: "rgba(244, 189, 92, 0.28)",
                         boxShadow: "inset 0 0 0 1px rgba(255, 210, 119, 0.04), 0 4px 14px rgba(102, 66, 16, 0.12)",
-                        cursor: "default"
+                        cursor: "pointer"
                     }}
                 >
                     <NavIcon name="support" />
-                </button>
+                </a>
                 <Tooltip
                     id="navigation-bar-support"
                     content={t("navigationBar.tooltips.support", { ns: "common" })}
