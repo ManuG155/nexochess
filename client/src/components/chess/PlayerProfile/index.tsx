@@ -128,9 +128,13 @@ function PlayerProfile({
         profile.country
     );
 
+    const displayCountryCode = countryCode == "IL"
+        ? "UN"
+        : countryCode;
+
     const flagUrl = useMemo(
-        () => getTwemojiFlagUrl(countryCode),
-        [ countryCode ]
+        () => getTwemojiFlagUrl(displayCountryCode),
+        [ displayCountryCode ]
     );
 
     const imageSource =
@@ -174,8 +178,8 @@ function PlayerProfile({
                         <img
                             className={styles.flag}
                             src={flagUrl}
-                            alt={countryCode || ""}
-                            title={countryCode}
+                            alt={displayCountryCode || ""}
+                            title={displayCountryCode}
                             onError={event => {
                                 event.currentTarget.style.display = "none";
                             }}
