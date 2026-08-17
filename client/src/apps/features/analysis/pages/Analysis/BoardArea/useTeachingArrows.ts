@@ -50,7 +50,7 @@ function teachingArrow(from: Square, to: Square): SuggestionArrow {
         from,
         to,
         colour: TEACHING_ARROW_COLOUR,
-        preserveColour: true
+        overlayColour: TEACHING_ARROW_COLOUR
     };
 }
 
