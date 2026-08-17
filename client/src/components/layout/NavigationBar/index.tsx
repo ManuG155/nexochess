@@ -105,7 +105,7 @@ function NavIcon({ name }: NavIconProps) {
         </>,
         settings: <>
             <circle cx="12" cy="12" r="3" />
-            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.09a2 2 0 0 1 1 1.74v.5a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 0-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2Z" />
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.09a2 2 0 0 1 1 1.74v.5a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0-.73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2Z" />
         </>,
         user: <>
             <circle cx="12" cy="8" r="3.5" />
@@ -339,22 +339,23 @@ function NavigationBar() {
             </div>}
 
             <div className={styles.accountArea}>
-                <button
-                    type="button"
+                <a
                     className={styles.utilityButton}
+                    href="https://ko-fi.com/nexochess"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     aria-label={t("navigationBar.tooltips.support", { ns: "common" })}
-                    aria-disabled="true"
                     data-tooltip-id="navigation-bar-support"
                     style={{
                         color: "#f4bd5c",
                         background: "linear-gradient(180deg, rgba(244, 189, 92, 0.12), rgba(184, 121, 32, 0.08))",
                         borderColor: "rgba(244, 189, 92, 0.28)",
                         boxShadow: "inset 0 0 0 1px rgba(255, 210, 119, 0.04), 0 4px 14px rgba(102, 66, 16, 0.12)",
-                        cursor: "default"
+                        cursor: "pointer"
                     }}
                 >
                     <NavIcon name="support" />
-                </button>
+                </a>
                 <Tooltip
                     id="navigation-bar-support"
                     content={t("navigationBar.tooltips.support", { ns: "common" })}
@@ -421,7 +422,7 @@ function NavigationBar() {
         {shareState && <Suspense fallback={null}>
             <ShareDialog
                 game={shareState.game}
-                currentNode={shareState.currentNode}
+                currentNode={boardStoreModule.default.getState().currentStateTreeNode}
                 onClose={() => setShareState(null)}
             />
         </Suspense>}
