@@ -112,12 +112,12 @@
 
     color: rgba(255, 255, 255, 0.98);
 
-    font-size: clamp(1.45rem, 2.35vw, 1.95rem);
+    font-size: clamp(1.3rem, 2vw, 1.72rem);
     font-weight: 800;
-    line-height: 1.06;
+    line-height: 1.1;
     letter-spacing: -0.025em;
     white-space: normal;
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
     text-wrap: balance;
 }
 
@@ -323,7 +323,7 @@
     }
 
     .intro h1 {
-        font-size: 1.48rem;
+        font-size: 1.35rem;
     }
 
     .intro p {
@@ -434,7 +434,7 @@
     }
 
     .intro h1 {
-        font-size: 1.65rem;
+        font-size: 1.5rem;
     }
 
     .intro p {
