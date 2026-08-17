@@ -44,6 +44,67 @@ import CoachPortrait from
 import * as styles from
     "./CoachMoveReaction.module.css";
 
+interface InlineTacticSentence {
+    prefix: string;
+    label: string;
+    suffix: string;
+}
+
+function normaliseLanguage(language?: string) {
+    return language?.toLowerCase().replace("_", "-").split("-")[0] || "en";
+}
+
+function inlineTacticSentence(
+    prefix: string,
+    label: string,
+    language?: string
+): InlineTacticSentence {
+    const cleanPrefix = prefix.replace(/[:：]\s*$/, "").trimEnd();
+    const languageKey = normaliseLanguage(language);
+    let connector = " through a ";
+
+    if (languageKey == "es") {
+        connector = label == "táctica"
+            ? " mediante una "
+            : " mediante un ";
+    } else if (languageKey == "fr") {
+        connector = (
+            label == "fourchette"
+            || label == "tactique"
+        )
+            ? " grâce à une "
+            : " grâce à un ";
+    } else if (languageKey == "de") {
+        connector = (
+            label == "Gabel"
+            || label == "Taktik"
+        )
+            ? " durch eine "
+            : " durch ein ";
+    } else if (languageKey == "pt") {
+        connector = label == "tática"
+            ? " por uma "
+            : " por um ";
+    } else if (languageKey == "ru") {
+        connector = " через ";
+    } else if (languageKey == "zh") {
+        connector = "，关键是";
+    } else if (languageKey == "vi") {
+        connector = " nhờ ";
+    } else if (languageKey == "hi") {
+        connector = " के जरिए ";
+    } else if (languageKey == "mr") {
+        connector = " द्वारे ";
+    } else if (languageKey == "pl") {
+        connector = " dzięki ";
+    }
+
+    return {
+        prefix: `${cleanPrefix}${connector}`,
+        label,
+        suffix: "."
+    };
+}
 
 function CoachMoveReaction() {
     const { t, i18n } = useTranslation("coach", { useSuspense: false });
@@ -122,8 +183,16 @@ function CoachMoveReaction() {
         ]
     );
 
-    const spokenMessage = tacticInsight
-        ? `${tacticInsight.prefix}${tacticInsight.label}${tacticInsight.suffix}`
+    const tacticSentence = tacticInsight
+        ? inlineTacticSentence(
+            tacticInsight.prefix,
+            tacticInsight.label,
+            i18n.resolvedLanguage
+        )
+        : undefined;
+
+    const spokenMessage = tacticSentence
+        ? `${tacticSentence.prefix}${tacticSentence.label}${tacticSentence.suffix}`
         : message;
 
     function clearTacticPlayback() {
@@ -202,9 +271,9 @@ function CoachMoveReaction() {
                     className={styles.bubble}
                     aria-live="polite"
                 >
-                    {tacticInsight ? (
+                    {tacticInsight && tacticSentence ? (
                         <span>
-                            {tacticInsight.prefix}
+                            {tacticSentence.prefix}
                             <button
                                 type="button"
                                 className={styles.tacticButton}
@@ -212,9 +281,9 @@ function CoachMoveReaction() {
                                 title={tacticInsight.actionTitle}
                                 aria-label={tacticInsight.actionTitle}
                             >
-                                {tacticInsight.label}
+                                {tacticSentence.label}
                             </button>
-                            {tacticInsight.suffix}
+                            {tacticSentence.suffix}
                         </span>
                     ) : message}
                 </div>
