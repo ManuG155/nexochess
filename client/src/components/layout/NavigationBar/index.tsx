@@ -33,6 +33,7 @@ type IconName =
     | "repertoire"
     | "settings"
     | "share"
+    | "support"
     | "user";
 
 interface NavIconProps {
@@ -89,6 +90,13 @@ function NavIcon({ name }: NavIconProps) {
             <circle cx="18" cy="19" r="2.5" />
             <path d="m8.2 10.8 7.6-4.6" />
             <path d="m8.2 13.2 7.6 4.6" />
+        </>,
+        support: <>
+            <path d="M6 9h10v4.5a4.5 4.5 0 0 1-4.5 4.5h-1A4.5 4.5 0 0 1 6 13.5Z" />
+            <path d="M16 10.5h1.25a2.75 2.75 0 0 1 0 5.5H16" />
+            <path d="M8.5 3.5c-1 1.1 1 1.9 0 3" />
+            <path d="M12 3.5c-1 1.1 1 1.9 0 3" />
+            <path d="M5 20h13" />
         </>,
         login: <>
             <path d="M14 4h5v16h-5" />
@@ -331,6 +339,28 @@ function NavigationBar() {
             </div>}
 
             <div className={styles.accountArea}>
+                <button
+                    type="button"
+                    className={styles.utilityButton}
+                    aria-label={t("navigationBar.tooltips.support", { ns: "common" })}
+                    aria-disabled="true"
+                    data-tooltip-id="navigation-bar-support"
+                    style={{
+                        color: "#f4bd5c",
+                        background: "linear-gradient(180deg, rgba(244, 189, 92, 0.12), rgba(184, 121, 32, 0.08))",
+                        borderColor: "rgba(244, 189, 92, 0.28)",
+                        boxShadow: "inset 0 0 0 1px rgba(255, 210, 119, 0.04), 0 4px 14px rgba(102, 66, 16, 0.12)",
+                        cursor: "default"
+                    }}
+                >
+                    <NavIcon name="support" />
+                </button>
+                <Tooltip
+                    id="navigation-bar-support"
+                    content={t("navigationBar.tooltips.support", { ns: "common" })}
+                    delayShow={350}
+                />
+
                 {status == "pending" && <span
                     className={styles.sessionLoading}
                     aria-label={t("loading", { ns: "common" })}
