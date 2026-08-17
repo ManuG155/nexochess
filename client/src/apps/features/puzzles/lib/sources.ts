@@ -27,7 +27,6 @@ import { CALIBRATION_ATTEMPTS } from "./progress";
 import { puzzleMatchesThemeSelection } from "./themeCatalogue";
 
 const negativeClassifications = new Set<Classification>([
-    Classification.INACCURACY,
     Classification.MISTAKE,
     Classification.MISS,
     Classification.BLUNDER

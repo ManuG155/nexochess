@@ -1,8 +1,15 @@
 import React, {
+    useEffect,
     useMemo,
+    useRef,
     useState
 } from "react";
+import { Chess } from "chess.js";
 import { useTranslation } from "react-i18next";
+
+import {
+    addChildMove
+} from "shared/types/game/position/StateTreeNode";
 
 import useSettingsStore from
     "@/stores/SettingsStore";
@@ -19,8 +26,14 @@ import {
 } from "@analysis/lib/coachCommentDetailed";
 
 import {
+    getCoachTacticInsight
+} from "@analysis/lib/coachTacticInsight";
+
+import {
     addOccasionalCoachCatchphrase
 } from "@analysis/lib/coachSpeech";
+
+import playBoardSound from "@/lib/boardSounds";
 
 import CoachPicker from
     "../CoachPicker";
@@ -40,16 +53,18 @@ function CoachMoveReaction() {
         setSettings
     } = useSettingsStore();
 
-    const currentNode = useAnalysisBoardStore(
-        state => state.currentStateTreeNode
-    );
-
-    const currentNodeUpdate = useAnalysisBoardStore(
-        state => state.currentStateTreeNodeUpdate
-    );
+    const {
+        currentStateTreeNode: currentNode,
+        currentStateTreeNodeUpdate,
+        setCurrentStateTreeNode,
+        dispatchCurrentNodeUpdate,
+        setAutoplayEnabled
+    } = useAnalysisBoardStore();
 
     const [isCoachPickerOpen, setIsCoachPickerOpen] =
         useState(false);
+
+    const playbackTimersRef = useRef<number[]>([]);
 
     const classification =
         currentNode.state.classification;
@@ -79,7 +94,7 @@ function CoachMoveReaction() {
         );
     }, [
         currentNode.state.fen,
-        currentNodeUpdate,
+        currentStateTreeNodeUpdate,
         currentNode.state.engineLines?.length ?? 0,
         currentNode.parent?.state.engineLines?.length ?? 0,
         currentNode.state.opening,
@@ -90,6 +105,72 @@ function CoachMoveReaction() {
         i18n.resolvedLanguage,
         t
     ]);
+
+    const tacticInsight = useMemo(
+        () => getCoachTacticInsight(
+            currentNode,
+            classification,
+            i18n.resolvedLanguage
+        ),
+        [
+            currentNode.state.fen,
+            currentStateTreeNodeUpdate,
+            currentNode.state.engineLines?.length ?? 0,
+            currentNode.parent?.state.engineLines?.length ?? 0,
+            classification,
+            i18n.resolvedLanguage
+        ]
+    );
+
+    const spokenMessage = tacticInsight
+        ? `${tacticInsight.prefix}${tacticInsight.label}${tacticInsight.suffix}`
+        : message;
+
+    function clearTacticPlayback() {
+        for (const timer of playbackTimersRef.current) {
+            window.clearTimeout(timer);
+        }
+
+        playbackTimersRef.current = [];
+    }
+
+    function playTacticSequence() {
+        if (!tacticInsight) return;
+
+        clearTacticPlayback();
+        setAutoplayEnabled(false);
+
+        let cursor = tacticInsight.startNode;
+        const sequenceNodes = [];
+
+        for (const uci of tacticInsight.uciMoves) {
+            try {
+                const move = new Chess(cursor.state.fen).move(uci);
+                cursor = addChildMove(cursor, move.san);
+                sequenceNodes.push(cursor);
+            } catch {
+                break;
+            }
+        }
+
+        if (sequenceNodes.length == 0) return;
+
+        dispatchCurrentNodeUpdate();
+        setCurrentStateTreeNode(tacticInsight.startNode);
+
+        sequenceNodes.forEach((node, index) => {
+            const timer = window.setTimeout(() => {
+                setCurrentStateTreeNode(node);
+                playBoardSound(node);
+            }, (index + 1) * 1000);
+
+            playbackTimersRef.current.push(timer);
+        });
+    }
+
+    useEffect(() => () => {
+        clearTacticPlayback();
+    }, []);
 
     if (!settings.coach.enabled) {
         return null;
@@ -110,7 +191,7 @@ function CoachMoveReaction() {
                         coach={coach}
                         speechText={
                             settings.coach.animations
-                                ? message
+                                ? spokenMessage
                                 : ""
                         }
                         animationsEnabled={settings.coach.animations}
@@ -121,7 +202,21 @@ function CoachMoveReaction() {
                     className={styles.bubble}
                     aria-live="polite"
                 >
-                    {message}
+                    {tacticInsight ? (
+                        <span>
+                            {tacticInsight.prefix}
+                            <button
+                                type="button"
+                                className={styles.tacticButton}
+                                onClick={playTacticSequence}
+                                title={tacticInsight.actionTitle}
+                                aria-label={tacticInsight.actionTitle}
+                            >
+                                {tacticInsight.label}
+                            </button>
+                            {tacticInsight.suffix}
+                        </span>
+                    ) : message}
                 </div>
             </section>
 
