@@ -478,7 +478,7 @@ function SuggestionArrowOverlay({
                     <path
                         key={`${arrow.from}-${arrow.to}-${index}`}
                         d={path}
-                        fill={arrow.colour}
+                        fill={arrow.overlayColour || arrow.colour}
                         fillOpacity="0.65"
                     />
                 );
