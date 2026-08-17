@@ -94,7 +94,7 @@ function CoachMoveReaction() {
         );
     }, [
         currentNode.state.fen,
-        currentNodeUpdate,
+        currentStateTreeNodeUpdate,
         currentNode.state.engineLines?.length ?? 0,
         currentNode.parent?.state.engineLines?.length ?? 0,
         currentNode.state.opening,
@@ -114,7 +114,7 @@ function CoachMoveReaction() {
         ),
         [
             currentNode.state.fen,
-            currentNodeUpdate,
+            currentStateTreeNodeUpdate,
             currentNode.state.engineLines?.length ?? 0,
             currentNode.parent?.state.engineLines?.length ?? 0,
             classification,
