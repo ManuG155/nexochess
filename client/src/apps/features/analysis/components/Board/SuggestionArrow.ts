@@ -6,11 +6,11 @@ interface SuggestionArrow {
     colour: string;
 
     /*
-     * Engine suggestion arrows keep using the configurable Analysis colour.
-     * Pedagogical arrows can opt out so concepts such as threats remain
-     * visually distinct from the engine's normal recommendation.
+     * Board normalisation keeps the configurable engine-suggestion colour.
+     * An overlay colour survives that normalisation and is used only by
+     * pedagogical arrows that must remain visually distinct.
      */
-    preserveColour?: boolean;
+    overlayColour?: string;
 }
 
 export default SuggestionArrow;
