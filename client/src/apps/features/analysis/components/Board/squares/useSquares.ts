@@ -1,6 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Square } from "react-chessboard/dist/chessboard/types";
 import { Chess } from "chess.js";
+
+import {
+    subscribeToBoardPrimaryInteraction
+} from "@/lib/boardAnnotations";
 
 export function useSquares() {
     const [ selected, setSelected ] = useState<Square>();
@@ -8,6 +12,12 @@ export function useSquares() {
     const [ playable, setPlayable ] = useState<Square[]>([]);
     const [ capturable, setCapturable ] = useState<Square[]>([]);
     const [ pieceDropFlag, setPieceDropFlag ] = useState(false);
+
+    useEffect(() => (
+        subscribeToBoardPrimaryInteraction(
+            () => setHighlighted([])
+        )
+    ), []);
 
     function toggleHighlight(selected: Square) {
         if (highlighted.includes(selected)) {
