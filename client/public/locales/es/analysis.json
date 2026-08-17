@@ -18,7 +18,7 @@
         "suggestionArrows": {
           "disabled": "Desactivadas: no mostrar flechas del motor",
           "continuation": "Mejor continuación: muestra una flecha para la mejor jugada de esta posición",
-          "alternative": "Mejor alternativa: muestra una flecha de la posición anterior"
+          "alternative": "Mejor alternativa: muestra una flecha para la mejor jugada de la posición anterior"
         }
       },
       "title": "Motor",
