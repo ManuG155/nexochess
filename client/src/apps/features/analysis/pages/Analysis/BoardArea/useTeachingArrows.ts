@@ -32,11 +32,14 @@ const PIECE_VALUES: Record<PieceSymbol, number> = {
     k: 12
 };
 
+/*
+ * Orange arrows are intentionally rare. They are a teaching overlay, not a
+ * second move generator. Normal good/okay moves and inaccuracies must stay
+ * visually quiet; the overlay is reserved for genuinely notable ideas.
+ */
 const IDEA_CLASSIFICATIONS = new Set<Classification>([
     Classification.BRILLIANT,
     Classification.CRITICAL,
-    Classification.BEST,
-    Classification.EXCELLENT,
     Classification.THEORY
 ]);
 
@@ -54,35 +57,139 @@ function teachingArrow(from: Square, to: Square): SuggestionArrow {
     };
 }
 
+function isCheck(move: Move) {
+    return move.san.includes("+") || move.san.includes("#");
+}
+
+function isMate(move: Move) {
+    return move.san.includes("#");
+}
+
+function isImmediatelyRecapturable(board: Chess, move: Move) {
+    try {
+        const continuation = new Chess(board.fen());
+        continuation.move({
+            from: move.from,
+            to: move.to,
+            promotion: move.promotion
+        });
+
+        return (continuation.moves({ verbose: true }) as Move[])
+            .some(reply => (
+                reply.to == move.to
+                && reply.captured != undefined
+            ));
+    } catch {
+        return true;
+    }
+}
+
+function isMeaningfulCapture(board: Chess, move: Move) {
+    if (!move.captured) return false;
+
+    const attackerValue = PIECE_VALUES[move.piece as PieceSymbol] || 0;
+    const targetValue = PIECE_VALUES[move.captured as PieceSymbol] || 0;
+
+    /*
+     * Do not advertise things such as QxP when the queen is simply lost to a
+     * recapture. That was the main source of misleading arrows in quiet moves.
+     */
+    if (
+        targetValue < attackerValue
+        && isImmediatelyRecapturable(board, move)
+    ) {
+        return false;
+    }
+
+    /*
+     * A low-value capture by a much more valuable piece is usually noise even
+     * when technically safe. Keep it only when it is forcing (check/mate).
+     */
+    return (
+        targetValue >= attackerValue
+        || targetValue >= PIECE_VALUES.n
+        || isCheck(move)
+    );
+}
+
 function punishmentArrow(node: StateTreeNode): SuggestionArrow[] {
     const uci = getTopEngineLine(node.state.engineLines)
         ?.moves.at(0)?.uci;
 
     if (!uci) return [];
 
-    const move = parseUciMove(uci);
-    return [teachingArrow(move.from, move.to)];
+    try {
+        const board = new Chess(node.state.fen);
+        const parsedMove = parseUciMove(uci);
+        const move = board.move({
+            from: parsedMove.from,
+            to: parsedMove.to,
+            promotion: parsedMove.promotion
+        });
+
+        const capturedValue = move.captured
+            ? PIECE_VALUES[move.captured as PieceSymbol] || 0
+            : 0;
+
+        /*
+         * A mistake should not produce an orange arrow just because Stockfish
+         * prefers a quiet positional reply. Show the punishment only when the
+         * first engine move is visibly forcing: check, mate, promotion or a
+         * material hit worth at least a minor piece.
+         */
+        const clearPunishment = (
+            isCheck(move)
+            || move.promotion != undefined
+            || capturedValue >= PIECE_VALUES.n
+        );
+
+        return clearPunishment
+            ? [teachingArrow(move.from, move.to)]
+            : [];
+    } catch {
+        return [];
+    }
 }
 
-function moveScore(move: Move, classification: Classification) {
+function moveScore(
+    board: Chess,
+    move: Move,
+    classification: Classification,
+    movedPiece: PieceSymbol
+) {
     let score = 0;
 
-    if (move.captured) {
-        score += 50 + (PIECE_VALUES[move.captured as PieceSymbol] || 0) * 5;
-    }
-
-    if (move.san.includes("#")) {
-        score += 90;
-    } else if (move.san.includes("+")) {
-        score += 32;
+    if (isMate(move)) {
+        score += 120;
+    } else if (isCheck(move)) {
+        score += 55;
     }
 
     if (move.promotion) {
-        score += 45;
+        score += 80;
     }
 
-    if (CENTRAL_SQUARES.has(move.to)) {
-        score += classification == Classification.THEORY ? 28 : 16;
+    if (move.captured) {
+        if (!isMeaningfulCapture(board, move)) {
+            return -1;
+        }
+
+        const targetValue = PIECE_VALUES[move.captured as PieceSymbol] || 0;
+        score += 55 + targetValue * 8;
+    }
+
+    /*
+     * Theory is the only case where an empty destination can be explanatory,
+     * and even there we keep it to a developed knight pointing at a central
+     * square. This captures useful opening ideas without drawing d4-d5 style
+     * pawn arrows or arbitrary queen routes.
+     */
+    if (
+        classification == Classification.THEORY
+        && movedPiece == "n"
+        && CENTRAL_SQUARES.has(move.to)
+    ) {
+        score += 34;
     }
 
     return score;
@@ -108,6 +215,20 @@ function ideaArrows(node: StateTreeNode): SuggestionArrow[] {
         const board = new Chess(
             setFenTurn(node.state.fen, moverColour)
         );
+        const movedPiece = board.get(playedMove.to)?.type;
+
+        if (!movedPiece) return [];
+
+        /*
+         * A theoretical pawn move is not, by itself, a reason to draw its next
+         * push. This specifically prevents opening arrows such as d4 -> d5.
+         */
+        if (
+            classification == Classification.THEORY
+            && movedPiece == "p"
+        ) {
+            return [];
+        }
 
         const candidates = board.moves({
             square: playedMove.to,
@@ -115,13 +236,18 @@ function ideaArrows(node: StateTreeNode): SuggestionArrow[] {
         }) as Move[];
 
         const minimumScore = classification == Classification.THEORY
-            ? 20
-            : 28;
+            ? 30
+            : 50;
 
         return candidates
             .map(move => ({
                 move,
-                score: moveScore(move, classification)
+                score: moveScore(
+                    board,
+                    move,
+                    classification,
+                    movedPiece
+                )
             }))
             .filter(candidate => candidate.score >= minimumScore)
             .sort((a, b) => b.score - a.score)
