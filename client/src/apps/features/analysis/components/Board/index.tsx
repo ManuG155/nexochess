@@ -486,8 +486,10 @@ function Board({
                     ...arrow,
 
                     colour:
-                        arrowStyle
-                            .suggestionColour
+                        arrow.preserveColour
+                            ? arrow.colour
+                            : arrowStyle
+                                .suggestionColour
                 })
             ),
 
@@ -925,7 +927,7 @@ function Board({
                              *
                              * react-chessboard
                              * oculta las suyas.
-                             */
+                             */}
                             showBoardNotation={
                                 !coordinatesOutside
                             }
@@ -935,7 +937,7 @@ function Board({
                              * Ocultamos las flechas
                              * originales de
                              * react-chessboard.
-                             */
+                             */}
                             customArrowColor={
                                 "rgba(0,0,0,0)"
                             }
@@ -945,7 +947,7 @@ function Board({
                              * Pero seguimos usando
                              * su detección de flechas
                              * manuales.
-                             */
+                             */}
                             onArrowsChange={
                                 setManualArrows
                             }
@@ -1084,7 +1086,7 @@ function Board({
                              *
                              * No hay ningún Grid
                              * afectándolo.
-                             */
+                             */}
                             boardWidth={
                                 chessboardWidth
                             }
