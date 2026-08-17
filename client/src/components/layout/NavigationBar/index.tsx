@@ -422,7 +422,7 @@ function NavigationBar() {
         {shareState && <Suspense fallback={null}>
             <ShareDialog
                 game={shareState.game}
-                currentNode={boardStoreModule.default.getState().currentStateTreeNode}
+                currentNode={shareState.currentNode}
                 onClose={() => setShareState(null)}
             />
         </Suspense>}
