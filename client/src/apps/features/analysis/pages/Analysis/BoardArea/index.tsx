@@ -53,6 +53,13 @@ function BoardArea() {
     ];
     const flipBoardLabel = t("optionsToolbar.flipBoard");
 
+    const compactArrowScale = (
+        typeof window != "undefined"
+        && window.matchMedia(
+            "(max-width: 700px), (max-width: 1024px) and (orientation: portrait)"
+        ).matches
+    ) ? 0.62 : 1;
+
     function addMove(move: Move) {
         // The board shown on the Analysis landing screen is a preview only.
         // A real game must be loaded before users can branch or enter Analysis.
@@ -119,6 +126,7 @@ function BoardArea() {
             }
             enableClassifications={!settings.classifications.hide}
             onAddMove={addMove}
+            arrowScale={compactArrowScale}
         />
     </div>;
 }
