@@ -22,6 +22,7 @@ import "@/components/layout/PageWrapper/PuzzlesPolishV6.css";
 import "@/components/layout/PageWrapper/PuzzlesFocusLayout.css";
 import "@/components/layout/PageWrapper/PuzzlesSetupFinal.css";
 import "@/components/layout/PageWrapper/PuzzlesSetupWidthFix.css";
+import "./Puzzles.mobile.css";
 import * as styles from "./index.module.css";
 
 const root = ReactDOM.createRoot(
