@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 
 import useSettingsStore from "@/stores/SettingsStore";
@@ -54,7 +55,7 @@ function CoachPicker({
     const pendingCoach = getCoachById(pendingCoachId);
     const pickerLine = pickerLines[pendingCoachId];
 
-    return (
+    return createPortal(
         <div
             className={styles.overlay}
             onClick={onClose}
@@ -151,7 +152,8 @@ function CoachPicker({
                     {t("picker.select")}
                 </button>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 }
 
