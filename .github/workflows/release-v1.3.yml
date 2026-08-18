@@ -1,0 +1,82 @@
+name: Release v1.3
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Tag and publish v1.3
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify master content matches develop
+        run: |
+          git fetch origin develop
+          test "$(git rev-parse HEAD^{tree})" = "$(git rev-parse origin/develop^{tree})" || {
+            echo "Refusing to publish v1.3 because master and develop do not contain the same tree."
+            exit 1
+          }
+
+      - name: Refresh repository About metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+
+          gh api \
+            --method PATCH \
+            "repos/$GITHUB_REPOSITORY" \
+            -f description='Free, open-source chess analysis and learning platform with Stockfish review, lessons, puzzles, repertoire and play vs Stockfish. No login required.' \
+            -f homepage='https://www.nexochess.com/'
+          repo_status=$?
+
+          gh api \
+            --method PUT \
+            -H 'Accept: application/vnd.github+json' \
+            "repos/$GITHUB_REPOSITORY/topics" \
+            -f 'names[]=chess' \
+            -f 'names[]=stockfish' \
+            -f 'names[]=chess-analysis' \
+            -f 'names[]=chess-puzzles' \
+            -f 'names[]=chess-lessons' \
+            -f 'names[]=react' \
+            -f 'names[]=typescript' \
+            -f 'names[]=cloudflare-workers' \
+            -f 'names[]=open-source'
+          topics_status=$?
+
+          if [ "$repo_status" -ne 0 ] || [ "$topics_status" -ne 0 ]; then
+            echo '::warning::The GitHub Actions token could not update one or more repository About fields. Tagging and release publication will continue.'
+          fi
+
+          exit 0
+
+      - name: Create v1.3 tag and GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if ! git ls-remote --exit-code --tags origin refs/tags/v1.3 >/dev/null 2>&1; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git tag -a v1.3 "$GITHUB_SHA" -m "NexoChess v1.3"
+            git push origin refs/tags/v1.3
+          fi
+
+          if gh release view v1.3 >/dev/null 2>&1; then
+            echo "GitHub release v1.3 already exists."
+            exit 0
+          fi
+
+          gh release create v1.3 \
+            --verify-tag \
+            --title "NexoChess v1.3" \
+            --notes-file docs/releases/v1.3.md
