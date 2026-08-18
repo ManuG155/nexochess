@@ -23,7 +23,6 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.025);
 }
 
-
 .dialog > button:first-child {
     width: 42px;
     height: 42px;
@@ -42,13 +41,11 @@
         transform 0.18s ease;
 }
 
-
 .dialog > button:first-child:hover {
     border-color: rgba(110, 156, 255, 0.24);
     background: rgba(110, 156, 255, 0.11);
     transform: translateY(-1px);
 }
-
 
 .header {
     display: grid;
@@ -72,7 +69,6 @@
         );
 }
 
-
 .eyebrow {
     grid-area: eyebrow;
 
@@ -83,7 +79,6 @@
     text-transform: uppercase;
 }
 
-
 .title {
     grid-area: title;
 
@@ -92,7 +87,6 @@
     font-weight: 720;
     line-height: 1.15;
 }
-
 
 .sourceTitle {
     grid-area: source;
@@ -106,7 +100,6 @@
     font-size: 0.9rem;
 }
 
-
 .sourceTitle strong {
     overflow: hidden;
 
@@ -116,11 +109,9 @@
     white-space: nowrap;
 }
 
-
 .periodSelector {
     grid-area: period;
 }
-
 
 .periodSelector > div {
     gap: 8px;
@@ -131,7 +122,6 @@
     border-radius: 12px;
     background: rgba(12, 15, 20, 0.38);
 }
-
 
 .periodSelector button {
     width: 38px;
@@ -147,12 +137,10 @@
         border-color 0.18s ease;
 }
 
-
 .periodSelector button:hover {
     border-color: rgba(110, 156, 255, 0.18);
     background: rgba(110, 156, 255, 0.1);
 }
-
 
 .periodSelector span {
     min-width: 112px;
@@ -162,7 +150,6 @@
     font-weight: 620;
     text-align: center;
 }
-
 
 .list {
     display: flex;
@@ -190,16 +177,13 @@
     scrollbar-width: thin;
 }
 
-
 .list::-webkit-scrollbar {
     width: 8px;
 }
 
-
 .list::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.025);
 }
-
 
 .list::-webkit-scrollbar-thumb {
     border: 2px solid transparent;
@@ -208,7 +192,6 @@
         rgba(110, 156, 255, 0.38)
         padding-box;
 }
-
 
 .gameCard {
     display: grid;
@@ -244,7 +227,6 @@
         transform 0.18s ease;
 }
 
-
 .gameCard:hover {
     border-color: rgba(110, 156, 255, 0.25);
     background:
@@ -259,13 +241,11 @@
     transform: translateY(-1px);
 }
 
-
 .gameCard > [data-game-listing-section] {
     width: auto !important;
     min-width: 0;
     overflow: visible;
 }
-
 
 .gameCard > [data-game-listing-section="time-control"] {
     grid-column: 1;
@@ -284,26 +264,22 @@
         );
 }
 
-
 .gameCard > [data-game-listing-section="time-control"] img {
     width: 28px;
     height: 28px;
     object-fit: contain;
 }
 
-
 .gameCard > [data-game-listing-section="players"] {
     grid-column: 2;
     gap: 5px;
 }
-
 
 .gameCard
 > [data-game-listing-section="players"]
 > div {
     min-width: 0;
 }
-
 
 .gameCard
 > [data-game-listing-section="players"]
@@ -313,14 +289,12 @@ span {
     white-space: nowrap;
 }
 
-
 .gameCard
 > [data-game-listing-section="players"]
 span:last-child {
     flex: 0 0 auto;
     color: rgba(245, 247, 251, 0.43) !important;
 }
-
 
 .gameCard > [data-game-listing-section="date"] {
     grid-column: 3;
@@ -330,19 +304,16 @@ span:last-child {
     text-align: right;
 }
 
-
 .gameCard > [data-game-listing-section="result"] {
     grid-column: 4;
     align-items: center;
 }
-
 
 .gameCard > [data-game-listing-section="result"] img {
     width: 24px !important;
     height: 24px;
     object-fit: contain;
 }
-
 
 .gameCard > button {
     grid-column: 5;
@@ -360,12 +331,10 @@ span:last-child {
         border-color 0.18s ease;
 }
 
-
 .gameCard > button:hover {
     border-color: rgba(110, 156, 255, 0.26);
     background: rgba(110, 156, 255, 0.13);
 }
-
 
 .loadingMessage,
 .message {
@@ -381,7 +350,6 @@ span:last-child {
     color: rgba(245, 247, 251, 0.58);
     text-align: center;
 }
-
 
 @media (max-width: 760px) {
     .dialog {
@@ -417,20 +385,33 @@ span:last-child {
         grid-template-areas:
             "time players copy"
             "time date result";
-        gap: 5px 10px;
-        min-height: 82px;
+        grid-template-rows: auto auto;
+        align-content: center;
+        align-items: center;
+        gap: 7px 10px;
+
+        box-sizing: border-box;
+        width: 100% !important;
+        min-width: 0 !important;
+        min-height: 108px;
+        height: auto !important;
+        padding: 10px 12px;
+        overflow: hidden;
     }
 
     .gameCard > [data-game-listing-section="time-control"] {
         grid-area: time;
+        align-self: center;
     }
 
     .gameCard > [data-game-listing-section="players"] {
         grid-area: players;
+        align-self: end;
     }
 
     .gameCard > [data-game-listing-section="date"] {
         grid-area: date;
+        align-self: start;
 
         font-size: 0.78rem;
         text-align: left;
@@ -438,19 +419,28 @@ span:last-child {
 
     .gameCard > [data-game-listing-section="result"] {
         grid-area: result;
+        align-self: center;
+        justify-self: center;
+        width: 32px !important;
+        height: 32px;
+        overflow: visible;
     }
 
     .gameCard > button {
         grid-area: copy;
+        align-self: center;
+        justify-self: center;
+        width: 40px;
+        height: 40px;
+        margin: 0;
     }
 }
-
 
 @media (max-width: 460px) {
     .dialog {
         width: 100vw;
-        max-height: 100vh;
-        height: 100vh;
+        max-height: 100dvh;
+        height: 100dvh;
 
         border: 0;
         border-radius: 0;

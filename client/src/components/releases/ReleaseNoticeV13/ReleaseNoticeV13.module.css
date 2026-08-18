@@ -1,0 +1,146 @@
+.dialog {
+    width: min(680px, calc(100vw - 32px));
+    max-height: min(820px, calc(100dvh - 32px));
+    overflow-y: auto;
+    padding: 34px 38px 32px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    background: #111b29;
+    color: #f4f7fb;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.46);
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.eyebrow {
+    margin: 0;
+    color: #8fb5ff;
+    font-size: 0.92rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.title {
+    margin: 0;
+    padding-right: 42px;
+    font-size: clamp(2rem, 5vw, 2.7rem);
+    line-height: 1.05;
+}
+
+.intro,
+.closing {
+    margin: 0;
+    font-size: clamp(1.05rem, 1.7vw, 1.16rem);
+    line-height: 1.62;
+}
+
+.changes {
+    display: grid;
+    gap: 12px;
+    margin: 2px 0;
+    padding-left: 23px;
+}
+
+.changes li {
+    padding-left: 5px;
+    font-size: clamp(1rem, 1.6vw, 1.08rem);
+    line-height: 1.54;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.confirm,
+.close {
+    min-width: 128px;
+    min-height: 46px;
+    padding: 0 20px;
+    border-radius: 10px;
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.confirm {
+    border: 1px solid rgba(143, 181, 255, 0.55);
+    background: #356fd8;
+    color: #fff;
+}
+
+.close {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.07);
+    color: inherit;
+}
+
+.confirm:hover,
+.close:hover {
+    filter: brightness(1.08);
+}
+
+.confirm:focus-visible,
+.close:focus-visible {
+    outline: 3px solid #a9c7ff;
+    outline-offset: 3px;
+}
+
+:global(html[data-theme="light"]) .dialog,
+:global(body[data-theme="light"]) .dialog {
+    border-color: rgba(15, 23, 42, 0.16);
+    background: #f8fafc;
+    color: #172033;
+    box-shadow: 0 24px 70px rgba(30, 41, 59, 0.2);
+}
+
+:global(html[data-theme="light"]) .eyebrow,
+:global(body[data-theme="light"]) .eyebrow {
+    color: #2459ad;
+}
+
+:global(html[data-theme="light"]) .close,
+:global(body[data-theme="light"]) .close {
+    border-color: rgba(15, 23, 42, 0.18);
+    background: rgba(15, 23, 42, 0.05);
+}
+
+@media (max-width: 600px) {
+    .dialog {
+        width: calc(100vw - 20px);
+        max-height: calc(100dvh - 20px);
+        padding: 28px 20px 22px;
+        border-radius: 16px;
+    }
+
+    .content {
+        gap: 15px;
+    }
+
+    .title {
+        padding-right: 36px;
+        font-size: clamp(1.75rem, 8vw, 2.15rem);
+    }
+
+    .changes {
+        gap: 10px;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+
+    .confirm,
+    .close {
+        width: 100%;
+        min-height: 48px;
+    }
+}

@@ -422,20 +422,26 @@ function SuggestionArrowOverlay({
 
     const scale = BOARD_SIZE / safeBoardWidth;
 
+    // On phone-sized boards the desktop arrow geometry is visually too heavy.
+    // Keep the same paths and colours, but reduce only their visual weight.
+    const compactArrowScale = safeBoardWidth <= 520
+        ? 0.62
+        : 1;
+
     // Misma referencia de grosor que usábamos antes.
     const defaultShaftWidthPx = safeBoardWidth / 40;
 
     const shaftWidth = (
         shaftWidthPx ?? defaultShaftWidthPx
-    ) * scale;
+    ) * scale * compactArrowScale;
 
     const headLength = (
         headLengthPx ?? defaultShaftWidthPx * 2
-    ) * scale;
+    ) * scale * compactArrowScale;
 
     const headWidth = (
         headWidthPx ?? defaultShaftWidthPx * 2.5
-    ) * scale;
+    ) * scale * compactArrowScale;
 
     const targetOffset =
         (safeBoardWidth / 32) * scale;

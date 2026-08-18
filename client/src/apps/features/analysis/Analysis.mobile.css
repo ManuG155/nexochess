@@ -52,8 +52,12 @@
 
     .nexo-analysis-components {
         box-sizing: border-box !important;
+        flex: 0 0 auto !important;
         width: 100% !important;
         max-width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
     }
 
     .nexo-analysis-board-slot {
@@ -70,10 +74,12 @@
     }
 
     /* During engine evaluation the board remains visible. Once finished, the
-       summary becomes its own focused screen, matching the mobile review flow. */
+       summary becomes its own focused screen. The completed summary deliberately
+       uses document scrolling on mobile instead of a nested scroll container. */
     .nexo-analysis-layout[data-analysis-mobile-view="summary"] {
         display: block !important;
         padding-top: 0 !important;
+        padding-bottom: calc(96px + env(safe-area-inset-bottom)) !important;
     }
 
     .nexo-analysis-layout[data-analysis-mobile-view="summary"]
@@ -83,27 +89,87 @@
 
     .nexo-analysis-layout[data-analysis-mobile-view="summary"]
     > .nexo-analysis-panel {
-        min-height: calc(100dvh - 62px) !important;
+        height: auto !important;
+        min-height: 0 !important;
     }
 
     .nexo-mobile-summary-shell {
-        display: flex;
+        display: block;
         box-sizing: border-box;
         width: 100%;
-        min-height: calc(100dvh - 78px);
-        padding-bottom: env(safe-area-inset-bottom);
+        min-height: 0;
+        padding-bottom: 0;
     }
 
     .nexo-mobile-summary-shell > * {
-        flex: 1 1 auto;
+        display: flex !important;
+        flex-direction: column !important;
         width: 100% !important;
-        min-height: calc(100dvh - 78px) !important;
+        height: auto !important;
+        min-height: 0 !important;
         max-height: none !important;
+        overflow: visible !important;
         border-radius: 18px !important;
     }
 
+    /* GameSummaryPanel's first direct div is its desktop scroll area. On phones
+       it must become ordinary page content so a swipe anywhere in the summary
+       moves the whole document. */
+    .nexo-mobile-summary-shell > section > div:first-child {
+        flex: 0 0 auto !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        overscroll-behavior: auto !important;
+    }
+
+    /* Keep the two game-rating values in distinct cells on narrow screens.
+       The summary's final section is the phase/rating table. */
+    .nexo-mobile-summary-shell
+    > section
+    > div:first-child
+    > section:last-child
+    > div:first-child {
+        grid-template-columns: minmax(112px, 1fr) 76px 76px !important;
+        column-gap: 8px !important;
+    }
+
+    .nexo-mobile-summary-shell
+    > section
+    > div:first-child
+    > section:last-child
+    > div:first-child
+    > span:not(:first-child) {
+        box-sizing: border-box !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        padding-inline: 4px !important;
+        font-size: 0.94rem !important;
+    }
+
+    /* Once analysis is complete the second direct div is the Start Review
+       footer. Keep that primary action reachable regardless of summary scroll. */
+    .nexo-mobile-summary-shell > section > div:nth-child(2) {
+        position: fixed !important;
+        right: max(9px, env(safe-area-inset-right)) !important;
+        bottom: max(9px, env(safe-area-inset-bottom)) !important;
+        left: max(9px, env(safe-area-inset-left)) !important;
+        z-index: 80 !important;
+        box-sizing: border-box !important;
+        width: auto !important;
+        margin: 0 !important;
+        padding: 8px !important;
+        border: 1px solid rgba(111, 165, 255, 0.18) !important;
+        border-radius: 18px !important;
+        background: rgba(7, 14, 23, 0.94) !important;
+        box-shadow: 0 14px 34px rgba(0, 0, 0, 0.34) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+    }
+
     /* Review becomes a native-style vertical flow:
-       coach -> board -> horizontal move strip -> navigation controls. */
+       coach -> board -> horizontal move strip, with the traverser permanently
+       docked to the bottom edge of the visible page. */
     .nexo-analysis-layout[data-analysis-mobile-view="review"] {
         display: grid !important;
         grid-template-columns: minmax(0, 1fr) !important;
@@ -111,11 +177,11 @@
             "review-header"
             "coach"
             "board"
-            "moves"
-            "footer" !important;
+            "moves" !important;
         gap: 8px !important;
         padding-inline: 0 !important;
         padding-top: 6px !important;
+        padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important;
     }
 
     .nexo-analysis-layout[data-analysis-mobile-view="review"]
@@ -214,11 +280,11 @@
     }
 
     .nexo-analysis-layout[data-analysis-mobile-view="review"] .nexo-review-footer {
-        grid-area: footer;
-        position: sticky !important;
-        left: auto !important;
+        position: fixed !important;
+        right: 0 !important;
         bottom: 0 !important;
-        z-index: 35 !important;
+        left: 0 !important;
+        z-index: 90 !important;
         box-sizing: border-box;
         width: 100% !important;
         margin: 0 !important;
@@ -227,7 +293,9 @@
             max(10px, env(safe-area-inset-right))
             calc(10px + env(safe-area-inset-bottom))
             max(10px, env(safe-area-inset-left)) !important;
-        background: rgba(7, 14, 23, 0.92) !important;
+        border-top: 1px solid rgba(111, 165, 255, 0.16) !important;
+        background: rgba(7, 14, 23, 0.95) !important;
+        box-shadow: 0 -12px 30px rgba(0, 0, 0, 0.28) !important;
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
     }
