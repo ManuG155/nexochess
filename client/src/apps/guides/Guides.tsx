@@ -50,9 +50,43 @@ const SECTION_CONFIG = [
     { key: "tactics", id: "chess-tactics-puzzles", href: "/puzzles" }
 ] as const;
 
+const RELATED_TOOL_CONFIG = [
+    {
+        href: "/engine",
+        titleKey: "title",
+        descriptionKey: "subtitle",
+        namespace: "enginePlay"
+    },
+    {
+        href: "/lessons",
+        titleKey: "page.title",
+        descriptionKey: "page.subtitle",
+        namespace: "lessons"
+    },
+    {
+        href: "/repertoire",
+        titleKey: "title",
+        descriptionKey: "intro",
+        namespace: "repertoire"
+    }
+] as const;
+
 function Guides() {
-    const { t } = useTranslation("guides");
-    const copy = t("page", { returnObjects: true }) as GuidesCopy;
+    const { t } = useTranslation([
+        "guides",
+        "enginePlay",
+        "lessons",
+        "repertoire"
+    ]);
+    const copy = t("page", {
+        ns: "guides",
+        returnObjects: true
+    }) as GuidesCopy;
+    const relatedTools = RELATED_TOOL_CONFIG.map(tool => ({
+        href: tool.href,
+        title: t(tool.titleKey, { ns: tool.namespace }),
+        description: t(tool.descriptionKey, { ns: tool.namespace })
+    }));
 
     return <main className={styles.guides}>
         <section className={styles.hero} aria-labelledby="guides-title">
@@ -136,19 +170,30 @@ function Guides() {
         </div>
 
         <section className={styles.closing} aria-labelledby="guides-closing-title">
-            <div>
+            <div className={styles.closingLead}>
                 <span className={styles.sectionEyebrow}>NexoChess</span>
                 <h2 id="guides-closing-title">{copy.closing.title}</h2>
                 <p>{copy.closing.description}</p>
+
+                <div className={styles.heroActions}>
+                    <a className={styles.primaryAction} href="/analysis">
+                        {copy.closing.analysisAction}
+                    </a>
+                    <a className={styles.secondaryAction} href="/puzzles">
+                        {copy.closing.puzzlesAction}
+                    </a>
+                </div>
             </div>
-            <div className={styles.heroActions}>
-                <a className={styles.primaryAction} href="/analysis">
-                    {copy.closing.analysisAction}
-                </a>
-                <a className={styles.secondaryAction} href="/puzzles">
-                    {copy.closing.puzzlesAction}
-                </a>
-            </div>
+
+            <nav className={styles.relatedTools} aria-label="NexoChess">
+                {relatedTools.map(tool => (
+                    <a className={styles.relatedTool} href={tool.href} key={tool.href}>
+                        <strong>{tool.title}</strong>
+                        <p>{tool.description}</p>
+                        <span aria-hidden="true">→</span>
+                    </a>
+                ))}
+            </nav>
         </section>
     </main>;
 }
