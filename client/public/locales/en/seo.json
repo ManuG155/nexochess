@@ -15,13 +15,25 @@
     "title": "Free Chess Game Analysis with Stockfish — NexoChess",
     "description": "Analyse chess games with Stockfish, review critical moments, move classifications, accuracy and estimated performance in a clear interactive board."
   },
+  "engine": {
+    "title": "Play Chess Against the Computer Online — NexoChess",
+    "description": "Play chess online against a configurable computer opponent, choose an Elo level, get feedback on your moves, retry mistakes and resume unfinished games for free."
+  },
   "academy": {
     "title": "NexoChess Academy — Learn Chess Notation",
     "description": "Learn chess notation, piece movement and NexoChess move classifications through short interactive lessons designed for practical understanding."
   },
+  "lessons": {
+    "title": "Interactive Chess Lessons and Practice — NexoChess",
+    "description": "Learn chess through 80 interactive lessons with realistic positions, guided practice and step-by-step exercises covering notation, tactics and core concepts."
+  },
   "puzzles": {
     "title": "Chess Puzzles and Tactics Training — NexoChess",
     "description": "Train chess tactics with puzzles created from your analysed games or filtered by theme and difficulty from a database of more than six million positions."
+  },
+  "repertoire": {
+    "title": "Chess Opening Repertoire Builder — NexoChess",
+    "description": "Build, import, study and practise your chess opening repertoire with saved lines and variations, then rehearse the positions you want to remember."
   },
   "guides": {
     "title": "Chess Analysis and Tactics Guides — NexoChess",
