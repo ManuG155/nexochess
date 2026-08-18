@@ -8,6 +8,7 @@ import LessonsApp from "./LessonsApp";
 
 import "@/i18n";
 import "@/index.css";
+import "../FeatureMobileBase.css";
 import * as styles from "./lessons.module.css";
 
 const root = ReactDOM.createRoot(
