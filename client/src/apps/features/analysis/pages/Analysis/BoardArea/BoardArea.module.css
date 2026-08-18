@@ -82,8 +82,10 @@
         width: min(100%, calc(100vh - 190px));
     }
 
+    /* The top player clock lives in the profile row. Anchor the flip control
+       on the profile/board boundary instead of on top of that clock. */
     .flipBoardButton {
-        top: 4px;
+        top: 48px;
         right: 4px;
     }
 }
