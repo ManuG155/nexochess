@@ -9,7 +9,7 @@
 
 - Public website: **https://www.nexochess.com**
 - Source code: **https://github.com/ManuG155/nexochess**
-- Current release: **v1.3**
+- Current release: **[v1.3](docs/releases/v1.3.md)**
 - Contact: **contact@nexochess.com**
 
 NexoChess is an independent project. It is not affiliated with, sponsored by or endorsed by Chess.com or lichess.org.
