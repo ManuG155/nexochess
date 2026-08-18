@@ -123,6 +123,30 @@
         overscroll-behavior: auto !important;
     }
 
+    /* Keep the two game-rating values in distinct cells on narrow screens.
+       The summary's final section is the phase/rating table. */
+    .nexo-mobile-summary-shell
+    > section
+    > div:first-child
+    > section:last-child
+    > div:first-child {
+        grid-template-columns: minmax(112px, 1fr) 76px 76px !important;
+        column-gap: 8px !important;
+    }
+
+    .nexo-mobile-summary-shell
+    > section
+    > div:first-child
+    > section:last-child
+    > div:first-child
+    > span:not(:first-child) {
+        box-sizing: border-box !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        padding-inline: 4px !important;
+        font-size: 0.94rem !important;
+    }
+
     /* Once analysis is complete the second direct div is the Start Review
        footer. Keep that primary action reachable regardless of summary scroll. */
     .nexo-mobile-summary-shell > section > div:nth-child(2) {
