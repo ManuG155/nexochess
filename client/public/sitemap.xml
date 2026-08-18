@@ -13,10 +13,19 @@
         <loc>https://www.nexochess.com/analysis</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/engine</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/academy</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/lessons</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/puzzles</loc>
+    </url>
+    <url>
+        <loc>https://www.nexochess.com/repertoire</loc>
     </url>
     <url>
         <loc>https://www.nexochess.com/guides</loc>
@@ -46,10 +55,19 @@
         <loc>https://www.nexochess.com/es/analysis</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/es/engine</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/es/academy</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/es/lessons</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/es/puzzles</loc>
+    </url>
+    <url>
+        <loc>https://www.nexochess.com/es/repertoire</loc>
     </url>
     <url>
         <loc>https://www.nexochess.com/es/guides</loc>
@@ -79,10 +97,19 @@
         <loc>https://www.nexochess.com/fr/analysis</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/fr/engine</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/fr/academy</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/fr/lessons</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/fr/puzzles</loc>
+    </url>
+    <url>
+        <loc>https://www.nexochess.com/fr/repertoire</loc>
     </url>
     <url>
         <loc>https://www.nexochess.com/fr/guides</loc>
@@ -112,10 +139,19 @@
         <loc>https://www.nexochess.com/de/analysis</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/de/engine</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/de/academy</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/de/lessons</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/de/puzzles</loc>
+    </url>
+    <url>
+        <loc>https://www.nexochess.com/de/repertoire</loc>
     </url>
     <url>
         <loc>https://www.nexochess.com/de/guides</loc>
@@ -145,10 +181,19 @@
         <loc>https://www.nexochess.com/pt/analysis</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/pt/engine</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/pt/academy</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/pt/lessons</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/pt/puzzles</loc>
+    </url>
+    <url>
+        <loc>https://www.nexochess.com/pt/repertoire</loc>
     </url>
     <url>
         <loc>https://www.nexochess.com/pt/guides</loc>
@@ -178,10 +223,19 @@
         <loc>https://www.nexochess.com/ru/analysis</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/ru/engine</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/ru/academy</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/ru/lessons</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/ru/puzzles</loc>
+    </url>
+    <url>
+        <loc>https://www.nexochess.com/ru/repertoire</loc>
     </url>
     <url>
         <loc>https://www.nexochess.com/ru/guides</loc>
@@ -211,10 +265,19 @@
         <loc>https://www.nexochess.com/zh/analysis</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/zh/engine</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/zh/academy</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/zh/lessons</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/zh/puzzles</loc>
+    </url>
+    <url>
+        <loc>https://www.nexochess.com/zh/repertoire</loc>
     </url>
     <url>
         <loc>https://www.nexochess.com/zh/guides</loc>
@@ -244,10 +307,19 @@
         <loc>https://www.nexochess.com/vi/analysis</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/vi/engine</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/vi/academy</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/vi/lessons</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/vi/puzzles</loc>
+    </url>
+    <url>
+        <loc>https://www.nexochess.com/vi/repertoire</loc>
     </url>
     <url>
         <loc>https://www.nexochess.com/vi/guides</loc>
@@ -277,10 +349,19 @@
         <loc>https://www.nexochess.com/hi/analysis</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/hi/engine</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/hi/academy</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/hi/lessons</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/hi/puzzles</loc>
+    </url>
+    <url>
+        <loc>https://www.nexochess.com/hi/repertoire</loc>
     </url>
     <url>
         <loc>https://www.nexochess.com/hi/guides</loc>
@@ -310,10 +391,19 @@
         <loc>https://www.nexochess.com/mr/analysis</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/mr/engine</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/mr/academy</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/mr/lessons</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/mr/puzzles</loc>
+    </url>
+    <url>
+        <loc>https://www.nexochess.com/mr/repertoire</loc>
     </url>
     <url>
         <loc>https://www.nexochess.com/mr/guides</loc>
@@ -343,10 +433,19 @@
         <loc>https://www.nexochess.com/pl/analysis</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/pl/engine</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/pl/academy</loc>
     </url>
     <url>
+        <loc>https://www.nexochess.com/pl/lessons</loc>
+    </url>
+    <url>
         <loc>https://www.nexochess.com/pl/puzzles</loc>
+    </url>
+    <url>
+        <loc>https://www.nexochess.com/pl/repertoire</loc>
     </url>
     <url>
         <loc>https://www.nexochess.com/pl/guides</loc>
