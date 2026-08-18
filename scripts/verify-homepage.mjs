@@ -42,6 +42,12 @@ requireFragments("component", "Homepage content", [
     '<main className={styles.home}>', '<h1 id="home-title">',
     'href="/analysis"', 'href="/puzzles"',
     '{ icon: "archive", href: "/archive" }',
+    '{ icon: "spark", href: "/engine" }',
+    '{ icon: "train", href: "/lessons" }',
+    '{ icon: "review", href: "/repertoire" }',
+    't("enginePlay:title")', 't("enginePlay:subtitle")',
+    't("lessons:page.title")', 't("lessons:page.subtitle")',
+    't("repertoire:title")', 't("repertoire:intro")',
     'aria-labelledby="features-title"', 'aria-labelledby="process-title"',
     'aria-labelledby="proof-title"', 'aria-labelledby="final-title"',
     'src="/img/nexochess-icon-white.png"', "6,057,356"
@@ -106,4 +112,4 @@ assert.ok(
     "Homepage deployment verification must check the versioned immutable bundle."
 );
 
-console.log("Homepage verification passed: canonical homepage entry is preserved, the navbar logo targets Analysis, and Analysis navigation remains independent in all localized shells.");
+console.log("Homepage verification passed: canonical homepage entry is preserved, the navbar logo targets Analysis, and all core tools are linked from the localized homepage.");
