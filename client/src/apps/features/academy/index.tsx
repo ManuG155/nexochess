@@ -9,6 +9,7 @@ import Academy from "./pages/Academy";
 
 import "@/i18n";
 import "@/index.css";
+import "../FeatureMobileBase.css";
 import * as styles from "./index.module.css";
 
 const root = ReactDOM.createRoot(

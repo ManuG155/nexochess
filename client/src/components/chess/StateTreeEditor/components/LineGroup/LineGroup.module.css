@@ -51,3 +51,34 @@
     min-width: 0;
     min-height: 36px;
 }
+
+@media (max-width: 700px), (max-width: 1024px) and (orientation: portrait) {
+    :global(.nexo-review-moves) .wrapper {
+        display: inline-grid;
+        grid-template-columns: auto auto auto;
+        width: max-content;
+        min-width: max-content;
+        min-height: 50px;
+        margin-right: 5px;
+        padding: 2px 6px !important;
+        column-gap: 5px;
+        border: 1px solid rgba(116, 176, 255, 0.08);
+        border-radius: 9px;
+        scroll-snap-align: center;
+        vertical-align: top;
+    }
+
+    :global(.nexo-review-moves) .wrapper:nth-child(even) {
+        background: rgba(255, 255, 255, 0.018);
+    }
+
+    :global(.nexo-review-moves) .moveNumber {
+        min-width: 24px;
+        font-size: 0.78rem;
+        text-align: center;
+    }
+
+    :global(.nexo-review-moves) .moveCell {
+        min-height: 42px;
+    }
+}
