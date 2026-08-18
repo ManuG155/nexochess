@@ -63,6 +63,8 @@ html,
 body,
 #root,
 .root {
+    width: 100%;
+    max-width: 100%;
     min-height: 100%;
 
     background-color: var(--ui-page-bg);
@@ -92,6 +94,12 @@ select {
     font-family: "Noto Sans", "Nunito", Arial, sans-serif;
 }
 
+img,
+video,
+canvas {
+    max-width: 100%;
+}
+
 * {
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -101,4 +109,33 @@ select {
     display: none;
     width: 0;
     height: 0;
+}
+
+@media (max-width: 700px), (max-width: 1024px) and (orientation: portrait) {
+    html,
+    body,
+    #root,
+    .root {
+        min-width: 0;
+        overflow-x: hidden;
+    }
+
+    body {
+        min-height: 100dvh;
+        background-attachment: scroll;
+        overscroll-behavior-x: none;
+    }
+
+    button,
+    a,
+    [role="button"] {
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    input,
+    textarea,
+    select {
+        font-size: 16px;
+    }
 }
