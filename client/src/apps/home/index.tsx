@@ -10,6 +10,7 @@ import Home from "./Home";
 
 import "@/i18n";
 import "@/index.css";
+import "./Home.mobile.css";
 
 const root = ReactDOM.createRoot(
     document.querySelector(".root")!
