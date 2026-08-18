@@ -15,13 +15,25 @@
     "title": "Darmowa analiza partii ze Stockfish — NexoChess",
     "description": "Analizuj partie za pomocą Stockfish i sprawdzaj kluczowe momenty, klasyfikacje ruchów, dokładność oraz szacowany poziom na czytelnej interaktywnej planszy."
   },
+  "engine": {
+    "title": "Graj w szachy z komputerem online — NexoChess",
+    "description": "Graj za darmo z konfigurowalnym przeciwnikiem komputerowym, wybierz poziom Elo, otrzymuj informacje o ruchach, poprawiaj błędy i wznawiaj niedokończone partie."
+  },
   "academy": {
     "title": "Akademia NexoChess — Nauka notacji szachowej",
     "description": "Ucz się notacji szachowej, ruchów figur i klasyfikacji ruchów NexoChess dzięki krótkim interaktywnym lekcjom nastawionym na praktykę."
   },
+  "lessons": {
+    "title": "Interaktywne lekcje szachów — NexoChess",
+    "description": "Ucz się szachów dzięki 80 interaktywnym lekcjom, realistycznym pozycjom, ćwiczeniom z prowadzeniem i zadaniom krok po kroku z notacji, taktyki i podstaw."
+  },
   "puzzles": {
     "title": "Zadania szachowe i trening taktyki — NexoChess",
     "description": "Trenuj taktykę na zadaniach z analizowanych partii lub filtruj ponad sześć milionów pozycji według motywu i poziomu trudności."
+  },
+  "repertoire": {
+    "title": "Zbuduj repertuar debiutowy — NexoChess",
+    "description": "Twórz, importuj, ucz się i ćwicz swój repertuar debiutowy z zapisanymi liniami i wariantami, aby lepiej zapamiętywać pozycje, które chcesz grać."
   },
   "guides": {
     "title": "Poradniki analizy i taktyki szachowej — NexoChess",
