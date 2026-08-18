@@ -14,6 +14,7 @@ import { parsePgnRepertoire } from "./pgnImport";
 import { ImportResult, OpenTarget, RepertoireSide, RepertoireStore, importBackupStore, importPgnLines, mergeOpening, readRepertoireStore, serializeBackup, writeRepertoireStore } from "./repertoireStore";
 import "@/i18n";
 import "@/index.css";
+import "../FeatureMobileBase.css";
 import "./repertoireLayoutOverrides.css";
 import * as hubStyles from "./hub.module.css";
 import * as personalStyles from "./index.module.css";

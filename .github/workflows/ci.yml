@@ -41,6 +41,9 @@ jobs:
       - name: Audit repository contents
         run: npm run check:repository
 
+      - name: Audit Lessons curriculum
+        run: npm run check:lessons
+
       - name: Audit puzzle backend
         run: npm run check:puzzles
 
@@ -149,6 +152,7 @@ jobs:
           node --check cloudflare/email.mjs
           node --check cloudflare/emailQueue.mjs
           node --check scripts/build-cloudflare.mjs
+          node --check scripts/check-lessons.mjs
           node --check scripts/check-puzzle-backend.mjs
           node --check scripts/cloudflare-operations.mjs
           node --check scripts/portable-command-shim.mjs

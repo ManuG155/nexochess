@@ -49,7 +49,8 @@ type SidePanelMode =
 
 function AnalysisPanel({
     className,
-    style
+    style,
+    onModeChange
 }: AnalysisPanelProps) {
     const analysisSettings = useSettingsStore(
         state => state.settings.analysis
@@ -86,6 +87,10 @@ function AnalysisPanel({
         }
     }, [gameAnalysisOpen]);
 
+    useEffect(() => {
+        onModeChange?.(sidePanelMode);
+    }, [onModeChange, sidePanelMode]);
+
     function startReview() {
         setAutoplayEnabled(false);
         setCurrentStateTreeNode(analysisGame.stateTree);
@@ -105,16 +110,19 @@ function AnalysisPanel({
         <div
             className={[
                 styles.wrapper,
+                "nexo-analysis-panel",
                 !gameAnalysisOpen
                     ? styles.gameSelectionMode
                     : "",
                 className
             ].filter(Boolean).join(" ")}
+            data-analysis-panel-mode={sidePanelMode}
             style={style}
         >
             <div
                 className={[
                     styles.components,
+                    "nexo-analysis-components",
                     reviewOpen
                         ? "nexo-review-mode"
                         : ""
@@ -128,9 +136,11 @@ function AnalysisPanel({
                     gameAnalysisOpen
                     && sidePanelMode == "summary"
                 ) && (
-                    <GameSummaryPanel
-                        onStartReview={startReview}
-                    />
+                    <div className="nexo-mobile-summary-shell">
+                        <GameSummaryPanel
+                            onStartReview={startReview}
+                        />
+                    </div>
                 )}
 
                 {reviewOpen && (

@@ -67,15 +67,14 @@ requireFragments("previewFix", "Homepage board geometry", [
 ]);
 
 /*
- * El logo y la navegación son destinos distintos. El antiguo parche de
- * recuperación buscaba el primer `header a[href="/analysis"]` y lo convertía
- * en `/home`; después de que el logo tuviera su propio `/home`, aquello pasó
- * a secuestrar precisamente el botón Análisis. Esta verificación impide que
- * vuelva a introducirse esa ambigüedad.
+ * La portada sigue siendo la entrada canónica al visitar NexoChess, pero una
+ * vez dentro de la aplicación el logo de la barra superior funciona como
+ * acceso rápido al flujo principal de Análisis. La navegación de Análisis se
+ * mantiene independiente y conserva la ruta localizada correspondiente.
  */
 requireFragments("navigation", "NexoChess header navigation", [
     'className={styles.logoLink}',
-    'href="/home"',
+    'href={currentLanguageHref("/analysis")}',
     '<NavigationItem icon="analysis" url="/analysis" current={onAnalysisPage}>'
 ]);
 assert.ok(
@@ -107,4 +106,4 @@ assert.ok(
     "Homepage deployment verification must check the versioned immutable bundle."
 );
 
-console.log("Homepage verification passed: canonical homepage recovery is preserved, the logo targets home, and the Analysis navigation remains independent in all localized shells.");
+console.log("Homepage verification passed: canonical homepage entry is preserved, the navbar logo targets Analysis, and Analysis navigation remains independent in all localized shells.");

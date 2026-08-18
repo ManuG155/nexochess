@@ -1,0 +1,1265 @@
+.pageContent {
+    width: 100%;
+    padding: 0;
+}
+
+.shell {
+    --lessons-accent: #55b6d8;
+    --lessons-accent-strong: #7bdcf2;
+    --lessons-panel: rgba(13, 24, 36, 0.94);
+    --lessons-panel-soft: rgba(17, 31, 45, 0.88);
+    --lessons-border: rgba(143, 184, 220, 0.16);
+    --lessons-text-soft: #9db0c4;
+    box-sizing: border-box;
+    width: min(1540px, 100%);
+    margin: 0 auto;
+    color: #eef5fb;
+}
+
+.pathShell {
+    padding: 30px clamp(16px, 3vw, 44px) 74px;
+}
+
+.pathHero {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 28px;
+    width: min(1260px, 100%);
+    margin: 0 auto 28px;
+}
+
+.heroCopy {
+    max-width: 760px;
+}
+
+.eyebrow,
+.lessonHeading > span,
+.challengeLabel,
+.levelHeader span,
+.dialogKicker {
+    display: inline-block;
+    margin-bottom: 7px;
+    color: var(--lessons-accent-strong);
+    font-size: 0.74rem;
+    font-weight: 850;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.heroCopy h1,
+.lessonHeading h1 {
+    margin: 0;
+    font-family: "Roboto Slab", "Noto Sans", sans-serif;
+    line-height: 1.02;
+}
+
+.heroCopy h1 {
+    font-size: clamp(2.25rem, 4vw, 3.6rem);
+}
+
+.heroCopy p {
+    max-width: 720px;
+    margin: 13px 0 0;
+    color: var(--lessons-text-soft);
+    font-size: 1.02rem;
+    line-height: 1.6;
+}
+
+.heroProgress,
+.stepProgress {
+    border: 1px solid var(--lessons-border);
+    border-radius: 16px;
+    background: rgba(8, 17, 27, 0.62);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16);
+}
+
+.heroProgress {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px 14px;
+    min-width: 230px;
+    padding: 15px 18px;
+}
+
+.heroProgress span,
+.stepProgress strong {
+    color: var(--lessons-text-soft);
+    font-size: 0.82rem;
+    font-weight: 750;
+}
+
+.heroProgress strong {
+    color: #f5f9fd;
+}
+
+.progressTrack {
+    grid-column: 1 / -1;
+    width: 100%;
+    height: 7px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.progressTrack i {
+    display: block;
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #4aa4cd, #73d3e8);
+    box-shadow: 0 0 14px rgba(92, 192, 224, 0.34);
+    transition: width 0.24s ease;
+}
+
+.pathExperience {
+    display: grid;
+    grid-template-columns: minmax(0, 980px) minmax(250px, 300px);
+    align-items: start;
+    justify-content: center;
+    gap: clamp(22px, 3vw, 42px);
+}
+
+.pathStack {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid rgba(138, 179, 210, 0.12);
+    border-radius: 34px;
+    background: #0a131d;
+    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.2);
+}
+
+.levelSection {
+    --level-accent: #49bed2;
+    --level-accent-soft: rgba(73, 190, 210, 0.2);
+    --level-glow: rgba(64, 191, 214, 0.2);
+    min-height: 1120px;
+    padding: 42px clamp(22px, 5vw, 62px) 58px;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background:
+        radial-gradient(circle at 50% 18%, var(--level-glow), transparent 31%),
+        radial-gradient(circle at 12% 72%, var(--level-accent-soft), transparent 26%),
+        linear-gradient(180deg, rgba(17, 31, 44, 0.98), rgba(7, 14, 22, 0.99));
+}
+
+.levelSection + .levelSection {
+    border-top: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+.levelSection[data-tone="cyan"] {
+    --level-accent: #4fc7d9;
+    --level-accent-soft: rgba(79, 199, 217, 0.2);
+    --level-glow: rgba(67, 194, 218, 0.24);
+}
+
+.levelSection[data-tone="green"] {
+    --level-accent: #79bd55;
+    --level-accent-soft: rgba(121, 189, 85, 0.2);
+    --level-glow: rgba(103, 178, 77, 0.25);
+}
+
+.levelSection[data-tone="amber"] {
+    --level-accent: #df984b;
+    --level-accent-soft: rgba(223, 152, 75, 0.2);
+    --level-glow: rgba(210, 127, 54, 0.24);
+}
+
+.levelSection[data-tone="violet"] {
+    --level-accent: #9874dd;
+    --level-accent-soft: rgba(152, 116, 221, 0.2);
+    --level-glow: rgba(128, 91, 205, 0.25);
+}
+
+.levelGlow {
+    width: 780px;
+    height: 780px;
+    position: absolute;
+    left: 50%;
+    top: 28%;
+    z-index: -2;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--level-glow), transparent 68%);
+    transform: translate(-50%, -50%);
+    filter: blur(10px);
+    pointer-events: none;
+}
+
+.levelDecorations {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.levelDecorations span {
+    display: grid;
+    place-items: center;
+    width: 94px;
+    height: 94px;
+    position: absolute;
+    border: 1px solid color-mix(in srgb, var(--level-accent) 25%, transparent);
+    border-radius: 24px;
+    color: color-mix(in srgb, var(--level-accent) 42%, #dbe8f2);
+    background:
+        linear-gradient(
+            145deg,
+            color-mix(in srgb, var(--level-accent) 17%, transparent),
+            rgba(7, 14, 22, 0.38)
+        );
+    box-shadow:
+        0 20px 38px rgba(0, 0, 0, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    font-family: Georgia, serif;
+    font-size: 2.5rem;
+    opacity: 0.32;
+    transform: rotate(45deg);
+}
+
+.levelDecorations span:nth-child(1) {
+    top: 190px;
+    left: 7%;
+}
+
+.levelDecorations span:nth-child(2) {
+    top: 42%;
+    right: 7%;
+}
+
+.levelDecorations span:nth-child(3) {
+    bottom: 19%;
+    left: 9%;
+}
+
+.levelDecorations span:nth-child(4) {
+    bottom: 7%;
+    right: 12%;
+}
+
+.levelDecorations span i {
+    display: block;
+    font-style: normal;
+    transform: rotate(-45deg);
+}
+
+.levelHeader {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    position: relative;
+    z-index: 2;
+}
+
+.levelHeader > div {
+    max-width: 650px;
+}
+
+.levelHeader span {
+    color: var(--level-accent);
+}
+
+.levelHeader h2 {
+    margin: 0;
+    font-family: "Roboto Slab", "Noto Sans", sans-serif;
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    line-height: 1.04;
+}
+
+.levelHeader p {
+    margin: 11px 0 0;
+    color: #a4b4c3;
+    line-height: 1.58;
+}
+
+.levelHeader > strong {
+    flex: 0 0 auto;
+    padding: 8px 12px;
+    border: 1px solid color-mix(in srgb, var(--level-accent) 28%, transparent);
+    border-radius: 999px;
+    color: color-mix(in srgb, var(--level-accent) 74%, #ffffff);
+    background: color-mix(in srgb, var(--level-accent) 10%, transparent);
+    font-size: 0.78rem;
+}
+
+.learningPath {
+    width: min(690px, 92%);
+    margin: 34px auto 0;
+    padding: 6px 0 24px;
+    position: relative;
+}
+
+.pathRail {
+    width: 8px;
+    height: calc(100% - 82px);
+    position: absolute;
+    top: 41px;
+    left: 50%;
+    z-index: 0;
+    border-radius: 999px;
+    background:
+        linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--level-accent) 72%, transparent),
+            color-mix(in srgb, var(--level-accent) 18%, transparent)
+        );
+    box-shadow: 0 0 24px var(--level-accent-soft);
+    transform: translateX(-50%);
+}
+
+.pathNodeRow {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 54%;
+    min-height: 78px;
+    position: relative;
+    z-index: 1;
+}
+
+.pathNodeAlternate {
+    margin-left: 46%;
+    flex-direction: row-reverse;
+    text-align: right;
+}
+
+.pathNode {
+    display: grid;
+    place-items: center;
+    width: 66px;
+    height: 66px;
+    flex: 0 0 66px;
+    padding: 0;
+    position: relative;
+    border: 1px solid color-mix(in srgb, var(--level-accent) 36%, rgba(255, 255, 255, 0.08));
+    border-radius: 21px;
+    outline: none;
+    color: #f4f8fb;
+    background:
+        radial-gradient(
+            circle at 34% 24%,
+            color-mix(in srgb, var(--level-accent) 24%, transparent),
+            transparent 37%
+        ),
+        linear-gradient(180deg, rgba(31, 48, 62, 0.98), rgba(13, 25, 36, 0.98));
+    box-shadow:
+        0 12px 24px rgba(0, 0, 0, 0.28),
+        inset 0 0 0 6px rgba(255, 255, 255, 0.025);
+    cursor: pointer;
+    transform: rotate(45deg);
+    transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        opacity 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.pathNode:hover,
+.pathNode:focus-visible {
+    border-color: color-mix(in srgb, var(--level-accent) 82%, white);
+    box-shadow:
+        0 16px 30px rgba(0, 0, 0, 0.3),
+        0 0 0 4px color-mix(in srgb, var(--level-accent) 10%, transparent),
+        0 0 25px var(--level-accent-soft);
+    transform: rotate(45deg) translate(-2px, -2px) scale(1.04);
+}
+
+.nodeNumber,
+.nodeSymbol,
+.nodeLock {
+    transform: rotate(-45deg);
+}
+
+.nodeNumber {
+    position: absolute;
+    top: 7px;
+    left: 8px;
+    color: rgba(224, 235, 244, 0.52);
+    font-size: 0.58rem;
+    font-weight: 850;
+    letter-spacing: 0.04em;
+}
+
+.nodeSymbol {
+    font-family: Georgia, serif;
+    font-size: 1.75rem;
+    line-height: 1;
+}
+
+.nodeLock {
+    width: 7px;
+    height: 7px;
+    position: absolute;
+    right: 9px;
+    bottom: 9px;
+    border-radius: 50%;
+    color: transparent;
+    background: #718293;
+}
+
+.nodeCopy {
+    min-width: 0;
+    max-width: 190px;
+}
+
+.nodeCopy strong {
+    color: #eaf2f8;
+    font-size: 0.9rem;
+    line-height: 1.25;
+}
+
+.pathNodeRow[data-state="complete"] .pathNode {
+    border-color: rgba(139, 222, 164, 0.58);
+    background: linear-gradient(180deg, #4e8e66, #326248);
+}
+
+.pathNodeRow[data-state="current"] .pathNode {
+    border-color: color-mix(in srgb, var(--level-accent) 88%, white);
+    box-shadow:
+        0 15px 30px rgba(0, 0, 0, 0.3),
+        0 0 0 7px color-mix(in srgb, var(--level-accent) 13%, transparent),
+        0 0 36px var(--level-glow);
+}
+
+.pathNodeRow[data-state="available"] .pathNode {
+    opacity: 0.8;
+}
+
+.pathNodeRow[data-state="locked"] .pathNode {
+    opacity: 0.43;
+    filter: saturate(0.55);
+}
+
+.pathNodeRow[data-state="locked"] .nodeCopy {
+    opacity: 0.55;
+}
+
+.pathCoachRail {
+    min-height: 1px;
+    position: sticky;
+    top: 92px;
+}
+
+.coachCard {
+    border: 1px solid var(--lessons-border);
+    border-radius: 24px;
+    background:
+        linear-gradient(180deg, rgba(18, 32, 47, 0.95), rgba(9, 19, 29, 0.96));
+    box-shadow: 0 22px 55px rgba(0, 0, 0, 0.2);
+}
+
+.pathCoachRail .coachCard {
+    padding: 17px;
+}
+
+.coachPortraitButton {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: 18px;
+    background: transparent;
+    cursor: pointer;
+}
+
+.coachPortrait {
+    display: block !important;
+    width: min(100%, 220px) !important;
+    aspect-ratio: 1 / 1;
+    margin: 0 auto;
+}
+
+.speechBubble {
+    margin-top: -2px;
+    padding: 15px 16px;
+    position: relative;
+    border: 1px solid rgba(159, 194, 222, 0.17);
+    border-radius: 17px;
+    background: rgba(7, 16, 25, 0.68);
+}
+
+.speechBubble::before {
+    content: "";
+    width: 13px;
+    height: 13px;
+    position: absolute;
+    top: -7px;
+    left: 37px;
+    border-top: 1px solid rgba(159, 194, 222, 0.17);
+    border-left: 1px solid rgba(159, 194, 222, 0.17);
+    background: rgba(7, 16, 25, 0.94);
+    transform: rotate(45deg);
+}
+
+.speechBubble > span {
+    color: var(--lessons-accent-strong);
+    font-size: 0.76rem;
+    font-weight: 850;
+}
+
+.speechBubble p {
+    margin: 6px 0 8px;
+    color: #e9f1f7;
+    line-height: 1.45;
+}
+
+.speechBubble small {
+    color: #74899c;
+}
+
+.modalOverlay {
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    position: fixed;
+    inset: 0;
+    z-index: 1300;
+    background: rgba(2, 8, 14, 0.76);
+    backdrop-filter: blur(9px);
+}
+
+.pathDialog {
+    width: min(470px, 100%);
+    box-sizing: border-box;
+    padding: 25px;
+    border: 1px solid rgba(154, 198, 230, 0.18);
+    border-radius: 22px;
+    background: #0e1b28;
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
+}
+
+.dialogKicker {
+    color: var(--lessons-accent-strong);
+}
+
+.pathDialog h2 {
+    margin: 0 0 15px;
+    font-size: 1.7rem;
+}
+
+.pathDialog > strong {
+    display: block;
+    color: #f1f7fc;
+    font-size: 1.05rem;
+}
+
+.pathDialog > p {
+    margin: 9px 0 0;
+    color: var(--lessons-text-soft);
+    line-height: 1.55;
+}
+
+.dialogActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.dialogActions button {
+    min-height: 42px;
+    padding: 0 16px;
+    border: 1px solid rgba(137, 173, 203, 0.18);
+    border-radius: 11px;
+    color: #dce8f2;
+    background: rgba(16, 29, 42, 0.9);
+    font-weight: 750;
+    cursor: pointer;
+}
+
+.dialogActions button[data-primary="true"] {
+    border-color: rgba(115, 210, 233, 0.35);
+    background: linear-gradient(180deg, #397fa5, #2d678b);
+    color: white;
+}
+
+.lessonShell {
+    width: min(1600px, 100%);
+    min-height: calc(100dvh - 72px);
+    padding: 13px clamp(14px, 2vw, 28px) 18px;
+}
+
+.lessonHeader {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    min-height: 68px;
+    margin-bottom: 9px;
+}
+
+.backButton,
+.hintButton,
+.choiceRow button {
+    border: 1px solid rgba(137, 173, 203, 0.17);
+    background: rgba(16, 29, 42, 0.8);
+    color: #dce8f2;
+    cursor: pointer;
+}
+
+.backButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 13px;
+    justify-self: start;
+    border-radius: 11px;
+}
+
+.lessonHeading {
+    text-align: center;
+}
+
+.lessonHeading > span {
+    margin-bottom: 3px;
+}
+
+.lessonHeading h1 {
+    font-size: clamp(1.65rem, 2.6vw, 2.3rem);
+}
+
+.stepProgress {
+    width: 230px;
+    box-sizing: border-box;
+    padding: 12px 15px;
+    justify-self: end;
+}
+
+.stepProgress strong {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.lessonViewport {
+    --lesson-side-width: 270px;
+    display: grid;
+    grid-template-columns:
+        minmax(210px, var(--lesson-side-width))
+        minmax(0, min(64vh, 660px))
+        minmax(210px, var(--lesson-side-width));
+    align-items: center;
+    justify-content: center;
+    gap: clamp(15px, 2vw, 28px);
+    width: 100%;
+    min-height: calc(100dvh - 166px);
+}
+
+.taskRail,
+.coachRail {
+    width: 100%;
+    max-width: var(--lesson-side-width);
+    justify-self: stretch;
+}
+
+.challengeCard {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 18px;
+    border: 1px solid var(--lessons-border);
+    border-radius: 20px;
+    background:
+        linear-gradient(180deg, rgba(18, 32, 47, 0.95), rgba(9, 19, 29, 0.96));
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.18);
+}
+
+.challengeCard > p {
+    margin: 0;
+    color: #e8f0f7;
+    font-size: 0.98rem;
+    line-height: 1.5;
+}
+
+.challengeLabel {
+    margin-bottom: 6px;
+}
+
+.choiceRow {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 9px;
+    margin-top: 14px;
+}
+
+.choiceRow button {
+    min-height: 43px;
+    border-radius: 10px;
+    font-weight: 750;
+}
+
+.choiceRow button:hover:not(:disabled) {
+    border-color: rgba(98, 192, 221, 0.44);
+    background: rgba(45, 86, 112, 0.72);
+}
+
+.choiceRow button:disabled {
+    opacity: 0.56;
+    cursor: default;
+}
+
+.hintPanel,
+.feedback {
+    margin-top: 13px;
+    padding: 12px 13px;
+    border-radius: 12px;
+}
+
+.hintPanel {
+    border: 1px solid rgba(234, 194, 89, 0.2);
+    background: rgba(98, 74, 25, 0.19);
+}
+
+.hintPanel strong {
+    color: #e6bd55;
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.hintPanel p {
+    margin: 5px 0 0;
+    color: #dfd4b5;
+    font-size: 0.9rem;
+    line-height: 1.45;
+}
+
+.feedback {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid rgba(142, 160, 183, 0.26);
+    background: rgba(142, 160, 183, 0.08);
+}
+
+.feedback img,
+.feedback > span {
+    width: 29px;
+    height: 29px;
+    flex: 0 0 29px;
+}
+
+.feedback > span {
+    display: grid;
+    place-items: center;
+    border: 2px solid var(--feedback-colour);
+    border-radius: 50%;
+    color: var(--feedback-colour);
+    font-weight: 900;
+}
+
+.feedback p {
+    margin: 0;
+    color: #e5edf4;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.feedback[data-tone="positive"] {
+    border-color: rgba(151, 175, 139, 0.34);
+    background: rgba(151, 175, 139, 0.09);
+}
+
+.feedback[data-tone="negative"] {
+    border-color: rgba(255, 107, 107, 0.32);
+    background: rgba(255, 107, 107, 0.08);
+}
+
+.lessonActions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.hintButton,
+.nextButton {
+    min-height: 41px;
+    padding: 0 14px;
+    border-radius: 10px;
+    font-weight: 760;
+}
+
+.hintButton:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.nextButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid rgba(132, 218, 238, 0.32);
+    color: #f7fbff;
+    background: linear-gradient(180deg, #397fa5, #2d678b);
+    box-shadow: 0 10px 22px rgba(31, 96, 132, 0.22);
+    cursor: pointer;
+}
+
+.nextButton:hover {
+    background: linear-gradient(180deg, #438cb4, #327298);
+}
+
+.boardColumn {
+    width: min(64vh, 660px, 44vw);
+    min-width: 0;
+    justify-self: center;
+}
+
+.boardShell {
+    width: 100%;
+}
+
+.boardShell[data-coordinates="outside"] {
+    display: grid;
+    grid-template-columns: 17px minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) 17px;
+}
+
+.boardFrame {
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid rgba(183, 211, 231, 0.14);
+    border-radius: 15px;
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.3);
+}
+
+.boardShell[data-coordinates="outside"] .boardFrame {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.rankCoordinates {
+    display: grid;
+    grid-template-rows: repeat(8, minmax(0, 1fr));
+    grid-column: 1;
+    grid-row: 1;
+    padding-right: 4px;
+    color: #8293a2;
+    font-size: 0.62rem;
+    font-weight: 750;
+    text-align: right;
+}
+
+.rankCoordinates span {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.fileCoordinates {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    grid-column: 2;
+    grid-row: 2;
+    padding-top: 3px;
+    color: #8293a2;
+    font-size: 0.62rem;
+    font-weight: 750;
+    text-align: center;
+}
+
+.coachRail .coachCard {
+    padding: 14px;
+}
+
+.coachRail .coachPortrait {
+    width: min(100%, 184px) !important;
+}
+
+.coachRail .speechBubble {
+    padding: 14px;
+}
+
+.coachRail .speechBubble p {
+    font-size: 0.9rem;
+    line-height: 1.42;
+}
+
+.coachRail .speechBubble small {
+    display: none;
+}
+
+.completionCard {
+    display: grid;
+    place-items: center;
+    min-height: min(64vh, 610px);
+    padding: 38px 28px;
+    border: 1px solid var(--lessons-border);
+    border-radius: 22px;
+    background:
+        radial-gradient(circle at 50% 28%, rgba(87, 160, 108, 0.18), transparent 36%),
+        linear-gradient(180deg, rgba(18, 32, 47, 0.96), rgba(9, 19, 29, 0.98));
+    box-shadow: 0 22px 55px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.completionIcon {
+    display: grid;
+    place-items: center;
+    width: 76px;
+    height: 76px;
+    margin-bottom: 18px;
+    border-radius: 50%;
+    color: #eaffef;
+    background: linear-gradient(180deg, #568f68, #37634a);
+    box-shadow: 0 0 0 10px rgba(90, 152, 108, 0.11);
+    font-size: 2rem;
+    font-weight: 900;
+}
+
+.completionCard h2 {
+    margin: 0;
+    font-family: "Roboto Slab", "Noto Sans", sans-serif;
+    font-size: 1.9rem;
+}
+
+.completionCard p {
+    max-width: 470px;
+    margin: 12px 0 22px;
+    color: var(--lessons-text-soft);
+    line-height: 1.55;
+}
+
+.pathNode:focus-visible,
+.backButton:focus-visible,
+.hintButton:focus-visible,
+.nextButton:focus-visible,
+.coachPortraitButton:focus-visible,
+.choiceRow button:focus-visible,
+.dialogActions button:focus-visible {
+    outline: 2px solid #83cfff;
+    outline-offset: 3px;
+}
+
+:global([data-theme="light"]) .shell {
+    --lessons-border: rgba(39, 78, 109, 0.15);
+    --lessons-text-soft: #61758a;
+    color: #172536;
+}
+
+:global([data-theme="light"]) .heroProgress,
+:global([data-theme="light"]) .stepProgress,
+:global([data-theme="light"]) .coachCard,
+:global([data-theme="light"]) .challengeCard,
+:global([data-theme="light"]) .completionCard {
+    background: linear-gradient(180deg, #fbfdff, #f1f6fa);
+    box-shadow: 0 18px 45px rgba(31, 58, 78, 0.11);
+}
+
+:global([data-theme="light"]) .heroProgress strong,
+:global([data-theme="light"]) .nodeCopy strong,
+:global([data-theme="light"]) .challengeCard > p,
+:global([data-theme="light"]) .feedback p,
+:global([data-theme="light"]) .speechBubble p,
+:global([data-theme="light"]) .pathDialog > strong {
+    color: #1f3346;
+}
+
+:global([data-theme="light"]) .pathStack {
+    border-color: rgba(39, 78, 109, 0.14);
+    background: #eef4f7;
+    box-shadow: 0 26px 64px rgba(31, 58, 78, 0.12);
+}
+
+:global([data-theme="light"]) .levelSection {
+    background:
+        radial-gradient(circle at 50% 18%, var(--level-glow), transparent 31%),
+        radial-gradient(circle at 12% 72%, var(--level-accent-soft), transparent 26%),
+        linear-gradient(180deg, rgba(249, 252, 254, 0.99), rgba(236, 244, 248, 0.99));
+}
+
+:global([data-theme="light"]) .levelHeader p {
+    color: #64798b;
+}
+
+:global([data-theme="light"]) .pathNode {
+    color: #1e3244;
+    background:
+        radial-gradient(
+            circle at 34% 24%,
+            color-mix(in srgb, var(--level-accent) 20%, transparent),
+            transparent 37%
+        ),
+        linear-gradient(180deg, #f8fbfd, #e7f0f5);
+    box-shadow:
+        0 10px 22px rgba(45, 76, 99, 0.14),
+        inset 0 0 0 6px rgba(255, 255, 255, 0.35);
+}
+
+:global([data-theme="light"]) .speechBubble,
+:global([data-theme="light"]) .backButton,
+:global([data-theme="light"]) .hintButton,
+:global([data-theme="light"]) .choiceRow button {
+    background: rgba(236, 244, 250, 0.94);
+    color: #26384a;
+}
+
+:global([data-theme="light"]) .speechBubble::before {
+    background: #edf5fa;
+}
+
+:global([data-theme="light"]) .pathDialog {
+    background: #f7fbfe;
+    color: #1d3143;
+}
+
+:global([data-theme="light"]) .dialogActions button {
+    color: #26384a;
+    background: #edf4f8;
+}
+
+@media (max-width: 1260px) {
+    .pathExperience {
+        grid-template-columns: minmax(0, 900px) 250px;
+        gap: 22px;
+    }
+
+    .lessonViewport {
+        --lesson-side-width: 230px;
+        grid-template-columns:
+            minmax(190px, var(--lesson-side-width))
+            minmax(0, min(60vh, 600px))
+            minmax(190px, var(--lesson-side-width));
+        gap: 15px;
+    }
+
+    .boardColumn {
+        width: min(60vh, 600px, 46vw);
+    }
+
+    .coachRail .coachPortrait {
+        width: min(100%, 155px) !important;
+    }
+}
+
+@media (max-width: 1040px) {
+    .pathExperience {
+        grid-template-columns: 1fr;
+    }
+
+    .pathCoachRail {
+        position: static;
+    }
+
+    .pathCoachRail .coachCard {
+        display: grid;
+        grid-template-columns: 150px 1fr;
+        gap: 14px;
+        align-items: center;
+        width: min(760px, 100%);
+        margin: 0 auto;
+    }
+
+    .pathCoachRail .speechBubble {
+        margin-top: 0;
+    }
+
+    .pathCoachRail .speechBubble::before {
+        top: 26px;
+        left: -7px;
+    }
+
+    .lessonViewport {
+        --lesson-side-width: 205px;
+        grid-template-columns:
+            minmax(175px, var(--lesson-side-width))
+            minmax(0, min(56vh, 540px))
+            minmax(175px, var(--lesson-side-width));
+        gap: 12px;
+    }
+
+    .boardColumn {
+        width: min(56vh, 540px, 50vw);
+    }
+
+    .challengeCard,
+    .coachRail .coachCard {
+        padding: 12px;
+    }
+
+    .coachRail .coachPortrait {
+        width: min(100%, 132px) !important;
+    }
+
+    .speechBubble {
+        padding: 12px;
+    }
+
+    .speechBubble p {
+        font-size: 0.84rem;
+    }
+}
+
+@media (max-width: 860px) {
+    .pathShell {
+        padding-inline: 12px;
+    }
+
+    .pathHero {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .heroProgress {
+        min-width: 0;
+    }
+
+    .levelSection {
+        min-height: 0;
+        padding: 34px 16px 44px;
+    }
+
+    .levelHeader {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .learningPath {
+        width: 100%;
+    }
+
+    .pathNodeRow,
+    .pathNodeAlternate {
+        width: 70%;
+        min-height: 76px;
+    }
+
+    .pathNodeAlternate {
+        margin-left: 30%;
+    }
+
+    .lessonShell {
+        padding: 10px 10px 24px;
+    }
+
+    .lessonHeader {
+        grid-template-columns: auto 1fr;
+        gap: 10px;
+    }
+
+    .lessonHeading {
+        text-align: left;
+    }
+
+    .stepProgress {
+        grid-column: 1 / -1;
+        width: 100%;
+        padding: 9px 12px;
+    }
+
+    .lessonViewport {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        min-height: 0;
+    }
+
+    .boardColumn {
+        grid-column: 1 / -1;
+        grid-row: 1;
+        width: min(76vw, 58vh, 560px);
+        margin: 0 auto 8px;
+    }
+
+    .taskRail,
+    .coachRail {
+        max-width: none;
+        align-self: start;
+    }
+
+    .coachRail .coachCard {
+        display: grid;
+        grid-template-columns: 105px 1fr;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .coachRail .coachPortrait {
+        width: 100% !important;
+    }
+
+    .coachRail .speechBubble {
+        margin: 0;
+    }
+
+    .coachRail .speechBubble::before {
+        top: 24px;
+        left: -7px;
+    }
+}
+
+@media (max-width: 560px) {
+    .levelDecorations span {
+        width: 68px;
+        height: 68px;
+        font-size: 1.8rem;
+    }
+
+    .pathNodeRow,
+    .pathNodeAlternate {
+        width: 78%;
+    }
+
+    .pathNodeAlternate {
+        margin-left: 22%;
+    }
+
+    .pathNode {
+        width: 60px;
+        height: 60px;
+        flex-basis: 60px;
+    }
+
+    .nodeCopy strong {
+        font-size: 0.82rem;
+    }
+
+    .pathCoachRail .coachCard {
+        grid-template-columns: 100px 1fr;
+    }
+
+    .lessonViewport {
+        grid-template-columns: 1fr;
+    }
+
+    .boardColumn {
+        grid-column: 1;
+        width: min(94vw, 54vh, 520px);
+    }
+
+    .taskRail,
+    .coachRail {
+        grid-column: 1;
+    }
+
+    .coachRail .coachCard {
+        grid-template-columns: 92px 1fr;
+    }
+
+    .lessonActions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .lessonActions > span {
+        display: none;
+    }
+
+    .hintButton,
+    .nextButton {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pathNode,
+    .progressTrack i {
+        transition: none;
+    }
+}

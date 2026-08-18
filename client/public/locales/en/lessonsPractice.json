@@ -1,0 +1,61 @@
+{
+  "positions": "{{count}} positions",
+  "positionProgress": "Position {{current}} of {{total}}",
+  "prompts": {
+    "moveTarget": "Reproduce the indicated move.",
+    "findMove": "Find the move that demonstrates {{lesson}}.",
+    "selectConcept": "Select the piece or square that best represents {{lesson}}.",
+    "selectMover": "Select a piece belonging to the side to move.",
+    "selectTarget": "Click the marked square.",
+    "boardSquare": "Move the piece to {{square}}. Files run from a to h and ranks from 1 to 8.",
+    "choose": "Choose the correct answer for this position."
+  },
+  "coach": "{{lesson}} · position {{current}} of {{total}}. Read the board and solve it.",
+  "coachBoard": "Orient yourself on the board and move the piece to {{square}} using its file and rank.",
+  "pieceNames": {
+    "piece": "the piece",
+    "p": "the pawn",
+    "n": "the knight",
+    "b": "the bishop",
+    "r": "the rook",
+    "q": "the queen",
+    "k": "the king"
+  },
+  "coachDynamic": {
+    "check": "{{side}} are in check: {{attacker}} on {{square}} is attacking the king. Find the cleanest way out of check.",
+    "capture": "{{side}} to move. There is tension around {{target}} on {{to}}. Find how to exploit it to apply {{lesson}} without rushing.",
+    "position": "{{side}} to move. Read the whole position first and find the concrete opportunity that lets you apply {{lesson}}.",
+    "choice": "{{side}} to move. Read the whole position before deciding the answer for {{lesson}}.",
+    "hintCheck": "Hint: trace the check from {{attacker}} on {{square}} to your king. You can escape by moving the king, capturing the checker or blocking the line when the position allows it.",
+    "hintMove": "Hint: begin with {{piece}} on {{from}} and ask what changes if it becomes active. The goal is {{lesson}}.",
+    "hintChoice": "Hint: compare the king safety, legal moves and immediate threats before answering {{lesson}}.",
+    "success1": "Excellent vision. That is exactly the move the position was asking for.",
+    "success2": "Very good. You read the position correctly and found the key idea.",
+    "success3": "Well spotted. That move solves the problem cleanly.",
+    "success4": "Perfect. You found the right response without losing sight of the position.",
+    "error": "That move is legal, but it is not the correct solution here. Read the position again and try another idea.",
+    "illegal": "That move is not legal here. Select the piece again and check its available squares."
+  },
+  "correct": "Correct move.",
+  "illegal": "That move is not legal here.",
+  "tryAgain": "That is not the move this position is asking for.",
+  "completeLesson": "Complete lesson",
+  "completed": "{{lesson}} completed",
+  "completedBody": "You solved every position. The next lesson is now available.",
+  "choices": {
+    "yes": "Yes",
+    "no": "No",
+    "white": "White",
+    "black": "Black",
+    "one": "1",
+    "three": "3",
+    "five": "5",
+    "nine": "9",
+    "draw": "Draw",
+    "stalemate": "Stalemate",
+    "checkmate": "Checkmate",
+    "continue": "Continue",
+    "resign": "Resign",
+    "offerDraw": "Offer a draw"
+  }
+}

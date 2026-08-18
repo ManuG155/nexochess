@@ -3,11 +3,9 @@ import { useTranslation } from "react-i18next";
 import { Move } from "chess.js";
 
 import { addChildMove } from "shared/types/game/position/StateTreeNode";
-import AnalysisTab from "@analysis/constants/AnalysisTab";
 import AnalysisStatus from "@analysis/constants/AnalysisStatus";
 import useSettingsStore from "@/stores/SettingsStore";
 import useAnalysisGameStore from "@analysis/stores/AnalysisGameStore";
-import useAnalysisTabStore from "@analysis/stores/AnalysisTabStore";
 import useAnalysisBoardStore from "@analysis/stores/AnalysisBoardStore";
 import useAnalysisProgressStore from "@analysis/stores/AnalysisProgressStore";
 import Board from "@analysis/components/Board";
@@ -15,6 +13,7 @@ import playBoardSound from "@/lib/boardSounds";
 
 import useEvaluation from "./useEvaluation";
 import useSuggestionArrows from "./useSuggestionArrows";
+import useTeachingArrows from "./useTeachingArrows";
 import * as styles from "./BoardArea.module.css";
 
 function BoardArea() {
@@ -24,11 +23,8 @@ function BoardArea() {
 
     const {
         analysisGame,
-        gameAnalysisOpen,
-        setGameAnalysisOpen
+        gameAnalysisOpen
     } = useAnalysisGameStore();
-
-    const setActiveTab = useAnalysisTabStore(state => state.setActiveTab);
 
     const analysisStatus = useAnalysisProgressStore(
         state => state.analysisStatus
@@ -45,13 +41,22 @@ function BoardArea() {
 
     const evaluation = useEvaluation();
     const suggestionArrows = useSuggestionArrows();
+    const teachingArrows = useTeachingArrows();
+    const reviewArrows = [
+        ...suggestionArrows.filter(suggestion => (
+            !teachingArrows.some(teaching => (
+                teaching.from == suggestion.from
+                && teaching.to == suggestion.to
+            ))
+        )),
+        ...teachingArrows
+    ];
     const flipBoardLabel = t("optionsToolbar.flipBoard");
 
     function addMove(move: Move) {
-        if (!gameAnalysisOpen) {
-            setGameAnalysisOpen(true);
-            setActiveTab(AnalysisTab.ANALYSIS);
-        }
+        // The board shown on the Analysis landing screen is a preview only.
+        // A real game must be loaded before users can branch or enter Analysis.
+        if (!gameAnalysisOpen) return false;
 
         setCurrentStateTreeNode(prev => {
             const createdNode = addChildMove(prev, move.san);
@@ -106,9 +111,10 @@ function BoardArea() {
             node={currentStateTreeNode}
             flipped={boardFlipped}
             evaluation={evaluation}
-            arrows={suggestionArrows}
+            arrows={gameAnalysisOpen ? reviewArrows : []}
             piecesDraggable={
-                analysisStatus == AnalysisStatus.INACTIVE
+                gameAnalysisOpen
+                && analysisStatus == AnalysisStatus.INACTIVE
                 && !autoplayEnabled
             }
             enableClassifications={!settings.classifications.hide}

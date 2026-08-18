@@ -1,0 +1,38 @@
+{
+  "positions": "{{count}} positions",
+  "positionProgress": "Position {{current}} sur {{total}}",
+  "prompts": {
+    "moveTarget": "Reproduis le coup indiqué.",
+    "findMove": "Trouve le coup qui illustre {{lesson}}.",
+    "selectConcept": "Sélectionne la pièce ou la case qui représente le mieux {{lesson}}.",
+    "selectMover": "Sélectionne une pièce du camp qui doit jouer.",
+    "selectTarget": "Clique sur la case indiquée.",
+    "boardSquare": "Déplace la pièce jusqu'en {{square}}. Les colonnes vont de a à h et les rangées de 1 à 8.",
+    "choose": "Choisis la bonne réponse pour cette position."
+  },
+  "coach": "{{lesson}} · position {{current}} sur {{total}}. Observe l'échiquier et résous-la.",
+  "coachBoard": "Repère-toi sur l'échiquier et déplace la pièce jusqu'en {{square}} grâce à sa colonne et sa rangée.",
+  "pieceNames": {"piece":"la pièce","p":"le pion","n":"le cavalier","b":"le fou","r":"la tour","q":"la dame","k":"le roi"},
+  "coachDynamic": {
+    "check": "Aux {{side}} de jouer et leur roi est en échec : {{attacker}} en {{square}} l'attaque. Trouve la façon la plus propre de sortir de l'échec.",
+    "capture": "Aux {{side}} de jouer. Il y a de la tension autour de {{target}} en {{to}}. Trouve comment l'exploiter pour appliquer {{lesson}} sans te précipiter.",
+    "position": "Aux {{side}} de jouer. Lis d'abord toute la position et trouve l'occasion concrète qui permet d'appliquer {{lesson}}.",
+    "choice": "Aux {{side}} de jouer. Lis toute la position avant de répondre pour {{lesson}}.",
+    "hintCheck": "Indice : suis la ligne d'échec depuis {{attacker}} en {{square}} jusqu'à ton roi. Tu peux déplacer le roi, capturer la pièce qui donne échec ou interposer une pièce lorsque c'est possible.",
+    "hintMove": "Indice : commence par {{piece}} en {{from}} et demande-toi ce qui change si cette pièce devient active. L'objectif est {{lesson}}.",
+    "hintChoice": "Indice : compare la sécurité des rois, les coups légaux et les menaces immédiates avant de répondre pour {{lesson}}.",
+    "success1": "Excellente vision. C'est exactement le coup que demandait la position.",
+    "success2": "Très bien. Tu as correctement lu la position et trouvé l'idée clé.",
+    "success3": "Bien vu. Ce coup résout proprement le problème.",
+    "success4": "Parfait. Tu as trouvé la bonne réponse sans perdre de vue la position.",
+    "error": "Ce coup est légal, mais ce n'est pas la bonne solution ici. Relis la position et essaie une autre idée.",
+    "illegal": "Ce coup n'est pas légal ici. Sélectionne de nouveau la pièce et vérifie ses cases disponibles."
+  },
+  "correct": "Coup correct.",
+  "illegal": "Ce coup n'est pas légal ici.",
+  "tryAgain": "Ce n'est pas le coup demandé par cette position.",
+  "completeLesson": "Terminer la leçon",
+  "completed": "{{lesson}} terminée",
+  "completedBody": "Tu as résolu toutes les positions. La leçon suivante est maintenant disponible.",
+  "choices": {"yes":"Oui","no":"Non","white":"Blancs","black":"Noirs","one":"1","three":"3","five":"5","nine":"9","draw":"Nulle","stalemate":"Pat","checkmate":"Échec et mat","continue":"Continuer","resign":"Abandonner","offerDraw":"Proposer la nulle"}
+}

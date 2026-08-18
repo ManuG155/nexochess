@@ -1,0 +1,101 @@
+{
+  "nav": "Pojedynek",
+  "eyebrow": "POJEDYNEK ZE STOCKFISHEM",
+  "title": "Pojedynek",
+  "subtitle": "Wybierz poziom i kolor, a następnie rozegraj pełną partię przeciwko Stockfishowi z wybranym trenerem jako przeciwnikiem. Twoje ruchy otrzymują niemal natychmiastową ocenę, a ważne błędy możesz spróbować zagrać ponownie.",
+  "thinking": "Myśli…",
+  "you": "Ty",
+  "white": "Białe",
+  "black": "Czarne",
+  "moveQuality": "Jakość ruchu",
+  "setup": {
+    "difficulty": "Trudność",
+    "playAs": "Graj jako",
+    "eloNote": "Wartości Elo są przybliżonym wskaźnikiem siły. Niższe poziomy nadal grają sensowne ruchy debiutowe, a potem wybierają z coraz szerszej puli kandydatów Stockfisha."
+  },
+  "levels": {
+    "initiation": "Wprowadzenie",
+    "beginner": "Początkujący",
+    "novice": "Nowicjusz",
+    "club": "Gracz klubowy",
+    "competent": "Solidny",
+    "intermediate": "Średniozaawansowany",
+    "advanced": "Zaawansowany",
+    "expert": "Ekspert",
+    "candidate": "Kandydat na mistrza",
+    "master": "Mistrz",
+    "grandmaster": "Arcymistrz",
+    "elite": "Elita"
+  },
+  "coach": {
+    "setup": "Jestem {{coach}}. Wybierz siłę Stockfisha i kolor, a potem zagramy pełną partię.",
+    "changeHint": "Kliknij trenera, aby go zmienić.",
+    "reading": "Analizuję pozycję przed twoim ruchem. Chwila.",
+    "yourTurn": "Twój ruch. Graj tak, jak w normalnej partii.",
+    "thinking": "Mój ruch. Obliczam odpowiedź.",
+    "engineMove": "Zagrałem {{move}}. Teraz znowu twój ruch.",
+    "engineError": "Nie udało mi się dokończyć obliczeń. Możesz zacząć partię ponownie z ekranu ustawień.",
+    "intro": "Gotowe. Jestem {{coach}} i gram z przybliżoną siłą {{elo}}.",
+    "checking": "Zagrałeś {{move}}. Sprawdzam, co zmieniło się w pozycji.",
+    "retry": "Dobrze. Wróciliśmy do pozycji sprzed twojego ruchu. Spróbuj innego pomysłu.",
+    "quality": {
+      "theory": "{{move}} to teoria debiutowa. To znany ruch i nadal pozostajemy w dobrze zbadanych wariantach.",
+      "best": "{{move}} to najlepszy ruch, jaki znajduję. Świetne odczytanie pozycji.",
+      "excellent": "{{move}} jest znakomity. Zachowuje prawie cały potencjał pozycji.",
+      "okay": "{{move}} jest grywalny. Być może istnieje dokładniejsza opcja, ale pozycja pozostaje zdrowa.",
+      "inaccuracy": "{{move}} to drobna niedokładność. Nic katastrofalnego, ale oddajesz część pozycji.",
+      "mistake": "{{move}} to błąd. Mam teraz konkretną odpowiedź; czerwona strzałka pokazuje główne zagrożenie.",
+      "blunder": "{{move}} to poważny błąd. Czerwona strzałka pokazuje taktyczną odpowiedź, na którą pozwoliłeś."
+    },
+    "end": {
+      "win": "Koniec partii. Wygrałeś ten pojedynek. Dobra robota.",
+      "loss": "Koniec partii. Tę wygrywam ja, ale pełna analiza pokaże dokładnie, gdzie partia się odwróciła.",
+      "draw": "Koniec partii. Remis. Analiza nadal może wskazać krytyczne momenty."
+    }
+  },
+  "quality": {
+    "theory": "Teoria",
+    "best": "Najlepszy",
+    "excellent": "Znakomity",
+    "okay": "Dobry",
+    "inaccuracy": "Niedokładność",
+    "mistake": "Błąd",
+    "blunder": "Poważny błąd"
+  },
+  "actions": {
+    "changeSetup": "Zmień ustawienia",
+    "returnLive": "Wróć do partii",
+    "play": "Graj",
+    "retry": "Spróbuj ponownie",
+    "continue": "Kontynuuj",
+    "undo": "Cofnij",
+    "redo": "Ponów",
+    "result": "Wynik",
+    "resign": "Poddaj się",
+    "close": "Zamknij",
+    "analyse": "Analizuj partię",
+    "playAgain": "Zagraj ponownie"
+  },
+  "game": {
+    "title": "Partia",
+    "vs": "przeciw {{coach}} · {{elo}}",
+    "noMoves": "Ruchy będą pojawiać się tutaj w trakcie partii."
+  },
+  "end": {
+    "kicker": "POJEDYNEK ZAKOŃCZONY",
+    "win": {
+      "title": "Zwycięstwo",
+      "body": "Pokonałeś {{coach}} na poziomie {{elo}}. Możesz teraz przeanalizować pełny PGN albo zagrać kolejną partię."
+    },
+    "loss": {
+      "title": "{{coach}} wygrywa",
+      "body": "{{coach}} wygrał ten pojedynek na poziomie {{elo}}. Przeanalizuj PGN, aby znaleźć decydujące momenty, albo zagraj od razu ponownie."
+    },
+    "draw": {
+      "title": "Remis",
+      "body": "Zremisowałeś z {{coach}} na poziomie {{elo}}. Pełny PGN jest gotowy do przeglądu."
+    },
+    "analysing": "Analizowanie pełnego PGN przy użyciu twoich ustawień przeglądu NexoChess…",
+    "analysisError": "Nie udało się przeanalizować partii. Możesz spróbować ponownie lub dalej przeglądać ruchy tutaj."
+  }
+}

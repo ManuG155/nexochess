@@ -1,0 +1,101 @@
+{
+  "nav": "Duel",
+  "eyebrow": "DUEL CONTRE STOCKFISH",
+  "title": "Duel",
+  "subtitle": "Choisissez un niveau et une couleur puis jouez une partie complète contre Stockfish avec votre entraîneur comme adversaire. Vos coups reçoivent un retour presque immédiat et les grosses erreurs peuvent être rejouées.",
+  "thinking": "Calcul…",
+  "you": "Vous",
+  "white": "Blancs",
+  "black": "Noirs",
+  "moveQuality": "Qualité du coup",
+  "setup": {
+    "difficulty": "Difficulté",
+    "playAs": "Jouer avec",
+    "eloNote": "Les valeurs Elo donnent une indication approximative. Les niveaux faibles jouent tout de même des ouvertures cohérentes, puis choisissent dans un éventail progressivement plus large de coups candidats de Stockfish."
+  },
+  "levels": {
+    "initiation": "Initiation",
+    "beginner": "Débutant",
+    "novice": "Novice",
+    "club": "Joueur de club",
+    "competent": "Compétent",
+    "intermediate": "Intermédiaire",
+    "advanced": "Avancé",
+    "expert": "Expert",
+    "candidate": "Candidat maître",
+    "master": "Maître",
+    "grandmaster": "Grand maître",
+    "elite": "Élite"
+  },
+  "coach": {
+    "setup": "Je suis {{coach}}. Choisissez la force de Stockfish et votre couleur, puis jouons une partie complète.",
+    "changeHint": "Cliquez sur l'entraîneur pour le changer.",
+    "reading": "J'analyse la position avant votre tour. Un instant.",
+    "yourTurn": "À vous. Jouez la position comme dans une partie normale.",
+    "thinking": "À moi. Je calcule ma réponse.",
+    "engineMove": "J'ai joué {{move}}. La position est de nouveau à vous.",
+    "engineError": "Je n'ai pas pu terminer ce calcul. Vous pouvez recommencer depuis la configuration.",
+    "intro": "Prêt. Je suis {{coach}} et je joue avec une force approximative de {{elo}}.",
+    "checking": "Vous avez joué {{move}}. Je vérifie ce qui a changé dans la position.",
+    "retry": "Bien. Nous sommes revenus à la position avant votre coup. Essayez une autre idée.",
+    "quality": {
+      "theory": "{{move}} est de la théorie. C'est un coup d'ouverture connu qui nous maintient dans des variantes bien étudiées.",
+      "best": "{{move}} est le meilleur coup que je trouve. Excellente lecture de la position.",
+      "excellent": "{{move}} est excellent. Il conserve presque tout le potentiel de la position.",
+      "okay": "{{move}} est jouable. Il existe peut-être plus précis, mais la position reste saine.",
+      "inaccuracy": "{{move}} est une petite imprécision. Rien de catastrophique, mais vous avez cédé une partie de la position.",
+      "mistake": "{{move}} est une erreur. J'ai maintenant une réponse concrète ; la flèche rouge montre la menace principale.",
+      "blunder": "{{move}} est une grosse erreur. La flèche rouge montre la réponse tactique que vous avez autorisée."
+    },
+    "end": {
+      "win": "Partie terminée. Vous avez gagné ce duel. Bien joué.",
+      "loss": "Partie terminée. Je gagne celle-ci, mais l'analyse complète peut montrer exactement où la partie a basculé.",
+      "draw": "Partie terminée. Nulle. L'analyse peut tout de même révéler les moments critiques."
+    }
+  },
+  "quality": {
+    "theory": "Théorie",
+    "best": "Meilleur",
+    "excellent": "Excellent",
+    "okay": "Bon",
+    "inaccuracy": "Imprécision",
+    "mistake": "Erreur",
+    "blunder": "Grosse erreur"
+  },
+  "actions": {
+    "changeSetup": "Modifier les réglages",
+    "returnLive": "Revenir à la partie",
+    "play": "Jouer",
+    "retry": "Réessayer",
+    "continue": "Continuer",
+    "undo": "Annuler",
+    "redo": "Rétablir",
+    "result": "Résultat",
+    "resign": "Abandonner",
+    "close": "Fermer",
+    "analyse": "Analyser la partie",
+    "playAgain": "Rejouer"
+  },
+  "game": {
+    "title": "Partie",
+    "vs": "contre {{coach}} · {{elo}}",
+    "noMoves": "Les coups apparaîtront ici au fur et à mesure de la partie."
+  },
+  "end": {
+    "kicker": "DUEL TERMINÉ",
+    "win": {
+      "title": "Victoire",
+      "body": "Vous avez battu {{coach}} à la force {{elo}}. Vous pouvez maintenant analyser le PGN complet ou rejouer."
+    },
+    "loss": {
+      "title": "{{coach}} gagne",
+      "body": "{{coach}} a gagné ce duel à la force {{elo}}. Analysez le PGN pour trouver les moments décisifs ou rejouez immédiatement."
+    },
+    "draw": {
+      "title": "Nulle",
+      "body": "Vous avez fait nulle contre {{coach}} à la force {{elo}}. Le PGN complet est prêt si vous souhaitez revoir la partie."
+    },
+    "analysing": "Analyse du PGN complet avec vos réglages de revue NexoChess…",
+    "analysisError": "La partie n'a pas pu être analysée. Vous pouvez réessayer ou continuer à revoir les coups ici."
+  }
+}

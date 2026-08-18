@@ -1,0 +1,101 @@
+{
+  "nav": "Duell",
+  "eyebrow": "DUELL GEGEN STOCKFISH",
+  "title": "Duell",
+  "subtitle": "Wähle Spielstärke und Farbe und spiele eine komplette Partie gegen Stockfish mit deinem ausgewählten Trainer als Gegner. Deine Züge erhalten fast sofort Feedback; wichtige Fehler kannst du erneut versuchen.",
+  "thinking": "Denkt…",
+  "you": "Du",
+  "white": "Weiß",
+  "black": "Schwarz",
+  "moveQuality": "Zugqualität",
+  "setup": {
+    "difficulty": "Schwierigkeit",
+    "playAs": "Spielen als",
+    "eloNote": "Die Elo-Werte sind eine ungefähre Orientierung. Niedrige Stufen spielen weiterhin vernünftige Eröffnungszüge und wählen danach aus einem zunehmend größeren Feld von Stockfish-Kandidaten."
+  },
+  "levels": {
+    "initiation": "Einstieg",
+    "beginner": "Anfänger",
+    "novice": "Neuling",
+    "club": "Vereinsspieler",
+    "competent": "Solide",
+    "intermediate": "Mittelstufe",
+    "advanced": "Fortgeschritten",
+    "expert": "Experte",
+    "candidate": "Meisterkandidat",
+    "master": "Meister",
+    "grandmaster": "Großmeister",
+    "elite": "Elite"
+  },
+  "coach": {
+    "setup": "Ich bin {{coach}}. Wähle die Stockfish-Stärke und deine Farbe, dann spielen wir eine vollständige Partie.",
+    "changeHint": "Klicke auf den Trainer, um ihn zu wechseln.",
+    "reading": "Ich prüfe die Stellung vor deinem Zug. Einen Moment.",
+    "yourTurn": "Du bist am Zug. Spiele die Stellung wie in einer normalen Partie.",
+    "thinking": "Ich bin am Zug und berechne meine Antwort.",
+    "engineMove": "Ich habe {{move}} gespielt. Du bist wieder am Zug.",
+    "engineError": "Ich konnte die Berechnung nicht abschließen. Du kannst die Partie über die Einstellungen neu starten.",
+    "intro": "Bereit. Ich bin {{coach}} und spiele mit einer ungefähren Stärke von {{elo}}.",
+    "checking": "Du hast {{move}} gespielt. Ich prüfe, was sich in der Stellung verändert hat.",
+    "retry": "Gut. Wir sind zur Stellung vor deinem Zug zurückgekehrt. Probiere eine andere Idee.",
+    "quality": {
+      "theory": "{{move}} ist Theorie. Das ist ein bekannter Eröffnungszug und wir bleiben auf gut erforschten Wegen.",
+      "best": "{{move}} ist der beste Zug, den ich finde. Sehr gut gelesen.",
+      "excellent": "{{move}} ist ausgezeichnet. Der Zug erhält fast das gesamte Potenzial der Stellung.",
+      "okay": "{{move}} ist spielbar. Es gibt vielleicht etwas Präziseres, aber die Stellung bleibt gesund.",
+      "inaccuracy": "{{move}} ist eine kleine Ungenauigkeit. Nicht schlimm, aber du gibst etwas von deiner Stellung ab.",
+      "mistake": "{{move}} ist ein Fehler. Jetzt habe ich eine konkrete Antwort; der rote Pfeil zeigt die Hauptdrohung.",
+      "blunder": "{{move}} ist ein schwerer Fehler. Der rote Pfeil zeigt die taktische Antwort, die du zugelassen hast."
+    },
+    "end": {
+      "win": "Partie beendet. Du hast dieses Duell gewonnen. Stark gespielt.",
+      "loss": "Partie beendet. Diese Partie gewinne ich, aber die vollständige Analyse zeigt dir, wo sie gekippt ist.",
+      "draw": "Partie beendet. Remis. Die Analyse kann trotzdem die kritischen Momente zeigen."
+    }
+  },
+  "quality": {
+    "theory": "Theorie",
+    "best": "Bester",
+    "excellent": "Ausgezeichnet",
+    "okay": "Gut",
+    "inaccuracy": "Ungenauigkeit",
+    "mistake": "Fehler",
+    "blunder": "Grober Fehler"
+  },
+  "actions": {
+    "changeSetup": "Einstellungen ändern",
+    "returnLive": "Zurück zur Partie",
+    "play": "Spielen",
+    "retry": "Erneut versuchen",
+    "continue": "Weiterspielen",
+    "undo": "Rückgängig",
+    "redo": "Wiederholen",
+    "result": "Ergebnis",
+    "resign": "Aufgeben",
+    "close": "Schließen",
+    "analyse": "Partie analysieren",
+    "playAgain": "Noch einmal spielen"
+  },
+  "game": {
+    "title": "Partie",
+    "vs": "gegen {{coach}} · {{elo}}",
+    "noMoves": "Die Züge erscheinen hier im Verlauf der Partie."
+  },
+  "end": {
+    "kicker": "DUELL BEENDET",
+    "win": {
+      "title": "Sieg",
+      "body": "Du hast {{coach}} auf Stärke {{elo}} besiegt. Du kannst jetzt das vollständige PGN analysieren oder direkt erneut spielen."
+    },
+    "loss": {
+      "title": "{{coach}} gewinnt",
+      "body": "{{coach}} hat dieses Duell auf Stärke {{elo}} gewonnen. Analysiere das PGN für die entscheidenden Momente oder spiele sofort noch einmal."
+    },
+    "draw": {
+      "title": "Remis",
+      "body": "Du hast gegen {{coach}} auf Stärke {{elo}} remis gespielt. Das vollständige PGN ist bereit zur Analyse."
+    },
+    "analysing": "Das vollständige PGN wird mit deinen NexoChess-Analyseeinstellungen ausgewertet…",
+    "analysisError": "Die Partie konnte nicht analysiert werden. Du kannst es erneut versuchen oder die Züge hier weiter ansehen."
+  }
+}

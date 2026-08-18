@@ -1,0 +1,66 @@
+/* Home-only mobile safety layer. This file is loaded only by the home bundle. */
+
+@media (max-width: 700px), (max-width: 1024px) and (orientation: portrait) {
+    main {
+        box-sizing: border-box;
+        width: 100% !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        padding-inline:
+            max(12px, env(safe-area-inset-left))
+            max(12px, env(safe-area-inset-right));
+        overflow-x: clip;
+    }
+
+    main > section {
+        box-sizing: border-box !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        margin-inline: auto !important;
+    }
+
+    main a,
+    main button {
+        box-sizing: border-box;
+        max-width: 100%;
+    }
+
+    main h1,
+    main h2,
+    main h3,
+    main p,
+    main li,
+    main dd,
+    main dt {
+        max-width: 100%;
+        word-break: normal;
+        overflow-wrap: normal;
+        hyphens: none;
+    }
+
+    main img,
+    main svg,
+    main figure {
+        max-width: 100%;
+    }
+
+    main ul,
+    main ol,
+    main dl {
+        box-sizing: border-box;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 430px) {
+    main {
+        padding-inline:
+            max(14px, env(safe-area-inset-left))
+            max(14px, env(safe-area-inset-right));
+    }
+
+    main > section:first-of-type a {
+        min-height: 50px;
+    }
+}

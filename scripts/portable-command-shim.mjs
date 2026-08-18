@@ -17,6 +17,31 @@ function pinNpxPackage(commandName, args) {
     return args;
 }
 
+function windowsDeploymentVerifier(commandName, args, platform) {
+    const isNode = commandName === "node" || commandName === "node.exe";
+    const verifiesCloudflare = args.includes("scripts/verify-cloudflare-deployment.mjs");
+
+    if (platform !== "win32" || !isNode || !verifiesCloudflare) {
+        return null;
+    }
+
+    const environmentIndex = args.indexOf("--environment");
+    const environment = environmentIndex >= 0 ? args[environmentIndex + 1] : "staging";
+
+    return {
+        executable: "powershell.exe",
+        args: [
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            "scripts/verify-cloudflare-deployment-windows.ps1",
+            "-Environment",
+            environment
+        ]
+    };
+}
+
 export function preparePortableSpawn(
     executable,
     args = [],
@@ -27,6 +52,9 @@ export function preparePortableSpawn(
     } = {}
 ) {
     const commandName = basename(String(executable)).toLowerCase();
+    const windowsVerifier = windowsDeploymentVerifier(commandName, args, platform);
+    if (windowsVerifier) return windowsVerifier;
+
     const pinnedArgs = pinNpxPackage(commandName, args);
 
     if (

@@ -1,4 +1,13 @@
-import React from "react";
+import React, {
+    useEffect,
+    useMemo,
+    useState
+} from "react";
+
+import useSettingsStore from "@/stores/SettingsStore";
+import {
+    subscribeToBoardPrimaryInteraction
+} from "@/lib/boardAnnotations";
 
 import SuggestionArrow from "../SuggestionArrow";
 import * as styles from "./SuggestionArrowOverlay.module.css";
@@ -332,6 +341,10 @@ function buildKnightArrowShape(
     ]);
 }
 
+function getArrowKey(arrow: SuggestionArrow) {
+    return `${arrow.from}-${arrow.to}-${arrow.colour}`;
+}
+
 function SuggestionArrowOverlay({
     arrows = [],
     flipped = false,
@@ -340,6 +353,69 @@ function SuggestionArrowOverlay({
     headLengthPx,
     headWidthPx
 }: SuggestionArrowOverlayProps) {
+    const manualArrowColour = useSettingsStore(
+        state => state.settings.analysis.arrowStyle.manualColour
+    );
+
+    const manualArrowKeys = useMemo(
+        () => new Set(
+            arrows
+                .filter(arrow => arrow.colour == manualArrowColour)
+                .map(getArrowKey)
+        ),
+        [ arrows, manualArrowColour ]
+    );
+
+    const [
+        hiddenManualArrowKeys,
+        setHiddenManualArrowKeys
+    ] = useState<Set<string>>(() => new Set());
+
+    /*
+     * Las flechas manuales son una capa propia de NexoChess en Analysis y
+     * Puzzles. react-chessboard ya limpia sus flechas internas al hacer clic,
+     * pero esta capa externa no conocía ese gesto. Guardamos las anotaciones
+     * ocultadas para que no reaparezcan por un render ajeno; una flecha nueva
+     * sí aparece normalmente.
+     */
+    useEffect(() => (
+        subscribeToBoardPrimaryInteraction(() => {
+            if (!manualArrowKeys.size) return;
+
+            setHiddenManualArrowKeys(previous => {
+                const next = new Set(previous);
+
+                for (const key of manualArrowKeys) {
+                    next.add(key);
+                }
+
+                return next;
+            });
+        })
+    ), [ manualArrowKeys ]);
+
+    useEffect(() => {
+        setHiddenManualArrowKeys(previous => {
+            const next = new Set(
+                [ ...previous ].filter(key => manualArrowKeys.has(key))
+            );
+
+            if (
+                next.size == previous.size
+                && [ ...next ].every(key => previous.has(key))
+            ) {
+                return previous;
+            }
+
+            return next;
+        });
+    }, [ manualArrowKeys ]);
+
+    const visibleArrows = arrows.filter(arrow => (
+        arrow.colour != manualArrowColour
+        || !hiddenManualArrowKeys.has(getArrowKey(arrow))
+    ));
+
     const safeBoardWidth = boardPixelWidth > 0
         ? boardPixelWidth
         : BOARD_SIZE;
@@ -369,7 +445,7 @@ function SuggestionArrowOverlay({
             className={styles.overlay}
             viewBox={`0 0 ${BOARD_SIZE} ${BOARD_SIZE}`}
         >
-            {arrows.map((arrow, index) => {
+            {visibleArrows.map((arrow, index) => {
                 const start = getSquareCenter(
                     arrow.from,
                     flipped
@@ -402,7 +478,7 @@ function SuggestionArrowOverlay({
                     <path
                         key={`${arrow.from}-${arrow.to}-${index}`}
                         d={path}
-                        fill={arrow.colour}
+                        fill={arrow.overlayColour || arrow.colour}
                         fillOpacity="0.65"
                     />
                 );

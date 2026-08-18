@@ -1,0 +1,195 @@
+.stage {
+    grid-template-columns: minmax(0, var(--engine-board-size)) minmax(330px, 410px);
+    width: min(1240px, 100%);
+    justify-content: center;
+}
+
+.boardColumn {
+    grid-column: 1;
+}
+
+.sidePanel {
+    grid-column: 2;
+}
+
+.coachCard {
+    grid-template-columns: 144px minmax(0, 1fr);
+    min-height: 148px;
+}
+
+.coachPortraitButton {
+    width: 144px;
+    min-height: 148px;
+    padding: 3px 0 0;
+}
+
+.coachPortrait {
+    width: 144px;
+    height: 144px;
+}
+
+/* Coach face coordinates are authored against the full portrait. Keeping the
+   root square removes the vertical letterboxing seen in Duelo, then this small
+   local offset places the speaking mouth on the lips without changing Lessons
+   or Analysis. */
+.coachPortrait > span:nth-of-type(2) {
+    top: calc(var(--coach-mouth-top, 51%) + 4px) !important;
+}
+
+.editControls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+    margin-top: 8px;
+}
+
+.editControls button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 34px;
+    padding: 7px 9px;
+    border: 1px solid rgba(137, 180, 211, 0.16);
+    border-radius: 9px;
+    color: #d8e5ee;
+    background: rgba(25, 43, 57, 0.76);
+    font: inherit;
+    font-size: 0.76rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.editControls button span {
+    color: #79d2fb;
+    font-size: 1.05rem;
+    line-height: 1;
+}
+
+.editControls button:disabled {
+    opacity: 0.36;
+    cursor: default;
+}
+
+@media (max-width: 1240px) {
+    .stage {
+        grid-template-columns: minmax(0, var(--engine-board-size)) minmax(290px, 360px);
+        width: min(1120px, 100%);
+    }
+
+    .coachCard {
+        grid-template-columns: 126px minmax(0, 1fr);
+        min-height: 132px;
+    }
+
+    .coachPortraitButton {
+        width: 126px;
+        min-height: 132px;
+    }
+
+    .coachPortrait {
+        width: 126px;
+        height: 126px;
+    }
+}
+
+@media (max-width: 900px) {
+    .stage {
+        grid-template-columns: minmax(0, 720px);
+        width: 100%;
+    }
+
+    .boardColumn,
+    .sidePanel {
+        grid-column: 1;
+    }
+}
+
+@media (max-width: 650px) {
+    .coachCard {
+        grid-template-columns: 108px minmax(0, 1fr);
+        min-height: 112px;
+    }
+
+    .coachPortraitButton {
+        width: 108px;
+        min-height: 112px;
+    }
+
+    .coachPortrait {
+        width: 108px;
+        height: 108px;
+    }
+
+    .editControls button {
+        min-height: 36px;
+        font-size: 0.74rem;
+    }
+}
+
+/* Phones and portrait tablets share one focused vertical game flow. Landscape
+   tablets retain the compact two-column desktop layout. */
+@media (max-width: 700px), (max-width: 1024px) and (orientation: portrait) {
+    .stage {
+        grid-template-columns: minmax(0, 1fr);
+        width: 100%;
+        max-width: 820px;
+        gap: 10px;
+        box-sizing: border-box;
+        margin-inline: auto;
+        padding-inline:
+            max(6px, env(safe-area-inset-left))
+            max(6px, env(safe-area-inset-right));
+    }
+
+    .boardColumn,
+    .sidePanel {
+        grid-column: 1;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .boardColumn {
+        grid-row: 1;
+    }
+
+    .sidePanel {
+        grid-row: 2;
+    }
+
+    .coachCard {
+        grid-template-columns: 92px minmax(0, 1fr);
+        min-height: 98px;
+    }
+
+    .coachPortraitButton {
+        width: 92px;
+        min-height: 98px;
+    }
+
+    .coachPortrait {
+        width: 92px;
+        height: 92px;
+    }
+
+    .editControls button {
+        min-height: 44px;
+        font-size: 0.78rem;
+        touch-action: manipulation;
+    }
+}
+
+@media (min-width: 701px) and (max-width: 1100px) and (orientation: landscape) {
+    .stage {
+        grid-template-columns: minmax(0, var(--engine-board-size)) minmax(280px, 340px);
+        width: min(1080px, 100%);
+        gap: 14px;
+    }
+}
+
+:global(body.light) .editControls button,
+:global([data-theme="light"]) .editControls button {
+    border-color: rgba(47, 96, 129, 0.18);
+    color: #294153;
+    background: rgba(230, 240, 247, 0.9);
+}

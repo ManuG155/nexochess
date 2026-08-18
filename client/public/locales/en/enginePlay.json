@@ -1,0 +1,101 @@
+{
+  "nav": "Duel",
+  "eyebrow": "DUEL STOCKFISH",
+  "title": "Duel",
+  "subtitle": "Choose a level and colour, then play a full game against Stockfish with your selected coach as the rival. Your moves get near-instant feedback, and important errors can be retried.",
+  "thinking": "Thinking…",
+  "you": "You",
+  "white": "White",
+  "black": "Black",
+  "moveQuality": "Move quality",
+  "setup": {
+    "difficulty": "Difficulty",
+    "playAs": "Play as",
+    "eloNote": "The Elo labels are an approximate playing-strength guide. Lower levels still play sound opening moves and then choose among progressively wider Stockfish candidates."
+  },
+  "levels": {
+    "initiation": "Initiation",
+    "beginner": "Beginner",
+    "novice": "Novice",
+    "club": "Club player",
+    "competent": "Competent",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced",
+    "expert": "Expert",
+    "candidate": "Candidate master",
+    "master": "Master",
+    "grandmaster": "Grandmaster",
+    "elite": "Elite"
+  },
+  "coach": {
+    "setup": "I’m {{coach}}. Choose Stockfish’s strength and the colour you want, then we’ll play a full game.",
+    "changeHint": "Click the coach to change them.",
+    "reading": "I am reading the position before your turn. One moment.",
+    "yourTurn": "Your turn. Play the position as you would in a normal game.",
+    "thinking": "My turn. I am calculating my reply.",
+    "engineMove": "I played {{move}}. The position is yours again.",
+    "engineError": "I could not finish that calculation. You can restart the game from the setup.",
+    "intro": "Ready. I’m {{coach}}, playing at an approximate strength of {{elo}}.",
+    "checking": "You played {{move}}. I am checking what changed in the position.",
+    "retry": "Good. We have returned to the position before your move. Try another idea.",
+    "quality": {
+      "theory": "{{move}} is theory. It is a known opening move and keeps us on established paths.",
+      "best": "{{move}} is the best move I found. Excellent reading of the position.",
+      "excellent": "{{move}} is excellent. It keeps almost all of the position's potential.",
+      "okay": "{{move}} is playable. There may be a more precise option, but the position remains healthy.",
+      "inaccuracy": "{{move}} is a small inaccuracy. Nothing catastrophic, but you gave away part of the position.",
+      "mistake": "{{move}} is a mistake. I have a concrete reply now; the red arrow shows the main threat.",
+      "blunder": "{{move}} is a serious blunder. The red arrow shows the tactical reply you have allowed."
+    },
+    "end": {
+      "win": "Game over. You won this duel. Nice work.",
+      "loss": "Game over. I won this one, but the full review can show exactly where the game changed.",
+      "draw": "Game over. Draw. The review can still reveal the critical moments."
+    }
+  },
+  "quality": {
+    "theory": "Theory",
+    "best": "Best",
+    "excellent": "Excellent",
+    "okay": "Good",
+    "inaccuracy": "Inaccuracy",
+    "mistake": "Mistake",
+    "blunder": "Blunder"
+  },
+  "actions": {
+    "changeSetup": "Change setup",
+    "returnLive": "Back to game",
+    "play": "Play",
+    "retry": "Retry",
+    "continue": "Continue",
+    "undo": "Undo",
+    "redo": "Redo",
+    "result": "Result",
+    "resign": "Resign",
+    "close": "Close",
+    "analyse": "Analyse game",
+    "playAgain": "Play again"
+  },
+  "game": {
+    "title": "Game",
+    "vs": "vs. {{coach}} · {{elo}}",
+    "noMoves": "The moves will appear here as the game progresses."
+  },
+  "end": {
+    "kicker": "DUEL FINISHED",
+    "win": {
+      "title": "Victory",
+      "body": "You defeated {{coach}} at strength {{elo}}. You can analyse the complete PGN now or play another game."
+    },
+    "loss": {
+      "title": "{{coach}} wins",
+      "body": "{{coach}} won this duel at strength {{elo}}. Analyse the PGN to find the decisive moments, or play again immediately."
+    },
+    "draw": {
+      "title": "Draw",
+      "body": "You drew with {{coach}} at strength {{elo}}. The complete PGN is ready if you want to review the game."
+    },
+    "analysing": "Analysing the complete PGN with your NexoChess review settings…",
+    "analysisError": "The game could not be analysed. You can try again or keep reviewing the moves here."
+  }
+}

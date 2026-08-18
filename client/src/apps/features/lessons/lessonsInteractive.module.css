@@ -1,0 +1,64 @@
+.taskCard {
+    min-height: 0;
+    padding: 22px !important;
+}
+
+.taskCard h2 {
+    margin-top: 7px;
+    margin-bottom: 14px;
+    font-size: clamp(1.32rem, 1.6vw, 1.58rem);
+    line-height: 1.18;
+}
+
+.positionMeta {
+    margin-top: 0 !important;
+    padding: 10px 11px;
+    border: 1px solid rgba(255,255,255,.065);
+    border-radius: 12px;
+    background: rgba(255,255,255,.025);
+    color: rgba(235,244,255,.55) !important;
+    font-size: .75rem !important;
+}
+
+.feedback {
+    margin-top: 13px !important;
+    padding: 10px 11px !important;
+}
+
+.taskActions {
+    margin-top: 14px !important;
+    justify-content: stretch !important;
+}
+
+.taskActions > button {
+    width: 100%;
+    min-width: 0 !important;
+}
+
+.taskActions > button:disabled {
+    opacity: .48;
+    cursor: default;
+}
+
+.coachBubble {
+    min-height: 132px;
+}
+
+.coachBubble p {
+    min-height: 58px;
+    line-height: 1.5;
+}
+
+@media (max-width: 980px) {
+    .taskCard {
+        padding: 18px !important;
+    }
+
+    .coachBubble {
+        min-height: 0;
+    }
+
+    .coachBubble p {
+        min-height: 0;
+    }
+}

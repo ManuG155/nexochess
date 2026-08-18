@@ -12,6 +12,8 @@ import useEvaluateGame from "@analysis/hooks/useEvaluateGame";
 
 import AnalyseButton from "../../AnalyseButton";
 
+import iconAnalysis from "@assets/img/interface/analysis.svg";
+
 import * as styles from "./GameSelection.module.css";
 
 
@@ -53,30 +55,43 @@ function GameSelection() {
 
     return (
         <section className={styles.wrapper}>
+            <div className={styles.ambientGlow} aria-hidden="true" />
+
             <header className={styles.intro}>
-                <span className={styles.eyebrow}>
-                    {t("gameSelection.eyebrow")}
-                </span>
+                <div className={styles.introMark} aria-hidden="true">
+                    <img src={iconAnalysis} alt="" />
+                </div>
 
-                <h1>{t("gameSelection.title")}</h1>
+                <div className={styles.introCopy}>
+                    <span className={styles.eyebrow}>
+                        {t("gameSelection.eyebrow")}
+                    </span>
 
-                <p>{t("gameSelection.subtitle")}</p>
+                    <h1>{t("gameSelection.title")}</h1>
 
+                    <p>{t("gameSelection.subtitle")}</p>
+                </div>
             </header>
 
-            <GameSelector
-                saveLocalStorage
-                onGameSelect={setSelectedGame}
-            />
+            <div className={styles.workspace}>
+                <div className={styles.workspaceAccent} aria-hidden="true" />
 
-            <AnalyseButton
-                onClick={onAnalyseClick}
-                disabled={!canAnalyse}
-            />
+                <GameSelector
+                    saveLocalStorage
+                    onGameSelect={setSelectedGame}
+                />
+            </div>
 
-            <p className={styles.localNote}>
-                {t("gameSelection.localNote")}
-            </p>
+            <div className={styles.actionDock}>
+                <AnalyseButton
+                    onClick={onAnalyseClick}
+                    disabled={!canAnalyse}
+                />
+
+                <p className={styles.localNote}>
+                    {t("gameSelection.localNote")}
+                </p>
+            </div>
 
             {statusMessage && (
                 <i className={styles.statusMessage}>
@@ -85,9 +100,11 @@ function GameSelection() {
             )}
 
             {importError && (
-                <LogMessage>
-                    {importError}
-                </LogMessage>
+                <div className={styles.errorMessage}>
+                    <LogMessage>
+                        {importError}
+                    </LogMessage>
+                </div>
             )}
         </section>
     );

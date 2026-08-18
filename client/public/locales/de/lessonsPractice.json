@@ -1,0 +1,38 @@
+{
+  "positions": "{{count}} Positionen",
+  "positionProgress": "Position {{current}} von {{total}}",
+  "prompts": {
+    "moveTarget": "Führe den angegebenen Zug aus.",
+    "findMove": "Finde den Zug, der {{lesson}} zeigt.",
+    "selectConcept": "Wähle die Figur oder das Feld, das {{lesson}} am besten darstellt.",
+    "selectMover": "Wähle eine Figur der Seite, die am Zug ist.",
+    "selectTarget": "Klicke auf das markierte Feld.",
+    "boardSquare": "Ziehe die Figur nach {{square}}. Die Linien gehen von a bis h und die Reihen von 1 bis 8.",
+    "choose": "Wähle die richtige Antwort für diese Stellung."
+  },
+  "coach": "{{lesson}} · Position {{current}} von {{total}}. Lies das Brett und löse die Aufgabe.",
+  "coachBoard": "Orientiere dich auf dem Brett und ziehe die Figur anhand von Linie und Reihe nach {{square}}.",
+  "pieceNames": {"piece":"die Figur","p":"der Bauer","n":"der Springer","b":"der Läufer","r":"der Turm","q":"die Dame","k":"der König"},
+  "coachDynamic": {
+    "check": "{{side}} sind am Zug und ihr König steht im Schach: {{attacker}} auf {{square}} greift ihn an. Finde den saubersten Weg aus dem Schach.",
+    "capture": "{{side}} sind am Zug. Rund um {{target}} auf {{to}} besteht konkrete Spannung. Finde, wie du sie nutzen kannst, um {{lesson}} umzusetzen, ohne die Lösung zu überstürzen.",
+    "position": "{{side}} sind am Zug. Lies zuerst die ganze Stellung und finde die konkrete Gelegenheit, mit der sich {{lesson}} umsetzen lässt.",
+    "choice": "{{side}} sind am Zug. Lies die gesamte Stellung, bevor du die Antwort zu {{lesson}} entscheidest.",
+    "hintCheck": "Hinweis: Verfolge das Schach von {{attacker}} auf {{square}} bis zu deinem König. Du kannst den König ziehen, den Schachgeber schlagen oder die Linie blockieren, wenn die Stellung es erlaubt.",
+    "hintMove": "Hinweis: Beginne mit {{piece}} auf {{from}} und frage dich, was sich ändert, wenn die Figur aktiv wird. Das Ziel ist {{lesson}}.",
+    "hintChoice": "Hinweis: Vergleiche Königssicherheit, legale Züge und unmittelbare Drohungen, bevor du {{lesson}} beantwortest.",
+    "success1": "Stark gesehen. Genau diesen Zug verlangt die Stellung.",
+    "success2": "Sehr gut. Du hast die Stellung richtig gelesen und die Schlüsselidee gefunden.",
+    "success3": "Gut erkannt. Dieser Zug löst das Problem sauber.",
+    "success4": "Perfekt. Du hast die richtige Antwort gefunden und die ganze Stellung im Blick behalten.",
+    "error": "Dieser Zug ist legal, aber hier nicht die richtige Lösung. Lies die Stellung noch einmal und versuche eine andere Idee.",
+    "illegal": "Dieser Zug ist hier nicht legal. Wähle die Figur erneut und prüfe ihre verfügbaren Felder."
+  },
+  "correct": "Richtiger Zug.",
+  "illegal": "Dieser Zug ist hier nicht legal.",
+  "tryAgain": "Das ist nicht der Zug, den diese Stellung verlangt.",
+  "completeLesson": "Lektion abschließen",
+  "completed": "{{lesson}} abgeschlossen",
+  "completedBody": "Du hast alle Positionen gelöst. Die nächste Lektion ist jetzt verfügbar.",
+  "choices": {"yes":"Ja","no":"Nein","white":"Weiß","black":"Schwarz","one":"1","three":"3","five":"5","nine":"9","draw":"Remis","stalemate":"Patt","checkmate":"Schachmatt","continue":"Weiter","resign":"Aufgeben","offerDraw":"Remis anbieten"}
+}

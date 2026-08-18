@@ -24,6 +24,9 @@ const ENVIRONMENTS = {
 const EXPECTED_PUZZLES = 6_057_356;
 const SEARCH_PROPAGATION_ATTEMPTS = 8;
 const SEARCH_PROPAGATION_DELAY_MS = 1_500;
+const TRANSIENT_REQUEST_ATTEMPTS = 4;
+const TRANSIENT_REQUEST_DELAY_MS = 1_600;
+const REQUEST_TIMEOUT_MS = 20_000;
 
 function argument(name) {
     const index = process.argv.indexOf(name);
@@ -45,17 +48,48 @@ const puzzleOrigin = (
     argument("--puzzle-origin") || environment.puzzleOrigin
 ).replace(/\/$/, "");
 
-async function request(path, options = {}) {
-    return fetch(`${origin}${path}`, {
-        cache: "no-store",
-        redirect: "manual",
-        signal: AbortSignal.timeout(20_000),
-        ...options
-    });
-}
-
 function delay(milliseconds) {
     return new Promise(resolve => setTimeout(resolve, milliseconds));
+}
+
+function transientMessage(error) {
+    if (error instanceof Error) {
+        const cause = error.cause instanceof Error ? `: ${error.cause.message}` : "";
+        return `${error.message}${cause}`;
+    }
+    return String(error);
+}
+
+async function fetchWithRetry(url, options = {}, label = url) {
+    let lastError;
+
+    for (let attempt = 1; attempt <= TRANSIENT_REQUEST_ATTEMPTS; attempt += 1) {
+        try {
+            return await fetch(url, {
+                cache: "no-store",
+                redirect: "manual",
+                ...options,
+                signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS)
+            });
+        } catch (error) {
+            lastError = error;
+            if (attempt >= TRANSIENT_REQUEST_ATTEMPTS) break;
+
+            const wait = TRANSIENT_REQUEST_DELAY_MS * attempt;
+            console.warn(
+                `Transient network failure while checking ${label} `
+                + `(${attempt}/${TRANSIENT_REQUEST_ATTEMPTS}): ${transientMessage(error)}. `
+                + `Retrying in ${wait} ms...`
+            );
+            await delay(wait);
+        }
+    }
+
+    throw lastError;
+}
+
+async function request(path, options = {}) {
+    return fetchWithRetry(`${origin}${path}`, options, path);
 }
 
 async function requestSearchDocument(pathname, {
@@ -235,6 +269,7 @@ for (const path of [
     "/faq",
     "/analysis",
     "/archive",
+    "/lessons",
     "/puzzles",
     "/settings",
     "/signin",
@@ -249,6 +284,7 @@ await assertPage("/analysis?game=deployment-smoke-test");
 await assertJavaScript("/home.bundle.js?v=deployment-smoke-test", { immutable: true });
 await assertJavaScript("/about.bundle.js");
 await assertJavaScript("/faq.bundle.js");
+await assertJavaScript("/lessons.bundle.js");
 await assertJavaScript("/settings.bundle.js");
 await assertSearchFiles();
 
@@ -275,10 +311,11 @@ const unknownApi = await request("/api/operations/unknown");
 assert(unknownApi.status === 404, "Unknown API route did not return 404.");
 console.log("OK public API error handling");
 
-const catalogueResponse = await fetch(`${puzzleOrigin}/catalogue.json`, {
-    cache: "no-store",
-    signal: AbortSignal.timeout(20_000)
-});
+const catalogueResponse = await fetchWithRetry(
+    `${puzzleOrigin}/catalogue.json`,
+    { redirect: "follow" },
+    "puzzle catalogue"
+);
 assert(catalogueResponse.status === 200, "Puzzle catalogue is unavailable.");
 const catalogue = await catalogueResponse.json();
 assert(

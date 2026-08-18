@@ -1,0 +1,101 @@
+{
+  "nav": "Duelo",
+  "eyebrow": "DUELO CONTRA STOCKFISH",
+  "title": "Duelo",
+  "subtitle": "Elige nivel y color y juega una partida completa contra Stockfish con tu entrenador como rival. Tus jugadas reciben feedback casi inmediato y podrás reintentar los errores importantes.",
+  "thinking": "Pensando…",
+  "you": "Tú",
+  "white": "Blancas",
+  "black": "Negras",
+  "moveQuality": "Calidad de la jugada",
+  "setup": {
+    "difficulty": "Dificultad",
+    "playAs": "Jugar con",
+    "eloNote": "Los valores Elo son una referencia aproximada de fuerza. Los niveles bajos siguen jugando aperturas coherentes y después eligen entre un abanico progresivamente mayor de candidatos de Stockfish."
+  },
+  "levels": {
+    "initiation": "Iniciación",
+    "beginner": "Principiante",
+    "novice": "Novato",
+    "club": "Aficionado",
+    "competent": "Competente",
+    "intermediate": "Intermedio",
+    "advanced": "Avanzado",
+    "expert": "Experto",
+    "candidate": "Candidato a maestro",
+    "master": "Maestro",
+    "grandmaster": "Gran Maestro",
+    "elite": "Élite"
+  },
+  "coach": {
+    "setup": "Soy {{coach}}. Elige la fuerza de Stockfish y el color que quieras y jugaremos una partida.",
+    "changeHint": "Clica en el entrenador para cambiarlo.",
+    "reading": "Estoy leyendo la posición antes de tu turno. Dame un momento.",
+    "yourTurn": "Tu turno. Juega la posición como lo harías en una partida normal.",
+    "thinking": "Me toca. Estoy calculando mi respuesta.",
+    "engineMove": "He jugado {{move}}. La posición vuelve a ser tuya.",
+    "engineError": "No he podido terminar ese cálculo. Puedes reiniciar la partida desde la configuración.",
+    "intro": "Listo. Soy {{coach}} y jugaré con una fuerza aproximada de {{elo}}.",
+    "checking": "Has jugado {{move}}. Estoy comprobando qué ha cambiado en la posición.",
+    "retry": "Bien. Hemos vuelto a la posición anterior a tu jugada. Prueba otra idea.",
+    "quality": {
+      "theory": "{{move}} es teoría. Es una jugada conocida de apertura y seguimos por caminos bien estudiados.",
+      "best": "{{move}} es la mejor jugada que encuentro. Excelente lectura de la posición.",
+      "excellent": "{{move}} es excelente. Conserva prácticamente todo el potencial de la posición.",
+      "okay": "{{move}} es jugable. Puede haber algo más preciso, pero la posición sigue sana.",
+      "inaccuracy": "{{move}} es una pequeña imprecisión. No es grave, pero has cedido parte de la posición.",
+      "mistake": "{{move}} es un error. Ahora tengo una respuesta concreta; la flecha roja muestra la amenaza principal.",
+      "blunder": "{{move}} es un error grave. La flecha roja muestra la respuesta táctica que has permitido."
+    },
+    "end": {
+      "win": "Se acabó. Has ganado este duelo. Muy buena partida.",
+      "loss": "Se acabó. Esta me la llevo yo, pero la revisión completa puede enseñarte exactamente dónde cambió la partida.",
+      "draw": "Se acabó. Tablas. Aun así, la revisión puede descubrir los momentos críticos."
+    }
+  },
+  "quality": {
+    "theory": "Teoría",
+    "best": "Mejor",
+    "excellent": "Excelente",
+    "okay": "Buena",
+    "inaccuracy": "Imprecisión",
+    "mistake": "Error",
+    "blunder": "Error grave"
+  },
+  "actions": {
+    "changeSetup": "Cambiar configuración",
+    "returnLive": "Volver a la partida",
+    "play": "Jugar",
+    "retry": "Reintentar",
+    "continue": "Continuar",
+    "undo": "Deshacer",
+    "redo": "Rehacer",
+    "result": "Resultado",
+    "resign": "Rendirse",
+    "close": "Cerrar",
+    "analyse": "Analizar partida",
+    "playAgain": "Jugar otra vez"
+  },
+  "game": {
+    "title": "Partida",
+    "vs": "contra {{coach}} · {{elo}}",
+    "noMoves": "Las jugadas aparecerán aquí a medida que avance la partida."
+  },
+  "end": {
+    "kicker": "DUELO TERMINADO",
+    "win": {
+      "title": "Victoria",
+      "body": "Has derrotado a {{coach}} con fuerza {{elo}}. Puedes analizar ahora el PGN completo o jugar otra partida."
+    },
+    "loss": {
+      "title": "Gana {{coach}}",
+      "body": "{{coach}} ha ganado este duelo con fuerza {{elo}}. Analiza el PGN para encontrar los momentos decisivos o vuelve a jugar inmediatamente."
+    },
+    "draw": {
+      "title": "Tablas",
+      "body": "Has hecho tablas con {{coach}} a fuerza {{elo}}. El PGN completo está preparado si quieres revisar la partida."
+    },
+    "analysing": "Analizando el PGN completo con tus ajustes de revisión de NexoChess…",
+    "analysisError": "No se ha podido analizar la partida. Puedes volver a intentarlo o seguir revisando las jugadas aquí."
+  }
+}

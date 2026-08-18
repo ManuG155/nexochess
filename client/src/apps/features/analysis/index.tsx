@@ -13,6 +13,7 @@ import * as styles from "./index.module.css";
 
 import "@/i18n";
 import "@/index.css";
+import "./Analysis.mobile.css";
 
 const root = ReactDOM.createRoot(
     document.querySelector(".root")!

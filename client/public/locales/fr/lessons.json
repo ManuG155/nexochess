@@ -1,0 +1,112 @@
+{
+    "nav": "Leçons",
+    "page": {
+        "eyebrow": "Apprends en jouant",
+        "title": "Leçons",
+        "subtitle": "Un parcours guidé depuis ton tout premier coup jusqu'à une pratique autonome avec de bonnes bases."
+    },
+    "path": {
+        "progressLabel": "Terminé",
+        "sectionKicker": "Section 1",
+        "sectionTitle": "Premier contact",
+        "sectionDescription": "Commence par les pièces. Explications courtes, pratique immédiate et ton entraîneur à tes côtés.",
+        "start": "Commencer la leçon",
+        "replay": "Rejouer la leçon",
+        "nodes": {
+            "rook": "La tour",
+            "bishop": "Le fou",
+            "knight": "Le cavalier",
+            "checkpoint": "Premier checkpoint"
+        }
+    },
+    "coach": {
+        "choose": "Choisis ton entraîneur",
+        "close": "Fermer le sélecteur d'entraîneur",
+        "change": "Changer d'entraîneur. Entraîneur actuel : {{coach}}",
+        "clickToChange": "Clique sur l'entraîneur pour le changer.",
+        "pathIntro": "Commençons par l'une des pièces les plus simples à comprendre. Prêt à déplacer une tour ?",
+        "pathComplete": "Bien joué. Tu comprends déjà comment la tour se déplace, ce qui la bloque et comment elle capture."
+    },
+    "actions": {
+        "back": "Retour au parcours",
+        "next": "Continuer",
+        "hint": "Indice",
+        "showSolution": "Afficher la solution",
+        "solutionShown": "Solution affichée",
+        "finish": "Retour au parcours"
+    },
+    "lesson": {
+        "step": "Étape {{current}} sur {{total}}",
+        "yourTurn": "À toi",
+        "question": "Réfléchis d'abord",
+        "completeKicker": "Leçon terminée",
+        "rook": {
+            "title": "La tour",
+            "intro": {
+                "coach": "La tour se déplace en ligne droite : horizontalement ou verticalement. Elle peut parcourir plusieurs cases si le chemin est libre.",
+                "body": "Regarde la tour en d4. Dans cette leçon, tu vas la déplacer, repérer les chemins bloqués et apprendre à capturer avec elle."
+            },
+            "horizontal": {
+                "coach": "Commençons horizontalement. Garde la tour sur la même rangée.",
+                "instruction": "Déplace la tour de d4 à g4.",
+                "success": "Exactement. Même rangée, ligne droite.",
+                "hint1": "Horizontal signifie aller à gauche ou à droite sans changer de rangée.",
+                "hint2": "La tour part de d4 et la cible est g4.",
+                "hint3": "Suis la ligne droite de d4 à g4."
+            },
+            "vertical": {
+                "coach": "Même idée verticalement : garde la tour sur la même colonne.",
+                "instruction": "Déplace la tour de d4 à d7.",
+                "success": "Bien. Même colonne, ligne droite.",
+                "hint1": "Vertical signifie monter ou descendre sans changer de colonne.",
+                "hint2": "Les deux cases sont sur la colonne d.",
+                "hint3": "Suis la ligne droite de d4 à d7."
+            },
+            "blocked": {
+                "coach": "Les lignes droites ont une limite importante : la tour ne peut pas sauter par-dessus les pièces.",
+                "question": "Le pion blanc en a3 bloque la tour en a1. La tour peut-elle aller directement en a5 ?",
+                "yes": "Oui",
+                "no": "Non",
+                "success": "Correct. Le pion bloque la colonne a, donc la tour ne peut pas le traverser.",
+                "error": "Pas cette fois. Les tours ne peuvent pas sauter par-dessus les pièces.",
+                "hint1": "Regarde ce qui se trouve entre a1 et a5.",
+                "hint2": "Le pion en a3 coupe le chemin."
+            },
+            "capture": {
+                "coach": "Une tour capture en se déplaçant sur une pièce adverse le long d'une ligne droite dégagée.",
+                "instruction": "Capture le pion noir en a6 avec la tour.",
+                "success": "Parfait. Le chemin était libre, donc la tour pouvait capturer en a6.",
+                "hint1": "Le pion est sur la même colonne que la tour.",
+                "hint2": "Il n'y a rien entre a1 et a6.",
+                "hint3": "Va tout droit de a1 à a6."
+            },
+            "control": {
+                "coach": "Même sans bouger, une tour contrôle toutes les cases libres de sa rangée et de sa colonne.",
+                "instruction": "Clique sur n'importe quelle case contrôlée par la tour en d4.",
+                "success": "Oui. Cette case est sur la rangée ou la colonne de la tour.",
+                "hint1": "Regarde uniquement les lignes horizontale et verticale depuis d4.",
+                "hint2": "La croix surlignée montre les cases contrôlées par la tour."
+            },
+            "combined": {
+                "coach": "Dernier exercice : combine tout. Va en ligne droite, respecte les blocages et capture si le chemin est libre.",
+                "instruction": "Capture le pion noir en d7 avec la tour en d4.",
+                "success": "Excellent. Tu as trouvé la capture verticale avec un chemin libre.",
+                "hint1": "La cible est sur la même colonne que la tour.",
+                "hint2": "Vérifie la colonne d entre d4 et d7.",
+                "hint3": "La tour peut aller directement de d4 à d7."
+            },
+            "completion": {
+                "coach": "Voilà la tour : lignes droites, pas de saut et captures sur un chemin libre. Très bon début.",
+                "title": "Bases de la tour terminées",
+                "body": "Tu peux maintenant déplacer une tour horizontalement et verticalement, reconnaître les blocages et effectuer une capture simple."
+            }
+        }
+    },
+    "feedback": {
+        "legalOffTarget": "Ce coup est légal, mais il ne répond pas à cet exercice. Essaie l'idée demandée.",
+        "rookDiagonal": "La tour ne peut pas se déplacer en diagonale. Elle se déplace seulement horizontalement ou verticalement.",
+        "blocked": "Une pièce bloque le chemin. La tour ne peut pas sauter par-dessus.",
+        "illegalAction": "Ce coup n'est pas légal dans cette position. Essaie une autre case.",
+        "wrongSquare": "La tour ne contrôle pas cette case depuis ici. Regarde sa rangée et sa colonne."
+    }
+}

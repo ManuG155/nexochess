@@ -1,0 +1,74 @@
+/* Shared responsive guardrails for feature bundles that already own their
+ * detailed desktop layout. It deliberately changes geometry only on phones and
+ * portrait tablets; landscape tablets keep the compact desktop composition. */
+
+@media (max-width: 700px), (max-width: 1024px) and (orientation: portrait) {
+    main {
+        box-sizing: border-box;
+        width: 100% !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        padding-inline:
+            max(10px, env(safe-area-inset-left))
+            max(10px, env(safe-area-inset-right));
+        overflow-x: clip;
+    }
+
+    main > * {
+        box-sizing: border-box;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    main button,
+    main a,
+    main [role="button"] {
+        max-width: 100%;
+        min-width: 0;
+        touch-action: manipulation;
+    }
+
+    main h1,
+    main h2,
+    main h3,
+    main p,
+    main li,
+    main label,
+    main button,
+    main a,
+    main span,
+    main strong,
+    main small {
+        word-break: normal;
+        overflow-wrap: normal;
+        hyphens: none;
+    }
+
+    main img,
+    main svg,
+    main canvas,
+    main video {
+        max-width: 100%;
+    }
+
+    main input,
+    main select,
+    main textarea {
+        box-sizing: border-box;
+        max-width: 100%;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 430px) {
+    main {
+        padding-inline:
+            max(7px, env(safe-area-inset-left))
+            max(7px, env(safe-area-inset-right));
+    }
+
+    main button,
+    main [role="button"] {
+        min-height: 42px;
+    }
+}
