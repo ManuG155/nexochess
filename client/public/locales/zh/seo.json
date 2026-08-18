@@ -15,13 +15,25 @@
     "title": "免费 Stockfish 国际象棋分析 — NexoChess",
     "description": "使用 Stockfish 分析棋局，在清晰的交互式棋盘上查看关键时刻、着法分类、准确率和预估表现。"
   },
+  "engine": {
+    "title": "NexoChess — 在线与电脑下国际象棋",
+    "description": "免费与可调强度的电脑对手下棋，选择 Elo 水平，获得每步反馈，纠正失误，并继续尚未完成的对局。"
+  },
   "academy": {
     "title": "NexoChess 学院 — 学习国际象棋记谱",
     "description": "通过简短的互动课程学习国际象棋记谱、棋子走法以及 NexoChess 的着法分类，并把知识用于实战。"
   },
+  "lessons": {
+    "title": "NexoChess — 互动国际象棋课程",
+    "description": "通过 80 节互动课程学习国际象棋，使用真实局面、引导练习和分步训练掌握记谱、战术与核心基础。"
+  },
   "puzzles": {
     "title": "国际象棋战术题与训练 — NexoChess",
     "description": "练习来自已分析对局的战术题，或从六百多万个局面中按主题和难度筛选适合自己的训练内容。"
+  },
+  "repertoire": {
+    "title": "NexoChess — 国际象棋开局库训练",
+    "description": "创建、导入、学习并练习自己的国际象棋开局库，保存线路和变化，反复训练希望在实战中记住的关键局面。"
   },
   "guides": {
     "title": "国际象棋分析与战术指南 — NexoChess",

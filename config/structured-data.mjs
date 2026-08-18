@@ -75,8 +75,11 @@ const PAGE_SCHEMA_TYPES = Object.freeze({
     "/about": "AboutPage",
     "/faq": "FAQPage",
     "/analysis": "WebPage",
+    "/engine": "WebPage",
     "/academy": "WebPage",
+    "/lessons": "WebPage",
     "/puzzles": "WebPage",
+    "/repertoire": "WebPage",
     "/guides": "WebPage",
     "/help": "WebPage",
     "/terms": "WebPage",
@@ -87,8 +90,11 @@ const PAGE_SCHEMA_TYPES = Object.freeze({
 const FEATURE_PAGE_PATHS = new Set([
     "/",
     "/analysis",
+    "/engine",
     "/academy",
+    "/lessons",
     "/puzzles",
+    "/repertoire",
     "/help"
 ]);
 
@@ -176,6 +182,8 @@ function createApplication(homeDescription, language) {
             "Saved game archive",
             "Chess puzzles and tactics training",
             "Interactive chess lessons",
+            "Opening repertoire study",
+            "Play against a configurable chess computer",
             "Interface available in eleven languages"
         ])
     });

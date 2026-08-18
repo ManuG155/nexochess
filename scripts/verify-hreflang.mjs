@@ -158,7 +158,7 @@ for (const route of INDEXABLE_PAGE_ROUTES) {
     );
 }
 
-assert.equal(signaturesByBasePathname.size, 11);
+assert.equal(signaturesByBasePathname.size, 14);
 
 const sitemap = await readFile(
     path.join(repositoryRoot, "client/public/sitemap.xml"),
@@ -183,6 +183,6 @@ assert.ok(
 );
 
 console.log(
-    "Verified reciprocal HTML hreflang clusters for 121 localized URLs "
-    + "across 11 page families, including self-references and x-default."
+    "Verified reciprocal HTML hreflang clusters for 154 localized URLs "
+    + "across 14 page families, including self-references and x-default."
 );
