@@ -3,14 +3,29 @@
 [![CI](https://github.com/ManuG155/nexochess/actions/workflows/ci.yml/badge.svg)](https://github.com/ManuG155/nexochess/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/ManuG155/nexochess/actions/workflows/codeql.yml/badge.svg)](https://github.com/ManuG155/nexochess/actions/workflows/codeql.yml)
 [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
+![Release](https://img.shields.io/badge/release-v1.3-4f8fe8.svg)
 
-**NexoChess** is a free web application for analysing chess games, reviewing mistakes with Stockfish, preparing opening repertoires, training with puzzles and tracking progress.
+**NexoChess** is a free, open-source chess learning and analysis web application with Stockfish-powered game review, guided lessons, play against Stockfish, opening repertoires, puzzle training and progress tracking. It works without an account and is designed for desktop, tablet and mobile.
 
 - Public website: **https://www.nexochess.com**
 - Source code: **https://github.com/ManuG155/nexochess**
+- Current release: **v1.3**
 - Contact: **contact@nexochess.com**
 
 NexoChess is an independent project. It is not affiliated with, sponsored by or endorsed by Chess.com or lichess.org.
+
+## Current release — v1.3
+
+NexoChess v1.3 expands the project from game review into a broader chess-learning platform and introduces the first major mobile/tablet optimisation pass.
+
+Highlights:
+
+- **Lessons:** 80 guided, playable lessons with realistic positions and coach-led practice.
+- **Duel:** play against Stockfish at selectable Elo levels with live move feedback, retry/continue after serious mistakes, Undo/Redo and saved unfinished games.
+- **More pedagogical Analysis:** tactical ideas can open as playable engine variations, important ideas use selective teaching arrows, and board annotations clear naturally after a tap or click.
+- **Mobile and tablet support:** dedicated responsive layouts across Analysis, Puzzles, Archive, Repertoire, Lessons, Duel and the rest of the main interface, with touch-friendly controls and mobile review flows.
+- **Better puzzles from your games:** generated training positions now focus on mistakes, misses and blunders rather than inaccuracies.
+- **Support action:** the navigation bar includes a compact Ko-fi button for optional project support.
 
 ## Project status
 
@@ -25,19 +40,24 @@ The project no longer depends on a persistent application running on `localhost`
 
 ## Main features
 
-- PGN import and Chess.com game import.
-- In-browser analysis using Stockfish.
+- PGN and FEN import plus public Chess.com and Lichess game import.
+- In-browser analysis using Stockfish 17.
 - Evaluation, move classification, accuracy and estimated playing strength.
 - Game summary and move-by-move review.
+- Interactive tactical explanations and playable alternative engine lines.
+- Selective teaching arrows for important tactical and strategic ideas.
 - Four selectable coaches with translated feedback.
+- 80 guided playable Lessons.
+- Duel mode against Stockfish with selectable Elo, live feedback and saved unfinished games.
 - Local Archive without an account and cloud synchronisation for signed-in users.
 - Google OAuth and email/password accounts.
 - Verification, password recovery and account email flows.
 - Public profiles and shareable analysed games.
 - Repertoire tools for creating or importing opening lines, studying them move by move and practising guided opening courses.
-- Puzzles generated from analysed mistakes.
+- Puzzles generated from analysed mistakes, misses and blunders.
 - Redesigned thematic puzzle training with multi-theme and difficulty filters.
 - Progress, streaks and puzzle rating.
+- Responsive desktop, tablet and mobile layouts with touch-friendly controls.
 - Light and dark appearance.
 - Interface support for 11 languages.
 - Legal, privacy, licence, help and contact pages.
