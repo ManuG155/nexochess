@@ -15,13 +15,25 @@
     "title": "Análise gratuita de partidas com Stockfish — NexoChess",
     "description": "Analise partidas com Stockfish e reveja momentos críticos, classificações de lances, precisão e desempenho estimado em um tabuleiro interativo e claro."
   },
+  "engine": {
+    "title": "Jogar xadrez contra o computador — NexoChess",
+    "description": "Jogue xadrez grátis contra um adversário configurável, escolha o nível Elo, receba feedback sobre seus lances, corrija erros e continue partidas que ficaram inacabadas."
+  },
   "academy": {
     "title": "Academia NexoChess — Aprenda notação de xadrez",
     "description": "Aprenda notação, movimento das peças e classificações de lances do NexoChess em lições curtas e interativas voltadas para a prática."
   },
+  "lessons": {
+    "title": "Lições interativas de xadrez — NexoChess",
+    "description": "Aprenda xadrez com 80 lições interativas, posições realistas, prática guiada e exercícios passo a passo sobre notação, tática e conceitos essenciais."
+  },
   "puzzles": {
     "title": "Problemas de xadrez e treino tático — NexoChess",
     "description": "Treine tática com problemas das suas partidas analisadas ou filtre por tema e dificuldade em uma base com mais de seis milhões de posições."
+  },
+  "repertoire": {
+    "title": "Criar repertório de aberturas — NexoChess",
+    "description": "Crie, importe, estude e pratique seu repertório de aberturas de xadrez com linhas e variantes salvas para memorizar melhor as posições que pretende jogar."
   },
   "guides": {
     "title": "Guias de análise e tática de xadrez — NexoChess",
