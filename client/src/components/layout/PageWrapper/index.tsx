@@ -23,6 +23,7 @@ const queryClient = new QueryClient();
 const BugReportingWidget = lazy(() => import("@/components/BugReportingWidget"));
 const ReleaseNotice = lazy(() => import("@/components/releases/ReleaseNotice"));
 const ReleaseNoticeV12 = lazy(() => import("@/components/releases/ReleaseNoticeV12"));
+const ReleaseNoticeV13 = lazy(() => import("@/components/releases/ReleaseNoticeV13"));
 
 function PageWrapper({
     children,
@@ -99,6 +100,9 @@ function PageWrapper({
                 <BugReportingWidget/>
             </Suspense>}
 
+            <Suspense fallback={null}>
+                <ReleaseNoticeV13/>
+            </Suspense>
             <Suspense fallback={null}>
                 <ReleaseNoticeV12/>
             </Suspense>
