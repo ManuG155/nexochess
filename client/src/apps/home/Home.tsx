@@ -335,7 +335,12 @@ function Home() {
         <section className={styles.finalCallout} aria-labelledby="final-title">
             <div>
                 <span className={styles.finalMark} aria-hidden="true">
-                    <img src="/img/nexochess-icon-white.png" alt="" />
+                    <img
+                        src="/img/nexochess-icon-white.png"
+                        width={256}
+                        height={239}
+                        alt=""
+                    />
                 </span>
                 <h2 id="final-title">{copy.finalTitle}</h2>
                 <p>{copy.finalDescription}</p>
