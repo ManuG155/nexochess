@@ -12,8 +12,8 @@
     "description": "Finde klare Antworten zu Konten, Partieanalyse, gespeicherten Partien, Aufgaben, unterstützten Sprachen, Datenschutz und weiteren häufigen Fragen."
   },
   "analysis": {
-    "title": "Kostenlose Schachanalyse mit Stockfish — NexoChess",
-    "description": "Analysiere Partien mit Stockfish und prüfe kritische Momente, Zugklassifizierungen, Genauigkeit und geschätzte Leistung auf einem übersichtlichen Brett."
+    "title": "Schachpartien kostenlos online analysieren — NexoChess",
+    "description": "Analysiere Schachpartien kostenlos online mit Stockfish 17. Prüfe jeden Zug, Genauigkeit, Fehler, Patzer, kritische Momente und bessere Varianten ohne Registrierungspflicht."
   },
   "engine": {
     "title": "Online gegen den Schachcomputer spielen — NexoChess",
@@ -28,8 +28,8 @@
     "description": "Lerne Schach mit 80 interaktiven Lektionen, realistischen Stellungen, geführter Praxis und schrittweisen Übungen zu Notation, Taktik und wichtigen Grundlagen."
   },
   "puzzles": {
-    "title": "Schachaufgaben und Taktiktraining — NexoChess",
-    "description": "Trainiere Taktik mit Aufgaben aus deinen analysierten Partien oder filtere mehr als sechs Millionen Stellungen nach Thema und Schwierigkeitsgrad."
+    "title": "Schachaufgaben & Schachrätsel online — NexoChess",
+    "description": "Löse kostenlos Schachaufgaben und Schachrätsel online. Trainiere Taktik mit über sechs Millionen Stellungen, gefiltert nach Thema und Schwierigkeit."
   },
   "repertoire": {
     "title": "Schacheröffnungs-Repertoire erstellen — NexoChess",
