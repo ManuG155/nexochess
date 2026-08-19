@@ -78,7 +78,6 @@ function updateDocumentLanguage(language: string) {
 }
 
 const initialLanguage = getInitialLanguage();
-const analysisBootstrapRoute = isAnalysisBootstrapRoute();
 updateDocumentLanguage(initialLanguage);
 installLocalizedLinkRouting(() => (
     normaliseSupportedLanguage(i18next.resolvedLanguage || i18next.language)
@@ -90,11 +89,11 @@ void i18next
     .use(httpApi)
     .init({
         lng: initialLanguage,
-        // Analysis translations are audited for key parity in every supported
-        // language. Disabling the eager English fallback here prevents a
-        // second copy of every bootstrap namespace from being downloaded on
-        // localized Analysis URLs. Other routes keep the existing fallback.
-        fallbackLng: analysisBootstrapRoute ? false : DEFAULT_LANGUAGE,
+        // Every namespace is audited for identical key/type/placeholder parity
+        // across all 11 supported locales. Loading English again as a fallback
+        // on localized routes therefore only duplicates network work; it is not
+        // needed to fill missing keys.
+        fallbackLng: false,
         supportedLngs: [...SUPPORTED_LANGUAGES],
         nonExplicitSupportedLngs: true,
         load: "languageOnly",
