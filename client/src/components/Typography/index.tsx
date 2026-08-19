@@ -30,6 +30,8 @@ function Typography({
                     ].filter(Boolean).join(" ")}
                     style={iconStyle}
                     src="/img/nexochess-icon-white.png"
+                    width={256}
+                    height={239}
                     alt=""
                     aria-hidden="true"
                     draggable={false}
@@ -43,6 +45,8 @@ function Typography({
                 ].filter(Boolean).join(" ")}
                 style={textStyle}
                 src="/img/nexochess-white.png"
+                width={760}
+                height={258}
                 alt="NexoChess"
                 title={`NexoChess — ${t("footer.tagline")}`}
                 draggable={false}
