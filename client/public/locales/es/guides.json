@@ -5,7 +5,7 @@
       "eyebrow": "Guías NexoChess",
       "title": "Guías prácticas de ajedrez para analizar mejor y entrenar con sentido",
       "introduction": "Aprende a revisar una partida, interpretar el feedback del motor, usar Stockfish con contexto y convertir errores tácticos en entrenamiento útil. Estas guías se apoyan en las herramientas que ya ofrece NexoChess.",
-      "primaryAction": "Analizar una partida",
+      "primaryAction": "Analizar una partida gratis",
       "secondaryAction": "Entrenar puzzles"
     },
     "editorial": {
@@ -18,7 +18,7 @@
     },
     "sections": {
       "analyze": {
-        "title": "Cómo analizar una partida de ajedrez",
+        "title": "Cómo analizar una partida de ajedrez gratis con Stockfish",
         "summary": "Un proceso sencillo para entender tus decisiones en lugar de limitarte a mirar números del motor.",
         "paragraphs": [
           "Empieza reproduciendo la partida sin motor. Marca los momentos en los que dudaste, aquellos en los que la posición cambió de forma brusca o cuando dejaste de tener claro el plan. Así el análisis posterior responde preguntas concretas en vez de convertirse en una lista de jugadas de ordenador.",
@@ -34,7 +34,7 @@
           "Entrena después los patrones que se repitan."
         ],
         "takeaway": "El objetivo del análisis es salir con una o dos ideas aplicables a tus próximas partidas, no recordar todas las líneas del motor.",
-        "action": "Abrir el analizador"
+        "action": "Abrir el analizador gratis"
       },
       "accuracy": {
         "title": "Cómo interpretar la precisión, los errores y los errores graves",
@@ -72,7 +72,7 @@
           "Vuelve al tablero y explica la variante con tus palabras."
         ],
         "takeaway": "Stockfish encuentra jugadas muy fuertes; durante la revisión tu trabajo es convertirlas en ideas que puedas comprender y reutilizar.",
-        "action": "Analizar con Stockfish 17"
+        "action": "Analizar gratis con Stockfish 17"
       },
       "tactics": {
         "title": "Cómo entrenar táctica de ajedrez con puzzles",
@@ -97,7 +97,7 @@
     "closing": {
       "title": "Convierte la guía en práctica",
       "description": "Leer sirve mucho más cuando después revisas una partida real o haces una sesión de entrenamiento enfocada. Aplica las ideas directamente en NexoChess.",
-      "analysisAction": "Analizar una partida",
+      "analysisAction": "Analizar una partida gratis",
       "puzzlesAction": "Entrenar táctica"
     }
   }
