@@ -32,17 +32,40 @@ const analysisInitialNamespaces: Namespace[] = [
     "coach"
 ];
 
-function isAnalysisBootstrapRoute(): boolean {
-    if (typeof window == "undefined") return false;
+const homeInitialNamespaces: Namespace[] = [
+    "common",
+    "analysis",
+    "lessons",
+    "enginePlay",
+    "repertoire",
+    "helpCenter"
+];
 
-    const { basePathname } = parseLanguagePathname(window.location.pathname);
+function currentBasePathname(): string | undefined {
+    if (typeof window == "undefined") return undefined;
+    return parseLanguagePathname(window.location.pathname).basePathname;
+}
+
+function isAnalysisBootstrapRoute(basePathname = currentBasePathname()): boolean {
     return basePathname == "/analysis" || basePathname == "/analysis-entry";
 }
 
+function isHomeBootstrapRoute(basePathname = currentBasePathname()): boolean {
+    return basePathname == "/" || basePathname == "/home";
+}
+
 function getInitialNamespaces(): Namespace[] {
-    return isAnalysisBootstrapRoute()
-        ? analysisInitialNamespaces
-        : [...namespaces];
+    const basePathname = currentBasePathname();
+
+    if (isAnalysisBootstrapRoute(basePathname)) {
+        return analysisInitialNamespaces;
+    }
+
+    if (isHomeBootstrapRoute(basePathname)) {
+        return homeInitialNamespaces;
+    }
+
+    return [...namespaces];
 }
 
 function getBrowserLanguages(): string[] {
