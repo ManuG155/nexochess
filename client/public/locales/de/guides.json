@@ -6,7 +6,7 @@
       "title": "Praktische Schachleitfäden für bessere Analyse und gezieltes Training",
       "introduction": "Lerne, Partien sinnvoll nachzubereiten, Engine-Feedback einzuordnen, Stockfish mit Kontext zu nutzen und taktische Fehler in nützliches Training zu verwandeln. Die Leitfäden bauen auf den vorhandenen NexoChess-Werkzeugen auf.",
       "primaryAction": "Partie analysieren",
-      "secondaryAction": "Aufgaben trainieren"
+      "secondaryAction": "Schachaufgaben trainieren"
     },
     "editorial": {"byline": "Erstellt von NexoChess", "updated": "Aktualisiert im August 2026"},
     "contents": {"title": "Hier beginnen", "description": "Vier kompakte Leitfäden zu den wichtigsten Teilen der Partieanalyse und des Taktiktrainings."},
@@ -51,8 +51,8 @@
         "action": "Mit Stockfish 17 analysieren"
       },
       "tactics": {
-        "title": "Schachtaktik mit Aufgaben trainieren",
-        "summary": "Erkenne Mattmotive, Gabeln, Fesselungen, Spieße, Abzugsangriffe und Muster aus deinen eigenen Partien schneller.",
+        "title": "Schachtaktik mit Schachaufgaben und Schachrätseln trainieren",
+        "summary": "Trainiere Schachaufgaben und Schachrätsel zu Mattmotiven, Gabeln, Fesselungen, Spießen, Abzugsangriffen und Mustern aus deinen eigenen Partien.",
         "paragraphs": [
           "Berechne vor dem ersten Zug. Suche zuerst nach erzwingenden Zügen: Schachs, Schlagzügen und direkten Drohungen. Prüfe danach ungeschützte Figuren, überlastete Verteidiger, Königssicherheit und Linien für Fesselungen, Spieße oder Abzugsangriffe.",
           "Thematische Aufgaben eignen sich zum Erlernen eines Motivs. Gemischte Aufgaben testen, ob du das Motiv auch ohne Hinweis erkennst. Die Schwierigkeit sollte Berechnung verlangen, ohne jede Stellung zum Ratespiel zu machen.",
@@ -61,9 +61,9 @@
         "checklistTitle": "Eine bessere Aufgabenroutine",
         "checklist": ["Erzwingende Züge vor dem Ziehen berechnen.","Motiv nach der Lösung benennen.","Themen zum Lernen, Mischungen zum Testen verwenden.","Fehlversuche erneut ansehen statt sofort weiterzugehen.","Wiederkehrende Fehler aus eigenen Partien priorisieren."],
         "takeaway": "Ziel ist nicht die maximale Anzahl gelöster Aufgaben, sondern schnellere Mustererkennung und genauere Berechnung in echten Partien.",
-        "action": "Aufgabentraining öffnen"
+        "action": "Schachaufgaben online trainieren"
       }
     },
-    "closing": {"title": "Aus Wissen wird Training", "description": "Ein Leitfaden hilft am meisten, wenn direkt eine echte Partieanalyse oder eine gezielte Trainingseinheit folgt. Setze die Ideen sofort in NexoChess um.", "analysisAction": "Partie analysieren", "puzzlesAction": "Taktik trainieren"}
+    "closing": {"title": "Aus Wissen wird Training", "description": "Ein Leitfaden hilft am meisten, wenn direkt eine echte Partieanalyse oder eine gezielte Trainingseinheit folgt. Setze die Ideen sofort in NexoChess um.", "analysisAction": "Partie analysieren", "puzzlesAction": "Schachaufgaben trainieren"}
   }
 }
