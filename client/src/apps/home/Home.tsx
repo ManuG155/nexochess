@@ -85,7 +85,10 @@ const featureMetadata: Array<{
     { icon: "analysis", href: "/analysis" },
     { icon: "archive", href: "/archive" },
     { icon: "puzzle", href: "/puzzles" },
-    { icon: "academy", href: "/academy" }
+    { icon: "academy", href: "/academy" },
+    { icon: "spark", href: "/engine" },
+    { icon: "train", href: "/lessons" },
+    { icon: "review", href: "/repertoire" }
 ];
 
 const stepIcons: IconName[] = ["upload", "review", "train"];
@@ -195,11 +198,34 @@ function AnalysisPreview() {
 }
 
 function Home() {
-    const { i18n } = useTranslation();
+    const { i18n, t } = useTranslation([
+        "common",
+        "enginePlay",
+        "lessons",
+        "repertoire"
+    ]);
     const copy = useMemo(
         () => getHomeCopy(i18n.resolvedLanguage || i18n.language),
         [i18n.resolvedLanguage, i18n.language]
     );
+    const featureCards = [
+        ...copy.features,
+        {
+            title: t("enginePlay:title"),
+            description: t("enginePlay:subtitle"),
+            action: t("enginePlay:actions.play")
+        },
+        {
+            title: t("lessons:page.title"),
+            description: t("lessons:page.subtitle"),
+            action: t("lessons:path.start")
+        },
+        {
+            title: t("repertoire:title"),
+            description: t("repertoire:intro"),
+            action: t("repertoire:modes.mine")
+        }
+    ];
 
     return <main className={styles.home}>
         <section className={styles.hero} aria-labelledby="home-title">
@@ -243,7 +269,7 @@ function Home() {
             </div>
 
             <div className={styles.featureGrid}>
-                {copy.features.map((feature, index) => {
+                {featureCards.map((feature, index) => {
                     const metadata = featureMetadata[index];
 
                     return <a
