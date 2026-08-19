@@ -10,6 +10,7 @@ import {
     getUrlLanguage,
     installLocalizedLinkRouting,
     normaliseSupportedLanguage,
+    parseLanguagePathname,
     refreshLocalizedLinks
 } from "./routing";
 
@@ -18,6 +19,29 @@ const namespaces = [
     "enginePlay", "puzzles", "repertoire", "repertoireCourse", "analysis", "settings",
     "otherPages", "helpCenter", "coach", "legal", "guides"
 ] as const;
+
+type Namespace = typeof namespaces[number];
+
+const analysisInitialNamespaces: Namespace[] = [
+    "common",
+    "analysis",
+    "lessons",
+    "enginePlay",
+    "repertoire",
+    "helpCenter",
+    "coach"
+];
+
+function getInitialNamespaces(): Namespace[] {
+    if (typeof window == "undefined") return [...namespaces];
+
+    const { basePathname } = parseLanguagePathname(window.location.pathname);
+    if (basePathname == "/analysis" || basePathname == "/analysis-entry") {
+        return analysisInitialNamespaces;
+    }
+
+    return [...namespaces];
+}
 
 function getBrowserLanguages(): string[] {
     if (typeof navigator == "undefined") return [];
@@ -67,7 +91,7 @@ void i18next
         supportedLngs: [...SUPPORTED_LANGUAGES],
         nonExplicitSupportedLngs: true,
         load: "languageOnly",
-        ns: [...namespaces],
+        ns: getInitialNamespaces(),
         defaultNS: "common",
         backend: { loadPath: "/locales/{{lng}}/{{ns}}.json" },
         interpolation: { escapeValue: false },
