@@ -53,6 +53,8 @@ function PageWrapper({
             .basePathname.split("/").filter(Boolean).at(0)
             || "home";
 
+    const releaseNoticesEnabled = routeName == "home";
+
     useEffect(() => initialiseAnalytics(), []);
 
     useEffect(() => {
@@ -66,13 +68,18 @@ function PageWrapper({
     }, [colourMode]);
 
     useEffect(() => {
+        if (!releaseNoticesEnabled) {
+            setReleaseNoticesReady(false);
+            return;
+        }
+
         let timer: number | undefined;
 
         const scheduleReleaseNotices = () => {
-            // Release dialogs are useful product messaging but they are not
-            // needed to render or interact with the requested page. Keep their
-            // async chunks off the initial network/CPU critical path and mount
-            // them shortly after the document has finished loading.
+            // Release dialogs are useful product messaging, but a late modal
+            // can become the page's LCP on slow mobile connections. Keep them
+            // on the Home experience and completely off product critical paths
+            // such as Analysis, Puzzles and Lessons.
             timer = window.setTimeout(
                 () => setReleaseNoticesReady(true),
                 250
@@ -91,7 +98,7 @@ function PageWrapper({
             window.removeEventListener("load", scheduleReleaseNotices);
             if (timer != undefined) window.clearTimeout(timer);
         };
-    }, []);
+    }, [releaseNoticesEnabled]);
 
     return <QueryClientProvider client={queryClient}>
         <div
@@ -131,7 +138,7 @@ function PageWrapper({
                 <BugReportingWidget/>
             </Suspense>}
 
-            {releaseNoticesReady && <>
+            {releaseNoticesEnabled && releaseNoticesReady && <>
                 <Suspense fallback={null}>
                     <ReleaseNoticeV13/>
                 </Suspense>
