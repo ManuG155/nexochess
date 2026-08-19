@@ -121,6 +121,7 @@ function createOrganization() {
         name: "NexoChess",
         alternateName: Object.freeze([
             "Nexo Chess",
+            "www.nexochess.com",
             "nexochess.com"
         ]),
         url: productionUrl("/"),
@@ -147,6 +148,7 @@ function createWebsite(homeDescription) {
         name: "NexoChess",
         alternateName: Object.freeze([
             "Nexo Chess",
+            "www.nexochess.com",
             "nexochess.com"
         ]),
         description: homeDescription,
@@ -162,6 +164,7 @@ function createApplication(homeDescription, language) {
         name: "NexoChess",
         alternateName: Object.freeze([
             "Nexo Chess",
+            "www.nexochess.com",
             "nexochess.com"
         ]),
         url: productionUrl("/"),
