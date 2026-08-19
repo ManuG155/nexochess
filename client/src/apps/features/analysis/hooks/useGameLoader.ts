@@ -5,7 +5,6 @@ import { useShallow } from "zustand/react/shallow";
 import useAnalysisGameStore from "../stores/AnalysisGameStore";
 import useAnalysisBoardStore from "../stores/AnalysisBoardStore";
 import useRealtimeEngineStore from "../stores/RealtimeEngineStore";
-import { getArchivedGame } from "@/lib/gameArchive";
 
 function useGameLoader() {
     const [ searchParams ] = useSearchParams();
@@ -29,6 +28,7 @@ function useGameLoader() {
         const gameId = searchParams.get("game");
         if (!gameId) return;
 
+        const { getArchivedGame } = await import("@/lib/gameArchive");
         const { game } = await getArchivedGame(gameId);
         if (!game) return;
 
@@ -42,7 +42,7 @@ function useGameLoader() {
     }
 
     useEffect(() => {
-        loadGame();
+        void loadGame();
     }, []);
 }
 
