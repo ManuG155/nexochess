@@ -32,15 +32,17 @@ const analysisInitialNamespaces: Namespace[] = [
     "coach"
 ];
 
-function getInitialNamespaces(): Namespace[] {
-    if (typeof window == "undefined") return [...namespaces];
+function isAnalysisBootstrapRoute(): boolean {
+    if (typeof window == "undefined") return false;
 
     const { basePathname } = parseLanguagePathname(window.location.pathname);
-    if (basePathname == "/analysis" || basePathname == "/analysis-entry") {
-        return analysisInitialNamespaces;
-    }
+    return basePathname == "/analysis" || basePathname == "/analysis-entry";
+}
 
-    return [...namespaces];
+function getInitialNamespaces(): Namespace[] {
+    return isAnalysisBootstrapRoute()
+        ? analysisInitialNamespaces
+        : [...namespaces];
 }
 
 function getBrowserLanguages(): string[] {
@@ -76,6 +78,7 @@ function updateDocumentLanguage(language: string) {
 }
 
 const initialLanguage = getInitialLanguage();
+const analysisBootstrapRoute = isAnalysisBootstrapRoute();
 updateDocumentLanguage(initialLanguage);
 installLocalizedLinkRouting(() => (
     normaliseSupportedLanguage(i18next.resolvedLanguage || i18next.language)
@@ -87,7 +90,11 @@ void i18next
     .use(httpApi)
     .init({
         lng: initialLanguage,
-        fallbackLng: DEFAULT_LANGUAGE,
+        // Analysis translations are audited for key parity in every supported
+        // language. Disabling the eager English fallback here prevents a
+        // second copy of every bootstrap namespace from being downloaded on
+        // localized Analysis URLs. Other routes keep the existing fallback.
+        fallbackLng: analysisBootstrapRoute ? false : DEFAULT_LANGUAGE,
         supportedLngs: [...SUPPORTED_LANGUAGES],
         nonExplicitSupportedLngs: true,
         load: "languageOnly",
