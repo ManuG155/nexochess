@@ -1,15 +1,12 @@
 import { useTranslation } from "react-i18next";
 
-import AnalysedGame from "shared/types/game/AnalysedGame";
-import {
-    StateTreeNode,
-    getNodeChain
-} from "shared/types/game/position/StateTreeNode";
+import type AnalysedGame from "shared/types/game/AnalysedGame";
+import { getNodeChain } from "shared/types/game/position/StateTreeNode";
+import type { StateTreeNode } from "shared/types/game/position/StateTreeNode";
 import AnalysisStatus from "@analysis/constants/AnalysisStatus";
 import useSettingsStore from "@/stores/SettingsStore";
 import useAnalysisBoardStore from "@analysis/stores/AnalysisBoardStore";
 import useAnalysisProgressStore from "@analysis/stores/AnalysisProgressStore";
-import createGameEvaluator from "../lib/evaluate";
 
 /*
  * Ritmo visual del tablero durante el análisis.
@@ -191,6 +188,11 @@ function useEvaluateGame() {
         setCurrentStateTreeNode(analysisGame.stateTree);
         dispatchCurrentNodeUpdate();
         setAnalysisStatus(AnalysisStatus.EVALUATING);
+
+        // Loading the evaluator pulls the Stockfish orchestration path and is
+        // unnecessary on the landing screen. Fetch it only when the user has
+        // explicitly started an analysis.
+        const { default: createGameEvaluator } = await import("../lib/evaluate");
 
         const evaluator = createGameEvaluator(analysisGame, {
             engineVersion: settings.version,

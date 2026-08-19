@@ -119,12 +119,16 @@ function createOrganization() {
         "@type": "Organization",
         "@id": STRUCTURED_DATA_IDS.organization,
         name: "NexoChess",
-        alternateName: "Nexo Chess",
+        alternateName: Object.freeze([
+            "Nexo Chess",
+            "nexochess.com"
+        ]),
         url: productionUrl("/"),
         logo: reference(STRUCTURED_DATA_IDS.image),
         email: "contact@nexochess.com",
         sameAs: Object.freeze([
-            "https://github.com/ManuG155/nexochess"
+            "https://github.com/ManuG155/nexochess",
+            "https://ko-fi.com/nexochess"
         ]),
         contactPoint: Object.freeze({
             "@type": "ContactPoint",
@@ -156,14 +160,17 @@ function createApplication(homeDescription, language) {
         "@type": "SoftwareApplication",
         "@id": STRUCTURED_DATA_IDS.application,
         name: "NexoChess",
-        alternateName: "Nexo Chess",
+        alternateName: Object.freeze([
+            "Nexo Chess",
+            "nexochess.com"
+        ]),
         url: productionUrl("/"),
         description: homeDescription,
         applicationCategory: "EducationalApplication",
         applicationSubCategory: "Chess analysis and training",
         operatingSystem: "Any",
         browserRequirements: "Requires JavaScript and a modern web browser.",
-        softwareVersion: "1.1",
+        softwareVersion: "1.3",
         image: reference(STRUCTURED_DATA_IDS.image),
         publisher: reference(STRUCTURED_DATA_IDS.organization),
         isAccessibleForFree: true,
