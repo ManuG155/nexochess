@@ -30,6 +30,11 @@ const analysisInitialNamespaces: Namespace[] = [
     "repertoire"
 ];
 
+const analysisMobileInitialNamespaces: Namespace[] = [
+    "common",
+    "analysis"
+];
+
 const homeInitialNamespaces: Namespace[] = [
     "common",
     "analysis",
@@ -51,11 +56,26 @@ function isHomeBootstrapRoute(basePathname = currentBasePathname()): boolean {
     return basePathname == "/" || basePathname == "/home";
 }
 
+function usesCompactNavigation(): boolean {
+    if (
+        typeof window == "undefined"
+        || typeof window.matchMedia != "function"
+    ) return false;
+
+    // Keep this breakpoint aligned with NavigationBar.module.css. Below it,
+    // the desktop primary navigation is hidden behind the mobile menu, so its
+    // Lessons/Duel/Repertoire labels must not hold I18nGate and the whole
+    // Analysis page behind three unrelated locale requests on slow networks.
+    return window.matchMedia("(max-width: 800px)").matches;
+}
+
 function getInitialNamespaces(): Namespace[] {
     const basePathname = currentBasePathname();
 
     if (isAnalysisBootstrapRoute(basePathname)) {
-        return analysisInitialNamespaces;
+        return usesCompactNavigation()
+            ? analysisMobileInitialNamespaces
+            : analysisInitialNamespaces;
     }
 
     if (isHomeBootstrapRoute(basePathname)) {
