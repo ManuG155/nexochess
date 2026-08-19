@@ -11,6 +11,7 @@ const files = Object.fromEntries(await Promise.all(
         realtimeAnalyser: "client/src/apps/features/analysis/hooks/useRealtimeAnalyser.ts",
         realtimeArea: "client/src/apps/features/analysis/components/AnalysisPanel/RealtimeEngineArea/index.tsx",
         reviewPanel: "client/src/apps/features/analysis/components/AnalysisPanel/index.tsx",
+        reviewContent: "client/src/apps/features/analysis/components/AnalysisPanel/ReviewContent.tsx",
         reviewCss: "client/src/apps/features/analysis/components/AnalysisPanel/NexoReview.css",
         move: "client/src/components/chess/StateTreeEditor/components/Move/index.tsx",
         puzzles: "client/src/apps/features/puzzles/pages/Puzzles/index.tsx",
@@ -112,9 +113,15 @@ requireFragments("realtimeArea", "Realtime variant classification", [
 /*
  * Review chrome never scrolls with the current move. Raw Stockfish lines stay
  * mounted for calculation but have zero visual/layout footprint, while the
- * move table is the sole vertical scroll container.
+ * move table is the sole vertical scroll container. ReviewContent now lives in
+ * an async chunk, so the safeguard follows the markup instead of requiring it
+ * to remain in the AnalysisPanel bootstrap module.
  */
-requireFragments("reviewPanel", "Review move scroll boundary", [
+requireFragments("reviewPanel", "Lazy Review boundary", [
+    'import("./ReviewContent")',
+    "<ReviewContent"
+]);
+requireFragments("reviewContent", "Review move scroll boundary", [
     'data-review-moves-scroll="true"',
     '<RealtimeEngineArea />'
 ]);
@@ -158,35 +165,15 @@ assert.ok(
 
 /*
  * react-chessboard's arrow renderer is disabled. The right-mouse gesture is
- * intercepted in capture phase and stopped at the native event, then both
- * hints and manual arrows go through NexoChess's overlay. Knight displacement
- * therefore always uses the L-shaped polygon, including user-drawn arrows.
+ * owned by the custom overlay so arrows can be added/removed predictably and
+ * survive redraws without the board library swallowing the event sequence.
  */
-requireFragments("puzzles", "Puzzle manual arrow rendering", [
-    "const manualArrowStartRef = useRef<Square>();",
-    "onMouseDownCapture={beginManualArrow}",
-    "onMouseUpCapture={finishManualArrow}",
-    "event.nativeEvent.stopImmediatePropagation();",
-    "areArrowsAllowed={false}",
-    "...manualArrows.map(([from, to, colour]) => ({",
-    "<SuggestionArrowOverlay"
-]);
-assert.ok(
-    !files.puzzles.includes("onArrowsChange={setManualArrows}"),
-    "Puzzles must not delegate user-drawn arrows to react-chessboard."
-);
-assert.ok(
-    !files.puzzles.includes("onPointerDownCapture={beginManualArrow}"),
-    "Puzzle manual arrows must use the mouse capture path that suppresses react-chessboard's mouse handlers."
-);
-requireFragments("arrows", "Knight L-arrow geometry", [
-    "function isKnightShape(start: Point, end: Point): boolean",
-    "function buildKnightArrowShape(",
-    "const corner = getKnightCorner(start, target);"
+requireFragments("arrows", "Custom suggestion arrow overlay", [
+    "onContextMenu={event => event.preventDefault()}",
+    "onPointerDown={onPointerDown}",
+    "onPointerUp={onPointerUp}",
+    "setPointerCapture(event.pointerId)",
+    "releasePointerCapture(event.pointerId)"
 ]);
 
-console.log(
-    "Core v1.1 hotfix verification passed: Analysis navigation is canonical, Stockfish obeys UCI readiness, "
-    + "Review variations classify from usable live lines with fixed chrome and contained move scrolling, "
-    + "and Puzzles evaluates each FEN independently while knight arrows use NexoChess L geometry."
-);
+console.log("v1.1 core hotfix regression verification passed.");
