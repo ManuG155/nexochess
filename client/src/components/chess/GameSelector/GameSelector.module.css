@@ -275,7 +275,7 @@
 .characterCount {
     flex: 0 0 auto;
 
-    color: rgba(255, 255, 255, 0.31);
+    color: rgba(255, 255, 255, 0.5);
     font-size: 0.68rem;
 }
 
@@ -336,23 +336,4 @@
 
 .dragActive {
     filter: none;
-}
-
-@media (max-width: 540px) {
-    .sourceTabs {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .fieldHeader {
-        flex-direction: column;
-    }
-
-    .fieldActions {
-        width: 100%;
-    }
-
-    .utilityButton {
-        flex: 1;
-        justify-content: center;
-    }
 }
