@@ -15,11 +15,7 @@ import AnalysisPanel from "@analysis/components/AnalysisPanel";
 import {
     AnalysisPanelMode
 } from "@analysis/components/AnalysisPanel/AnalysisPanelProps";
-import {
-    getGameSummaryMetrics
-} from "@analysis/components/AnalysisPanel/GameSummaryPanel/summaryMetrics";
 import AnalysisStatus from "@analysis/constants/AnalysisStatus";
-import useAnalysisBoardStore from "@analysis/stores/AnalysisBoardStore";
 import useAnalysisGameStore from "@analysis/stores/AnalysisGameStore";
 import useAnalysisProgressStore from "@analysis/stores/AnalysisProgressStore";
 
@@ -43,22 +39,23 @@ function Analysis() {
     const analysisStatus = useAnalysisProgressStore(
         state => state.analysisStatus
     );
-    const currentStateTreeNodeUpdate = useAnalysisBoardStore(
-        state => state.currentStateTreeNodeUpdate
-    );
 
     const [panelMode, setPanelMode] = useState<AnalysisPanelMode>("summary");
 
-    const metrics = useMemo(
-        () => getGameSummaryMetrics(analysisGame),
-        [analysisGame, currentStateTreeNodeUpdate]
+    /*
+     * Completed reports always carry persisted summary data. The previous
+     * landing path imported GameSummaryPanel/summaryMetrics only to answer
+     * this boolean, pulling its full chess/reporting calculation graph into
+     * the initial bundle before a user had even selected a game.
+     *
+     * Keep the landing screen cheap and let the lazily loaded summary panel
+     * calculate detailed metrics only when a completed game is actually open.
+     */
+    const hasCompletedAnalysis = Boolean(
+        analysisGame.estimatedRatings
+        || analysisGame.archiveSummary?.white.accuracy != null
+        || analysisGame.archiveSummary?.black.accuracy != null
     );
-
-    const hasCompletedAnalysis =
-        metrics.white.accuracy != null
-        || metrics.black.accuracy != null
-        || metrics.white.estimatedRating != null
-        || metrics.black.estimatedRating != null;
 
     const mobileView = !gameAnalysisOpen
         ? "selection"

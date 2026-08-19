@@ -27,9 +27,7 @@ const analysisInitialNamespaces: Namespace[] = [
     "analysis",
     "lessons",
     "enginePlay",
-    "repertoire",
-    "helpCenter",
-    "coach"
+    "repertoire"
 ];
 
 const homeInitialNamespaces: Namespace[] = [
