@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { ToastContainer } from "react-toastify";
@@ -35,6 +35,7 @@ function PageWrapper({
     footerStyle
 }: PageWrapperProps) {
     const { i18n } = useTranslation();
+    const [releaseNoticesReady, setReleaseNoticesReady] = useState(false);
     const accessibilityCopy = getAccessibilityCopy(
         i18n.resolvedLanguage || i18n.language
     );
@@ -63,6 +64,34 @@ function PageWrapper({
             delete document.body.dataset.theme;
         };
     }, [colourMode]);
+
+    useEffect(() => {
+        let timer: number | undefined;
+
+        const scheduleReleaseNotices = () => {
+            // Release dialogs are useful product messaging but they are not
+            // needed to render or interact with the requested page. Keep their
+            // async chunks off the initial network/CPU critical path and mount
+            // them shortly after the document has finished loading.
+            timer = window.setTimeout(
+                () => setReleaseNoticesReady(true),
+                250
+            );
+        };
+
+        if (document.readyState == "complete") {
+            scheduleReleaseNotices();
+        } else {
+            window.addEventListener("load", scheduleReleaseNotices, {
+                once: true
+            });
+        }
+
+        return () => {
+            window.removeEventListener("load", scheduleReleaseNotices);
+            if (timer != undefined) window.clearTimeout(timer);
+        };
+    }, []);
 
     return <QueryClientProvider client={queryClient}>
         <div
@@ -100,15 +129,17 @@ function PageWrapper({
                 <BugReportingWidget/>
             </Suspense>}
 
-            <Suspense fallback={null}>
-                <ReleaseNoticeV13/>
-            </Suspense>
-            <Suspense fallback={null}>
-                <ReleaseNoticeV12/>
-            </Suspense>
-            <Suspense fallback={null}>
-                <ReleaseNotice/>
-            </Suspense>
+            {releaseNoticesReady && <>
+                <Suspense fallback={null}>
+                    <ReleaseNoticeV13/>
+                </Suspense>
+                <Suspense fallback={null}>
+                    <ReleaseNoticeV12/>
+                </Suspense>
+                <Suspense fallback={null}>
+                    <ReleaseNotice/>
+                </Suspense>
+            </>}
             <CookieConsent/>
             <ToastContainer/>
         </div>
