@@ -37,8 +37,7 @@ const homeInitialNamespaces: Namespace[] = [
     "analysis",
     "lessons",
     "enginePlay",
-    "repertoire",
-    "helpCenter"
+    "repertoire"
 ];
 
 function currentBasePathname(): string | undefined {

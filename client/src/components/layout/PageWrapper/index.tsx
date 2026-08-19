@@ -5,7 +5,6 @@ import { ToastContainer } from "react-toastify";
 
 import useSettingsStore from "@/stores/SettingsStore";
 import NavigationBar from "@/components/layout/NavigationBar";
-import Footer from "@/components/layout/Footer";
 import CookieConsent from "@/components/privacy/CookieConsent";
 import { getAccessibilityCopy } from "@/i18n/accessibilityCopy";
 import { parseLanguagePathname } from "@/i18n/routing";
@@ -20,6 +19,7 @@ import "./LightThemeComponentFixes.css";
 import "./Accessibility.css";
 
 const queryClient = new QueryClient();
+const Footer = lazy(() => import("@/components/layout/Footer"));
 const BugReportingWidget = lazy(() => import("@/components/BugReportingWidget"));
 const ReleaseNotice = lazy(() => import("@/components/releases/ReleaseNotice"));
 const ReleaseNoticeV12 = lazy(() => import("@/components/releases/ReleaseNoticeV12"));
@@ -123,7 +123,9 @@ function PageWrapper({
                 {children}
             </div>
 
-            <Footer className={footerClassName} style={footerStyle} />
+            <Suspense fallback={null}>
+                <Footer className={footerClassName} style={footerStyle} />
+            </Suspense>
 
             {bugReportingMode && <Suspense fallback={null}>
                 <BugReportingWidget/>
