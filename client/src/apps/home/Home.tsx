@@ -237,7 +237,7 @@ function Home() {
                     {copy.eyebrow}
                 </span>
 
-                <h1 id="home-title">{copy.title}</h1>
+                <h1 id="home-title">NexoChess — {copy.title}</h1>
                 <p className={styles.heroIntroduction}>{copy.introduction}</p>
 
                 <div className={styles.heroActions}>
