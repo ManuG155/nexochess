@@ -11,6 +11,7 @@ const files = Object.fromEntries(await Promise.all(
         realtimeAnalyser: "client/src/apps/features/analysis/hooks/useRealtimeAnalyser.ts",
         realtimeArea: "client/src/apps/features/analysis/components/AnalysisPanel/RealtimeEngineArea/index.tsx",
         reviewPanel: "client/src/apps/features/analysis/components/AnalysisPanel/index.tsx",
+        reviewContent: "client/src/apps/features/analysis/components/AnalysisPanel/ReviewContent.tsx",
         reviewCss: "client/src/apps/features/analysis/components/AnalysisPanel/NexoReview.css",
         move: "client/src/components/chess/StateTreeEditor/components/Move/index.tsx",
         puzzles: "client/src/apps/features/puzzles/pages/Puzzles/index.tsx",
@@ -112,9 +113,15 @@ requireFragments("realtimeArea", "Realtime variant classification", [
 /*
  * Review chrome never scrolls with the current move. Raw Stockfish lines stay
  * mounted for calculation but have zero visual/layout footprint, while the
- * move table is the sole vertical scroll container.
+ * move table is the sole vertical scroll container. ReviewContent now lives in
+ * an async chunk, so the safeguard follows the markup instead of requiring it
+ * to remain in the AnalysisPanel bootstrap module.
  */
-requireFragments("reviewPanel", "Review move scroll boundary", [
+requireFragments("reviewPanel", "Lazy Review boundary", [
+    'import("./ReviewContent")',
+    "<ReviewContent"
+]);
+requireFragments("reviewContent", "Review move scroll boundary", [
     'data-review-moves-scroll="true"',
     '<RealtimeEngineArea />'
 ]);

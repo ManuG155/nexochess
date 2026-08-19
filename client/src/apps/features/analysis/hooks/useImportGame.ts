@@ -1,19 +1,11 @@
 import { useTranslation } from "react-i18next";
 
-import AnalysedGame from "shared/types/game/AnalysedGame";
+import type AnalysedGame from "shared/types/game/AnalysedGame";
 import { GameSelectorButton, GameSource } from "@/components/chess/GameSelector/GameSource";
-import useGameSelector, { SelectedGame } from "@/hooks/useGameSelector";
+import useGameSelector from "@/hooks/useGameSelector";
+import type { SelectedGame } from "@/hooks/useGameSelector";
 import useAnalysisGameStore from "@analysis/stores/AnalysisGameStore";
 import useAnalysisBoardStore from "@analysis/stores/AnalysisBoardStore";
-import parseStateTree from "shared/lib/stateTree/parse";
-import {
-    getChessComProfileImages,
-    isGameFromChessCom
-} from "@/lib/profileImages";
-import getChessComGames from "@/lib/games/chessCom";
-import getLichessGames from "@/lib/games/lichess";
-import parsePgn from "@/lib/games/pgn";
-import parseFenString from "@/lib/games/fen";
 
 const messages = {
     fetchingLatest: "gameSelector.statusMessages.fetchingLatest",
@@ -37,14 +29,16 @@ function useImportGame() {
 
     const { setCurrentStateTreeNode } = useAnalysisBoardStore();
 
-    function convertSelectedGame(selectedGame: SelectedGame) {
+    async function convertSelectedGame(selectedGame: SelectedGame) {
         if (typeof selectedGame == "string") {
             if (selectedGame.length == 0) return null;
 
             try {
                 if (savedGameSource.key == GameSource.PGN.key) {
+                    const { default: parsePgn } = await import("@/lib/games/pgn");
                     return parsePgn(selectedGame);
                 } else if (savedGameSource.key == GameSource.FEN.key) {
+                    const { default: parseFenString } = await import("@/lib/games/fen");
                     return parseFenString(selectedGame);
                 }
             } catch {
@@ -60,7 +54,7 @@ function useImportGame() {
     async function importSelectedGame(
         onStatusMessage?: (message?: string) => void
     ) {
-        let importedGame = convertSelectedGame(selectedGame);
+        let importedGame = await convertSelectedGame(selectedGame);
 
         if (!importedGame) {
             if (
@@ -73,17 +67,15 @@ function useImportGame() {
             const date = new Date();
 
             try {
-                var gamesResponse = savedGameSource.key == GameSource.CHESS_COM.key
-                    ? await getChessComGames(
-                        savedCurrentFieldInput,
-                        date.getMonth() + 1,
-                        date.getFullYear()
-                    )
-                    : await getLichessGames(
-                        savedCurrentFieldInput,
-                        date.getMonth() + 1,
-                        date.getFullYear()
-                    );
+                const gamesModule = savedGameSource.key == GameSource.CHESS_COM.key
+                    ? await import("@/lib/games/chessCom")
+                    : await import("@/lib/games/lichess");
+
+                var gamesResponse = await gamesModule.default(
+                    savedCurrentFieldInput,
+                    date.getMonth() + 1,
+                    date.getFullYear()
+                );
             } catch (err) {
                 throw new Error(t((err as Error).message));
             } finally {
@@ -97,19 +89,31 @@ function useImportGame() {
             importedGame = latestGame;
         }
 
+        const loadedGame = importedGame;
+        const { default: parseStateTree } = await import(
+            "shared/lib/stateTree/parse"
+        );
+
         // Set analysis game to the selected one
         const analysisGame: AnalysedGame = {
-            ...importedGame!,
-            stateTree: parseStateTree(importedGame!)
+            ...loadedGame,
+            stateTree: parseStateTree(loadedGame)
         };
 
         setAnalysisGame(analysisGame);
         setCurrentStateTreeNode(analysisGame.stateTree);
         setGameAnalysisOpen(true);
 
-        // Load profile images from Chess.com if it is possible
-        if (isGameFromChessCom(importedGame!)) {
-            getChessComProfileImages(importedGame!).then(profiles => {
+        // Profile enrichment is not required to start the analysis. Keep it
+        // outside the landing bundle and update the UI asynchronously if the
+        // imported game came from Chess.com.
+        void import("@/lib/profileImages").then(({
+            getChessComProfileImages,
+            isGameFromChessCom
+        }) => {
+            if (!isGameFromChessCom(loadedGame)) return;
+
+            void getChessComProfileImages(loadedGame).then(profiles => {
                 analysisGame.players.white.image = profiles.white.image;
                 analysisGame.players.black.image = profiles.black.image;
 
@@ -133,7 +137,7 @@ function useImportGame() {
                     }
                 });
             });
-        }
+        });
 
         return analysisGame;
     }
