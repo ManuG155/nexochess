@@ -337,3 +337,22 @@
 .dragActive {
     filter: none;
 }
+
+@media (max-width: 540px) {
+    .sourceTabs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .fieldHeader {
+        flex-direction: column;
+    }
+
+    .fieldActions {
+        width: 100%;
+    }
+
+    .utilityButton {
+        flex: 1;
+        justify-content: center;
+    }
+}
