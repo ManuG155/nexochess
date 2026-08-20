@@ -193,7 +193,6 @@ function PlayerProfile({
 
                     <span
                         className={styles.capturedPieces}
-                        role="group"
                         aria-label={t("chess.capturedPieces")}
                     >
                         {capturedPieces.join("")}

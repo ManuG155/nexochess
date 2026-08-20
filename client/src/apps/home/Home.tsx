@@ -85,10 +85,7 @@ const featureMetadata: Array<{
     { icon: "analysis", href: "/analysis" },
     { icon: "archive", href: "/archive" },
     { icon: "puzzle", href: "/puzzles" },
-    { icon: "academy", href: "/academy" },
-    { icon: "spark", href: "/engine" },
-    { icon: "train", href: "/lessons" },
-    { icon: "review", href: "/repertoire" }
+    { icon: "academy", href: "/academy" }
 ];
 
 const stepIcons: IconName[] = ["upload", "review", "train"];
@@ -198,34 +195,11 @@ function AnalysisPreview() {
 }
 
 function Home() {
-    const { i18n, t } = useTranslation([
-        "common",
-        "enginePlay",
-        "lessons",
-        "repertoire"
-    ]);
+    const { i18n } = useTranslation();
     const copy = useMemo(
         () => getHomeCopy(i18n.resolvedLanguage || i18n.language),
         [i18n.resolvedLanguage, i18n.language]
     );
-    const featureCards = [
-        ...copy.features,
-        {
-            title: t("enginePlay:title"),
-            description: t("enginePlay:subtitle"),
-            action: t("enginePlay:actions.play")
-        },
-        {
-            title: t("lessons:page.title"),
-            description: t("lessons:page.subtitle"),
-            action: t("lessons:path.start")
-        },
-        {
-            title: t("repertoire:title"),
-            description: t("repertoire:intro"),
-            action: t("repertoire:modes.mine")
-        }
-    ];
 
     return <main className={styles.home}>
         <section className={styles.hero} aria-labelledby="home-title">
@@ -237,7 +211,7 @@ function Home() {
                     {copy.eyebrow}
                 </span>
 
-                <h1 id="home-title">NexoChess — {copy.title}</h1>
+                <h1 id="home-title">{copy.title}</h1>
                 <p className={styles.heroIntroduction}>{copy.introduction}</p>
 
                 <div className={styles.heroActions}>
@@ -269,7 +243,7 @@ function Home() {
             </div>
 
             <div className={styles.featureGrid}>
-                {featureCards.map((feature, index) => {
+                {copy.features.map((feature, index) => {
                     const metadata = featureMetadata[index];
 
                     return <a
@@ -335,12 +309,7 @@ function Home() {
         <section className={styles.finalCallout} aria-labelledby="final-title">
             <div>
                 <span className={styles.finalMark} aria-hidden="true">
-                    <img
-                        src="/img/nexochess-icon-white.png"
-                        width={256}
-                        height={239}
-                        alt=""
-                    />
+                    <img src="/img/nexochess-icon-white.png" alt="" />
                 </span>
                 <h2 id="final-title">{copy.finalTitle}</h2>
                 <p>{copy.finalDescription}</p>

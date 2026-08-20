@@ -28,11 +28,6 @@ const failures = [];
 const jsonLdTemplate =
     '<script type="application/ld+json">${STRUCTURED_DATA_JSON}</script>';
 const faqKeys = ["account", "archive", "engine", "languages", "privacy"];
-const brandAlternateNames = ["Nexo Chess", "nexochess.com"];
-const officialProfiles = [
-    "https://github.com/ManuG155/nexochess",
-    "https://ko-fi.com/nexochess"
-];
 
 function assert(condition, message) {
     if (!condition) failures.push(message);
@@ -48,11 +43,6 @@ function renderTemplate(content, replacements) {
         output = output.replaceAll("${" + key + "}", String(value));
     }
     return output;
-}
-
-function hasAll(values, expected) {
-    return Array.isArray(values)
-        && expected.every(value => values.includes(value));
 }
 
 assert(
@@ -157,14 +147,6 @@ for (const route of INDEXABLE_PAGE_ROUTES) {
         `${route.pathname} organization mismatch.`
     );
     assert(
-        hasAll(organization?.alternateName, brandAlternateNames),
-        `${route.pathname} organization brand aliases mismatch.`
-    );
-    assert(
-        hasAll(organization?.sameAs, officialProfiles),
-        `${route.pathname} organization official profiles mismatch.`
-    );
-    assert(
         organization?.email === "contact@nexochess.com",
         `${route.pathname} contact mismatch.`
     );
@@ -174,13 +156,8 @@ for (const route of INDEXABLE_PAGE_ROUTES) {
     );
     assert(
         website?.["@id"] === STRUCTURED_DATA_IDS.website
-            && website?.url === productionUrl("/")
-            && website?.name === "NexoChess",
+            && website?.url === productionUrl("/"),
         `${route.pathname} website mismatch.`
-    );
-    assert(
-        hasAll(website?.alternateName, brandAlternateNames),
-        `${route.pathname} website brand aliases mismatch.`
     );
     assert(
         website?.description === homeDescription,
@@ -193,14 +170,8 @@ for (const route of INDEXABLE_PAGE_ROUTES) {
     );
     assert(
         application?.["@id"] === STRUCTURED_DATA_IDS.application
-            && application?.name === "NexoChess"
             && application?.isAccessibleForFree === true,
         `${route.pathname} application mismatch.`
-    );
-    assert(
-        hasAll(application?.alternateName, brandAlternateNames)
-            && application?.softwareVersion === "1.3",
-        `${route.pathname} application brand/version mismatch.`
     );
     assert(
         application?.description === homeDescription,

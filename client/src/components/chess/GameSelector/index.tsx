@@ -1,6 +1,4 @@
 import React, {
-    lazy,
-    Suspense,
     useEffect,
     useMemo,
     useRef,
@@ -21,6 +19,7 @@ import useGameSelector from "@/hooks/useGameSelector";
 import useAnalysisBoardStore from "@/apps/features/analysis/stores/AnalysisBoardStore";
 import Button from "@/components/common/Button";
 import FileUploader from "@/components/common/FileUploader";
+import GameSearchMenu from "../GameSearchMenu";
 
 import GameSelectorProps from "./GameSelectorProps";
 import * as styles from "./GameSelector.module.css";
@@ -29,9 +28,6 @@ import iconInterfaceSearch from "@assets/img/interface/search.svg";
 import iconInterfaceUpload from "@assets/img/interface/upload.svg";
 import iconInterfaceCopy from "@assets/img/interface/copy.svg";
 import iconInterfaceClose from "@assets/img/interface/close.svg";
-
-const loadGameSearchMenu = () => import("../GameSearchMenu");
-const GameSearchMenu = lazy(loadGameSearchMenu);
 
 const sourcePlaceholderKeys: Record<GameSourceType, string> = {
     PGN: "pgn",
@@ -158,13 +154,9 @@ function GameSelector({
         setSavedGameSource(source.key);
     }
 
-    async function openGameSearchMenu() {
+    function openGameSearchMenu() {
         if (currentFieldInput.length == 0) return;
 
-        // The account-game browser is only needed after an explicit search.
-        // Resolve its async chunk before opening the dialog so the landing UI
-        // does not pay for listings, date controls and remote fetch code.
-        await loadGameSearchMenu();
         setSearchMenuOpen(true);
     }
 
@@ -331,7 +323,7 @@ function GameSelector({
                     ) return;
 
                     event.preventDefault();
-                    void openGameSearchMenu();
+                    openGameSearchMenu();
                 }}
             />
 
@@ -385,9 +377,7 @@ function GameSelector({
                 icon={iconInterfaceSearch}
                 iconSize="22px"
                 disabled={!hasInput}
-                onClick={() => {
-                    void openGameSearchMenu();
-                }}
+                onClick={openGameSearchMenu}
             >
                 {t("gameSelector.searchGamesButton")}
             </Button>
@@ -423,25 +413,23 @@ function GameSelector({
             </div>
         )}
         
-        {searchMenuOpen && <Suspense fallback={null}>
-            <GameSearchMenu
-                username={trim(currentFieldInput)}
-                gameSource={gameSource}
-                onClose={() => setSearchMenuOpen(false)}
-                onGameSelect={game => {
-                    setServiceGames({
-                        ...serviceGames,
-                        [gameSource.key]: game
-                    });
+        {searchMenuOpen && <GameSearchMenu
+            username={trim(currentFieldInput)}
+            gameSource={gameSource}
+            onClose={() => setSearchMenuOpen(false)}
+            onGameSelect={game => {
+                setServiceGames({
+                    ...serviceGames,
+                    [gameSource.key]: game
+                });
 
-                    const usersColour = getColourPlayed(
-                        game, trim(currentFieldInput)
-                    );
+                const usersColour = getColourPlayed(
+                    game, trim(currentFieldInput)
+                );
 
-                    setBoardFlipped(usersColour == PieceColour.BLACK);
-                }}
-            />
-        </Suspense>}
+                setBoardFlipped(usersColour == PieceColour.BLACK);
+            }}
+        />}
     </div>;
 }
 

@@ -15,25 +15,13 @@
     "title": "Analizar partidas de ajedrez online gratis — NexoChess",
     "description": "Analiza partidas de ajedrez online gratis con Stockfish 17. Revisa cada jugada, precisión, errores, momentos críticos y mejores alternativas en NexoChess."
   },
-  "engine": {
-    "title": "Jugar al ajedrez contra el ordenador — NexoChess",
-    "description": "Juega al ajedrez gratis contra un rival configurable, elige su nivel Elo, recibe comentarios sobre tus jugadas, corrige errores y continúa partidas sin terminar."
-  },
   "academy": {
     "title": "Academia NexoChess — Aprende notación de ajedrez",
     "description": "Aprende notación, movimiento de las piezas y clasificaciones de jugadas de NexoChess mediante lecciones breves e interactivas orientadas a la práctica."
   },
-  "lessons": {
-    "title": "Lecciones interactivas de ajedrez — NexoChess",
-    "description": "Aprende ajedrez con 80 lecciones interactivas, posiciones realistas, práctica guiada y ejercicios paso a paso sobre notación, táctica y conceptos esenciales."
-  },
   "puzzles": {
     "title": "Problemas de ajedrez y entrenamiento táctico — NexoChess",
     "description": "Entrena táctica con problemas de tus partidas analizadas o filtrados por tema y dificultad dentro de una base de más de seis millones de posiciones."
-  },
-  "repertoire": {
-    "title": "Crea tu repertorio de aperturas — NexoChess",
-    "description": "Crea, importa, estudia y practica tu repertorio de aperturas de ajedrez con líneas y variantes guardadas para recordar mejor las posiciones que quieres jugar."
   },
   "guides": {
     "title": "Guías de análisis y táctica de ajedrez — NexoChess",

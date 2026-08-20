@@ -40,8 +40,8 @@ assert.deepEqual(PREFIXED_LANGUAGE_CODES, [
 ]);
 assert.equal(new Set(SUPPORTED_LANGUAGE_CODES).size, 11);
 assert.equal(INDEXABLE_PAGE_ROUTES.length, BASE_INDEXABLE_PAGE_ROUTES.length * 11);
-assert.equal(INDEXABLE_PAGE_ROUTES.length, 154);
-assert.equal(SITEMAP_ENTRIES.length, 154);
+assert.equal(INDEXABLE_PAGE_ROUTES.length, 121);
+assert.equal(SITEMAP_ENTRIES.length, 121);
 
 const expectedRoutes = [];
 for (const language of SUPPORTED_LANGUAGE_CODES) {

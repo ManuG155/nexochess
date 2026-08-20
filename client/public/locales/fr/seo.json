@@ -15,25 +15,13 @@
     "title": "Analyse gratuite de parties avec Stockfish — NexoChess",
     "description": "Analysez vos parties avec Stockfish et examinez les moments critiques, la classification des coups, la précision et la performance estimée sur un échiquier clair."
   },
-  "engine": {
-    "title": "Jouer aux échecs contre l’ordinateur — NexoChess",
-    "description": "Jouez gratuitement contre un adversaire informatique configurable, choisissez son niveau Elo, recevez un retour sur vos coups, corrigez vos erreurs et reprenez vos parties."
-  },
   "academy": {
     "title": "Académie NexoChess — Apprendre la notation des échecs",
     "description": "Apprenez la notation, le déplacement des pièces et les classifications NexoChess grâce à de courtes leçons interactives conçues pour la pratique."
   },
-  "lessons": {
-    "title": "Leçons interactives d’échecs — NexoChess",
-    "description": "Apprenez les échecs avec 80 leçons interactives, des positions réalistes, une pratique guidée et des exercices pas à pas sur la notation, la tactique et les bases."
-  },
   "puzzles": {
     "title": "Problèmes d’échecs et entraînement tactique — NexoChess",
     "description": "Entraînez votre tactique avec des problèmes issus de vos analyses ou filtrés par thème et difficulté parmi plus de six millions de positions."
-  },
-  "repertoire": {
-    "title": "Créer un répertoire d’ouvertures — NexoChess",
-    "description": "Créez, importez, étudiez et entraînez votre répertoire d’ouvertures avec des lignes et variantes enregistrées afin de mémoriser les positions que vous voulez jouer."
   },
   "guides": {
     "title": "Guides d'analyse et de tactique aux échecs — NexoChess",

@@ -75,11 +75,8 @@ const PAGE_SCHEMA_TYPES = Object.freeze({
     "/about": "AboutPage",
     "/faq": "FAQPage",
     "/analysis": "WebPage",
-    "/engine": "WebPage",
     "/academy": "WebPage",
-    "/lessons": "WebPage",
     "/puzzles": "WebPage",
-    "/repertoire": "WebPage",
     "/guides": "WebPage",
     "/help": "WebPage",
     "/terms": "WebPage",
@@ -90,11 +87,8 @@ const PAGE_SCHEMA_TYPES = Object.freeze({
 const FEATURE_PAGE_PATHS = new Set([
     "/",
     "/analysis",
-    "/engine",
     "/academy",
-    "/lessons",
     "/puzzles",
-    "/repertoire",
     "/help"
 ]);
 
@@ -119,17 +113,12 @@ function createOrganization() {
         "@type": "Organization",
         "@id": STRUCTURED_DATA_IDS.organization,
         name: "NexoChess",
-        alternateName: Object.freeze([
-            "Nexo Chess",
-            "www.nexochess.com",
-            "nexochess.com"
-        ]),
+        alternateName: "Nexo Chess",
         url: productionUrl("/"),
         logo: reference(STRUCTURED_DATA_IDS.image),
         email: "contact@nexochess.com",
         sameAs: Object.freeze([
-            "https://github.com/ManuG155/nexochess",
-            "https://ko-fi.com/nexochess"
+            "https://github.com/ManuG155/nexochess"
         ]),
         contactPoint: Object.freeze({
             "@type": "ContactPoint",
@@ -148,7 +137,6 @@ function createWebsite(homeDescription) {
         name: "NexoChess",
         alternateName: Object.freeze([
             "Nexo Chess",
-            "www.nexochess.com",
             "nexochess.com"
         ]),
         description: homeDescription,
@@ -162,18 +150,14 @@ function createApplication(homeDescription, language) {
         "@type": "SoftwareApplication",
         "@id": STRUCTURED_DATA_IDS.application,
         name: "NexoChess",
-        alternateName: Object.freeze([
-            "Nexo Chess",
-            "www.nexochess.com",
-            "nexochess.com"
-        ]),
+        alternateName: "Nexo Chess",
         url: productionUrl("/"),
         description: homeDescription,
         applicationCategory: "EducationalApplication",
         applicationSubCategory: "Chess analysis and training",
         operatingSystem: "Any",
         browserRequirements: "Requires JavaScript and a modern web browser.",
-        softwareVersion: "1.3",
+        softwareVersion: "1.1",
         image: reference(STRUCTURED_DATA_IDS.image),
         publisher: reference(STRUCTURED_DATA_IDS.organization),
         isAccessibleForFree: true,
@@ -192,8 +176,6 @@ function createApplication(homeDescription, language) {
             "Saved game archive",
             "Chess puzzles and tactics training",
             "Interactive chess lessons",
-            "Opening repertoire study",
-            "Play against a configurable chess computer",
             "Interface available in eleven languages"
         ])
     });

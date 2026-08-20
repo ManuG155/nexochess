@@ -1,7 +1,8 @@
-import React, { lazy, Suspense, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import Typography from "@/components/Typography";
+import LanguagesDialog from "@/components/settings/LanguagesDialog";
 import { getConsentCopy } from "@/components/privacy/CookieConsent/copy";
 import {
     CONTACT_EMAIL,
@@ -14,12 +15,8 @@ import { getAboutNavigationLabel } from "@/lib/aboutNavigation";
 import FooterProps from "./FooterProps";
 import * as styles from "./Footer.module.css";
 
-const LanguagesDialog = lazy(
-    () => import("@/components/settings/LanguagesDialog")
-);
-
 function Footer({ className, style }: FooterProps) {
-    const { t, i18n } = useTranslation("common");
+    const { t, i18n } = useTranslation(["common", "helpCenter"]);
     const [languagesOpen, setLanguagesOpen] = useState(false);
 
     const copyrightYear = useMemo(
@@ -67,7 +64,7 @@ function Footer({ className, style }: FooterProps) {
         <nav className={styles.links} aria-label={t("footer.navigationLabel")}>
             <div className={styles.linkGroup}>
                 <a href="/help">
-                    {t("navigationBar.tooltips.help")}
+                    {t("navigationTitle", { ns: "helpCenter" })}
                 </a>
 
                 <button
@@ -126,11 +123,9 @@ function Footer({ className, style }: FooterProps) {
             </span>
         </div>
 
-        {languagesOpen && <Suspense fallback={null}>
-            <LanguagesDialog
-                onClose={() => setLanguagesOpen(false)}
-            />
-        </Suspense>}
+        {languagesOpen && <LanguagesDialog
+            onClose={() => setLanguagesOpen(false)}
+        />}
     </footer>;
 }
 

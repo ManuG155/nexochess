@@ -10,7 +10,6 @@ import {
     getUrlLanguage,
     installLocalizedLinkRouting,
     normaliseSupportedLanguage,
-    parseLanguagePathname,
     refreshLocalizedLinks
 } from "./routing";
 
@@ -19,71 +18,6 @@ const namespaces = [
     "enginePlay", "puzzles", "repertoire", "repertoireCourse", "analysis", "settings",
     "otherPages", "helpCenter", "coach", "legal", "guides"
 ] as const;
-
-type Namespace = typeof namespaces[number];
-
-const analysisInitialNamespaces: Namespace[] = [
-    "common",
-    "analysis",
-    "lessons",
-    "enginePlay",
-    "repertoire"
-];
-
-const analysisMobileInitialNamespaces: Namespace[] = [
-    "common",
-    "analysis"
-];
-
-const homeInitialNamespaces: Namespace[] = [
-    "common",
-    "analysis",
-    "lessons",
-    "enginePlay",
-    "repertoire"
-];
-
-function currentBasePathname(): string | undefined {
-    if (typeof window == "undefined") return undefined;
-    return parseLanguagePathname(window.location.pathname).basePathname;
-}
-
-function isAnalysisBootstrapRoute(basePathname = currentBasePathname()): boolean {
-    return basePathname == "/analysis" || basePathname == "/analysis-entry";
-}
-
-function isHomeBootstrapRoute(basePathname = currentBasePathname()): boolean {
-    return basePathname == "/" || basePathname == "/home";
-}
-
-function usesCompactNavigation(): boolean {
-    if (
-        typeof window == "undefined"
-        || typeof window.matchMedia != "function"
-    ) return false;
-
-    // Keep this breakpoint aligned with NavigationBar.module.css. Below it,
-    // the desktop primary navigation is hidden behind the mobile menu, so its
-    // Lessons/Duel/Repertoire labels must not hold I18nGate and the whole
-    // Analysis page behind three unrelated locale requests on slow networks.
-    return window.matchMedia("(max-width: 800px)").matches;
-}
-
-function getInitialNamespaces(): Namespace[] {
-    const basePathname = currentBasePathname();
-
-    if (isAnalysisBootstrapRoute(basePathname)) {
-        return usesCompactNavigation()
-            ? analysisMobileInitialNamespaces
-            : analysisInitialNamespaces;
-    }
-
-    if (isHomeBootstrapRoute(basePathname)) {
-        return homeInitialNamespaces;
-    }
-
-    return [...namespaces];
-}
 
 function getBrowserLanguages(): string[] {
     if (typeof navigator == "undefined") return [];
@@ -129,15 +63,11 @@ void i18next
     .use(httpApi)
     .init({
         lng: initialLanguage,
-        // Every namespace is audited for identical key/type/placeholder parity
-        // across all 11 supported locales. Loading English again as a fallback
-        // on localized routes therefore only duplicates network work; it is not
-        // needed to fill missing keys.
-        fallbackLng: false,
+        fallbackLng: DEFAULT_LANGUAGE,
         supportedLngs: [...SUPPORTED_LANGUAGES],
         nonExplicitSupportedLngs: true,
         load: "languageOnly",
-        ns: getInitialNamespaces(),
+        ns: [...namespaces],
         defaultNS: "common",
         backend: { loadPath: "/locales/{{lng}}/{{ns}}.json" },
         interpolation: { escapeValue: false },

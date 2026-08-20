@@ -1,9 +1,10 @@
 import React, {
-    lazy,
-    Suspense,
     useEffect,
     useState
 } from "react";
+
+import useSettingsStore from
+    "@/stores/SettingsStore";
 
 import useAnalysisGameStore from
     "@analysis/stores/AnalysisGameStore";
@@ -11,8 +12,26 @@ import useAnalysisGameStore from
 import useAnalysisBoardStore from
     "@analysis/stores/AnalysisBoardStore";
 
+import StateTreeTraverser from
+    "@/components/chess/StateTreeTraverser";
+
+import RealtimeEngineArea from
+    "./RealtimeEngineArea";
+
 import GameSelection from
     "./GameSelection";
+
+import GameAnalysis from
+    "./GameAnalysis";
+
+import EvaluationGraphArea from
+    "./GameReport/EvaluationGraphArea";
+
+import CoachMoveReaction from
+    "./CoachMoveReaction";
+
+import GameSummaryPanel from
+    "./GameSummaryPanel";
 
 import AnalysisPanelProps from
     "./AnalysisPanelProps";
@@ -20,11 +39,7 @@ import AnalysisPanelProps from
 import * as styles from
     "./AnalysisPanel.module.css";
 
-const loadGameSummaryPanel = () => import("./GameSummaryPanel");
-const loadReviewContent = () => import("./ReviewContent");
-
-const GameSummaryPanel = lazy(loadGameSummaryPanel);
-const ReviewContent = lazy(loadReviewContent);
+import "./NexoReview.css";
 
 
 type SidePanelMode =
@@ -37,6 +52,14 @@ function AnalysisPanel({
     style,
     onModeChange
 }: AnalysisPanelProps) {
+    const analysisSettings = useSettingsStore(
+        state => state.settings.analysis
+    );
+
+    const coachSettings = useSettingsStore(
+        state => state.settings.coach
+    );
+
     const analysisGame = useAnalysisGameStore(
         state => state.analysisGame
     );
@@ -61,14 +84,7 @@ function AnalysisPanel({
     useEffect(() => {
         if (!gameAnalysisOpen) {
             setSidePanelMode("summary");
-            return;
         }
-
-        // These panels are not needed on the landing screen. Fetch them only
-        // after a game has been opened so the initial Analysis bundle can stay
-        // focused on game selection and the board preview.
-        void loadGameSummaryPanel();
-        void loadReviewContent();
     }, [gameAnalysisOpen]);
 
     useEffect(() => {
@@ -120,21 +136,95 @@ function AnalysisPanel({
                     gameAnalysisOpen
                     && sidePanelMode == "summary"
                 ) && (
-                    <Suspense fallback={null}>
-                        <div className="nexo-mobile-summary-shell">
-                            <GameSummaryPanel
-                                onStartReview={startReview}
-                            />
-                        </div>
-                    </Suspense>
+                    <div className="nexo-mobile-summary-shell">
+                        <GameSummaryPanel
+                            onStartReview={startReview}
+                        />
+                    </div>
                 )}
 
                 {reviewOpen && (
-                    <Suspense fallback={null}>
-                        <ReviewContent
-                            onBackToSummary={backToSummary}
-                        />
-                    </Suspense>
+                    <section
+                        className={[
+                            styles.reviewCard,
+                            "nexo-review-card"
+                        ].join(" ")}
+                    >
+                        <div
+                            className={[
+                                styles.reviewScrollArea,
+                                "nexo-review-content",
+                                !coachSettings.enabled
+                                    ? styles.reviewScrollAreaWithoutCoach
+                                    : ""
+                            ].filter(Boolean).join(" ")}
+                        >
+                            <div
+                                className={[
+                                    styles.reviewHeader,
+                                    "nexo-review-header"
+                                ].join(" ")}
+                            >
+                                <button
+                                    type="button"
+                                    className={[
+                                        styles.reviewBackButton,
+                                        "nexo-review-back"
+                                    ].join(" ")}
+                                    onClick={backToSummary}
+                                    aria-label="Volver al resumen"
+                                    title="Volver al resumen"
+                                >
+                                    ←
+                                </button>
+                            </div>
+
+                            {analysisSettings.engine.enabled && (
+                                <div className="nexo-review-engine">
+                                    <RealtimeEngineArea />
+                                </div>
+                            )}
+
+                            {coachSettings.enabled && (
+                                <div className="nexo-review-coach">
+                                    <CoachMoveReaction />
+                                </div>
+                            )}
+
+                            <div
+                                className={[
+                                    styles.reviewGraphArea,
+                                    "nexo-review-graph"
+                                ].join(" ")}
+                            >
+                                <EvaluationGraphArea />
+                            </div>
+
+                            <div
+                                className={[
+                                    styles.reviewMovesArea,
+                                    "nexo-review-moves"
+                                ].join(" ")}
+                                data-review-moves-scroll="true"
+                            >
+                                <GameAnalysis />
+                            </div>
+                        </div>
+
+                        <div
+                            className={[
+                                styles.traverserContainer,
+                                "nexo-review-footer"
+                            ].join(" ")}
+                        >
+                            <StateTreeTraverser
+                                className={[
+                                    styles.traverser,
+                                    "nexo-review-traverser"
+                                ].join(" ")}
+                            />
+                        </div>
+                    </section>
                 )}
             </div>
         </div>

@@ -15,25 +15,13 @@
     "title": "Phân tích ván cờ miễn phí bằng Stockfish — NexoChess",
     "description": "Phân tích ván cờ với Stockfish, xem lại thời điểm quan trọng, phân loại nước đi, độ chính xác và hiệu suất ước tính trên bàn cờ tương tác rõ ràng."
   },
-  "engine": {
-    "title": "Chơi cờ vua với máy tính — NexoChess",
-    "description": "Chơi cờ vua miễn phí với đối thủ máy tính có thể tùy chỉnh, chọn mức Elo, nhận phản hồi cho từng nước đi, sửa sai và tiếp tục các ván chưa hoàn thành."
-  },
   "academy": {
     "title": "Học viện NexoChess — Học ký hiệu cờ vua",
     "description": "Học ký hiệu cờ vua, cách di chuyển quân và phân loại nước đi của NexoChess qua các bài học tương tác ngắn, tập trung vào thực hành."
   },
-  "lessons": {
-    "title": "Bài học cờ vua tương tác — NexoChess",
-    "description": "Học cờ vua qua 80 bài học tương tác với thế cờ thực tế, luyện tập có hướng dẫn và bài tập từng bước về ký hiệu, chiến thuật và kiến thức nền tảng."
-  },
   "puzzles": {
     "title": "Bài tập cờ vua và luyện chiến thuật — NexoChess",
     "description": "Luyện chiến thuật bằng bài tập từ các ván đã phân tích hoặc lọc hơn sáu triệu thế cờ theo chủ đề và độ khó phù hợp."
-  },
-  "repertoire": {
-    "title": "Xây dựng hệ thống khai cuộc — NexoChess",
-    "description": "Tạo, nhập, học và luyện hệ thống khai cuộc của bạn bằng các biến và đường đã lưu, rồi ôn lại những thế cờ quan trọng mà bạn muốn ghi nhớ."
   },
   "guides": {
     "title": "Hướng dẫn phân tích và chiến thuật cờ vua — NexoChess",

@@ -1,10 +1,11 @@
-import React, { lazy, Suspense, useEffect, useState } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { ToastContainer } from "react-toastify";
 
 import useSettingsStore from "@/stores/SettingsStore";
 import NavigationBar from "@/components/layout/NavigationBar";
+import Footer from "@/components/layout/Footer";
 import CookieConsent from "@/components/privacy/CookieConsent";
 import { getAccessibilityCopy } from "@/i18n/accessibilityCopy";
 import { parseLanguagePathname } from "@/i18n/routing";
@@ -19,7 +20,6 @@ import "./LightThemeComponentFixes.css";
 import "./Accessibility.css";
 
 const queryClient = new QueryClient();
-const Footer = lazy(() => import("@/components/layout/Footer"));
 const BugReportingWidget = lazy(() => import("@/components/BugReportingWidget"));
 const ReleaseNotice = lazy(() => import("@/components/releases/ReleaseNotice"));
 const ReleaseNoticeV12 = lazy(() => import("@/components/releases/ReleaseNoticeV12"));
@@ -35,7 +35,6 @@ function PageWrapper({
     footerStyle
 }: PageWrapperProps) {
     const { i18n } = useTranslation();
-    const [releaseNoticesReady, setReleaseNoticesReady] = useState(false);
     const accessibilityCopy = getAccessibilityCopy(
         i18n.resolvedLanguage || i18n.language
     );
@@ -53,8 +52,6 @@ function PageWrapper({
             .basePathname.split("/").filter(Boolean).at(0)
             || "home";
 
-    const releaseNoticesEnabled = routeName == "home";
-
     useEffect(() => initialiseAnalytics(), []);
 
     useEffect(() => {
@@ -66,39 +63,6 @@ function PageWrapper({
             delete document.body.dataset.theme;
         };
     }, [colourMode]);
-
-    useEffect(() => {
-        if (!releaseNoticesEnabled) {
-            setReleaseNoticesReady(false);
-            return;
-        }
-
-        let timer: number | undefined;
-
-        const scheduleReleaseNotices = () => {
-            // Release dialogs are useful product messaging, but a late modal
-            // can become the page's LCP on slow mobile connections. Keep them
-            // on the Home experience and completely off product critical paths
-            // such as Analysis, Puzzles and Lessons.
-            timer = window.setTimeout(
-                () => setReleaseNoticesReady(true),
-                250
-            );
-        };
-
-        if (document.readyState == "complete") {
-            scheduleReleaseNotices();
-        } else {
-            window.addEventListener("load", scheduleReleaseNotices, {
-                once: true
-            });
-        }
-
-        return () => {
-            window.removeEventListener("load", scheduleReleaseNotices);
-            if (timer != undefined) window.clearTimeout(timer);
-        };
-    }, [releaseNoticesEnabled]);
 
     return <QueryClientProvider client={queryClient}>
         <div
@@ -130,25 +94,21 @@ function PageWrapper({
                 {children}
             </div>
 
-            <Suspense fallback={null}>
-                <Footer className={footerClassName} style={footerStyle} />
-            </Suspense>
+            <Footer className={footerClassName} style={footerStyle} />
 
             {bugReportingMode && <Suspense fallback={null}>
                 <BugReportingWidget/>
             </Suspense>}
 
-            {releaseNoticesEnabled && releaseNoticesReady && <>
-                <Suspense fallback={null}>
-                    <ReleaseNoticeV13/>
-                </Suspense>
-                <Suspense fallback={null}>
-                    <ReleaseNoticeV12/>
-                </Suspense>
-                <Suspense fallback={null}>
-                    <ReleaseNotice/>
-                </Suspense>
-            </>}
+            <Suspense fallback={null}>
+                <ReleaseNoticeV13/>
+            </Suspense>
+            <Suspense fallback={null}>
+                <ReleaseNoticeV12/>
+            </Suspense>
+            <Suspense fallback={null}>
+                <ReleaseNotice/>
+            </Suspense>
             <CookieConsent/>
             <ToastContainer/>
         </div>

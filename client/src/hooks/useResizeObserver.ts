@@ -1,4 +1,4 @@
-import { RefObject, useLayoutEffect, useState } from "react";
+import { RefObject, useEffect, useState } from "react";
 
 /**
  * @description The inner width / height does not include border or scrollbar.
@@ -16,30 +16,21 @@ function useResizeObserver<ElementType extends HTMLElement>(
         fullHeight: defaultSizes
     });
 
-    useLayoutEffect(() => {
-        const element = elementRef.current;
-        if (!element) return;
-
-        function measure(target: ElementType) {
-            setSize({
-                innerWidth: target.clientWidth,
-                innerHeight: target.clientHeight,
-                fullWidth: target.offsetWidth,
-                fullHeight: target.offsetHeight
-            });
-        }
-
-        // Measure synchronously in the layout phase so components that derive
-        // geometry from this hook do not paint once at their fallback size and
-        // then visibly jump when ResizeObserver delivers its first callback.
-        measure(element);
+    useEffect(() => {
+        if (!elementRef.current) return;
 
         const observer = new ResizeObserver(entries => {
-            const target = entries[0]?.target as ElementType | undefined;
-            if (target) measure(target);
+            const element = entries[0].target as ElementType;
+
+            setSize({
+                innerWidth: element.clientWidth,
+                innerHeight: element.clientHeight,
+                fullWidth: element.offsetWidth,
+                fullHeight: element.offsetHeight
+            });
         });
 
-        observer.observe(element);
+        observer.observe(elementRef.current);
 
         return () => observer.disconnect();
     }, []);
