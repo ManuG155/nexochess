@@ -7,6 +7,7 @@ import CourseLessonV3 from "./CourseLessonV3";
 import CourseReviewV3 from "./CourseReviewV3";
 import { OpeningCatalogueEntry, getFallbackOpeningCatalogue, loadOpeningCatalogue } from "./openingCatalogue";
 import { buildCourseLessonsIndexed } from "./courseLessonIndex";
+import { canonicalCourseFamily } from "./courseFamily";
 import { localizeOpeningName, repertoireLanguage } from "./openingLocalization";
 import { CustomCourseLine, addCustomCourseLine, readCustomCourseLines, writeCustomCourseLines } from "./customCourseLines";
 import { CourseProgressStore, createLessonId, findLessonProgress, readCourseProgress, writeCourseProgress } from "./courseProgress";
@@ -26,16 +27,6 @@ function normalizedHistory(pgn: string) {
     } catch {
         return "";
     }
-}
-
-/*
- * Accepted/Declined are branches of the same gambit repertoire, not separate
- * courses. Keeping the canonical family at the course boundary means the
- * variation map naturally forks at the move where the gambit is accepted or
- * declined while preserving every concrete line underneath it.
- */
-function canonicalCourseFamily(value: string) {
-    return value.replace(/\s+(Accepted|Declined)$/i, "").trim();
 }
 
 function OpeningLearningV3({ mode = "learn", onAddToRepertoire, onFocusChange }: Props) {
@@ -90,7 +81,8 @@ function OpeningLearningV3({ mode = "learn", onAddToRepertoire, onFocusChange }:
         return findLessonProgress(progress, item)?.side || fallback;
     }
     function openFamily(name: string, side?: RepertoireSide) {
-        setFamilyName(name); setPreferredSide(side); setOpening(undefined); setReviewQueue([]); setReviewIndex(0); setBlindPractice(false); setQuery("");
+        const family = canonicalCourseFamily(name);
+        setFamilyName(family); setPreferredSide(side); setOpening(undefined); setReviewQueue([]); setReviewIndex(0); setBlindPractice(false); setQuery("");
         window.scrollTo({ top: 0, behavior: "auto" });
     }
     function openLine(item: OpeningCatalogueEntry, side?: RepertoireSide, startPractice = false, blind = false) {
