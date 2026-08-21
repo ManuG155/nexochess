@@ -16,25 +16,26 @@ import {
 
 import ArchiveGameCard from "../../components/ArchiveGameCard";
 import ProgressInsights from "../../components/ProgressInsights";
+import TrainingPlan from "../../components/TrainingPlan";
 import * as styles from "./Archive.module.css";
 
 import iconArchive from "@assets/img/icons/archive.png";
 import iconDelete from "@assets/img/interface/delete.svg";
 
-type ArchiveView = "games" | "progress";
+type ArchiveView = "games" | "progress" | "plan";
 
-const TAB_LABELS: Record<string, { games: string; progress: string }> = {
-    en: { games: "Games", progress: "Progress" },
-    es: { games: "Partidas", progress: "Progreso" },
-    fr: { games: "Parties", progress: "Progression" },
-    de: { games: "Partien", progress: "Fortschritt" },
-    pt: { games: "Partidas", progress: "Progresso" },
-    ru: { games: "Партии", progress: "Прогресс" },
-    zh: { games: "对局", progress: "进度" },
-    vi: { games: "Ván đấu", progress: "Tiến bộ" },
-    hi: { games: "बाज़ियाँ", progress: "प्रगति" },
-    mr: { games: "डाव", progress: "प्रगती" },
-    pl: { games: "Partie", progress: "Postęp" }
+const TAB_LABELS: Record<string, { games: string; progress: string; plan: string }> = {
+    en: { games: "Games", progress: "Progress", plan: "Training plan" },
+    es: { games: "Partidas", progress: "Progreso", plan: "Plan de entrenamiento" },
+    fr: { games: "Parties", progress: "Progression", plan: "Plan d’entraînement" },
+    de: { games: "Partien", progress: "Fortschritt", plan: "Trainingsplan" },
+    pt: { games: "Partidas", progress: "Progresso", plan: "Plano de treino" },
+    ru: { games: "Партии", progress: "Прогресс", plan: "План тренировок" },
+    zh: { games: "对局", progress: "进度", plan: "训练计划" },
+    vi: { games: "Ván đấu", progress: "Tiến bộ", plan: "Kế hoạch luyện tập" },
+    hi: { games: "बाज़ियाँ", progress: "प्रगति", plan: "प्रशिक्षण योजना" },
+    mr: { games: "डाव", progress: "प्रगती", plan: "प्रशिक्षण योजना" },
+    pl: { games: "Partie", progress: "Postęp", plan: "Plan treningowy" }
 };
 
 function Archive() {
@@ -151,6 +152,18 @@ function Archive() {
                 >
                     {tabLabels.progress}
                 </button>
+                <button
+                    type="button"
+                    role="tab"
+                    aria-selected={view == "plan"}
+                    className={view == "plan" ? styles.viewTabActive : ""}
+                    onClick={() => {
+                        setSelectedGameIds([]);
+                        setView("plan");
+                    }}
+                >
+                    {tabLabels.plan}
+                </button>
             </div>
 
             <Separator />
@@ -165,6 +178,10 @@ function Archive() {
 
             {status == "success" && view == "progress" && archive && (
                 <ProgressInsights archive={archive} />
+            )}
+
+            {status == "success" && view == "plan" && archive && (
+                <TrainingPlan archive={archive} />
             )}
 
             {status == "success" && view == "games" && sortedArchive.length == 0 && (
