@@ -6,7 +6,7 @@ import { localizeOpeningName } from "./openingLocalization";
 import { CourseProgressStore, findLessonProgress } from "./courseProgress";
 import { RepertoireSide } from "./courseV3Model";
 import { learnedDepth, pgnPlyCount } from "./courseDepth";
-import CourseVariationMap from "./CourseVariationMap";
+import CourseRepertoireTree from "./CourseRepertoireTree";
 import * as styles from "./courseV3.module.css";
 
 interface Props {
@@ -17,9 +17,10 @@ interface Props {
     onBack: () => void;
     onOpen: (opening: OpeningCatalogueEntry, side?: RepertoireSide, startPractice?: boolean, blindPractice?: boolean) => void;
     onReviewFamily: (lines: OpeningCatalogueEntry[]) => void;
+    onAddToRepertoire: (opening: OpeningCatalogueEntry, side: RepertoireSide) => void;
 }
 
-function CourseFamilyV3({ name, lines, progress, preferredSide, onBack, onOpen, onReviewFamily }: Props) {
+function CourseFamilyV3({ name, lines, progress, preferredSide, onBack, onOpen, onReviewFamily, onAddToRepertoire }: Props) {
     const { t, i18n } = useTranslation("repertoire");
     const { t: tc } = useTranslation("repertoireCourse");
     const language = i18n.resolvedLanguage || i18n.language || "en";
@@ -46,7 +47,6 @@ function CourseFamilyV3({ name, lines, progress, preferredSide, onBack, onOpen, 
     const firstNew = lineStates.findIndex(state => state.learnedPly == 0);
     const firstPartial = lineStates.findIndex(state => state.learnedPly > 0 && !state.complete);
     const recommended = firstNew >= 0 ? firstNew : firstPartial;
-    const recommendedItem = recommended >= 0 ? lineStates[recommended]?.item : undefined;
     const depthScore = lineStates.reduce((sum, state) => (
         sum + (state.availablePly ? state.learnedPly / state.availablePly : 0)
     ), 0);
@@ -81,18 +81,17 @@ function CourseFamilyV3({ name, lines, progress, preferredSide, onBack, onOpen, 
                 <button type="button" onClick={() => onReviewFamily(learnedLines)} disabled={!learnedLines.length}>{t("modes.review")}</button>
             </div>
         </div>
-        <CourseVariationMap
+        <CourseRepertoireTree
             name={name}
             lines={lines}
             progress={progress}
             preferredSide={preferredSide}
-            recommendedItem={recommendedItem}
             percent={percent}
             language={language}
             title={tc("path.title")}
-            fundamentalsLabel={t("learn.fundamentals")}
             loadingLabel={t("learn.loading")}
             onOpen={onOpen}
+            onAddToRepertoire={onAddToRepertoire}
         />
     </section>;
 }
