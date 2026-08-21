@@ -47,11 +47,11 @@ function requestUrl(fen: string) {
     const params = new URLSearchParams();
     params.set("variant", "standard");
     params.set("fen", fen);
-    params.set("moves", "12");
-    params.set("topGames", "0");
-    params.set("recentGames", "0");
-    for (const speed of ["blitz", "rapid", "classical"]) params.append("speeds[]", speed);
-    for (const rating of ["1600", "1800", "2000", "2200", "2500"]) params.append("ratings[]", rating);
+    // The current public explorer documents these filters as comma-separated
+    // values. Avoid optional numeric parameters here as they are unnecessary
+    // for our use and have had compatibility changes in the public endpoint.
+    params.set("speeds", "blitz,rapid,classical");
+    params.set("ratings", "1600,1800,2000,2200,2500");
     return `https://explorer.lichess.ovh/lichess?${params.toString()}`;
 }
 
