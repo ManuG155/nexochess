@@ -1,0 +1,384 @@
+.planShell {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+    min-width: 0;
+}
+
+.hero,
+.learningCard,
+.weekPlan,
+.weaknessCard,
+.empty {
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(8, 12, 18, 0.28);
+}
+
+.hero {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 22px;
+    padding: 18px;
+    border-radius: 14px;
+    background:
+        radial-gradient(circle at 90% 10%, rgba(70, 125, 232, 0.14), transparent 24rem),
+        rgba(8, 12, 18, 0.3);
+}
+
+.hero h2,
+.sectionHeader h3,
+.planHeading h3,
+.weaknessCard h4 {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.hero h2 {
+    margin-top: 4px;
+    font-size: clamp(1.35rem, 2.2vw, 1.8rem);
+}
+
+.hero p,
+.planHeading p,
+.learningCard p,
+.weaknessCard p,
+.taskRow p {
+    margin: 6px 0 0;
+    color: rgba(255, 255, 255, 0.56);
+    line-height: 1.5;
+}
+
+.eyebrow {
+    color: #78a6ff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.contextChips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 7px;
+    max-width: 400px;
+}
+
+.contextChips span {
+    padding: 7px 9px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.035);
+    color: rgba(255, 255, 255, 0.58);
+    font-size: 0.75rem;
+}
+
+.contextChips b {
+    color: #dce8ff;
+}
+
+.learningCard {
+    padding: 16px 17px;
+    border-radius: 12px;
+    border-color: rgba(242, 184, 82, 0.2);
+    background: rgba(242, 184, 82, 0.055);
+}
+
+.learningCard strong {
+    color: #f3cf87;
+}
+
+.learningCard span,
+.loadingLine {
+    display: block;
+    margin-top: 8px;
+    color: rgba(255, 255, 255, 0.42);
+    font-size: 0.76rem;
+}
+
+.sectionHeader,
+.planHeading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.sectionHeader h3,
+.planHeading h3 {
+    margin-top: 3px;
+    font-size: 1.1rem;
+}
+
+.sectionHeader small {
+    color: rgba(255, 255, 255, 0.43);
+}
+
+.weaknessGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.weaknessCard {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 12px;
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.rank,
+.taskNumber {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(70, 125, 232, 0.15);
+    color: #a9c5ff;
+    font-weight: 800;
+}
+
+.weaknessBody {
+    min-width: 0;
+}
+
+.weaknessCard h4 {
+    font-size: 1rem;
+}
+
+.weaknessCard p {
+    font-size: 0.82rem;
+}
+
+.weaknessBody span {
+    display: block;
+    margin-top: 9px;
+    color: rgba(255, 255, 255, 0.42);
+    font-size: 0.73rem;
+}
+
+.weaknessBody b {
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.weaknessCard > a,
+.taskRow > a {
+    align-self: center;
+    padding: 7px 10px;
+    border-radius: 8px;
+    background: rgba(70, 125, 232, 0.14);
+    color: #b8ceff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.weaknessCard > a:hover,
+.taskRow > a:hover {
+    background: rgba(70, 125, 232, 0.23);
+}
+
+.weekPlan {
+    padding: 17px;
+    border-radius: 14px;
+}
+
+.planHeading {
+    align-items: flex-start;
+}
+
+.planHeading > div:first-child {
+    max-width: 650px;
+}
+
+.planSummary {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+    min-width: 150px;
+}
+
+.planSummary strong {
+    color: #f0f5ff;
+    font-size: 1rem;
+}
+
+.planSummary span {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.76rem;
+}
+
+.taskList {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-top: 15px;
+}
+
+.taskRow {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) 90px auto;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 12px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.taskRow strong {
+    color: rgba(255, 255, 255, 0.91);
+}
+
+.taskRow p {
+    margin-top: 3px;
+    font-size: 0.76rem;
+}
+
+.taskAmount {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.taskAmount b {
+    color: #f4f7ff;
+    font-size: 1.15rem;
+}
+
+.taskAmount span {
+    color: rgba(255, 255, 255, 0.42);
+    font-size: 0.7rem;
+}
+
+.trainNow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    margin-top: 14px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, #4d84eb, #5aa9eb);
+    color: white;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.trainNow:hover {
+    filter: brightness(1.06);
+}
+
+.empty {
+    padding: 34px 18px;
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.55);
+    text-align: center;
+}
+
+:global(html[data-theme="light"]) .hero,
+:global(html[data-theme="light"]) .learningCard,
+:global(html[data-theme="light"]) .weekPlan,
+:global(html[data-theme="light"]) .weaknessCard,
+:global(html[data-theme="light"]) .empty {
+    border-color: rgba(39, 72, 109, 0.11);
+    background: rgba(247, 250, 254, 0.8);
+}
+
+:global(html[data-theme="light"]) .hero {
+    background:
+        radial-gradient(circle at 90% 10%, rgba(70, 125, 232, 0.08), transparent 24rem),
+        rgba(247, 250, 254, 0.88);
+}
+
+:global(html[data-theme="light"]) .hero h2,
+:global(html[data-theme="light"]) .sectionHeader h3,
+:global(html[data-theme="light"]) .planHeading h3,
+:global(html[data-theme="light"]) .weaknessCard h4,
+:global(html[data-theme="light"]) .taskRow strong,
+:global(html[data-theme="light"]) .taskAmount b,
+:global(html[data-theme="light"]) .planSummary strong {
+    color: #172334;
+}
+
+:global(html[data-theme="light"]) .hero p,
+:global(html[data-theme="light"]) .planHeading p,
+:global(html[data-theme="light"]) .learningCard p,
+:global(html[data-theme="light"]) .weaknessCard p,
+:global(html[data-theme="light"]) .taskRow p,
+:global(html[data-theme="light"]) .sectionHeader small,
+:global(html[data-theme="light"]) .planSummary span,
+:global(html[data-theme="light"]) .weaknessBody span,
+:global(html[data-theme="light"]) .taskAmount span,
+:global(html[data-theme="light"]) .empty {
+    color: #66778d;
+}
+
+:global(html[data-theme="light"]) .contextChips span,
+:global(html[data-theme="light"]) .taskRow {
+    border-color: rgba(39, 72, 109, 0.1);
+    background: rgba(48, 86, 132, 0.045);
+}
+
+:global(html[data-theme="light"]) .contextChips b,
+:global(html[data-theme="light"]) .weaknessBody b {
+    color: #315f9f;
+}
+
+@media (max-width: 820px) {
+    .hero,
+    .sectionHeader,
+    .planHeading {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .contextChips {
+        justify-content: flex-start;
+        max-width: none;
+    }
+
+    .weaknessGrid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .planSummary {
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 560px) {
+    .hero,
+    .weekPlan {
+        padding: 13px;
+    }
+
+    .weaknessCard {
+        grid-template-columns: 30px minmax(0, 1fr);
+    }
+
+    .weaknessCard > a {
+        grid-column: 2;
+        justify-self: flex-start;
+    }
+
+    .taskRow {
+        grid-template-columns: 30px minmax(0, 1fr) auto;
+    }
+
+    .taskAmount {
+        grid-column: 2;
+        align-items: flex-start;
+    }
+
+    .taskRow > a {
+        grid-column: 3;
+        grid-row: 1 / span 2;
+    }
+}
