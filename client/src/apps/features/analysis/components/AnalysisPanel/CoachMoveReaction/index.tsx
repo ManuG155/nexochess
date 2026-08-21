@@ -7,9 +7,10 @@ import React, {
 import { Chess } from "chess.js";
 import { useTranslation } from "react-i18next";
 
-import {
-    addChildMove
-} from "shared/types/game/position/StateTreeNode";
+import { Classification } from "shared/constants/Classification";
+import PieceColour from "shared/constants/PieceColour";
+import type { StateTreeNode } from
+    "shared/types/game/position/StateTreeNode";
 
 import useSettingsStore from
     "@/stores/SettingsStore";
@@ -22,11 +23,16 @@ import {
 } from "@analysis/lib/coach";
 
 import {
+    getDynamicCoachComment
+} from "@analysis/lib/coachComment";
+
+import {
     getDetailedCoachComment
 } from "@analysis/lib/coachCommentDetailed";
 
 import {
-    getCoachTacticInsight
+    getCoachTacticInsight,
+    shouldSuppressCoachLineNotation
 } from "@analysis/lib/coachTacticInsight";
 
 import {
@@ -137,14 +143,43 @@ function CoachMoveReaction() {
         settings.appearance.selectedCoach
     );
 
-    const message = useMemo(() => {
-        const statusLine = getDetailedCoachComment(
+    const tacticInsight = useMemo(
+        () => getCoachTacticInsight(
             currentNode,
             classification,
-            coach.id,
-            t,
             i18n.resolvedLanguage
-        );
+        ),
+        [
+            currentNode.state.fen,
+            currentStateTreeNodeUpdate,
+            currentNode.state.engineLines?.length ?? 0,
+            currentNode.parent?.state.engineLines?.length ?? 0,
+            classification,
+            i18n.resolvedLanguage
+        ]
+    );
+
+    const message = useMemo(() => {
+        const suppressLineNotation = !tacticInsight
+            && shouldSuppressCoachLineNotation(
+                currentNode,
+                classification
+            );
+
+        const statusLine = suppressLineNotation
+            ? getDynamicCoachComment(
+                currentNode,
+                classification,
+                coach.id,
+                t
+            )
+            : getDetailedCoachComment(
+                currentNode,
+                classification,
+                coach.id,
+                t,
+                i18n.resolvedLanguage
+            );
         const seed = `${currentNode.state.fen}|${moveSan || "start"}`;
 
         return addOccasionalCoachCatchphrase(
@@ -164,24 +199,9 @@ function CoachMoveReaction() {
         classification,
         coach.id,
         i18n.resolvedLanguage,
+        tacticInsight,
         t
     ]);
-
-    const tacticInsight = useMemo(
-        () => getCoachTacticInsight(
-            currentNode,
-            classification,
-            i18n.resolvedLanguage
-        ),
-        [
-            currentNode.state.fen,
-            currentStateTreeNodeUpdate,
-            currentNode.state.engineLines?.length ?? 0,
-            currentNode.parent?.state.engineLines?.length ?? 0,
-            classification,
-            i18n.resolvedLanguage
-        ]
-    );
 
     const tacticSentence = tacticInsight
         ? inlineTacticSentence(
@@ -210,19 +230,45 @@ function CoachMoveReaction() {
         setAutoplayEnabled(false);
 
         let cursor = tacticInsight.startNode;
-        const sequenceNodes = [];
+        const sequenceNodes: StateTreeNode[] = [];
+        const playbackId = Date.now();
 
-        for (const uci of tacticInsight.uciMoves) {
+        for (const [index, uci] of tacticInsight.uciMoves.entries()) {
             try {
                 const move = new Chess(cursor.state.fen).move(uci);
-                cursor = addChildMove(cursor, move.san);
-                sequenceNodes.push(cursor);
+                const node: StateTreeNode = {
+                    id: `coach-pv-${playbackId}-${index}`,
+                    mainline: false,
+                    parent: cursor,
+                    children: [],
+                    state: {
+                        fen: move.after,
+                        engineLines: [],
+                        move: {
+                            san: move.san,
+                            uci: move.lan
+                        },
+                        moveColour: move.color == "w"
+                            ? PieceColour.WHITE
+                            : PieceColour.BLACK,
+                        /*
+                         * These are detached principal-variation playback
+                         * nodes. Every ply comes directly from Stockfish's
+                         * selected PV, so it must never inherit an OK/error
+                         * classification from an unrelated real-game node.
+                         */
+                        classification: Classification.BEST
+                    }
+                };
+
+                cursor = node;
+                sequenceNodes.push(node);
             } catch {
                 break;
             }
         }
 
-        if (sequenceNodes.length == 0) return;
+        if (sequenceNodes.length != tacticInsight.uciMoves.length) return;
 
         dispatchCurrentNodeUpdate();
         setCurrentStateTreeNode(tacticInsight.startNode);
