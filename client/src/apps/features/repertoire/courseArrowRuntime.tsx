@@ -2,6 +2,7 @@ import React from "react";
 import { Square } from "chess.js";
 import { createRoot } from "react-dom/client";
 import useSettingsStore from "@/stores/SettingsStore";
+import * as boardTools from "./repertoireBoardTools.module.css";
 
 interface ManualArrow {
     from: Square;
@@ -17,6 +18,8 @@ interface Point {
 let currentBoard: HTMLElement | null = null;
 let overlayHost: HTMLDivElement | null = null;
 let overlayRoot: ReturnType<typeof createRoot> | null = null;
+let coordinateHost: HTMLDivElement | null = null;
+let coordinateRoot: ReturnType<typeof createRoot> | null = null;
 let arrows: ManualArrow[] = [];
 let start: Square | undefined;
 
@@ -81,9 +84,22 @@ function ArrowLayer({ items, isFlipped }: { items: ManualArrow[]; isFlipped: boo
     </svg>;
 }
 
+function CoordinateLayer({ isFlipped }: { isFlipped: boolean }) {
+    const settings = useSettingsStore.getState().settings;
+    if (settings.themes.board.coordinates != "outside") return null;
+    const ranks = isFlipped ? ["1", "2", "3", "4", "5", "6", "7", "8"] : ["8", "7", "6", "5", "4", "3", "2", "1"];
+    const files = isFlipped ? ["h", "g", "f", "e", "d", "c", "b", "a"] : ["a", "b", "c", "d", "e", "f", "g", "h"];
+    return <>
+        <div className={boardTools.rankCoordinates}>{ranks.map(rank => <span key={rank} className={boardTools.coordinate}>{rank}</span>)}</div>
+        <div className={boardTools.fileCoordinates}>{files.map(file => <span key={file} className={boardTools.coordinate}>{file}</span>)}</div>
+    </>;
+}
+
 function draw() {
-    if (!overlayRoot || !currentBoard) return;
-    overlayRoot.render(<ArrowLayer items={arrows} isFlipped={flipped(currentBoard)}/>);
+    if (!currentBoard) return;
+    const isFlipped = flipped(currentBoard);
+    overlayRoot?.render(<ArrowLayer items={arrows} isFlipped={isFlipped}/>);
+    coordinateRoot?.render(<CoordinateLayer isFlipped={isFlipped}/>);
 }
 
 function down(event: MouseEvent) {
@@ -114,26 +130,46 @@ function blockContextMenu(event: MouseEvent) {
     event.preventDefault();
 }
 
-export function refreshCourseArrowRuntime() {
-    const board = document.getElementById("repertoire-course-board-v3")?.parentElement as HTMLElement | null;
-    if (!board || board == currentBoard) {
-        draw();
-        return;
-    }
+function detachCurrentBoard() {
     if (currentBoard) {
         currentBoard.removeEventListener("mousedown", down, true);
         currentBoard.removeEventListener("mouseup", up, true);
         currentBoard.removeEventListener("contextmenu", blockContextMenu, true);
     }
     overlayRoot?.unmount();
+    coordinateRoot?.unmount();
     overlayHost?.remove();
+    coordinateHost?.remove();
+    overlayRoot = null;
+    coordinateRoot = null;
+    overlayHost = null;
+    coordinateHost = null;
+}
+
+export function refreshCourseArrowRuntime() {
+    const board = document.getElementById("repertoire-course-board-v3")?.parentElement as HTMLElement | null;
+    if (!board) return;
+    if (board == currentBoard) {
+        draw();
+        return;
+    }
+
+    detachCurrentBoard();
     arrows = [];
     currentBoard = board;
     board.style.position = "relative";
+    board.style.overflow = "visible";
+
     overlayHost = document.createElement("div");
     Object.assign(overlayHost.style, { position: "absolute", inset: "0", pointerEvents: "none", zIndex: "12" });
     board.appendChild(overlayHost);
     overlayRoot = createRoot(overlayHost);
+
+    coordinateHost = document.createElement("div");
+    Object.assign(coordinateHost.style, { position: "absolute", inset: "0", pointerEvents: "none", overflow: "visible", zIndex: "13" });
+    board.appendChild(coordinateHost);
+    coordinateRoot = createRoot(coordinateHost);
+
     board.addEventListener("mousedown", down, true);
     board.addEventListener("mouseup", up, true);
     board.addEventListener("contextmenu", blockContextMenu, true);
