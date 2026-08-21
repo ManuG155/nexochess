@@ -13,7 +13,6 @@ import playBoardSound from "@/lib/boardSounds";
 
 import useEvaluation from "./useEvaluation";
 import useSuggestionArrows from "./useSuggestionArrows";
-import useTeachingArrows from "./useTeachingArrows";
 import * as styles from "./BoardArea.module.css";
 
 function BoardArea() {
@@ -41,16 +40,6 @@ function BoardArea() {
 
     const evaluation = useEvaluation();
     const suggestionArrows = useSuggestionArrows();
-    const teachingArrows = useTeachingArrows();
-    const reviewArrows = [
-        ...suggestionArrows.filter(suggestion => (
-            !teachingArrows.some(teaching => (
-                teaching.from == suggestion.from
-                && teaching.to == suggestion.to
-            ))
-        )),
-        ...teachingArrows
-    ];
     const flipBoardLabel = t("optionsToolbar.flipBoard");
 
     function addMove(move: Move) {
@@ -111,7 +100,7 @@ function BoardArea() {
             node={currentStateTreeNode}
             flipped={boardFlipped}
             evaluation={evaluation}
-            arrows={gameAnalysisOpen ? reviewArrows : []}
+            arrows={gameAnalysisOpen ? suggestionArrows : []}
             piecesDraggable={
                 gameAnalysisOpen
                 && analysisStatus == AnalysisStatus.INACTIVE
