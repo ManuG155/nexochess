@@ -26,14 +26,16 @@ function CourseFamilyV3({ name, lines, progress, preferredSide, onBack, onOpen, 
 
     const lineStates = useMemo(() => lines.map(item => {
         const itemProgress = findLessonProgress(progress, item);
-        const availablePly = pgnPlyCount(item.pgn);
-        const learnedPly = learnedDepth(itemProgress, availablePly);
+        // Untouched lines are known to be at 0%; parsing every one just to prove
+        // that used to block large courses such as the Sicilian on entry.
+        const availablePly = itemProgress ? pgnPlyCount(item.pgn) : 0;
+        const learnedPly = itemProgress ? learnedDepth(itemProgress, availablePly) : 0;
         return {
             item,
             progress: itemProgress,
             availablePly,
             learnedPly,
-            complete: availablePly > 0 && learnedPly >= availablePly
+            complete: Boolean(itemProgress && availablePly > 0 && learnedPly >= availablePly)
         };
     }), [lines, progress]);
 
