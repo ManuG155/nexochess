@@ -10,14 +10,8 @@ interface TheoryNode {
     children: Map<string, TheoryNode>;
 }
 
-const moveCache = new WeakMap<OpeningCatalogueEntry, string[]>();
-
 function movesFor(entry: OpeningCatalogueEntry) {
-    const cached = moveCache.get(entry);
-    if (cached) return cached;
-    const moves = pgnMoveKeys(entry.pgn);
-    moveCache.set(entry, moves);
-    return moves;
+    return pgnMoveKeys(entry.pgn);
 }
 
 function priority(entry: OpeningCatalogueEntry) {
@@ -60,6 +54,16 @@ export function courseLessonSequenceKey(entry: OpeningCatalogueEntry) {
     return movesFor(entry).join(" ");
 }
 
+function fastPgnKey(pgn: string) {
+    return pgn.trim().replace(/\s+/g, " ");
+}
+
+/*
+ * The catalogue home only needs a distinct-line count. Parsing thousands of
+ * PGNs with chess.js here froze the whole Repertoire screen after the remote
+ * opening catalogue arrived. Source PGNs are already canonical move strings,
+ * so counting normalized PGN text is enough and keeps this path O(text).
+ */
 export function countCourseLessonsFast(
     lines: OpeningCatalogueEntry[],
     maximum = Number.POSITIVE_INFINITY
@@ -67,7 +71,7 @@ export function countCourseLessonsFast(
     const sequences = new Set<string>();
 
     for (const line of lines) {
-        const key = courseLessonSequenceKey(line);
+        const key = fastPgnKey(line.pgn);
         if (key) sequences.add(key);
         if (sequences.size >= maximum) return maximum;
     }
@@ -76,12 +80,11 @@ export function countCourseLessonsFast(
 }
 
 /*
- * A course is a repertoire, not a top-28 catalogue.  Keep every distinct
- * move sequence supplied by the opening source (and every genuinely new
- * personal branch), while collapsing only exact duplicate paths.
- *
- * This also means the family map and the study counter describe the same
- * set of available variations.
+ * A course is a repertoire, not a top-28 catalogue. Keep every distinct move
+ * sequence supplied by the opening source (and every genuinely new personal
+ * branch), while collapsing exact duplicate paths. Detailed parsing happens
+ * only after the user opens one family and is shared through courseDepth's
+ * PGN cache.
  */
 export function buildCourseLessonsIndexed(
     lines: OpeningCatalogueEntry[],
