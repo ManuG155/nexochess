@@ -2,6 +2,7 @@ import {
     Chess,
     Color,
     KING,
+    Move,
     PieceSymbol,
     Square
 } from "chess.js";
@@ -140,7 +141,7 @@ function analyseSacrificeContinuation(
         const uci = current.topLine.moves[index]?.uci;
         if (!uci) break;
 
-        let move;
+        let move: Move;
 
         try {
             move = board.move(uci);
