@@ -1,10 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Chess, Move } from "chess.js";
 
 import { OpeningCatalogueEntry } from "./openingCatalogue";
+import { fastPgnSanTokens } from "./courseDepth";
 import { localizeOpeningName } from "./openingLocalization";
 import { CourseProgressStore, findLessonProgress } from "./courseProgress";
-import { learnedDepth, pgnPlyCount } from "./courseDepth";
 import { RepertoireSide } from "./courseV3Model";
 import * as mapStyles from "./courseMap.module.css";
 
@@ -22,407 +21,281 @@ interface Props {
     onOpen: (opening: OpeningCatalogueEntry, side?: RepertoireSide, startPractice?: boolean, blindPractice?: boolean) => void;
 }
 
-interface RawNode {
+interface FocusNode {
     id: string;
-    san?: string;
+    san: string;
     ply: number;
-    children: Map<string, RawNode>;
+    parent?: FocusNode;
+    children: Map<string, FocusNode>;
     entries: OpeningCatalogueEntry[];
     descendantLines: number;
+    representative?: OpeningCatalogueEntry;
 }
 
-interface AtlasNode {
-    id: string;
-    rawId: string;
-    label: string;
-    depth: number;
-    x: number;
-    y: number;
-    children: AtlasNode[];
-    entries: OpeningCatalogueEntry[];
-    descendantLines: number;
-    principal: boolean;
-    collapsed: boolean;
+interface FocusModel {
+    root: FocusNode;
+    byId: Map<string, FocusNode>;
+    entryNodes: Map<string, FocusNode>;
 }
 
-interface AtlasEdge {
-    id: string;
-    fromX: number;
-    fromY: number;
-    toX: number;
-    toY: number;
-    complete: boolean;
-    principal: boolean;
+interface Segment {
+    nodes: FocusNode[];
+    end: FocusNode;
 }
 
-interface Atlas {
-    nodes: AtlasNode[];
-    edges: AtlasEdge[];
-    width: number;
-    height: number;
-    rootX: number;
-    rootY: number;
-}
-
-interface MapCopy {
-    drag: string;
-    center: string;
-    zoomIn: string;
-    zoomOut: string;
+interface Copy {
+    subtitle: string;
     fullscreen: string;
     exitFullscreen: string;
-    start: string;
-    routes: string;
-    personal: string;
-    learned: string;
-    available: string;
-    mainLine: string;
-    expand: string;
+    search: string;
+    searchResults: string;
+    noResults: string;
+    alternatives: string;
+    lines: string;
+    study: string;
+    main: string;
+    zoom: string;
+    zoomHint: string;
+    root: string;
+    branch: string;
 }
 
-const MAP_COPY: Record<string, MapCopy> = {
-    en: { drag: "Drag to explore. Scroll moves the page; Alt + scroll zooms the map.", center: "Center map", zoomIn: "Zoom in", zoomOut: "Zoom out", fullscreen: "Full screen", exitFullscreen: "Exit full screen", start: "Start", routes: "lines", personal: "Personal", learned: "Learned", available: "Available", mainLine: "Main line", expand: "Open branch" },
-    es: { drag: "Arrastra para explorar. La rueda desplaza la página; Alt + rueda hace zoom en el mapa.", center: "Centrar mapa", zoomIn: "Acercar", zoomOut: "Alejar", fullscreen: "Pantalla completa", exitFullscreen: "Salir de pantalla completa", start: "Inicio", routes: "líneas", personal: "Personal", learned: "Aprendida", available: "Disponible", mainLine: "Principal", expand: "Abrir rama" },
-    fr: { drag: "Faites glisser pour explorer. La molette fait défiler la page ; Alt + molette zoome sur la carte.", center: "Centrer la carte", zoomIn: "Zoom avant", zoomOut: "Zoom arrière", fullscreen: "Plein écran", exitFullscreen: "Quitter le plein écran", start: "Début", routes: "lignes", personal: "Personnel", learned: "Apprise", available: "Disponible", mainLine: "Principale", expand: "Ouvrir la branche" },
-    de: { drag: "Zum Erkunden ziehen. Das Mausrad scrollt die Seite; Alt + Mausrad zoomt die Karte.", center: "Karte zentrieren", zoomIn: "Vergrößern", zoomOut: "Verkleinern", fullscreen: "Vollbild", exitFullscreen: "Vollbild verlassen", start: "Start", routes: "Linien", personal: "Persönlich", learned: "Gelernt", available: "Verfügbar", mainLine: "Hauptlinie", expand: "Zweig öffnen" },
-    pt: { drag: "Arraste para explorar. A roda desloca a página; Alt + roda amplia o mapa.", center: "Centrar mapa", zoomIn: "Ampliar", zoomOut: "Reduzir", fullscreen: "Ecrã inteiro", exitFullscreen: "Sair do ecrã inteiro", start: "Início", routes: "linhas", personal: "Pessoal", learned: "Aprendida", available: "Disponível", mainLine: "Principal", expand: "Abrir ramo" },
-    ru: { drag: "Перетаскивайте карту. Колесо прокручивает страницу; Alt + колесо масштабирует карту.", center: "Центрировать", zoomIn: "Приблизить", zoomOut: "Отдалить", fullscreen: "Во весь экран", exitFullscreen: "Выйти из полноэкранного режима", start: "Начало", routes: "линий", personal: "Личная", learned: "Изучена", available: "Доступна", mainLine: "Главная", expand: "Открыть ветку" },
-    zh: { drag: "拖动地图浏览。滚轮滚动页面；Alt + 滚轮缩放地图。", center: "居中地图", zoomIn: "放大", zoomOut: "缩小", fullscreen: "全屏", exitFullscreen: "退出全屏", start: "开始", routes: "条路线", personal: "个人", learned: "已学习", available: "可学习", mainLine: "主线", expand: "展开分支" },
-    vi: { drag: "Kéo để khám phá. Con lăn cuộn trang; Alt + con lăn thu phóng bản đồ.", center: "Căn giữa", zoomIn: "Phóng to", zoomOut: "Thu nhỏ", fullscreen: "Toàn màn hình", exitFullscreen: "Thoát toàn màn hình", start: "Bắt đầu", routes: "dòng", personal: "Cá nhân", learned: "Đã học", available: "Có sẵn", mainLine: "Tuyến chính", expand: "Mở nhánh" },
-    hi: { drag: "देखने के लिए खींचें। व्हील पेज स्क्रॉल करता है; Alt + व्हील मानचित्र ज़ूम करता है।", center: "मानचित्र केंद्रित करें", zoomIn: "ज़ूम इन", zoomOut: "ज़ूम आउट", fullscreen: "पूर्ण स्क्रीन", exitFullscreen: "पूर्ण स्क्रीन से बाहर निकलें", start: "शुरुआत", routes: "लाइनें", personal: "निजी", learned: "सीखी", available: "उपलब्ध", mainLine: "मुख्य लाइन", expand: "शाखा खोलें" },
-    mr: { drag: "पाहण्यासाठी ड्रॅग करा. व्हील पेज स्क्रोल करते; Alt + व्हील नकाशा झूम करते.", center: "नकाशा मध्यभागी", zoomIn: "झूम इन", zoomOut: "झूम आउट", fullscreen: "पूर्ण स्क्रीन", exitFullscreen: "पूर्ण स्क्रीनमधून बाहेर", start: "सुरुवात", routes: "लाईन्स", personal: "वैयक्तिक", learned: "शिकलेली", available: "उपलब्ध", mainLine: "मुख्य लाईन", expand: "फांदी उघडा" },
-    pl: { drag: "Przeciągaj, aby przeglądać. Kółko przewija stronę; Alt + kółko powiększa mapę.", center: "Wyśrodkuj mapę", zoomIn: "Powiększ", zoomOut: "Pomniejsz", fullscreen: "Pełny ekran", exitFullscreen: "Wyjdź z pełnego ekranu", start: "Start", routes: "linie", personal: "Własna", learned: "Nauczona", available: "Dostępna", mainLine: "Główna", expand: "Otwórz gałąź" }
+const COPY: Record<string, Copy> = {
+    en: { subtitle: "Follow one branch at a time. The tree only shows the context you need.", fullscreen: "Full screen", exitFullscreen: "Exit full screen", search: "Search variation, move or sequence…", searchResults: "matches", noResults: "No matching line in this course", alternatives: "alternatives", lines: "lines", study: "Study line", main: "Course path", zoom: "Detail", zoomHint: "In full screen, use the mouse wheel to change the level of detail.", root: "Course", branch: "Branch" },
+    es: { subtitle: "Sigue una rama cada vez. El árbol solo muestra el contexto que necesitas.", fullscreen: "Pantalla completa", exitFullscreen: "Salir de pantalla completa", search: "Buscar variante, movimiento o secuencia…", searchResults: "coincidencias", noResults: "No hay líneas coincidentes en este curso", alternatives: "alternativas", lines: "líneas", study: "Estudiar línea", main: "Ruta del curso", zoom: "Detalle", zoomHint: "En pantalla completa, usa la rueda para cambiar el nivel de detalle.", root: "Curso", branch: "Rama" },
+    fr: { subtitle: "Suivez une branche à la fois. L’arbre n’affiche que le contexte utile.", fullscreen: "Plein écran", exitFullscreen: "Quitter le plein écran", search: "Rechercher variante, coup ou séquence…", searchResults: "résultats", noResults: "Aucune ligne correspondante dans ce cours", alternatives: "alternatives", lines: "lignes", study: "Étudier la ligne", main: "Parcours du cours", zoom: "Détail", zoomHint: "En plein écran, utilisez la molette pour changer le niveau de détail.", root: "Cours", branch: "Branche" },
+    de: { subtitle: "Folge jeweils einem Zweig. Der Baum zeigt nur den nötigen Kontext.", fullscreen: "Vollbild", exitFullscreen: "Vollbild verlassen", search: "Variante, Zug oder Folge suchen…", searchResults: "Treffer", noResults: "Keine passende Linie in diesem Kurs", alternatives: "Alternativen", lines: "Linien", study: "Linie lernen", main: "Kursweg", zoom: "Detail", zoomHint: "Im Vollbild ändert das Mausrad die Detailstufe.", root: "Kurs", branch: "Zweig" },
+    pt: { subtitle: "Siga um ramo de cada vez. A árvore mostra apenas o contexto necessário.", fullscreen: "Ecrã inteiro", exitFullscreen: "Sair do ecrã inteiro", search: "Pesquisar variante, lance ou sequência…", searchResults: "resultados", noResults: "Nenhuma linha correspondente neste curso", alternatives: "alternativas", lines: "linhas", study: "Estudar linha", main: "Rota do curso", zoom: "Detalhe", zoomHint: "Em ecrã inteiro, use a roda para alterar o nível de detalhe.", root: "Curso", branch: "Ramo" },
+    ru: { subtitle: "Изучайте по одной ветке. Дерево показывает только нужный контекст.", fullscreen: "Во весь экран", exitFullscreen: "Выйти из полноэкранного режима", search: "Поиск варианта, хода или последовательности…", searchResults: "совпадений", noResults: "В этом курсе совпадений нет", alternatives: "альтернатив", lines: "линий", study: "Изучить линию", main: "Маршрут курса", zoom: "Детали", zoomHint: "В полноэкранном режиме колесо меняет уровень детализации.", root: "Курс", branch: "Ветка" },
+    zh: { subtitle: "一次专注一个分支。树只显示当前需要的上下文。", fullscreen: "全屏", exitFullscreen: "退出全屏", search: "搜索变例、走法或走法序列…", searchResults: "个结果", noResults: "本课程没有匹配路线", alternatives: "个其他选择", lines: "条路线", study: "学习路线", main: "课程路径", zoom: "细节", zoomHint: "全屏时使用鼠标滚轮切换细节层级。", root: "课程", branch: "分支" },
+    vi: { subtitle: "Theo từng nhánh một. Cây chỉ hiển thị ngữ cảnh bạn cần.", fullscreen: "Toàn màn hình", exitFullscreen: "Thoát toàn màn hình", search: "Tìm biến, nước đi hoặc chuỗi…", searchResults: "kết quả", noResults: "Không có dòng phù hợp trong khóa học", alternatives: "lựa chọn khác", lines: "dòng", study: "Học dòng", main: "Lộ trình khóa học", zoom: "Chi tiết", zoomHint: "Ở toàn màn hình, dùng con lăn để đổi mức chi tiết.", root: "Khóa học", branch: "Nhánh" },
+    hi: { subtitle: "एक समय में एक शाखा देखें। वृक्ष केवल आवश्यक संदर्भ दिखाता है।", fullscreen: "पूर्ण स्क्रीन", exitFullscreen: "पूर्ण स्क्रीन से बाहर", search: "वेरिएशन, चाल या क्रम खोजें…", searchResults: "परिणाम", noResults: "इस कोर्स में कोई मिलती लाइन नहीं", alternatives: "विकल्प", lines: "लाइनें", study: "लाइन पढ़ें", main: "कोर्स पथ", zoom: "विवरण", zoomHint: "पूर्ण स्क्रीन में व्हील से विवरण स्तर बदलें।", root: "कोर्स", branch: "शाखा" },
+    mr: { subtitle: "एका वेळी एक फांदी पाहा. झाड फक्त आवश्यक संदर्भ दाखवते.", fullscreen: "पूर्ण स्क्रीन", exitFullscreen: "पूर्ण स्क्रीनमधून बाहेर", search: "व्हेरिएशन, चाल किंवा क्रम शोधा…", searchResults: "निकाल", noResults: "या कोर्समध्ये जुळणारी लाईन नाही", alternatives: "पर्याय", lines: "लाईन्स", study: "लाईन शिका", main: "कोर्स मार्ग", zoom: "तपशील", zoomHint: "पूर्ण स्क्रीनमध्ये व्हीलने तपशीलाची पातळी बदला.", root: "कोर्स", branch: "फांदी" },
+    pl: { subtitle: "Podążaj jedną gałęzią naraz. Drzewo pokazuje tylko potrzebny kontekst.", fullscreen: "Pełny ekran", exitFullscreen: "Wyjdź z pełnego ekranu", search: "Szukaj wariantu, ruchu lub sekwencji…", searchResults: "wyników", noResults: "Brak pasującej linii w tym kursie", alternatives: "alternatyw", lines: "linie", study: "Ucz się linii", main: "Ścieżka kursu", zoom: "Szczegóły", zoomHint: "Na pełnym ekranie kółko myszy zmienia poziom szczegółów.", root: "Kurs", branch: "Gałąź" }
 };
 
-const NODE_WIDTH = 148;
-const NODE_HALF = NODE_WIDTH / 2;
-const ROOT_HALF = 31;
-const FIRST_X = 150;
-const X_STEP = 158;
-const FIRST_Y = 46;
-const Y_STEP = 56;
-const DEFAULT_SCALE = .94;
-const MIN_SCALE = .5;
-const MAX_SCALE = 1.5;
-const PRINCIPAL_MAX_PLY = 9;
-const COLLAPSE_BRANCH_OVER = 6;
-const COMPRESS_MOVES = 3;
-
-function newRawNode(id: string, ply = -1, san?: string): RawNode {
-    return { id, ply, san, children: new Map<string, RawNode>(), entries: [], descendantLines: 0 };
-}
-
-function parsedMoves(entry: OpeningCatalogueEntry) {
-    try {
-        const board = new Chess();
-        board.loadPgn(entry.pgn);
-        return board.history({ verbose: true });
-    } catch {
-        return [] as Move[];
-    }
-}
-
-function moveKey(move: Move) {
-    return `${move.from}${move.to}${move.promotion || ""}`;
-}
-
-function buildRawTree(lines: OpeningCatalogueEntry[]) {
-    const root = newRawNode("root");
-    for (const entry of lines) {
-        const moves = parsedMoves(entry);
-        if (!moves.length) continue;
-        let node = root;
-        moves.forEach((move, ply) => {
-            const key = moveKey(move);
-            let child = node.children.get(key);
-            if (!child) {
-                child = newRawNode(`${node.id}/${key}`, ply, move.san);
-                node.children.set(key, child);
-            }
-            node = child;
-        });
-        node.entries.push(entry);
-    }
-    annotateDescendants(root);
-    return root;
-}
-
-function annotateDescendants(node: RawNode): number {
-    let total = node.entries.length;
-    node.children.forEach(child => { total += annotateDescendants(child); });
-    node.descendantLines = total;
-    return total;
-}
-
-function moveLabel(items: Array<{ san: string; ply: number }>) {
-    return items.map((item, index) => {
-        const number = Math.floor(item.ply / 2) + 1;
-        if (item.ply % 2 == 0) return `${number}.${item.san}`;
-        const previous = items[index - 1];
-        return previous && previous.ply == item.ply - 1 ? item.san : `${number}...${item.san}`;
-    }).join(" ");
-}
-
-function principalPath(root: RawNode) {
-    const ids = new Set<string>();
-    let cursor = root;
-    while (cursor.children.size) {
-        const child = Array.from(cursor.children.values()).sort((a, b) => (
-            b.descendantLines - a.descendantLines
-            || (a.san || "").localeCompare(b.san || "")
-        ))[0];
-        if (!child) break;
-        ids.add(child.id);
-        cursor = child;
-        if (child.ply >= PRINCIPAL_MAX_PLY) break;
-    }
-    return ids;
-}
-
-function pathForEntry(root: RawNode, entry?: OpeningCatalogueEntry) {
-    const ids = new Set<string>();
-    if (!entry) return ids;
-    let cursor = root;
-    for (const move of parsedMoves(entry)) {
-        const child = cursor.children.get(moveKey(move));
-        if (!child) break;
-        ids.add(child.id);
-        cursor = child;
-    }
-    return ids;
-}
-
-function orderChildren(children: RawNode[], principalIds: Set<string>) {
-    const main = children.find(child => principalIds.has(child.id));
-    const others = children
-        .filter(child => child != main)
-        .sort((a, b) => b.descendantLines - a.descendantLines || (a.san || "").localeCompare(b.san || ""));
-    if (!main) return others;
-    const split = Math.ceil(others.length / 2);
-    return [...others.slice(0, split), main, ...others.slice(split)];
-}
-
-function displayNode(
-    raw: RawNode,
-    depth: number,
-    principalIds: Set<string>,
-    expanded: Set<string>,
-    forcedOpen: Set<string>
-): AtlasNode {
-    const principal = principalIds.has(raw.id);
-    const collapsed = !principal
-        && raw.descendantLines > COLLAPSE_BRANCH_OVER
-        && !expanded.has(raw.id)
-        && !forcedOpen.has(raw.id);
-
-    if (collapsed) {
-        return {
-            id: `collapsed:${raw.id}`,
-            rawId: raw.id,
-            label: moveLabel([{ san: raw.san || "", ply: raw.ply }]),
-            depth,
-            x: 0,
-            y: 0,
-            children: [],
-            entries: raw.entries,
-            descendantLines: raw.descendantLines,
-            principal: false,
-            collapsed: true
-        };
-    }
-
-    let cursor = raw;
-    const segment: Array<{ san: string; ply: number }> = [{ san: raw.san || "", ply: raw.ply }];
-    while (cursor.entries.length == 0 && cursor.children.size == 1 && segment.length < COMPRESS_MOVES) {
-        const child = Array.from(cursor.children.values())[0];
-        if (principalIds.has(cursor.id) != principalIds.has(child.id)) break;
-        cursor = child;
-        segment.push({ san: child.san || "", ply: child.ply });
-    }
-
-    const children = orderChildren(Array.from(cursor.children.values()), principalIds)
-        .map(child => displayNode(child, depth + 1, principalIds, expanded, forcedOpen));
-
-    return {
-        id: cursor.id,
-        rawId: raw.id,
-        label: moveLabel(segment),
-        depth,
-        x: 0,
-        y: 0,
-        children,
-        entries: cursor.entries,
-        descendantLines: cursor.descendantLines,
-        principal,
-        collapsed: false
-    };
-}
+const NORMAL_BRANCH_LIMIT = 4;
+const FULLSCREEN_LIMITS = [3, 5, 8, 10];
+const SEGMENT_LIMITS = [1, 4, 7, 14];
+const SEARCH_LIMIT = 12;
 
 function entryKey(entry: OpeningCatalogueEntry) {
     return `${entry.eco}|${entry.name}|${entry.pgn}`;
 }
 
-function buildAtlas(
-    lines: OpeningCatalogueEntry[],
-    completeKeys: Set<string>,
-    expanded: Set<string>,
-    recommendedItem?: OpeningCatalogueEntry
-): Atlas {
-    const root = buildRawTree(lines);
-    const principalIds = principalPath(root);
-    const forcedOpen = pathForEntry(root, recommendedItem);
-    const roots = orderChildren(Array.from(root.children.values()), principalIds)
-        .map(child => displayNode(child, 0, principalIds, expanded, forcedOpen));
-
-    let nextY = FIRST_Y;
-    let maxDepth = 0;
-    const flat: AtlasNode[] = [];
-
-    const place = (node: AtlasNode) => {
-        maxDepth = Math.max(maxDepth, node.depth);
-        node.x = FIRST_X + node.depth * X_STEP;
-        node.children.forEach(place);
-        const principalChild = node.children.find(child => child.principal);
-        if (principalChild) {
-            node.y = principalChild.y;
-        } else if (node.children.length) {
-            node.y = (node.children[0].y + node.children[node.children.length - 1].y) / 2;
-        } else {
-            node.y = nextY;
-            nextY += Y_STEP;
-        }
-        flat.push(node);
-    };
-
-    roots.forEach(place);
-    const principalRoot = roots.find(node => node.principal);
-    const rootY = principalRoot?.y ?? (roots.length ? (roots[0].y + roots[roots.length - 1].y) / 2 : FIRST_Y);
-    const rootX = 45;
-    const edges: AtlasEdge[] = [];
-
-    const collectEdges = (node: AtlasNode, parentX: number, parentY: number, parentPrincipal: boolean) => {
-        const complete = node.entries.length > 0 && node.entries.some(entry => completeKeys.has(entryKey(entry)));
-        edges.push({
-            id: `${parentX}:${parentY}>${node.id}`,
-            fromX: parentX,
-            fromY: parentY,
-            toX: node.x,
-            toY: node.y,
-            complete,
-            principal: node.principal && parentPrincipal
-        });
-        node.children.forEach(child => collectEdges(child, node.x, node.y, node.principal && parentPrincipal));
-    };
-
-    roots.forEach(node => collectEdges(node, rootX, rootY, true));
-    return {
-        nodes: flat,
-        edges,
-        width: Math.max(430, FIRST_X + maxDepth * X_STEP + NODE_HALF + 24),
-        height: Math.max(250, nextY + 24),
-        rootX,
-        rootY
-    };
+function createNode(id: string, san = "", ply = -1, parent?: FocusNode): FocusNode {
+    return { id, san, ply, parent, children: new Map<string, FocusNode>(), entries: [], descendantLines: 0 };
 }
 
-function clampScale(value: number) {
-    return Math.max(MIN_SCALE, Math.min(MAX_SCALE, Number(value.toFixed(3))));
+function buildModel(lines: OpeningCatalogueEntry[]): FocusModel {
+    const root = createNode("root");
+    const byId = new Map<string, FocusNode>([[root.id, root]]);
+    const entryNodes = new Map<string, FocusNode>();
+
+    for (const entry of lines) {
+        const sans = fastPgnSanTokens(entry.pgn);
+        if (!sans.length) continue;
+        let node = root;
+        sans.forEach((san, ply) => {
+            const key = san;
+            let child = node.children.get(key);
+            if (!child) {
+                child = createNode(`${node.id}/${encodeURIComponent(key)}:${ply}`, san, ply, node);
+                node.children.set(key, child);
+                byId.set(child.id, child);
+            }
+            node = child;
+        });
+        node.entries.push(entry);
+        entryNodes.set(entryKey(entry), node);
+    }
+
+    function annotate(node: FocusNode): number {
+        let total = node.entries.length;
+        let bestEntry = node.entries[0];
+        let bestChildCount = -1;
+        for (const child of node.children.values()) {
+            total += annotate(child);
+            if (child.descendantLines > bestChildCount && child.representative) {
+                bestChildCount = child.descendantLines;
+                if (!bestEntry) bestEntry = child.representative;
+            }
+        }
+        node.descendantLines = total;
+        node.representative = bestEntry;
+        return total;
+    }
+    annotate(root);
+    return { root, byId, entryNodes };
+}
+
+function moveLabel(nodes: FocusNode[]) {
+    return nodes.map((node, index) => {
+        const number = Math.floor(node.ply / 2) + 1;
+        if (node.ply % 2 == 0) return `${number}.${node.san}`;
+        const previous = nodes[index - 1];
+        return previous && previous.ply == node.ply - 1 ? node.san : `${number}...${node.san}`;
+    }).join(" ");
+}
+
+function sanPath(node: FocusNode) {
+    const path: FocusNode[] = [];
+    let cursor: FocusNode | undefined = node;
+    while (cursor && cursor.parent) {
+        path.push(cursor);
+        cursor = cursor.parent;
+    }
+    return path.reverse();
+}
+
+function segmentFrom(start: FocusNode, maximum: number): Segment {
+    const nodes: FocusNode[] = start.parent ? [start] : [];
+    let end = start;
+    while (end.children.size == 1 && nodes.length < maximum) {
+        const child = Array.from(end.children.values())[0];
+        nodes.push(child);
+        end = child;
+    }
+    return { nodes, end };
+}
+
+function isAncestor(ancestor: FocusNode, node?: FocusNode) {
+    let cursor = node;
+    while (cursor) {
+        if (cursor == ancestor) return true;
+        cursor = cursor.parent;
+    }
+    return false;
+}
+
+function normalizeSearch(value: string) {
+    return value
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLocaleLowerCase()
+        .replace(/[^\p{L}\p{N}+#=.-]+/gu, " ")
+        .trim();
+}
+
+function branchName(node: FocusNode, family: string, language: string, fundamentalsLabel: string) {
+    const entry = node.representative;
+    if (!entry) return "";
+    if (entry.name == family) return fundamentalsLabel;
+    return localizeOpeningName(entry.name, language);
+}
+
+function pickEntry(node: FocusNode, progress: CourseProgressStore) {
+    const candidates = node.entries.length ? node.entries : node.representative ? [node.representative] : [];
+    return candidates.find(entry => !findLessonProgress(progress, entry)) || candidates[0];
+}
+
+function breadcrumbNodes(root: FocusNode, focus: FocusNode) {
+    const path = sanPath(focus);
+    const result: FocusNode[] = [root];
+    path.forEach(node => {
+        if (node == focus || (node.parent && node.parent.children.size > 1)) result.push(node);
+    });
+    return result;
 }
 
 function CourseVariationMap({ name, lines, progress, preferredSide, recommendedItem, percent, language, title, fundamentalsLabel, loadingLabel, onOpen }: Props) {
     const lang = language.split("-")[0].toLowerCase();
-    const copy = MAP_COPY[lang] || MAP_COPY.en;
+    const copy = COPY[lang] || COPY.en;
     const cardRef = useRef<HTMLDivElement>(null);
-    const viewportRef = useRef<HTMLDivElement>(null);
-    const dragRef = useRef<{ pointerId: number; x: number; y: number; panX: number; panY: number }>();
-    const [pan, setPan] = useState({ x: 20, y: 12 });
-    const [scale, setScale] = useState(DEFAULT_SCALE);
-    const [dragging, setDragging] = useState(false);
+    const wheelCarry = useRef(0);
+    const model = useMemo(() => buildModel(lines), [lines]);
+    const [focusId, setFocusId] = useState("root");
+    const [showAlternatives, setShowAlternatives] = useState(false);
+    const [query, setQuery] = useState("");
     const [fullscreen, setFullscreen] = useState(false);
-    const [expandedBranches, setExpandedBranches] = useState<Set<string>>(() => new Set());
-
-    const lineStates = useMemo(() => lines.map(item => {
-        const itemProgress = findLessonProgress(progress, item);
-        const availablePly = pgnPlyCount(item.pgn);
-        const learnedPly = learnedDepth(itemProgress, availablePly);
-        return { item, progress: itemProgress, complete: availablePly > 0 && learnedPly >= availablePly };
-    }), [lines, progress]);
-    const stateByKey = useMemo(() => new Map(lineStates.map(state => [entryKey(state.item), state])), [lineStates]);
-    const completeKeys = useMemo(() => new Set(lineStates.filter(state => state.complete).map(state => entryKey(state.item))), [lineStates]);
-    const atlas = useMemo(() => buildAtlas(lines, completeKeys, expandedBranches, recommendedItem), [lines, completeKeys, expandedBranches, recommendedItem]);
-
-    function centerMap(nextScale = scale) {
-        const viewport = viewportRef.current;
-        if (!viewport) return;
-        setPan({ x: 18, y: viewport.clientHeight / 2 - atlas.rootY * nextScale });
-    }
+    const [semanticLevel, setSemanticLevel] = useState(1);
 
     useEffect(() => {
-        setExpandedBranches(new Set());
-        const id = window.requestAnimationFrame(() => centerMap(DEFAULT_SCALE));
-        return () => window.cancelAnimationFrame(id);
+        setFocusId("root");
+        setShowAlternatives(false);
+        setQuery("");
+        setSemanticLevel(1);
     }, [name]);
 
     useEffect(() => {
-        const id = window.requestAnimationFrame(() => centerMap(DEFAULT_SCALE));
-        return () => window.cancelAnimationFrame(id);
-    }, [atlas.rootY]);
+        const onChange = () => setFullscreen(document.fullscreenElement == cardRef.current);
+        document.addEventListener("fullscreenchange", onChange);
+        return () => document.removeEventListener("fullscreenchange", onChange);
+    }, []);
 
     useEffect(() => {
-        const onFullscreenChange = () => {
-            const active = document.fullscreenElement == cardRef.current;
-            setFullscreen(active);
-            window.requestAnimationFrame(() => centerMap(scale));
-        };
-        document.addEventListener("fullscreenchange", onFullscreenChange);
-        return () => document.removeEventListener("fullscreenchange", onFullscreenChange);
-    }, [atlas.rootY, scale]);
-
-    function zoomTo(nextScale: number, clientX?: number, clientY?: number) {
-        const next = clampScale(nextScale);
-        const viewport = viewportRef.current;
-        if (viewport && clientX != undefined && clientY != undefined) {
-            const rect = viewport.getBoundingClientRect();
-            const localX = clientX - rect.left;
-            const localY = clientY - rect.top;
-            const worldX = (localX - pan.x) / scale;
-            const worldY = (localY - pan.y) / scale;
-            setPan({ x: localX - worldX * next, y: localY - worldY * next });
-        }
-        setScale(next);
-    }
-
-    useEffect(() => {
-        const viewport = viewportRef.current;
-        if (!viewport) return;
+        const card = cardRef.current;
+        if (!card || !fullscreen) return;
         const onWheel = (event: WheelEvent) => {
-            if (!event.altKey) return;
             event.preventDefault();
-            const delta = event.deltaY < 0 ? .09 : -.09;
-            zoomTo(scale + delta, event.clientX, event.clientY);
+            wheelCarry.current += event.deltaY;
+            if (Math.abs(wheelCarry.current) < 38) return;
+            const direction = wheelCarry.current < 0 ? 1 : -1;
+            wheelCarry.current = 0;
+            setSemanticLevel(level => Math.max(0, Math.min(3, level + direction)));
         };
-        viewport.addEventListener("wheel", onWheel, { passive: false });
-        return () => viewport.removeEventListener("wheel", onWheel);
-    }, [scale, pan.x, pan.y]);
+        card.addEventListener("wheel", onWheel, { passive: false });
+        return () => card.removeEventListener("wheel", onWheel);
+    }, [fullscreen]);
 
-    function pointerDown(event: React.PointerEvent<HTMLDivElement>) {
-        if (event.button != 0 || (event.target as HTMLElement).closest("button")) return;
-        dragRef.current = { pointerId: event.pointerId, x: event.clientX, y: event.clientY, panX: pan.x, panY: pan.y };
-        event.currentTarget.setPointerCapture(event.pointerId);
-        setDragging(true);
+    const focus = model.byId.get(focusId) || model.root;
+    const effectiveLevel = fullscreen ? semanticLevel : 1;
+    const stem = segmentFrom(focus, SEGMENT_LIMITS[effectiveLevel]);
+    const anchor = stem.end;
+    const recommendedNode = recommendedItem ? model.entryNodes.get(entryKey(recommendedItem)) : undefined;
+
+    const branches = useMemo(() => Array.from(anchor.children.values()).sort((a, b) => {
+        const aRecommended = isAncestor(a, recommendedNode) ? 1 : 0;
+        const bRecommended = isAncestor(b, recommendedNode) ? 1 : 0;
+        return bRecommended - aRecommended
+            || b.descendantLines - a.descendantLines
+            || a.san.localeCompare(b.san);
+    }), [anchor, recommendedNode]);
+
+    const branchLimit = fullscreen ? FULLSCREEN_LIMITS[effectiveLevel] : NORMAL_BRANCH_LIMIT;
+    const visibleBranches = showAlternatives ? branches.slice(0, 10) : branches.slice(0, branchLimit);
+    const hiddenCount = Math.max(0, branches.length - visibleBranches.length);
+    const crumbs = breadcrumbNodes(model.root, focus);
+    const directEntry = pickEntry(anchor, progress);
+
+    const normalizedQuery = normalizeSearch(query);
+    const searchMatches = useMemo(() => {
+        if (!normalizedQuery) return [] as Array<{ entry: OpeningCatalogueEntry; node: FocusNode; sans: string[] }>;
+        const tokens = normalizedQuery.split(/\s+/).filter(Boolean);
+        const matches: Array<{ entry: OpeningCatalogueEntry; node: FocusNode; sans: string[] }> = [];
+        for (const entry of lines) {
+            const node = model.entryNodes.get(entryKey(entry));
+            if (!node) continue;
+            const sans = fastPgnSanTokens(entry.pgn);
+            const localized = localizeOpeningName(entry.name, language);
+            const haystack = normalizeSearch(`${entry.name} ${localized} ${sans.join(" ")}`);
+            if (haystack.includes(normalizedQuery) || tokens.every(token => haystack.includes(token))) {
+                matches.push({ entry, node, sans });
+            }
+        }
+        return matches;
+    }, [language, lines, model, normalizedQuery]);
+
+    function focusSearchResult(node: FocusNode) {
+        let target = node;
+        while (target.parent && target.parent != model.root && target.parent.children.size == 1) target = target.parent;
+        setFocusId(target.id);
+        setShowAlternatives(false);
+        setQuery("");
     }
 
-    function pointerMove(event: React.PointerEvent<HTMLDivElement>) {
-        const drag = dragRef.current;
-        if (!drag || drag.pointerId != event.pointerId) return;
-        setPan({ x: drag.panX + event.clientX - drag.x, y: drag.panY + event.clientY - drag.y });
-    }
-
-    function pointerEnd(event: React.PointerEvent<HTMLDivElement>) {
-        if (dragRef.current?.pointerId != event.pointerId) return;
-        dragRef.current = undefined;
-        if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
-        setDragging(false);
+    function openBranch(node: FocusNode) {
+        const branch = segmentFrom(node, SEGMENT_LIMITS[effectiveLevel]);
+        if (branch.end.children.size == 0 && branch.end.descendantLines == 1) {
+            const entry = pickEntry(branch.end, progress);
+            if (entry) {
+                const itemProgress = findLessonProgress(progress, entry);
+                onOpen(entry, itemProgress?.side || preferredSide, Boolean(itemProgress), Boolean(itemProgress));
+                return;
+            }
+        }
+        setFocusId(branch.end.id);
+        setShowAlternatives(false);
     }
 
     async function toggleFullscreen() {
@@ -432,128 +305,99 @@ function CourseVariationMap({ name, lines, progress, preferredSide, recommendedI
             if (document.fullscreenElement == card) await document.exitFullscreen();
             else await card.requestFullscreen();
         } catch {
-            // Fullscreen is progressive enhancement; the map stays usable.
+            // Full screen is optional; the focused tree remains fully usable.
         }
     }
 
-    function chooseEntry(node: AtlasNode) {
-        if (!node.entries.length) return undefined;
-        if (recommendedItem && node.entries.includes(recommendedItem)) return recommendedItem;
-        return node.entries.find(entry => !stateByKey.get(entryKey(entry))?.complete)
-            || node.entries.find(entry => entry.eco == "USR")
-            || node.entries[0];
-    }
+    const currentName = branchName(anchor, name, language, fundamentalsLabel) || localizeOpeningName(name, language);
+    const fullPathEntry = anchor.representative;
+    const fullPath = fullPathEntry ? fastPgnSanTokens(fullPathEntry.pgn) : [];
 
-    function expandBranch(rawId: string) {
-        setExpandedBranches(previous => {
-            const next = new Set(previous);
-            next.add(rawId);
-            return next;
-        });
-    }
-
-    return <div ref={cardRef} className={mapStyles.mapCard}>
+    return <div ref={cardRef} className={mapStyles.mapCard} data-repertoire-tour="focus-tree">
         <div className={mapStyles.mapHead}>
-            <div className={mapStyles.mapHeadText}><strong>{title}</strong><span>{copy.drag}</span></div>
+            <div className={mapStyles.mapHeadText}>
+                <strong>{title}</strong>
+                <span>{copy.subtitle}</span>
+            </div>
             <div className={mapStyles.mapHeadRight}>
-                <span className={mapStyles.mapProgress}>{percent}% · {lines.length} {copy.routes}</span>
-                <div className={mapStyles.mapControls}>
-                    <button type="button" onClick={() => zoomTo(scale - .1)} title={copy.zoomOut} aria-label={copy.zoomOut}>−</button>
-                    <button type="button" onClick={() => { setScale(DEFAULT_SCALE); centerMap(DEFAULT_SCALE); }} title={copy.center} aria-label={copy.center}>⌾</button>
-                    <button type="button" onClick={() => zoomTo(scale + .1)} title={copy.zoomIn} aria-label={copy.zoomIn}>+</button>
-                    <button type="button" className={mapStyles.fullscreenButton} onClick={toggleFullscreen} title={fullscreen ? copy.exitFullscreen : copy.fullscreen} aria-label={fullscreen ? copy.exitFullscreen : copy.fullscreen}>
-                        {fullscreen
-                            ? <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3v6H3M15 3v6h6M9 21v-6H3M15 21v-6h6"/></svg>
-                            : <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3H3v6M15 3h6v6M9 21H3v-6M15 21h6v-6"/></svg>}
-                    </button>
-                </div>
+                <span className={mapStyles.mapProgress}>{percent}% · {lines.length} {copy.lines}</span>
+                {fullscreen && <div className={mapStyles.semanticControls} aria-label={copy.zoom}>
+                    <button type="button" onClick={() => setSemanticLevel(level => Math.max(0, level - 1))} disabled={semanticLevel == 0}>−</button>
+                    <span>{copy.zoom} {semanticLevel + 1}/4</span>
+                    <button type="button" onClick={() => setSemanticLevel(level => Math.min(3, level + 1))} disabled={semanticLevel == 3}>+</button>
+                </div>}
+                <button type="button" className={mapStyles.fullscreenButton} data-repertoire-tour="focus-fullscreen" onClick={toggleFullscreen} title={fullscreen ? copy.exitFullscreen : copy.fullscreen} aria-label={fullscreen ? copy.exitFullscreen : copy.fullscreen}>
+                    {fullscreen
+                        ? <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3v6H3M15 3v6h6M9 21v-6H3M15 21v-6h6"/></svg>
+                        : <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3H3v6M15 3h6v6M9 21H3v-6M15 21h6v-6"/></svg>}
+                </button>
             </div>
         </div>
+
         <div className={mapStyles.mapTrack}><i style={{ width: `${percent}%` }}/></div>
-        {atlas.nodes.length ? <div
-            ref={viewportRef}
-            className={mapStyles.mapViewport}
-            data-dragging={dragging}
-            data-repertoire-tour="lesson-list"
-            tabIndex={0}
-            onPointerDown={pointerDown}
-            onPointerMove={pointerMove}
-            onPointerUp={pointerEnd}
-            onPointerCancel={pointerEnd}
-        >
-            <div className={mapStyles.mapCanvas} style={{ width: atlas.width, height: atlas.height, transform: `translate3d(${pan.x}px,${pan.y}px,0) scale(${scale})` }}>
-                <svg className={mapStyles.mapEdges} width={atlas.width} height={atlas.height} aria-hidden="true">
-                    {atlas.edges.map(edge => {
-                        const startX = edge.fromX + (edge.fromX == atlas.rootX ? ROOT_HALF : NODE_HALF);
-                        const endX = edge.toX - NODE_HALF;
-                        const middle = (startX + endX) / 2;
-                        return <path key={edge.id} className={mapStyles.mapEdge} data-complete={edge.complete} data-principal={edge.principal} d={`M ${startX} ${edge.fromY} C ${middle} ${edge.fromY}, ${middle} ${edge.toY}, ${endX} ${edge.toY}`}/>;
-                    })}
-                </svg>
-                <div className={mapStyles.mapStart} style={{ left: atlas.rootX, top: atlas.rootY }}>{copy.start}</div>
-                {atlas.nodes.map(node => {
-                    const entry = chooseEntry(node);
-                    const state = entry ? stateByKey.get(entryKey(entry)) : undefined;
-                    const isRecommended = Boolean(recommendedItem && node.entries.includes(recommendedItem));
-                    const isPersonal = node.entries.some(item => item.eco == "USR");
-                    const isComplete = Boolean(node.entries.length && node.entries.every(item => stateByKey.get(entryKey(item))?.complete));
-                    const displayName = node.collapsed
-                        ? `${node.descendantLines} ${copy.routes}`
-                        : entry
-                            ? entry.eco == "USR"
-                                ? entry.name
-                                : entry.name == name
-                                    ? fundamentalsLabel
-                                    : localizeOpeningName(entry.name, language)
-                            : `${node.descendantLines} ${copy.routes}`;
-                    const badge = node.collapsed
-                        ? `+${node.descendantLines}`
-                        : isPersonal
-                            ? copy.personal
-                            : isComplete
-                                ? "✓"
-                                : isRecommended
-                                    ? "★"
-                                    : node.principal
-                                        ? copy.mainLine
-                                        : node.entries.length
-                                            ? copy.available
-                                            : node.descendantLines;
-                    const clickable = node.collapsed || Boolean(entry);
-                    return <button
-                        type="button"
-                        key={node.id}
-                        className={mapStyles.mapNode}
-                        data-clickable={clickable}
-                        data-recommended={isRecommended}
-                        data-complete={isComplete}
-                        data-personal={isPersonal}
-                        data-principal={node.principal}
-                        data-collapsed={node.collapsed}
-                        style={{ left: node.x, top: node.y, width: NODE_WIDTH }}
-                        disabled={!clickable}
-                        onClick={() => {
-                            if (node.collapsed) {
-                                expandBranch(node.rawId);
-                                return;
-                            }
-                            if (entry) onOpen(entry, state?.progress?.side || preferredSide, Boolean(state?.progress && state.complete), Boolean(state?.progress && state.complete));
-                        }}
-                        title={node.collapsed ? `${copy.expand}: ${node.descendantLines} ${copy.routes}` : entry ? `${localizeOpeningName(entry.name, language)} · ${entry.pgn}` : node.label}
-                    >
-                        <span className={mapStyles.mapNodeTop}><strong className={mapStyles.mapMove}>{node.label}</strong><span className={mapStyles.mapBadge}>{badge}</span></span>
-                        <span className={mapStyles.mapMeta}><span>{displayName}</span>{!node.collapsed && node.descendantLines > 1 && <span>{node.descendantLines} {copy.routes}</span>}</span>
-                    </button>;
-                })}
-            </div>
-            <span className={mapStyles.mapHint}>{copy.drag}</span>
-        </div> : <div className={mapStyles.mapEmpty}>{loadingLabel}</div>}
-        <div className={mapStyles.mapLegend}>
-            <span><i className={mapStyles.legendDot}/>{copy.available}</span>
-            <span><i className={mapStyles.legendDot} data-kind="main"/>{copy.mainLine}</span>
-            <span><i className={mapStyles.legendDot} data-kind="learned"/>{copy.learned}</span>
-            <span><i className={mapStyles.legendDot} data-kind="personal"/>{copy.personal}</span>
+
+        <div className={mapStyles.searchWrap} data-repertoire-tour="focus-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>
+            <input value={query} onChange={event => setQuery(event.target.value)} placeholder={copy.search}/>
+            {normalizedQuery && <span>{searchMatches.length} {copy.searchResults}</span>}
         </div>
+
+        {normalizedQuery && <div className={mapStyles.searchResults}>
+            {searchMatches.length == 0 && <p>{copy.noResults}</p>}
+            {searchMatches.slice(0, SEARCH_LIMIT).map(match => <button type="button" key={entryKey(match.entry)} onClick={() => focusSearchResult(match.node)}>
+                <span><strong>{localizeOpeningName(match.entry.name, language)}</strong><small>{moveLabel(sanPath(match.node).slice(-8))}</small></span>
+                <em>{match.entry.eco}</em>
+            </button>)}
+            {searchMatches.length > SEARCH_LIMIT && <small className={mapStyles.moreMatches}>+{searchMatches.length - SEARCH_LIMIT} {copy.searchResults}</small>}
+        </div>}
+
+        <nav className={mapStyles.breadcrumb} data-repertoire-tour="focus-breadcrumb" aria-label={copy.main}>
+            {crumbs.map((node, index) => <React.Fragment key={node.id}>
+                {index > 0 && <span>›</span>}
+                <button type="button" data-current={node == focus} onClick={() => { setFocusId(node.id); setShowAlternatives(false); }}>
+                    {node == model.root ? localizeOpeningName(name, language) : moveLabel([node])}
+                </button>
+            </React.Fragment>)}
+        </nav>
+
+        <section className={mapStyles.focusViewport} data-level={effectiveLevel}>
+            <div className={mapStyles.currentNode}>
+                <span>{focus == model.root ? copy.root : copy.branch}</span>
+                <strong>{currentName}</strong>
+                {effectiveLevel > 0 && stem.nodes.length > 0 && <p>{moveLabel(stem.nodes)}</p>}
+                <small>{anchor.descendantLines} {copy.lines}</small>
+                {anchor.children.size == 0 && directEntry && <button type="button" className={mapStyles.studyButton} onClick={() => {
+                    const itemProgress = findLessonProgress(progress, directEntry);
+                    onOpen(directEntry, itemProgress?.side || preferredSide, Boolean(itemProgress), Boolean(itemProgress));
+                }}>{copy.study}</button>}
+            </div>
+
+            {effectiveLevel == 3 && fullPath.length > 0 && <div className={mapStyles.fullPath}>
+                <span>{copy.main}</span>
+                <p>{fullPath.map((san, ply) => moveLabel([{ ...anchor, san, ply }])).join(" ")}</p>
+            </div>}
+
+            {branches.length > 0 && <>
+                <div className={mapStyles.treeStem} aria-hidden="true"/>
+                <div className={mapStyles.branchGrid} data-repertoire-tour="focus-branches">
+                    {visibleBranches.map(branch => {
+                        const preview = segmentFrom(branch, SEGMENT_LIMITS[effectiveLevel]);
+                        const title = branchName(preview.end, name, language, fundamentalsLabel) || branchName(branch, name, language, fundamentalsLabel);
+                        const recommended = Boolean(recommendedNode && isAncestor(branch, recommendedNode));
+                        return <button type="button" key={branch.id} className={mapStyles.branchCard} data-recommended={recommended} data-repertoire-tour={recommended ? "focus-branch" : undefined} onClick={() => openBranch(branch)}>
+                            <span className={mapStyles.branchMove}>{effectiveLevel == 0 ? moveLabel([branch]) : moveLabel(preview.nodes)}</span>
+                            {title && <strong>{title}</strong>}
+                            <small>{branch.descendantLines} {copy.lines}{recommended ? ` · ${copy.main}` : ""}</small>
+                        </button>;
+                    })}
+                    {hiddenCount > 0 && <button type="button" className={mapStyles.alternativesButton} onClick={() => setShowAlternatives(true)}>+ {hiddenCount} {copy.alternatives}</button>}
+                    {showAlternatives && branches.length > 10 && <button type="button" className={mapStyles.alternativesButton} onClick={() => setShowAlternatives(false)}>− {copy.alternatives}</button>}
+                </div>
+            </>}
+        </section>
+
+        {fullscreen && <div className={mapStyles.fullscreenHint}>{copy.zoomHint}</div>}
+        {!model.root.descendantLines && <div className={mapStyles.mapEmpty}>{loadingLabel}</div>}
     </div>;
 }
 

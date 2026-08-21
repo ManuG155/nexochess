@@ -1,5 +1,5 @@
 import { OpeningCatalogueEntry } from "./openingCatalogue";
-import { pgnMoveKeys } from "./courseDepth";
+import { fastPgnSanTokens } from "./courseDepth";
 
 interface ParsedLine {
     entry: OpeningCatalogueEntry;
@@ -10,14 +10,8 @@ interface TheoryNode {
     children: Map<string, TheoryNode>;
 }
 
-const moveCache = new WeakMap<OpeningCatalogueEntry, string[]>();
-
 function movesFor(entry: OpeningCatalogueEntry) {
-    const cached = moveCache.get(entry);
-    if (cached) return cached;
-    const moves = pgnMoveKeys(entry.pgn);
-    moveCache.set(entry, moves);
-    return moves;
+    return fastPgnSanTokens(entry.pgn);
 }
 
 function priority(entry: OpeningCatalogueEntry) {
@@ -60,28 +54,28 @@ export function courseLessonSequenceKey(entry: OpeningCatalogueEntry) {
     return movesFor(entry).join(" ");
 }
 
+function fastPgnKey(pgn: string) {
+    return pgn.trim().replace(/\s+/g, " ");
+}
+
 export function countCourseLessonsFast(
     lines: OpeningCatalogueEntry[],
     maximum = Number.POSITIVE_INFINITY
 ) {
     const sequences = new Set<string>();
-
     for (const line of lines) {
-        const key = courseLessonSequenceKey(line);
+        const key = fastPgnKey(line.pgn);
         if (key) sequences.add(key);
         if (sequences.size >= maximum) return maximum;
     }
-
     return sequences.size;
 }
 
 /*
- * A course is a repertoire, not a top-28 catalogue.  Keep every distinct
- * move sequence supplied by the opening source (and every genuinely new
- * personal branch), while collapsing only exact duplicate paths.
- *
- * This also means the family map and the study counter describe the same
- * set of available variations.
+ * Indexing a course is intentionally syntax-only. The opening source already
+ * provides legal SAN, so building checkpoints and de-duplicating paths must
+ * not instantiate hundreds of chess.js boards on the UI thread. A selected
+ * lesson is still validated by the normal chess.js parser when it is played.
  */
 export function buildCourseLessonsIndexed(
     lines: OpeningCatalogueEntry[],
@@ -99,7 +93,6 @@ export function buildCourseLessonsIndexed(
     }
 
     const result: Array<{ entry: OpeningCatalogueEntry; ply: number }> = [];
-
     for (const familyLines of byFamily.values()) {
         const root = createNode();
         familyLines.forEach(line => addToTrie(root, line.moves));
@@ -115,9 +108,7 @@ export function buildCourseLessonsIndexed(
                     priority(item.entry) == priority(current.entry)
                     && item.entry.name.localeCompare(current.entry.name) < 0
                 )
-            ) {
-                bySequence.set(key, item);
-            }
+            ) bySequence.set(key, item);
         }
 
         for (const item of bySequence.values()) {
