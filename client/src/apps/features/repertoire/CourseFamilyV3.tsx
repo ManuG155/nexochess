@@ -6,7 +6,7 @@ import { localizeOpeningName } from "./openingLocalization";
 import { CourseProgressStore, findLessonProgress } from "./courseProgress";
 import { RepertoireSide } from "./courseV3Model";
 import { learnedDepth, pgnPlyCount } from "./courseDepth";
-import CourseRepertoireTree from "./CourseRepertoireTree";
+import CourseRepertoireNavigator from "./CourseRepertoireNavigator";
 import * as styles from "./courseV3.module.css";
 
 interface Props {
@@ -81,7 +81,7 @@ function CourseFamilyV3({ name, lines, progress, preferredSide, onBack, onOpen, 
                 <button type="button" onClick={() => onReviewFamily(learnedLines)} disabled={!learnedLines.length}>{t("modes.review")}</button>
             </div>
         </div>
-        <CourseRepertoireTree
+        <CourseRepertoireNavigator
             name={name}
             lines={lines}
             progress={progress}
