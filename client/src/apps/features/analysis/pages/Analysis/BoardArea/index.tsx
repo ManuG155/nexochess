@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Move } from "chess.js";
 
@@ -15,10 +15,13 @@ import useEvaluation from "./useEvaluation";
 import useSuggestionArrows from "./useSuggestionArrows";
 import * as styles from "./BoardArea.module.css";
 
+const ShareDialog = React.lazy(() => import("@analysis/components/ShareDialog"));
+
 function BoardArea() {
-    const { t } = useTranslation("analysis");
+    const { t } = useTranslation(["analysis", "common"]);
     const settings = useSettingsStore(state => state.settings.analysis);
     const theme = useSettingsStore(state => state.settings.themes);
+    const [shareOpen, setShareOpen] = useState(false);
 
     const {
         analysisGame,
@@ -40,7 +43,8 @@ function BoardArea() {
 
     const evaluation = useEvaluation();
     const suggestionArrows = useSuggestionArrows();
-    const flipBoardLabel = t("optionsToolbar.flipBoard");
+    const flipBoardLabel = t("optionsToolbar.flipBoard", { ns: "analysis" });
+    const shareLabel = t("navigationBar.share", { ns: "common" });
 
     function addMove(move: Move) {
         // The board shown on the Analysis landing screen is a preview only.
@@ -65,28 +69,54 @@ function BoardArea() {
             maxWidth: `calc(100vh - ${evaluation ? 195 : 235}px)`
         }}
     >
-        <button
-            type="button"
-            className={styles.flipBoardButton}
-            onClick={() => setBoardFlipped(!boardFlipped)}
-            title={flipBoardLabel}
-            aria-label={flipBoardLabel}
-        >
-            <svg
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.8"
+        <div className={styles.boardActions}>
+            <button
+                type="button"
+                className={`${styles.boardActionButton} ${styles.flipBoardButton}`}
+                onClick={() => setBoardFlipped(!boardFlipped)}
+                title={flipBoardLabel}
+                aria-label={flipBoardLabel}
             >
-                <path d="M7 7h10l-2.5-2.5" />
-                <path d="M17 17H7l2.5 2.5" />
-                <path d="M19 9.5A7 7 0 0 1 17 17" />
-                <path d="M5 14.5A7 7 0 0 1 7 7" />
-            </svg>
-        </button>
+                <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.8"
+                >
+                    <path d="M7 7h10l-2.5-2.5" />
+                    <path d="M17 17H7l2.5 2.5" />
+                    <path d="M19 9.5A7 7 0 0 1 17 17" />
+                    <path d="M5 14.5A7 7 0 0 1 7 7" />
+                </svg>
+            </button>
+
+            <button
+                type="button"
+                className={`${styles.boardActionButton} ${styles.shareButton}`}
+                onClick={() => setShareOpen(true)}
+                title={shareLabel}
+                aria-label={shareLabel}
+            >
+                <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.8"
+                >
+                    <circle cx="18" cy="5" r="2.5" />
+                    <circle cx="6" cy="12" r="2.5" />
+                    <circle cx="18" cy="19" r="2.5" />
+                    <path d="m8.2 10.8 7.6-4.6" />
+                    <path d="m8.2 13.2 7.6 4.6" />
+                </svg>
+            </button>
+        </div>
 
         <Board
             className={styles.board}
@@ -109,6 +139,14 @@ function BoardArea() {
             enableClassifications={!settings.classifications.hide}
             onAddMove={addMove}
         />
+
+        {shareOpen && <Suspense fallback={null}>
+            <ShareDialog
+                game={analysisGame}
+                currentNode={currentStateTreeNode}
+                onClose={() => setShareOpen(false)}
+            />
+        </Suspense>}
     </div>;
 }
 
