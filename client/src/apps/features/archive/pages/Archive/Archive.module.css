@@ -73,6 +73,37 @@
     gap: 10px;
 }
 
+.viewTabs {
+    display: inline-flex;
+    align-self: flex-start;
+    gap: 4px;
+    margin-top: 18px;
+    padding: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.12);
+}
+
+.viewTabs button {
+    min-width: 112px;
+    min-height: 38px;
+    padding: 8px 14px;
+    color: rgba(255, 255, 255, 0.58);
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    font: inherit;
+    font-size: 0.86rem;
+    font-weight: 720;
+    cursor: pointer;
+}
+
+.viewTabs button:hover,
+.viewTabs .viewTabActive {
+    color: #eef4ff;
+    background: rgba(70, 125, 232, 0.16);
+}
+
 .games {
     display: flex;
     flex-direction: column;
@@ -138,6 +169,20 @@
     color: #356fc4 !important;
 }
 
+:global(html[data-theme="light"]) .viewTabs {
+    border-color: rgba(37, 72, 111, 0.12);
+    background: rgba(53, 91, 136, 0.045);
+}
+
+:global(html[data-theme="light"]) .viewTabs button {
+    color: #607087;
+}
+
+:global(html[data-theme="light"]) .viewTabs .viewTabActive {
+    color: #204f91;
+    background: rgba(70, 125, 232, 0.11);
+}
+
 @media (max-width: 700px), (max-width: 1024px) and (orientation: portrait) {
     .wrapper {
         width: calc(
@@ -176,6 +221,16 @@
     .selection {
         flex-wrap: wrap;
         gap: 8px 12px;
+    }
+
+    .viewTabs {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .viewTabs button {
+        flex: 1 1 0;
+        min-width: 0;
     }
 
     .games {
