@@ -27,12 +27,15 @@ export interface PuzzlePageCopy {
 /**
  * Keep every visible Puzzles sentence inside the i18next catalogue. This is
  * deliberately a mapping rather than a second set of language dictionaries:
- * changing the selected language must update the setup cards, empty states
- * and coach text together.
+ * changing the selected language must update the setup, empty states and
+ * coach text together.
  */
 export function getPuzzlePageCopy(t: TFunction): PuzzlePageCopy {
     return {
-        heroSubtitle: t("hero.subtitle"),
+        // Puzzles is practice-only now, so the hero must no longer advertise
+        // positions derived from analysed games. Reuse the translated
+        // thematic-training sentence in every supported language.
+        heroSubtitle: t("sources.lichess.body"),
         trainingTitle: t("sources.lichess.title"),
         trainingSubtitle: t("sources.lichess.body"),
         thematicSource: t("puzzle.lichessSource"),

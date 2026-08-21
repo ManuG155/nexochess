@@ -240,7 +240,9 @@ function Puzzles() {
     const exitFocusModeLabel = t("actions.exitFocusMode");
 
     const [pageState, setPageState] = useState<PageState>("loading");
-    const [source, setSource] = useState<PuzzleSource>("archive");
+    // Puzzles is intentionally thematic-only. The previous Archive-derived
+    // mode stays unreachable while its legacy data path is retained for now.
+    const source: PuzzleSource = "lichess";
     const [themeSelections, setThemeSelections] = useState<
         PuzzleThemeSelection[]
     >([{ category: "all" }]);
@@ -393,14 +395,10 @@ function Puzzles() {
     useEffect(() => {
         let cancelled = false;
 
-        function revealSetup(
-            preferredSource: PuzzleSource,
-            coachMessageKey: string
-        ) {
+        function revealSetup(coachMessageKey: string) {
             if (cancelled || setupRevealedRef.current) return;
 
             setupRevealedRef.current = true;
-            setSource(preferredSource);
             setPageState("setup");
             setCoachMessage({ key: coachMessageKey });
             setCoachExpression("idle");
@@ -414,6 +412,8 @@ function Puzzles() {
                 // Progress has its own localStorage fallback.
             });
 
+        // Keep the legacy archive scan isolated from the visible Puzzles flow.
+        // It no longer selects a mode or exposes Archive-derived positions.
         const archivePromise = loadArchivePuzzleLibrary()
             .then(library => {
                 if (cancelled) return;
@@ -421,7 +421,6 @@ function Puzzles() {
                 setArchivePuzzles(library.puzzles);
                 setAnalysedGameCount(library.analysedGameCount);
                 setArchiveLoadState("ready");
-                revealSetup("archive", "coach.setupArchive");
             })
             .catch(error => {
                 if (!cancelled) setArchiveLoadState("error");
@@ -434,6 +433,7 @@ function Puzzles() {
 
                 setPuzzleCatalogue(catalogue);
                 setLichessLoadState("ready");
+                revealSetup("coach.setupLichess");
             })
             .catch(error => {
                 if (!cancelled) setLichessLoadState("error");
@@ -445,7 +445,7 @@ function Puzzles() {
                 if (cancelled || setupRevealedRef.current) return;
 
                 if (results[1].status == "fulfilled") {
-                    revealSetup("lichess", "coach.setupLichess");
+                    revealSetup("coach.setupLichess");
                 } else {
                     setPageState("error");
                     setCoachMessage({ key: "coach.loadError" });
@@ -991,13 +991,6 @@ function Puzzles() {
     }, [i18n.resolvedLanguage, t, themeSelections]);
 
     const setupCoachMessage = useMemo(() => {
-        if (source == "archive") {
-            if (archiveLoadState == "loading") return pageCopy.archiveChecking;
-            if (analysedGameCount == 0) return pageCopy.archiveNoGames;
-            if (archivePuzzles.length == 0) return pageCopy.archiveNoErrors;
-            return pageCopy.archiveReady;
-        }
-
         const language = i18n.resolvedLanguage || "en";
         let selectionText = selectionLabels.join(", ");
 
@@ -1017,14 +1010,9 @@ function Puzzles() {
             )}.`
         ].join(" ");
     }, [
-        analysedGameCount,
-        archiveLoadState,
-        archivePuzzles.length,
         difficulty,
         i18n.resolvedLanguage,
-        pageCopy,
         selectionLabels,
-        source,
         t
     ]);
 
@@ -1416,136 +1404,59 @@ function Puzzles() {
                         <p>{t("setup.subtitle")}</p>
                     </header>
 
+                    <ThemeMultiSelector
+                        catalogue={puzzleCatalogue}
+                        selections={themeSelections}
+                        onChange={setThemeSelections}
+                    />
+
                     <div className={[
-                        styles.sourceSelector,
-                        readable.sourceSelector
+                        styles.filterBlock,
+                        readable.filterBlock
                     ].join(" ")}>
-                        <button
-                            type="button"
-                            className={source == "archive"
-                                ? styles.sourceActive
-                                : ""
-                            }
-                            onClick={() => setSource("archive")}
-                        >
-                            <span className={styles.sourceIcon}>
-                                <svg viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="M4.5 8.5h15v11h-15zM3.5 4.5h17v4h-17zM9.5 12h5" />
-                                </svg>
-                            </span>
-                            <span>
-                                <strong>{t("sources.archive.title")}</strong>
-                                <small>{t("sources.archive.body")}</small>
-                            </span>
-                        </button>
-
-                        <button
-                            type="button"
-                            className={source == "lichess"
-                                ? styles.sourceActive
-                                : ""
-                            }
-                            onClick={() => setSource("lichess")}
-                        >
-                            <span className={styles.sourceIcon}>
-                                <svg viewBox="0 0 24 24" aria-hidden="true">
-                                    <path d="M8 4.5c4-1.8 8 .6 8 4.5 0 2.2-1.2 3.4-3 4.7-1.5 1.1-2.4 2.3-2.4 4.3M9.8 21h.1" />
-                                </svg>
-                            </span>
-                            <span>
-                                <strong>{pageCopy.trainingTitle}</strong>
-                                <small>{pageCopy.trainingSubtitle}</small>
-                            </span>
-                        </button>
+                        <div className={[
+                            styles.filterHeading,
+                            readable.filterHeading
+                        ].join(" ")}>
+                            <strong>{t("filters.difficulty")}</strong>
+                            <span>{t("filters.difficultyHelp")}</span>
+                        </div>
+                        <div className={[
+                            styles.difficultyGrid,
+                            readable.difficultyGrid
+                        ].join(" ")}>
+                            {difficulties.map(value => (
+                                <button
+                                    type="button"
+                                    key={value}
+                                    className={difficulty == value
+                                        ? styles.difficultyActive
+                                        : ""
+                                    }
+                                    onClick={() => setDifficulty(value)}
+                                    aria-pressed={difficulty == value}
+                                >
+                                    <strong>
+                                        {t(`difficulties.${value}.title`)}
+                                    </strong>
+                                    <small>
+                                        {t(`difficulties.${value}.range`)}
+                                    </small>
+                                </button>
+                            ))}
+                        </div>
                     </div>
-
-                    {source == "archive"
-                        && archiveLoadState == "ready"
-                        && archivePuzzles.length == 0
-                        && (
-                            <div className={styles.archiveEmpty}>
-                                <span aria-hidden="true">↗</span>
-                                <div>
-                                    <h3>
-                                        {analysedGameCount == 0
-                                            ? pageCopy.noGamesTitle
-                                            : pageCopy.noErrorsTitle
-                                        }
-                                    </h3>
-                                    <p>
-                                        {analysedGameCount == 0
-                                            ? pageCopy.noGamesBody
-                                            : pageCopy.noErrorsBody
-                                        }
-                                    </p>
-                                </div>
-                                <a href="/analysis">
-                                    {t("sources.archive.action")}
-                                </a>
-                            </div>
-                        )
-                    }
-
-                    {source == "lichess" && (
-                        <>
-                            <ThemeMultiSelector
-                                catalogue={puzzleCatalogue}
-                                selections={themeSelections}
-                                onChange={setThemeSelections}
-                            />
-
-                            <div className={[
-                                styles.filterBlock,
-                                readable.filterBlock
-                            ].join(" ")}>
-                                <div className={[
-                                    styles.filterHeading,
-                                    readable.filterHeading
-                                ].join(" ")}>
-                                    <strong>{t("filters.difficulty")}</strong>
-                                    <span>{t("filters.difficultyHelp")}</span>
-                                </div>
-                                <div className={[
-                                    styles.difficultyGrid,
-                                    readable.difficultyGrid
-                                ].join(" ")}>
-                                    {difficulties.map(value => (
-                                        <button
-                                            type="button"
-                                            key={value}
-                                            className={difficulty == value
-                                                ? styles.difficultyActive
-                                                : ""
-                                            }
-                                            onClick={() => setDifficulty(value)}
-                                            aria-pressed={difficulty == value}
-                                        >
-                                            <strong>
-                                                {t(`difficulties.${value}.title`)}
-                                            </strong>
-                                            <small>
-                                                {t(`difficulties.${value}.range`)}
-                                            </small>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        </>
-                    )}
 
                     <div className={[
                         styles.sessionOptions,
-                        readable.sessionOptions,
-                        source == "archive" ? styles.archiveSessionOptions : ""
-                    ].filter(Boolean).join(" ")}>
-                        {source == "lichess" && (
-                            <OptionToggle
-                                checked={ratedSession}
-                                title={t("options.rated.title")}
-                                description={t("options.rated.body")}
-                                onChange={setRatedSession}
-                            />
-                        )}
+                        readable.sessionOptions
+                    ].join(" ")}>
+                        <OptionToggle
+                            checked={ratedSession}
+                            title={t("options.rated.title")}
+                            description={t("options.rated.body")}
+                            onChange={setRatedSession}
+                        />
                         <OptionToggle
                             checked={hintsEnabled}
                             title={t("options.hints.title")}
@@ -1562,18 +1473,8 @@ function Puzzles() {
 
                     {pageState == "empty" && (
                         <div className={styles.noMatch} role="status">
-                            <strong>
-                                {source == "archive"
-                                    ? t("states.noArchiveTitle")
-                                    : pageCopy.noMatchTitle
-                                }
-                            </strong>
-                            <span>
-                                {source == "archive"
-                                    ? t("states.noArchiveBody")
-                                    : pageCopy.noMatchBody
-                                }
-                            </span>
+                            <strong>{pageCopy.noMatchTitle}</strong>
+                            <span>{pageCopy.noMatchBody}</span>
                         </div>
                     )}
 
@@ -1586,17 +1487,7 @@ function Puzzles() {
                         onClick={() => void startTraining()}
                         disabled={
                             requestingPuzzle
-                            || (
-                                source == "archive"
-                                && (
-                                    archiveLoadState != "ready"
-                                    || archivePuzzles.length == 0
-                                )
-                            )
-                            || (
-                                source == "lichess"
-                                && lichessLoadState != "ready"
-                            )
+                            || lichessLoadState != "ready"
                         }
                     >
                         <span aria-hidden="true">▶</span>
