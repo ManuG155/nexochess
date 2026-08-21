@@ -28,6 +28,16 @@ function normalizedHistory(pgn: string) {
     }
 }
 
+/*
+ * Accepted/Declined are branches of the same gambit repertoire, not separate
+ * courses. Keeping the canonical family at the course boundary means the
+ * variation map naturally forks at the move where the gambit is accepted or
+ * declined while preserving every concrete line underneath it.
+ */
+function canonicalCourseFamily(value: string) {
+    return value.replace(/\s+(Accepted|Declined)$/i, "").trim();
+}
+
 function OpeningLearningV3({ mode = "learn", onAddToRepertoire, onFocusChange }: Props) {
     const { i18n } = useTranslation();
     const language = i18n.resolvedLanguage || i18n.language || "en";
@@ -59,9 +69,11 @@ function OpeningLearningV3({ mode = "learn", onAddToRepertoire, onFocusChange }:
     const families = useMemo<Family[]>(() => {
         const grouped = new Map<string, OpeningCatalogueEntry[]>();
         for (const item of allLines) {
-            const existing = grouped.get(item.family);
-            if (existing) existing.push(item);
-            else grouped.set(item.family, [item]);
+            const family = canonicalCourseFamily(item.family);
+            const normalized = family == item.family ? item : { ...item, family };
+            const existing = grouped.get(family);
+            if (existing) existing.push(normalized);
+            else grouped.set(family, [normalized]);
         }
         return Array.from(grouped, ([name, lines]) => ({ name, lines })).sort((a, b) => localizeOpeningName(a.name, language).localeCompare(localizeOpeningName(b.name, language)));
     }, [allLines, language]);
@@ -82,41 +94,46 @@ function OpeningLearningV3({ mode = "learn", onAddToRepertoire, onFocusChange }:
         window.scrollTo({ top: 0, behavior: "auto" });
     }
     function openLine(item: OpeningCatalogueEntry, side?: RepertoireSide, startPractice = false, blind = false) {
-        setFamilyName(item.family); setPreferredSide(sideFor(item, side)); setPractice(startPractice); setBlindPractice(blind); setReviewQueue([]); setReviewIndex(0); setOpening(item);
+        const family = canonicalCourseFamily(item.family);
+        const normalized = family == item.family ? item : { ...item, family };
+        setFamilyName(family); setPreferredSide(sideFor(normalized, side)); setPractice(startPractice); setBlindPractice(blind); setReviewQueue([]); setReviewIndex(0); setOpening(normalized);
         window.scrollTo({ top: 0, behavior: "auto" });
     }
     function startReview(items: OpeningCatalogueEntry[]) {
         if (!items.length) return;
         const queue = [...items].sort(() => Math.random() - .5);
         const first = queue[0];
-        setReviewQueue(queue); setReviewIndex(0); setFamilyName(first.family); setPreferredSide(sideFor(first)); setPractice(true); setBlindPractice(true); setOpening(first);
+        setReviewQueue(queue); setReviewIndex(0); setFamilyName(canonicalCourseFamily(first.family)); setPreferredSide(sideFor(first)); setPractice(true); setBlindPractice(true); setOpening(first);
         window.scrollTo({ top: 0, behavior: "auto" });
     }
     function advanceReview() {
         const nextIndex = reviewIndex + 1;
         const next = reviewQueue[nextIndex];
         if (!next) return;
-        setReviewIndex(nextIndex); setFamilyName(next.family); setPreferredSide(sideFor(next)); setPractice(true); setBlindPractice(true); setOpening(next);
+        setReviewIndex(nextIndex); setFamilyName(canonicalCourseFamily(next.family)); setPreferredSide(sideFor(next)); setPractice(true); setBlindPractice(true); setOpening(next);
         window.scrollTo({ top: 0, behavior: "auto" });
     }
     function closeLesson() {
         setOpening(undefined); setPractice(false); setBlindPractice(false); setReviewQueue([]); setReviewIndex(0);
     }
     function genericCustomName(familyValue: string) {
+        const family = canonicalCourseFamily(familyValue);
         const word = LINE_WORD[lang] || LINE_WORD.en;
-        const count = customLines.filter(item => item.family == familyValue).length + 1;
+        const count = customLines.filter(item => canonicalCourseFamily(item.family) == family).length + 1;
         return `${word} ${count}`;
     }
     function suggestionFor(pgn: string, familyValue: string) {
+        const family = canonicalCourseFamily(familyValue);
         const history = normalizedHistory(pgn);
         if (history) {
-            const exact = catalogue.find(item => item.family == familyValue && normalizedHistory(item.pgn) == history);
+            const exact = catalogue.find(item => canonicalCourseFamily(item.family) == family && normalizedHistory(item.pgn) == history);
             if (exact) return localizeOpeningName(exact.name, language);
         }
-        return genericCustomName(familyValue);
+        return genericCustomName(family);
     }
     function saveCustomLine(payload: { opening: OpeningCatalogueEntry; side: RepertoireSide; pgn: string; name: string }) {
-        const synthetic: OpeningCatalogueEntry = { eco: "USR", family: payload.opening.family, name: payload.name, pgn: payload.pgn };
+        const family = canonicalCourseFamily(payload.opening.family);
+        const synthetic: OpeningCatalogueEntry = { eco: "USR", family, name: payload.name, pgn: payload.pgn };
         setCustomLines(previous => addCustomCourseLine(previous, synthetic));
         onAddToRepertoire(synthetic, payload.side);
     }
