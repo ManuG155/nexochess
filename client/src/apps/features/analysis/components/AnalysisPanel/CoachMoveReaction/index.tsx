@@ -31,6 +31,10 @@ import {
 } from "@analysis/lib/coachCommentDetailed";
 
 import {
+    removeUnsupportedTacticClaim
+} from "@analysis/lib/coachCommentSanitize";
+
+import {
     getCoachTacticInsight,
     shouldSuppressCoachLineNotation
 } from "@analysis/lib/coachTacticInsight";
@@ -187,13 +191,21 @@ function CoachMoveReaction() {
     );
 
     const message = useMemo(() => {
-        const detailedStatusLine = getDetailedCoachComment(
+        const rawDetailedStatusLine = getDetailedCoachComment(
             currentNode,
             classification,
             coach.id,
             t,
             i18n.resolvedLanguage
         );
+        const detailedStatusLine = tacticInsight
+            ? rawDetailedStatusLine
+            : removeUnsupportedTacticClaim(
+                rawDetailedStatusLine,
+                currentNode,
+                classification,
+                i18n.resolvedLanguage
+            );
         const suppressLineNotation = !tacticInsight
             && (
                 shouldSuppressCoachLineNotation(
