@@ -108,16 +108,20 @@ const EXACT: Record<OpeningLang, ExactMap> = {
 
 const DESCRIPTORS: Record<OpeningLang, Record<string, string>> = {
     en: {},
-    es: { Danish: "danés", Scotch: "escocés", Czech: "checa", Center: "del centro", Kingside: "del flanco de rey", Queenside: "del flanco de dama" },
-    fr: { Danish: "danois", Scotch: "écossais", Czech: "tchèque", Center: "du centre", Kingside: "aile roi", Queenside: "aile dame" },
-    de: { Danish: "Dänisch", Scotch: "Schottisch", Czech: "Tschechisch", Center: "Zentrum", Kingside: "Königsflügel", Queenside: "Damenflügel" },
-    pt: { Danish: "dinamarquês", Scotch: "escocês", Czech: "tcheca", Center: "do centro", Kingside: "da ala do rei", Queenside: "da ala da dama" },
-    ru: { Danish: "датский", Scotch: "шотландский", Czech: "чешская", Center: "центральная", Kingside: "королевский фланг", Queenside: "ферзевый фланг" },
-    zh: { Danish: "丹麦", Scotch: "苏格兰", Czech: "捷克", Center: "中心", Kingside: "王翼", Queenside: "后翼" },
-    vi: { Danish: "Đan Mạch", Scotch: "Scotland", Czech: "Séc", Center: "Trung tâm", Kingside: "cánh vua", Queenside: "cánh hậu" },
-    hi: { Danish: "डैनिश", Scotch: "स्कॉच", Czech: "चेक", Center: "सेंटर", Kingside: "किंगसाइड", Queenside: "क्वीनसाइड" },
-    mr: { Danish: "डॅनिश", Scotch: "स्कॉच", Czech: "झेक", Center: "मध्य", Kingside: "किंगसाइड", Queenside: "क्वीनसाइड" },
-    pl: { Danish: "duński", Scotch: "szkocki", Czech: "czeska", Center: "centralny", Kingside: "skrzydło królewskie", Queenside: "skrzydło hetmańskie" }
+    es: { Danish: "danés", Scotch: "escocés", Czech: "checa", Center: "del centro", Kingside: "del flanco de rey", Queenside: "del flanco de dama", "Queen's Indian": "india de dama", "Pseudo Queen's Indian": "pseudoindia de dama" },
+    fr: { Danish: "danois", Scotch: "écossais", Czech: "tchèque", Center: "du centre", Kingside: "aile roi", Queenside: "aile dame", "Queen's Indian": "ouest-indienne", "Pseudo Queen's Indian": "pseudo-ouest-indienne" },
+    de: { Danish: "Dänisch", Scotch: "Schottisch", Czech: "Tschechisch", Center: "Zentrum", Kingside: "Königsflügel", Queenside: "Damenflügel", "Queen's Indian": "Damenindisch", "Pseudo Queen's Indian": "Pseudo-Damenindisch" },
+    pt: { Danish: "dinamarquês", Scotch: "escocês", Czech: "tcheca", Center: "do centro", Kingside: "da ala do rei", Queenside: "da ala da dama", "Queen's Indian": "índia da dama", "Pseudo Queen's Indian": "pseudoíndia da dama" },
+    ru: { Danish: "датский", Scotch: "шотландский", Czech: "чешская", Center: "центральная", Kingside: "королевский фланг", Queenside: "ферзевый фланг", "Queen's Indian": "новоиндийская", "Pseudo Queen's Indian": "псевдоновоиндийская" },
+    zh: { Danish: "丹麦", Scotch: "苏格兰", Czech: "捷克", Center: "中心", Kingside: "王翼", Queenside: "后翼", "Queen's Indian": "后翼印度", "Pseudo Queen's Indian": "伪后翼印度" },
+    vi: { Danish: "Đan Mạch", Scotch: "Scotland", Czech: "Séc", Center: "Trung tâm", Kingside: "cánh vua", Queenside: "cánh hậu", "Queen's Indian": "Ấn Độ Hậu", "Pseudo Queen's Indian": "giả Ấn Độ Hậu" },
+    hi: { Danish: "डैनिश", Scotch: "स्कॉच", Czech: "चेक", Center: "सेंटर", Kingside: "किंगसाइड", Queenside: "क्वीनसाइड", "Queen's Indian": "क्वीन्स इंडियन", "Pseudo Queen's Indian": "स्यूडो क्वीन्स इंडियन" },
+    mr: { Danish: "डॅनिश", Scotch: "स्कॉच", Czech: "झेक", Center: "मध्य", Kingside: "किंगसाइड", Queenside: "क्वीनसाइड", "Queen's Indian": "क्वीन्स इंडियन", "Pseudo Queen's Indian": "स्यूडो क्वीन्स इंडियन" },
+    pl: { Danish: "duński", Scotch: "szkocki", Czech: "czeska", Center: "centralny", Kingside: "skrzydło królewskie", Queenside: "skrzydło hetmańskie", "Queen's Indian": "hetmańsko-indyjska", "Pseudo Queen's Indian": "pseudohetmańsko-indyjska" }
+};
+
+const WITH_WORD: Record<OpeningLang, string> = {
+    en: "with", es: "con", fr: "avec", de: "mit", pt: "com", ru: "с", zh: "含", vi: "với", hi: "के साथ", mr: "सह", pl: "z"
 };
 
 function descriptor(value: string, lang: OpeningLang) {
@@ -140,11 +144,19 @@ function hyphenateTrailing(segment: string, noun: string, lang: OpeningLang) {
     return `${descriptor(match[1], lang)}-${noun}`;
 }
 
+function translateWithSegment(segment: string, lang: OpeningLang) {
+    const match = segment.match(/^with\s+(.+)$/i);
+    if (!match) return segment;
+    if (lang == "hi") return `${match[1]} ${WITH_WORD.hi}`;
+    if (lang == "mr") return `${match[1]} ${WITH_WORD.mr}`;
+    return `${WITH_WORD[lang]} ${match[1]}`;
+}
+
 function polishSegment(segment: string, lang: OpeningLang) {
     const exact = EXACT[lang][segment];
     if (exact) return exact;
 
-    let out = segment;
+    let out = translateWithSegment(segment, lang);
     if (lang == "es") {
         for (const noun of ["Gambito", "Defensa", "Apertura", "Ataque", "Sistema", "Partida", "Variante"]) out = prefixTrailing(out, noun, lang);
     } else if (lang == "fr") {
