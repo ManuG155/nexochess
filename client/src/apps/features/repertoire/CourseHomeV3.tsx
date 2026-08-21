@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import PlayerOpeningProfile from "./PlayerOpeningProfile";
 import { OpeningCatalogueEntry, OpeningCategory, featuredFamiliesForCategory } from "./openingCatalogue";
 import { countCourseLessonsFast } from "./courseLessonIndex";
+import { canonicalCourseFamily } from "./courseFamily";
 import { localizeOpeningName } from "./openingLocalization";
 import { CourseProgressStore, getLearnedCount, getMasteredCount } from "./courseProgress";
 import { RepertoireSide } from "./courseV3Model";
@@ -36,9 +37,10 @@ function CourseHomeV3({ catalogue, families, progress, loading, query, onQuery, 
         const grouped = new Map<string, Set<string>>();
         for (const item of Object.values(progress)) {
             if (!(item.learnedPly || item.repetitions)) continue;
-            const family = grouped.get(item.family) || new Set<string>();
+            const familyName = canonicalCourseFamily(item.family);
+            const family = grouped.get(familyName) || new Set<string>();
             family.add(`${item.eco}|${item.openingName}|${item.pgn}`);
-            grouped.set(item.family, family);
+            grouped.set(familyName, family);
         }
         return grouped;
     }, [progress]);
@@ -46,7 +48,7 @@ function CourseHomeV3({ catalogue, families, progress, loading, query, onQuery, 
     const visible = useMemo(() => {
         let result = sorted;
         if (filter != "all") {
-            const names = new Set(featuredFamiliesForCategory(filter));
+            const names = new Set(featuredFamiliesForCategory(filter).map(canonicalCourseFamily));
             result = result.filter(item => names.has(item.name));
         }
         if (q) result = result.filter(item => {
