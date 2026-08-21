@@ -10,20 +10,50 @@ export interface DepthProgressLike {
     availablePly?: number;
 }
 
-export function pgnMoveKeys(pgn: string) {
+interface CachedPgn {
+    keys: string[];
+    sans: string[];
+}
+
+/*
+ * Opening courses reuse the same PGNs in the catalogue, tree, progress and
+ * lesson screens. Parsing every occurrence with chess.js was one of the main
+ * sources of long main-thread stalls when entering Repertoire. Cache by PGN
+ * text so every unique line is parsed at most once per page session.
+ */
+const PGN_CACHE = new Map<string, CachedPgn>();
+
+function parsePgn(pgn: string): CachedPgn {
+    const key = pgn.trim();
+    const cached = PGN_CACHE.get(key);
+    if (cached) return cached;
     try {
         const board = new Chess();
-        board.loadPgn(pgn);
-        return board.history({ verbose: true }).map(move => (
-            `${move.from}${move.to}${move.promotion || ""}`
-        ));
+        board.loadPgn(key);
+        const history = board.history({ verbose: true });
+        const parsed = {
+            keys: history.map(move => `${move.from}${move.to}${move.promotion || ""}`),
+            sans: history.map(move => move.san)
+        };
+        PGN_CACHE.set(key, parsed);
+        return parsed;
     } catch {
-        return [] as string[];
+        const empty = { keys: [] as string[], sans: [] as string[] };
+        PGN_CACHE.set(key, empty);
+        return empty;
     }
 }
 
+export function pgnMoveKeys(pgn: string) {
+    return parsePgn(pgn).keys;
+}
+
+export function pgnSanMoves(pgn: string) {
+    return parsePgn(pgn).sans;
+}
+
 export function pgnPlyCount(pgn: string) {
-    return pgnMoveKeys(pgn).length;
+    return parsePgn(pgn).keys.length;
 }
 
 function snapToTheoryCheckpoint(
