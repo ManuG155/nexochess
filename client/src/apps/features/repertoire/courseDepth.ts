@@ -15,13 +15,8 @@ interface CachedPgn {
     sans: string[];
 }
 
-/*
- * Opening courses reuse the same PGNs in the catalogue, tree, progress and
- * lesson screens. Parsing every occurrence with chess.js was one of the main
- * sources of long main-thread stalls when entering Repertoire. Cache by PGN
- * text so every unique line is parsed at most once per page session.
- */
 const PGN_CACHE = new Map<string, CachedPgn>();
+const FAST_SAN_CACHE = new Map<string, string[]>();
 
 function parsePgn(pgn: string): CachedPgn {
     const key = pgn.trim();
@@ -42,6 +37,41 @@ function parsePgn(pgn: string): CachedPgn {
         PGN_CACHE.set(key, empty);
         return empty;
     }
+}
+
+/*
+ * Catalogue PGNs are standard movetext. Building a course index or navigation
+ * tree does not need legality checking, so tokenize SAN without instantiating
+ * chess.js hundreds of times. Actual lessons still use the validated parser.
+ */
+export function fastPgnSanTokens(pgn: string) {
+    const cacheKey = pgn.trim();
+    const cached = FAST_SAN_CACHE.get(cacheKey);
+    if (cached) return cached;
+
+    let text = cacheKey
+        .replace(/^\s*\[[^\]]*\]\s*$/gm, " ")
+        .replace(/\{[^}]*\}/g, " ")
+        .replace(/;[^\r\n]*/g, " ");
+    // Source lines have no nested RAVs, but this safely removes simple pasted
+    // variations too without making the hot catalogue path depend on chess.js.
+    for (let pass = 0; pass < 4 && /\([^()]*\)/.test(text); pass += 1) {
+        text = text.replace(/\([^()]*\)/g, " ");
+    }
+
+    const result = text
+        .split(/\s+/)
+        .map(token => token.trim())
+        .filter(Boolean)
+        .map(token => token.replace(/^\d+\.(?:\.\.)?/, ""))
+        .filter(token => Boolean(token) && !/^\d+\.{1,3}$/.test(token))
+        .filter(token => !/^\$\d+$/.test(token))
+        .filter(token => !/^(1-0|0-1|1\/2-1\/2|\*)$/.test(token))
+        .map(token => token.replace(/[!?]+$/g, ""))
+        .filter(Boolean);
+
+    FAST_SAN_CACHE.set(cacheKey, result);
+    return result;
 }
 
 export function pgnMoveKeys(pgn: string) {
