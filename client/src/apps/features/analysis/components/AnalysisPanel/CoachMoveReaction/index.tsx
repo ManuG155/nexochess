@@ -7,8 +7,10 @@ import React, {
 import { Chess } from "chess.js";
 import { useTranslation } from "react-i18next";
 
-import {
-    addChildMove
+import { Classification } from "shared/constants/Classification";
+import PieceColour from "shared/constants/PieceColour";
+import type {
+    StateTreeNode
 } from "shared/types/game/position/StateTreeNode";
 
 import useSettingsStore from
@@ -22,12 +24,16 @@ import {
 } from "@analysis/lib/coach";
 
 import {
+    getDynamicCoachComment
+} from "@analysis/lib/coachComment";
+
+import {
     getDetailedCoachComment
 } from "@analysis/lib/coachCommentDetailed";
 
 import {
-    getCoachTacticInsight
-} from "@analysis/lib/coachTacticInsight";
+    getStrictCoachTacticInsight
+} from "@analysis/lib/coachTacticInsightStrict";
 
 import {
     addOccasionalCoachCatchphrase
@@ -106,6 +112,74 @@ function inlineTacticSentence(
     };
 }
 
+function isSanToken(value: string): boolean {
+    const token = value
+        .replace(/^[([{"'“”¿¡]+/, "")
+        .replace(/[\])},.;:!?"'“”]+$/, "");
+
+    return /^(?:O-O(?:-O)?|[KQRBN][a-h1-8]{0,2}x?[a-h][1-8](?:=[QRBN])?[+#]?|[a-h](?:x[a-h])?[1-8](?:=[QRBN])?[+#]?)$/.test(token);
+}
+
+/*
+ * The detailed-comment generator predates the interactive tactic buttons and
+ * can still produce an engine line in SAN. Do not surface a raw sequence in
+ * the speech bubble: when two or more SAN moves are written consecutively,
+ * fall back to the normal human classification comment instead.
+ */
+function containsRawMoveSequence(text: string): boolean {
+    let consecutiveMoves = 0;
+
+    for (const token of text.split(/\s+/)) {
+        if (token == "..." || token == "…") continue;
+
+        if (isSanToken(token)) {
+            consecutiveMoves += 1;
+            if (consecutiveMoves >= 2) return true;
+        } else {
+            consecutiveMoves = 0;
+        }
+    }
+
+    return false;
+}
+
+function createTacticPlaybackNode(
+    parent: StateTreeNode,
+    uci: string,
+    index: number
+): StateTreeNode | undefined {
+    try {
+        const move = new Chess(parent.state.fen).move(uci);
+
+        return {
+            id: `coach-tactic-${Date.now()}-${index}-${move.lan}`,
+            mainline: false,
+            parent,
+            children: [],
+            state: {
+                fen: move.after,
+                engineLines: [],
+                move: {
+                    san: move.san,
+                    uci: move.lan
+                },
+                moveColour: move.color == "w"
+                    ? PieceColour.WHITE
+                    : PieceColour.BLACK,
+                /*
+                 * These detached nodes reproduce Stockfish's principal
+                 * variation. They are not moves played by the user, so they
+                 * must never inherit OK/inaccuracy/error classifications from
+                 * the analysed game.
+                 */
+                classification: Classification.BEST
+            }
+        };
+    } catch {
+        return;
+    }
+}
+
 function CoachMoveReaction() {
     const { t, i18n } = useTranslation("coach", { useSuspense: false });
 
@@ -138,13 +212,21 @@ function CoachMoveReaction() {
     );
 
     const message = useMemo(() => {
-        const statusLine = getDetailedCoachComment(
+        const detailedStatusLine = getDetailedCoachComment(
             currentNode,
             classification,
             coach.id,
             t,
             i18n.resolvedLanguage
         );
+        const statusLine = containsRawMoveSequence(detailedStatusLine)
+            ? getDynamicCoachComment(
+                currentNode,
+                classification,
+                coach.id,
+                t
+            )
+            : detailedStatusLine;
         const seed = `${currentNode.state.fen}|${moveSan || "start"}`;
 
         return addOccasionalCoachCatchphrase(
@@ -168,7 +250,7 @@ function CoachMoveReaction() {
     ]);
 
     const tacticInsight = useMemo(
-        () => getCoachTacticInsight(
+        () => getStrictCoachTacticInsight(
             currentNode,
             classification,
             i18n.resolvedLanguage
@@ -210,16 +292,23 @@ function CoachMoveReaction() {
         setAutoplayEnabled(false);
 
         let cursor = tacticInsight.startNode;
-        const sequenceNodes = [];
+        const sequenceNodes: StateTreeNode[] = [];
 
-        for (const uci of tacticInsight.uciMoves) {
-            try {
-                const move = new Chess(cursor.state.fen).move(uci);
-                cursor = addChildMove(cursor, move.san);
-                sequenceNodes.push(cursor);
-            } catch {
-                break;
-            }
+        for (
+            let index = 0;
+            index < tacticInsight.uciMoves.length;
+            index += 1
+        ) {
+            const nextNode = createTacticPlaybackNode(
+                cursor,
+                tacticInsight.uciMoves[index],
+                index
+            );
+
+            if (!nextNode) break;
+
+            cursor = nextNode;
+            sequenceNodes.push(cursor);
         }
 
         if (sequenceNodes.length == 0) return;
