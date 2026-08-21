@@ -31,9 +31,14 @@ interface AnalysedLine {
     materialWon: number;
     materialLost: number;
     firstMove?: Move;
+    firstMovePieceValue: number;
+    firstMoveCapturedValue: number;
     firstMoveSacrificed: boolean;
+    balanceWhenFirstMoveLost?: number;
     fork: boolean;
-    matesForStarter: boolean;
+    mateIndex?: number;
+    mateDistance?: number;
+    forcingMoveIndices: number[];
 }
 
 interface TacticCopy {
@@ -54,7 +59,27 @@ const pieceValues: Record<PieceSymbol, number> = {
     k: 100
 };
 
-const MAX_SEQUENCE_PLIES = 10;
+/*
+ * Tactical coach buttons are deliberately conservative. They are meant to
+ * explain short, human-readable combinations, not arbitrary long engine PVs.
+ */
+const MAX_SEQUENCE_PLIES = 8;
+const MAX_MATERIAL_TARGET_INDEX = 4;
+const MIN_NET_MATERIAL_GAIN = 2;
+const MAX_MATE_DISTANCE = 4;
+
+const POSITIVE_BUTTON_CLASSIFICATIONS = new Set<Classification>([
+    Classification.BRILLIANT,
+    Classification.CRITICAL,
+    Classification.BEST,
+    Classification.EXCELLENT
+]);
+
+const NEGATIVE_BUTTON_CLASSIFICATIONS = new Set<Classification>([
+    Classification.MISTAKE,
+    Classification.BLUNDER,
+    Classification.MISS
+]);
 
 const copies: Record<string, TacticCopy> = {
     en: {
@@ -239,15 +264,6 @@ function normaliseLanguage(language?: string) {
     return language?.toLowerCase().replace("_", "-").split("-")[0] || "en";
 }
 
-function mateForColour(
-    evaluation: { type: string; value: number },
-    colour: CoachCommentColour
-) {
-    if (evaluation.type != "mate") return false;
-
-    return (evaluation.value > 0) == (colour == "w");
-}
-
 function forceTurn(fen: string, colour: CoachCommentColour) {
     const parts = fen.split(" ");
     parts[1] = colour;
@@ -290,14 +306,19 @@ function analyseLine(
     const board = new Chess(startNode.state.fen);
     const starter = board.turn() as CoachCommentColour;
     const uciMoves: string[] = [];
+    const forcingMoveIndices: number[] = [];
     let materialWon = 0;
     let materialLost = 0;
     let targetPiece: PieceSymbol | undefined;
     let targetIndex: number | undefined;
     let firstMove: Move | undefined;
+    let firstMovePieceValue = 0;
+    let firstMoveCapturedValue = 0;
     let trackedSquare: string | undefined;
     let trackedPiece: PieceSymbol | undefined;
     let firstMoveSacrificed = false;
+    let balanceWhenFirstMoveLost: number | undefined;
+    let mateIndex: number | undefined;
 
     for (
         let index = 0;
@@ -314,8 +335,16 @@ function analyseLine(
 
         uciMoves.push(line.moves[index].uci);
 
+        if (move.captured || /[+#]/.test(move.san) || move.promotion) {
+            forcingMoveIndices.push(index);
+        }
+
         if (index == 0) {
             firstMove = move;
+            firstMovePieceValue = pieceValues[move.piece as PieceSymbol] || 0;
+            firstMoveCapturedValue = move.captured
+                ? pieceValues[move.captured as PieceSymbol] || 0
+                : 0;
             trackedSquare = move.to;
             trackedPiece = move.piece as PieceSymbol;
         }
@@ -327,10 +356,7 @@ function analyseLine(
             if (move.color == starter) {
                 materialWon += value;
 
-                if (
-                    !targetPiece
-                    || value > pieceValues[targetPiece]
-                ) {
+                if (!targetPiece || value > pieceValues[targetPiece]) {
                     targetPiece = captured;
                     targetIndex = index;
                 }
@@ -348,6 +374,7 @@ function analyseLine(
             && move.captured == trackedPiece
         ) {
             firstMoveSacrificed = true;
+            balanceWhenFirstMoveLost = materialWon - materialLost;
             trackedSquare = undefined;
             trackedPiece = undefined;
         } else if (
@@ -357,9 +384,20 @@ function analyseLine(
         ) {
             trackedSquare = move.to;
         }
+
+        if (board.isCheckmate()) {
+            const winner = move.color as CoachCommentColour;
+            if (winner == starter) mateIndex = index;
+            break;
+        }
     }
 
     if (uciMoves.length == 0) return;
+
+    const mateDistance = line.evaluation.type == "mate"
+        && ((line.evaluation.value > 0) == (starter == "w"))
+        ? Math.abs(line.evaluation.value)
+        : undefined;
 
     return {
         uciMoves,
@@ -369,32 +407,115 @@ function analyseLine(
         materialWon,
         materialLost,
         firstMove,
+        firstMovePieceValue,
+        firstMoveCapturedValue,
         firstMoveSacrificed,
-        fork: firstMoveCreatesFork(
-            startNode.state.fen,
-            firstMove,
-            starter
-        ),
-        matesForStarter: mateForColour(line.evaluation, starter)
+        balanceWhenFirstMoveLost,
+        fork: firstMoveCreatesFork(startNode.state.fen, firstMove, starter),
+        mateIndex,
+        mateDistance,
+        forcingMoveIndices
     };
 }
 
-function getKind(line: AnalysedLine): TacticKind {
-    if (line.matesForStarter) return "mate";
-    if (line.fork) return "fork";
-    if (
+function isRealSacrifice(line: AnalysedLine) {
+    return Boolean(
         line.firstMoveSacrificed
-        && line.materialWon > line.materialLost
-    ) return "sacrifice";
+        && line.firstMovePieceValue > line.firstMoveCapturedValue
+        && line.balanceWhenFirstMoveLost != undefined
+        && line.balanceWhenFirstMoveLost < 0
+        && line.materialWon - line.materialLost >= MIN_NET_MATERIAL_GAIN
+    );
+}
 
+function isShortHumanMaterialTactic(line: AnalysedLine) {
+    if (
+        !line.targetPiece
+        || line.targetIndex == undefined
+        || line.targetIndex < 1
+        || line.targetIndex > MAX_MATERIAL_TARGET_INDEX
+    ) return false;
+
+    if (pieceValues[line.targetPiece] < 3) return false;
+
+    const netMaterial = line.materialWon - line.materialLost;
+    if (netMaterial < MIN_NET_MATERIAL_GAIN) return false;
+
+    const forcingBeforeTarget = line.forcingMoveIndices.filter(
+        index => index <= line.targetIndex!
+    ).length;
+    const pliesToTarget = line.targetIndex + 1;
+    const quietPlies = pliesToTarget - forcingBeforeTarget;
+
+    if (line.fork || isRealSacrifice(line)) return true;
+
+    return forcingBeforeTarget >= 2 && quietPlies <= 1;
+}
+
+function isShortHumanMate(line: AnalysedLine) {
+    return Boolean(
+        line.mateIndex != undefined
+        && line.mateDistance != undefined
+        && line.mateDistance <= MAX_MATE_DISTANCE
+        && line.mateIndex < MAX_SEQUENCE_PLIES
+    );
+}
+
+function getKind(line: AnalysedLine): TacticKind {
+    if (isShortHumanMate(line)) return "mate";
+    if (line.fork) return "fork";
+    if (isRealSacrifice(line)) return "sacrifice";
     return "tactic";
 }
 
 function trimSequence(line: AnalysedLine) {
-    if (line.matesForStarter) return line.uciMoves;
+    if (isShortHumanMate(line)) {
+        return line.uciMoves.slice(0, (line.mateIndex ?? 0) + 1);
+    }
 
-    const finalIndex = line.targetIndex ?? Math.min(line.uciMoves.length - 1, 5);
-    return line.uciMoves.slice(0, finalIndex + 1);
+    if (line.targetIndex == undefined) return [];
+    return line.uciMoves.slice(0, line.targetIndex + 1);
+}
+
+function candidateStartNode(
+    node: StateTreeNode,
+    classification: Classification
+): StateTreeNode | undefined {
+    if (classification == Classification.MISS) return node.parent;
+    if (POSITIVE_BUTTON_CLASSIFICATIONS.has(classification)) return node.parent;
+    if (NEGATIVE_BUTTON_CLASSIFICATIONS.has(classification)) return node;
+    return;
+}
+
+function playedMoveMatchesPrincipalVariation(
+    node: StateTreeNode,
+    classification: Classification,
+    line: ReturnType<typeof getTopEngineLine>
+) {
+    if (!POSITIVE_BUTTON_CLASSIFICATIONS.has(classification)) return true;
+
+    return Boolean(
+        node.state.move?.uci
+        && line?.moves.at(0)?.uci == node.state.move.uci
+    );
+}
+
+export function shouldSuppressCoachLineNotation(
+    node: StateTreeNode,
+    classification: Classification | undefined
+) {
+    if (!classification) return false;
+
+    const startNode = candidateStartNode(node, classification);
+    if (!startNode) return false;
+
+    const line = getTopEngineLine(startNode.state.engineLines);
+    if (!playedMoveMatchesPrincipalVariation(node, classification, line)) {
+        return false;
+    }
+
+    const analysed = analyseLine(startNode, line);
+    return Boolean(analysed?.targetIndex != undefined && analysed.targetIndex > 0);
 }
 
 export function getCoachTacticInsight(
@@ -402,29 +523,31 @@ export function getCoachTacticInsight(
     classification: Classification | undefined,
     language?: string
 ): CoachTacticInsight | undefined {
-    if (!node.parent || !node.state.move) return;
+    if (!node.parent || !node.state.move || !classification) return;
 
     if (
-        classification != Classification.MISTAKE
-        && classification != Classification.BLUNDER
-        && classification != Classification.MISS
+        !POSITIVE_BUTTON_CLASSIFICATIONS.has(classification)
+        && !NEGATIVE_BUTTON_CLASSIFICATIONS.has(classification)
     ) return;
 
-    const missedOpportunity = classification == Classification.MISS;
-    const startNode = missedOpportunity ? node.parent : node;
-    const line = getTopEngineLine(startNode.state.engineLines);
-    const analysed = analyseLine(startNode, line);
+    const startNode = candidateStartNode(node, classification);
+    if (!startNode) return;
 
+    const line = getTopEngineLine(startNode.state.engineLines);
+    if (!playedMoveMatchesPrincipalVariation(node, classification, line)) return;
+
+    const analysed = analyseLine(startNode, line);
     if (!analysed) return;
 
-    const netMaterial = analysed.materialWon - analysed.materialLost;
-    const hasMaterialTactic = Boolean(
-        analysed.targetPiece
-        && netMaterial >= 0.75
-    );
+    const hasMate = isShortHumanMate(analysed);
+    const hasMaterialTactic = isShortHumanMaterialTactic(analysed);
 
-    if (!analysed.matesForStarter && !hasMaterialTactic) return;
+    if (!hasMate && !hasMaterialTactic) return;
 
+    const uciMoves = trimSequence(analysed);
+    if (uciMoves.length < 2) return;
+
+    const missedOpportunity = classification == Classification.MISS;
     const languageKey = normaliseLanguage(language);
     const copy = copies[languageKey] || copies.en;
     const kind = getKind(analysed);
@@ -433,7 +556,7 @@ export function getCoachTacticInsight(
         ? getCoachPieceName(language, analysed.targetPiece)
         : "";
 
-    const prefix = analysed.matesForStarter
+    const prefix = hasMate
         ? (
             missedOpportunity
                 ? copy.missedMate
@@ -447,7 +570,7 @@ export function getCoachTacticInsight(
 
     return {
         startNode,
-        uciMoves: trimSequence(analysed),
+        uciMoves,
         prefix,
         label: copy.labels[kind],
         suffix: ".",
