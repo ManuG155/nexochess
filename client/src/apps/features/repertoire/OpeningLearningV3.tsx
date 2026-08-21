@@ -6,7 +6,7 @@ import CourseHomeV3 from "./CourseHomeV3";
 import CourseLessonV3 from "./CourseLessonV3";
 import CourseReviewV3 from "./CourseReviewV3";
 import { OpeningCatalogueEntry, getFallbackOpeningCatalogue, loadOpeningCatalogue } from "./openingCatalogue";
-import { buildCourseLessonsIndexed } from "./courseLessonIndex";
+import { buildCourseLessonsIndexed, countCourseLessonsFast } from "./courseLessonIndex";
 import { canonicalCourseFamily } from "./courseFamily";
 import { localizeOpeningName, repertoireLanguage } from "./openingLocalization";
 import { CustomCourseLine, addCustomCourseLine, readCustomCourseLines, writeCustomCourseLines } from "./customCourseLines";
@@ -18,6 +18,8 @@ interface Props { mode?: PanelMode; onAddToRepertoire: (opening: OpeningCatalogu
 interface Family { name: string; lines: OpeningCatalogueEntry[]; }
 
 const LINE_WORD: Record<string,string> = { en:"Line", es:"Línea", fr:"Ligne", de:"Variante", pt:"Linha", ru:"Вариант", zh:"路线", vi:"Biến", hi:"लाइन", mr:"लाईन", pl:"Wariant" };
+const EXCLUDED_COURSES = new Set(["King's Pawn Game"]);
+const MIN_PUBLIC_COURSE_LINES = 4;
 
 function normalizedHistory(pgn: string) {
     try {
@@ -66,7 +68,13 @@ function OpeningLearningV3({ mode = "learn", onAddToRepertoire, onFocusChange }:
             if (existing) existing.push(normalized);
             else grouped.set(family, [normalized]);
         }
-        return Array.from(grouped, ([name, lines]) => ({ name, lines })).sort((a, b) => localizeOpeningName(a.name, language).localeCompare(localizeOpeningName(b.name, language)));
+        return Array.from(grouped, ([name, lines]) => ({ name, lines }))
+            .filter(item => {
+                if (item.lines.some(line => line.eco == "USR")) return true;
+                if (EXCLUDED_COURSES.has(item.name)) return false;
+                return countCourseLessonsFast(item.lines, MIN_PUBLIC_COURSE_LINES) >= MIN_PUBLIC_COURSE_LINES;
+            })
+            .sort((a, b) => localizeOpeningName(a.name, language).localeCompare(localizeOpeningName(b.name, language)));
     }, [allLines, language]);
     const family = familyName ? families.find(item => item.name == familyName) : undefined;
     const lines = useMemo(() => {
