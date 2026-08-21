@@ -50,33 +50,42 @@ interface Copy {
     search: string;
     searchResults: string;
     noResults: string;
-    alternatives: string;
     lines: string;
+    linesInBranch: string;
     study: string;
     main: string;
     zoom: string;
     zoomHint: string;
     root: string;
     branch: string;
+    current: string;
+    choose: string;
+    chooseHint: string;
+    recommended: string;
+    lineReady: string;
+    showMore: string;
+    showLess: string;
+    exactLine: string;
 }
 
 const COPY: Record<string, Copy> = {
-    en: { subtitle: "Follow one branch at a time. The tree only shows the context you need.", fullscreen: "Full screen", exitFullscreen: "Exit full screen", search: "Search variation, move or sequence…", searchResults: "matches", noResults: "No matching line in this course", alternatives: "alternatives", lines: "lines", study: "Study line", main: "Course path", zoom: "Detail", zoomHint: "In full screen, use the mouse wheel to change the level of detail.", root: "Course", branch: "Branch" },
-    es: { subtitle: "Sigue una rama cada vez. El árbol solo muestra el contexto que necesitas.", fullscreen: "Pantalla completa", exitFullscreen: "Salir de pantalla completa", search: "Buscar variante, movimiento o secuencia…", searchResults: "coincidencias", noResults: "No hay líneas coincidentes en este curso", alternatives: "alternativas", lines: "líneas", study: "Estudiar línea", main: "Ruta del curso", zoom: "Detalle", zoomHint: "En pantalla completa, usa la rueda para cambiar el nivel de detalle.", root: "Curso", branch: "Rama" },
-    fr: { subtitle: "Suivez une branche à la fois. L’arbre n’affiche que le contexte utile.", fullscreen: "Plein écran", exitFullscreen: "Quitter le plein écran", search: "Rechercher variante, coup ou séquence…", searchResults: "résultats", noResults: "Aucune ligne correspondante dans ce cours", alternatives: "alternatives", lines: "lignes", study: "Étudier la ligne", main: "Parcours du cours", zoom: "Détail", zoomHint: "En plein écran, utilisez la molette pour changer le niveau de détail.", root: "Cours", branch: "Branche" },
-    de: { subtitle: "Folge jeweils einem Zweig. Der Baum zeigt nur den nötigen Kontext.", fullscreen: "Vollbild", exitFullscreen: "Vollbild verlassen", search: "Variante, Zug oder Folge suchen…", searchResults: "Treffer", noResults: "Keine passende Linie in diesem Kurs", alternatives: "Alternativen", lines: "Linien", study: "Linie lernen", main: "Kursweg", zoom: "Detail", zoomHint: "Im Vollbild ändert das Mausrad die Detailstufe.", root: "Kurs", branch: "Zweig" },
-    pt: { subtitle: "Siga um ramo de cada vez. A árvore mostra apenas o contexto necessário.", fullscreen: "Ecrã inteiro", exitFullscreen: "Sair do ecrã inteiro", search: "Pesquisar variante, lance ou sequência…", searchResults: "resultados", noResults: "Nenhuma linha correspondente neste curso", alternatives: "alternativas", lines: "linhas", study: "Estudar linha", main: "Rota do curso", zoom: "Detalhe", zoomHint: "Em ecrã inteiro, use a roda para alterar o nível de detalhe.", root: "Curso", branch: "Ramo" },
-    ru: { subtitle: "Изучайте по одной ветке. Дерево показывает только нужный контекст.", fullscreen: "Во весь экран", exitFullscreen: "Выйти из полноэкранного режима", search: "Поиск варианта, хода или последовательности…", searchResults: "совпадений", noResults: "В этом курсе совпадений нет", alternatives: "альтернатив", lines: "линий", study: "Изучить линию", main: "Маршрут курса", zoom: "Детали", zoomHint: "В полноэкранном режиме колесо меняет уровень детализации.", root: "Курс", branch: "Ветка" },
-    zh: { subtitle: "一次专注一个分支。树只显示当前需要的上下文。", fullscreen: "全屏", exitFullscreen: "退出全屏", search: "搜索变例、走法或走法序列…", searchResults: "个结果", noResults: "本课程没有匹配路线", alternatives: "个其他选择", lines: "条路线", study: "学习路线", main: "课程路径", zoom: "细节", zoomHint: "全屏时使用鼠标滚轮切换细节层级。", root: "课程", branch: "分支" },
-    vi: { subtitle: "Theo từng nhánh một. Cây chỉ hiển thị ngữ cảnh bạn cần.", fullscreen: "Toàn màn hình", exitFullscreen: "Thoát toàn màn hình", search: "Tìm biến, nước đi hoặc chuỗi…", searchResults: "kết quả", noResults: "Không có dòng phù hợp trong khóa học", alternatives: "lựa chọn khác", lines: "dòng", study: "Học dòng", main: "Lộ trình khóa học", zoom: "Chi tiết", zoomHint: "Ở toàn màn hình, dùng con lăn để đổi mức chi tiết.", root: "Khóa học", branch: "Nhánh" },
-    hi: { subtitle: "एक समय में एक शाखा देखें। वृक्ष केवल आवश्यक संदर्भ दिखाता है।", fullscreen: "पूर्ण स्क्रीन", exitFullscreen: "पूर्ण स्क्रीन से बाहर", search: "वेरिएशन, चाल या क्रम खोजें…", searchResults: "परिणाम", noResults: "इस कोर्स में कोई मिलती लाइन नहीं", alternatives: "विकल्प", lines: "लाइनें", study: "लाइन पढ़ें", main: "कोर्स पथ", zoom: "विवरण", zoomHint: "पूर्ण स्क्रीन में व्हील से विवरण स्तर बदलें।", root: "कोर्स", branch: "शाखा" },
-    mr: { subtitle: "एका वेळी एक फांदी पाहा. झाड फक्त आवश्यक संदर्भ दाखवते.", fullscreen: "पूर्ण स्क्रीन", exitFullscreen: "पूर्ण स्क्रीनमधून बाहेर", search: "व्हेरिएशन, चाल किंवा क्रम शोधा…", searchResults: "निकाल", noResults: "या कोर्समध्ये जुळणारी लाईन नाही", alternatives: "पर्याय", lines: "लाईन्स", study: "लाईन शिका", main: "कोर्स मार्ग", zoom: "तपशील", zoomHint: "पूर्ण स्क्रीनमध्ये व्हीलने तपशीलाची पातळी बदला.", root: "कोर्स", branch: "फांदी" },
-    pl: { subtitle: "Podążaj jedną gałęzią naraz. Drzewo pokazuje tylko potrzebny kontekst.", fullscreen: "Pełny ekran", exitFullscreen: "Wyjdź z pełnego ekranu", search: "Szukaj wariantu, ruchu lub sekwencji…", searchResults: "wyników", noResults: "Brak pasującej linii w tym kursie", alternatives: "alternatyw", lines: "linie", study: "Ucz się linii", main: "Ścieżka kursu", zoom: "Szczegóły", zoomHint: "Na pełnym ekranie kółko myszy zmienia poziom szczegółów.", root: "Kurs", branch: "Gałąź" }
+    en: { subtitle: "Choose one decision at a time. Nothing opens a lesson until you explicitly press Study line.", fullscreen: "Full screen", exitFullscreen: "Exit full screen", search: "Search variation, move or sequence…", searchResults: "matches", noResults: "No matching line in this course", lines: "lines", linesInBranch: "lines in this branch", study: "Study this line", main: "Course path", zoom: "Detail", zoomHint: "In full screen, use the mouse wheel to change the level of detail.", root: "Course start", branch: "Current branch", current: "You are here", choose: "Choose the next continuation", chooseHint: "Each card is one branch. Open it to narrow the tree; studying starts only from the blue button when an exact line is selected.", recommended: "Recommended next", lineReady: "Line selected", showMore: "Show more", showLess: "Show fewer", exactLine: "Exact study line" },
+    es: { subtitle: "Elige una decisión cada vez. Ninguna tarjeta abre una lección hasta que pulses Estudiar esta línea.", fullscreen: "Pantalla completa", exitFullscreen: "Salir de pantalla completa", search: "Buscar variante, movimiento o secuencia…", searchResults: "coincidencias", noResults: "No hay líneas coincidentes en este curso", lines: "líneas", linesInBranch: "líneas en esta rama", study: "Estudiar esta línea", main: "Ruta del curso", zoom: "Detalle", zoomHint: "En pantalla completa, usa la rueda para cambiar el nivel de detalle.", root: "Inicio del curso", branch: "Rama actual", current: "Estás aquí", choose: "Elige la siguiente continuación", chooseHint: "Cada tarjeta es una rama. Ábrela para acotar el árbol; el estudio solo empieza con el botón azul cuando hayas llegado a una línea concreta.", recommended: "Siguiente recomendada", lineReady: "Línea seleccionada", showMore: "Mostrar más", showLess: "Mostrar menos", exactLine: "Línea concreta de estudio" },
+    fr: { subtitle: "Choisissez une décision à la fois. Aucune carte n’ouvre une leçon avant d’appuyer sur Étudier cette ligne.", fullscreen: "Plein écran", exitFullscreen: "Quitter le plein écran", search: "Rechercher variante, coup ou séquence…", searchResults: "résultats", noResults: "Aucune ligne correspondante dans ce cours", lines: "lignes", linesInBranch: "lignes dans cette branche", study: "Étudier cette ligne", main: "Parcours du cours", zoom: "Détail", zoomHint: "En plein écran, utilisez la molette pour changer le niveau de détail.", root: "Début du cours", branch: "Branche actuelle", current: "Vous êtes ici", choose: "Choisissez la suite", chooseHint: "Chaque carte est une branche. Ouvrez-la pour réduire l’arbre ; l’étude ne commence qu’avec le bouton bleu lorsqu’une ligne précise est sélectionnée.", recommended: "Suite recommandée", lineReady: "Ligne sélectionnée", showMore: "Afficher plus", showLess: "Afficher moins", exactLine: "Ligne d’étude précise" },
+    de: { subtitle: "Wähle jeweils eine Entscheidung. Eine Lektion startet erst, wenn du ausdrücklich Linie lernen drückst.", fullscreen: "Vollbild", exitFullscreen: "Vollbild verlassen", search: "Variante, Zug oder Folge suchen…", searchResults: "Treffer", noResults: "Keine passende Linie in diesem Kurs", lines: "Linien", linesInBranch: "Linien in diesem Zweig", study: "Diese Linie lernen", main: "Kursweg", zoom: "Detail", zoomHint: "Im Vollbild ändert das Mausrad die Detailstufe.", root: "Kursanfang", branch: "Aktueller Zweig", current: "Du bist hier", choose: "Nächste Fortsetzung wählen", chooseHint: "Jede Karte ist ein Zweig. Öffne sie, um den Baum einzugrenzen; gelernt wird erst über den blauen Button bei einer konkreten Linie.", recommended: "Empfohlener nächster Schritt", lineReady: "Linie ausgewählt", showMore: "Mehr anzeigen", showLess: "Weniger anzeigen", exactLine: "Konkrete Lernlinie" },
+    pt: { subtitle: "Escolha uma decisão de cada vez. Nenhum cartão abre uma lição até premir Estudar esta linha.", fullscreen: "Ecrã inteiro", exitFullscreen: "Sair do ecrã inteiro", search: "Pesquisar variante, lance ou sequência…", searchResults: "resultados", noResults: "Nenhuma linha correspondente neste curso", lines: "linhas", linesInBranch: "linhas neste ramo", study: "Estudar esta linha", main: "Rota do curso", zoom: "Detalhe", zoomHint: "Em ecrã inteiro, use a roda para alterar o nível de detalhe.", root: "Início do curso", branch: "Ramo atual", current: "Está aqui", choose: "Escolha a próxima continuação", chooseHint: "Cada cartão é um ramo. Abra-o para reduzir a árvore; o estudo só começa no botão azul quando chegar a uma linha concreta.", recommended: "Próxima recomendada", lineReady: "Linha selecionada", showMore: "Mostrar mais", showLess: "Mostrar menos", exactLine: "Linha concreta de estudo" },
+    ru: { subtitle: "Выбирайте по одному решению. Урок не откроется, пока вы явно не нажмёте Изучить эту линию.", fullscreen: "Во весь экран", exitFullscreen: "Выйти из полноэкранного режима", search: "Поиск варианта, хода или последовательности…", searchResults: "совпадений", noResults: "В этом курсе совпадений нет", lines: "линий", linesInBranch: "линий в этой ветке", study: "Изучить эту линию", main: "Маршрут курса", zoom: "Детали", zoomHint: "В полноэкранном режиме колесо меняет уровень детализации.", root: "Начало курса", branch: "Текущая ветка", current: "Вы здесь", choose: "Выберите следующее продолжение", chooseHint: "Каждая карточка — одна ветка. Открывайте её, чтобы сузить дерево; обучение запускается только синей кнопкой после выбора конкретной линии.", recommended: "Рекомендуется дальше", lineReady: "Линия выбрана", showMore: "Показать ещё", showLess: "Показать меньше", exactLine: "Конкретная учебная линия" },
+    zh: { subtitle: "每次只做一个选择。只有明确点击“学习此线路”才会进入课程。", fullscreen: "全屏", exitFullscreen: "退出全屏", search: "搜索变例、走法或走法序列…", searchResults: "个结果", noResults: "本课程没有匹配路线", lines: "条路线", linesInBranch: "条路线在此分支", study: "学习此线路", main: "课程路径", zoom: "细节", zoomHint: "全屏时使用鼠标滚轮切换细节层级。", root: "课程起点", branch: "当前分支", current: "当前位置", choose: "选择下一步分支", chooseHint: "每张卡片代表一个分支。打开它继续缩小范围；只有选中具体线路后，蓝色按钮才会开始学习。", recommended: "推荐下一步", lineReady: "已选择线路", showMore: "显示更多", showLess: "收起", exactLine: "具体学习线路" },
+    vi: { subtitle: "Chọn từng quyết định một. Bài học chỉ mở khi bạn bấm rõ ràng Học dòng này.", fullscreen: "Toàn màn hình", exitFullscreen: "Thoát toàn màn hình", search: "Tìm biến, nước đi hoặc chuỗi…", searchResults: "kết quả", noResults: "Không có dòng phù hợp trong khóa học", lines: "dòng", linesInBranch: "dòng trong nhánh này", study: "Học dòng này", main: "Lộ trình khóa học", zoom: "Chi tiết", zoomHint: "Ở toàn màn hình, dùng con lăn để đổi mức chi tiết.", root: "Đầu khóa học", branch: "Nhánh hiện tại", current: "Bạn đang ở đây", choose: "Chọn tiếp diễn tiếp theo", chooseHint: "Mỗi thẻ là một nhánh. Mở nó để thu hẹp cây; chỉ nút xanh mới bắt đầu học khi đã chọn một dòng cụ thể.", recommended: "Tiếp theo được đề xuất", lineReady: "Đã chọn dòng", showMore: "Hiện thêm", showLess: "Hiện ít hơn", exactLine: "Dòng học cụ thể" },
+    hi: { subtitle: "एक बार में एक निर्णय चुनें। पाठ तभी खुलेगा जब आप साफ़ तौर पर यह लाइन पढ़ें दबाएँगे।", fullscreen: "पूर्ण स्क्रीन", exitFullscreen: "पूर्ण स्क्रीन से बाहर", search: "वेरिएशन, चाल या क्रम खोजें…", searchResults: "परिणाम", noResults: "इस कोर्स में कोई मिलती लाइन नहीं", lines: "लाइनें", linesInBranch: "इस शाखा में लाइनें", study: "यह लाइन पढ़ें", main: "कोर्स पथ", zoom: "विवरण", zoomHint: "पूर्ण स्क्रीन में व्हील से विवरण स्तर बदलें।", root: "कोर्स की शुरुआत", branch: "मौजूदा शाखा", current: "आप यहाँ हैं", choose: "अगला रास्ता चुनें", chooseHint: "हर कार्ड एक शाखा है। ट्री को छोटा करने के लिए उसे खोलें; किसी ठोस लाइन पर पहुँचने के बाद ही नीला बटन अध्ययन शुरू करता है।", recommended: "अगला सुझाया गया", lineReady: "लाइन चुनी गई", showMore: "और दिखाएँ", showLess: "कम दिखाएँ", exactLine: "ठोस अध्ययन लाइन" },
+    mr: { subtitle: "एका वेळी एक निर्णय निवडा. तुम्ही स्पष्टपणे ही लाईन शिका दाबेपर्यंत धडा उघडत नाही.", fullscreen: "पूर्ण स्क्रीन", exitFullscreen: "पूर्ण स्क्रीनमधून बाहेर", search: "व्हेरिएशन, चाल किंवा क्रम शोधा…", searchResults: "निकाल", noResults: "या कोर्समध्ये जुळणारी लाईन नाही", lines: "लाईन्स", linesInBranch: "या फांदीतील लाईन्स", study: "ही लाईन शिका", main: "कोर्स मार्ग", zoom: "तपशील", zoomHint: "पूर्ण स्क्रीनमध्ये व्हीलने तपशीलाची पातळी बदला.", root: "कोर्सची सुरुवात", branch: "सध्याची फांदी", current: "तुम्ही येथे आहात", choose: "पुढची फांदी निवडा", chooseHint: "प्रत्येक कार्ड एक फांदी आहे. ट्री कमी करण्यासाठी ती उघडा; ठराविक लाईन निवडल्यानंतरच निळे बटण अभ्यास सुरू करते.", recommended: "पुढील शिफारस", lineReady: "लाईन निवडली", showMore: "आणखी दाखवा", showLess: "कमी दाखवा", exactLine: "ठराविक अभ्यास लाईन" },
+    pl: { subtitle: "Wybieraj jedną decyzję naraz. Lekcja otworzy się dopiero po wyraźnym kliknięciu Ucz się tej linii.", fullscreen: "Pełny ekran", exitFullscreen: "Wyjdź z pełnego ekranu", search: "Szukaj wariantu, ruchu lub sekwencji…", searchResults: "wyników", noResults: "Brak pasującej linii w tym kursie", lines: "linie", linesInBranch: "linii w tej gałęzi", study: "Ucz się tej linii", main: "Ścieżka kursu", zoom: "Szczegóły", zoomHint: "Na pełnym ekranie kółko myszy zmienia poziom szczegółów.", root: "Początek kursu", branch: "Bieżąca gałąź", current: "Jesteś tutaj", choose: "Wybierz następną kontynuację", chooseHint: "Każda karta to jedna gałąź. Otwórz ją, aby zawęzić drzewo; nauka zaczyna się dopiero niebieskim przyciskiem po wybraniu konkretnej linii.", recommended: "Następny polecany", lineReady: "Linia wybrana", showMore: "Pokaż więcej", showLess: "Pokaż mniej", exactLine: "Konkretna linia do nauki" }
 };
 
-const NORMAL_BRANCH_LIMIT = 4;
-const FULLSCREEN_LIMITS = [3, 5, 8, 10];
+const NORMAL_BRANCH_LIMIT = 5;
+const FULLSCREEN_LIMITS = [4, 6, 9, 12];
 const SEGMENT_LIMITS = [1, 4, 7, 14];
+const MORE_STEP = 8;
 const SEARCH_LIMIT = 12;
 
 function entryKey(entry: OpeningCatalogueEntry) {
@@ -97,11 +106,10 @@ function buildModel(lines: OpeningCatalogueEntry[]): FocusModel {
         if (!sans.length) continue;
         let node = root;
         sans.forEach((san, ply) => {
-            const key = san;
-            let child = node.children.get(key);
+            let child = node.children.get(san);
             if (!child) {
-                child = createNode(`${node.id}/${encodeURIComponent(key)}:${ply}`, san, ply, node);
-                node.children.set(key, child);
+                child = createNode(`${node.id}/${encodeURIComponent(san)}:${ply}`, san, ply, node);
+                node.children.set(san, child);
                 byId.set(child.id, child);
             }
             node = child;
@@ -151,7 +159,7 @@ function sanPath(node: FocusNode) {
 function segmentFrom(start: FocusNode, maximum: number): Segment {
     const nodes: FocusNode[] = start.parent ? [start] : [];
     let end = start;
-    while (end.children.size == 1 && nodes.length < maximum) {
+    while (end.children.size == 1 && nodes.length < maximum && end.entries.length == 0) {
         const child = Array.from(end.children.values())[0];
         nodes.push(child);
         end = child;
@@ -184,9 +192,9 @@ function branchName(node: FocusNode, family: string, language: string, fundament
     return localizeOpeningName(entry.name, language);
 }
 
-function pickEntry(node: FocusNode, progress: CourseProgressStore) {
-    const candidates = node.entries.length ? node.entries : node.representative ? [node.representative] : [];
-    return candidates.find(entry => !findLessonProgress(progress, entry)) || candidates[0];
+function exactEntry(node: FocusNode, progress: CourseProgressStore) {
+    if (!node.entries.length) return undefined;
+    return node.entries.find(entry => !findLessonProgress(progress, entry)) || node.entries[0];
 }
 
 function breadcrumbNodes(root: FocusNode, focus: FocusNode) {
@@ -205,14 +213,14 @@ function CourseVariationMap({ name, lines, progress, preferredSide, recommendedI
     const wheelCarry = useRef(0);
     const model = useMemo(() => buildModel(lines), [lines]);
     const [focusId, setFocusId] = useState("root");
-    const [showAlternatives, setShowAlternatives] = useState(false);
+    const [extraVisible, setExtraVisible] = useState(0);
     const [query, setQuery] = useState("");
     const [fullscreen, setFullscreen] = useState(false);
     const [semanticLevel, setSemanticLevel] = useState(1);
 
     useEffect(() => {
         setFocusId("root");
-        setShowAlternatives(false);
+        setExtraVisible(0);
         setQuery("");
         setSemanticLevel(1);
     }, [name]);
@@ -252,11 +260,12 @@ function CourseVariationMap({ name, lines, progress, preferredSide, recommendedI
             || a.san.localeCompare(b.san);
     }), [anchor, recommendedNode]);
 
-    const branchLimit = fullscreen ? FULLSCREEN_LIMITS[effectiveLevel] : NORMAL_BRANCH_LIMIT;
-    const visibleBranches = showAlternatives ? branches.slice(0, 10) : branches.slice(0, branchLimit);
-    const hiddenCount = Math.max(0, branches.length - visibleBranches.length);
+    const baseLimit = fullscreen ? FULLSCREEN_LIMITS[effectiveLevel] : NORMAL_BRANCH_LIMIT;
+    const visibleCount = Math.min(branches.length, baseLimit + extraVisible);
+    const visibleBranches = branches.slice(0, visibleCount);
+    const hiddenCount = Math.max(0, branches.length - visibleCount);
     const crumbs = breadcrumbNodes(model.root, focus);
-    const directEntry = pickEntry(anchor, progress);
+    const studyEntry = exactEntry(anchor, progress);
 
     const normalizedQuery = normalizeSearch(query);
     const searchMatches = useMemo(() => {
@@ -276,26 +285,24 @@ function CourseVariationMap({ name, lines, progress, preferredSide, recommendedI
         return matches;
     }, [language, lines, model, normalizedQuery]);
 
+    function changeFocus(node: FocusNode) {
+        setFocusId(node.id);
+        setExtraVisible(0);
+    }
+
     function focusSearchResult(node: FocusNode) {
-        let target = node;
-        while (target.parent && target.parent != model.root && target.parent.children.size == 1) target = target.parent;
-        setFocusId(target.id);
-        setShowAlternatives(false);
+        changeFocus(node);
         setQuery("");
     }
 
     function openBranch(node: FocusNode) {
         const branch = segmentFrom(node, SEGMENT_LIMITS[effectiveLevel]);
-        if (branch.end.children.size == 0 && branch.end.descendantLines == 1) {
-            const entry = pickEntry(branch.end, progress);
-            if (entry) {
-                const itemProgress = findLessonProgress(progress, entry);
-                onOpen(entry, itemProgress?.side || preferredSide, Boolean(itemProgress), Boolean(itemProgress));
-                return;
-            }
-        }
-        setFocusId(branch.end.id);
-        setShowAlternatives(false);
+        changeFocus(branch.end);
+    }
+
+    function startStudy(entry: OpeningCatalogueEntry) {
+        const itemProgress = findLessonProgress(progress, entry);
+        onOpen(entry, itemProgress?.side || preferredSide, Boolean(itemProgress), Boolean(itemProgress));
     }
 
     async function toggleFullscreen() {
@@ -310,8 +317,9 @@ function CourseVariationMap({ name, lines, progress, preferredSide, recommendedI
     }
 
     const currentName = branchName(anchor, name, language, fundamentalsLabel) || localizeOpeningName(name, language);
-    const fullPathEntry = anchor.representative;
+    const fullPathEntry = studyEntry || anchor.representative;
     const fullPath = fullPathEntry ? fastPgnSanTokens(fullPathEntry.pgn) : [];
+    const currentMoves = sanPath(anchor);
 
     return <div ref={cardRef} className={mapStyles.mapCard} data-repertoire-tour="focus-tree">
         <div className={mapStyles.mapHead}>
@@ -354,46 +362,72 @@ function CourseVariationMap({ name, lines, progress, preferredSide, recommendedI
         <nav className={mapStyles.breadcrumb} data-repertoire-tour="focus-breadcrumb" aria-label={copy.main}>
             {crumbs.map((node, index) => <React.Fragment key={node.id}>
                 {index > 0 && <span>›</span>}
-                <button type="button" data-current={node == focus} onClick={() => { setFocusId(node.id); setShowAlternatives(false); }}>
+                <button type="button" data-current={node == focus} onClick={() => changeFocus(node)}>
                     {node == model.root ? localizeOpeningName(name, language) : moveLabel([node])}
                 </button>
             </React.Fragment>)}
         </nav>
 
         <section className={mapStyles.focusViewport} data-level={effectiveLevel}>
-            <div className={mapStyles.currentNode}>
-                <span>{focus == model.root ? copy.root : copy.branch}</span>
+            <div className={mapStyles.currentNode} data-ready={Boolean(studyEntry)}>
+                <div className={mapStyles.currentEyebrow}>
+                    <span>{focus == model.root ? copy.root : copy.branch}</span>
+                    <em>{copy.current}</em>
+                </div>
                 <strong>{currentName}</strong>
-                {effectiveLevel > 0 && stem.nodes.length > 0 && <p>{moveLabel(stem.nodes)}</p>}
-                <small>{anchor.descendantLines} {copy.lines}</small>
-                {anchor.children.size == 0 && directEntry && <button type="button" className={mapStyles.studyButton} onClick={() => {
-                    const itemProgress = findLessonProgress(progress, directEntry);
-                    onOpen(directEntry, itemProgress?.side || preferredSide, Boolean(itemProgress), Boolean(itemProgress));
-                }}>{copy.study}</button>}
+                {currentMoves.length > 0 && <p>{moveLabel(currentMoves.slice(-Math.max(4, SEGMENT_LIMITS[effectiveLevel])))}</p>}
+                <small>{anchor.descendantLines} {copy.lines}{anchor.descendantLines != 1 ? "" : ""}</small>
             </div>
+
+            {studyEntry && <div className={mapStyles.lineReady} data-repertoire-tour="focus-study">
+                <div>
+                    <span>✓ {copy.lineReady}</span>
+                    <strong>{localizeOpeningName(studyEntry.name, language)}</strong>
+                    <small>{copy.exactLine}</small>
+                </div>
+                <button type="button" className={mapStyles.studyButton} onClick={() => startStudy(studyEntry)}>{copy.study}<b>→</b></button>
+            </div>}
 
             {effectiveLevel == 3 && fullPath.length > 0 && <div className={mapStyles.fullPath}>
                 <span>{copy.main}</span>
                 <p>{fullPath.map((san, ply) => moveLabel([{ ...anchor, san, ply }])).join(" ")}</p>
             </div>}
 
-            {branches.length > 0 && <>
-                <div className={mapStyles.treeStem} aria-hidden="true"/>
-                <div className={mapStyles.branchGrid} data-repertoire-tour="focus-branches">
+            {branches.length > 0 && <div className={mapStyles.branchSection}>
+                <div className={mapStyles.decisionHeader}>
+                    <span>{copy.choose}</span>
+                    <p>{copy.chooseHint}</p>
+                </div>
+                <div className={mapStyles.branchList} data-repertoire-tour="focus-branches">
                     {visibleBranches.map(branch => {
                         const preview = segmentFrom(branch, SEGMENT_LIMITS[effectiveLevel]);
-                        const title = branchName(preview.end, name, language, fundamentalsLabel) || branchName(branch, name, language, fundamentalsLabel);
+                        const branchTitle = branchName(preview.end, name, language, fundamentalsLabel) || branchName(branch, name, language, fundamentalsLabel);
                         const recommended = Boolean(recommendedNode && isAncestor(branch, recommendedNode));
-                        return <button type="button" key={branch.id} className={mapStyles.branchCard} data-recommended={recommended} data-repertoire-tour={recommended ? "focus-branch" : undefined} onClick={() => openBranch(branch)}>
-                            <span className={mapStyles.branchMove}>{effectiveLevel == 0 ? moveLabel([branch]) : moveLabel(preview.nodes)}</span>
-                            {title && <strong>{title}</strong>}
-                            <small>{branch.descendantLines} {copy.lines}{recommended ? ` · ${copy.main}` : ""}</small>
-                        </button>;
+                        return <div className={mapStyles.branchRow} key={branch.id}>
+                            <button type="button" className={mapStyles.branchCard} data-recommended={recommended} data-repertoire-tour={recommended ? "focus-branch" : undefined} onClick={() => openBranch(branch)}>
+                                <span className={mapStyles.branchCardCopy}>
+                                    <span className={mapStyles.branchCardTop}>
+                                        <span className={mapStyles.branchMove}>{effectiveLevel == 0 ? moveLabel([branch]) : moveLabel(preview.nodes)}</span>
+                                        {recommended && <em>{copy.recommended}</em>}
+                                    </span>
+                                    {branchTitle && <strong>{branchTitle}</strong>}
+                                    <small>{branch.descendantLines} {copy.linesInBranch}</small>
+                                </span>
+                                <b className={mapStyles.branchArrow} aria-hidden="true">→</b>
+                            </button>
+                        </div>;
                     })}
-                    {hiddenCount > 0 && <button type="button" className={mapStyles.alternativesButton} onClick={() => setShowAlternatives(true)}>+ {hiddenCount} {copy.alternatives}</button>}
-                    {showAlternatives && branches.length > 10 && <button type="button" className={mapStyles.alternativesButton} onClick={() => setShowAlternatives(false)}>− {copy.alternatives}</button>}
+                    {hiddenCount > 0 && <div className={mapStyles.branchRow}>
+                        <button type="button" className={mapStyles.alternativesButton} onClick={() => setExtraVisible(value => value + MORE_STEP)}>
+                            <strong>+ {Math.min(MORE_STEP, hiddenCount)} {copy.showMore}</strong>
+                            <small>{hiddenCount} {copy.linesInBranch}</small>
+                        </button>
+                    </div>}
+                    {extraVisible > 0 && <div className={mapStyles.branchRow}>
+                        <button type="button" className={mapStyles.showLessButton} onClick={() => setExtraVisible(0)}>↑ {copy.showLess}</button>
+                    </div>}
                 </div>
-            </>}
+            </div>}
         </section>
 
         {fullscreen && <div className={mapStyles.fullscreenHint}>{copy.zoomHint}</div>}
