@@ -592,3 +592,9 @@
         padding: 0;
     }
 }
+
+/* Share is intentionally moved out of the top navigation on Analysis. */
+.primaryNavigation > .actionButton,
+.analysisActions {
+    display: none !important;
+}
