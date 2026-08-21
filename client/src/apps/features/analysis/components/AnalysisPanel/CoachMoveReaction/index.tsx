@@ -112,6 +112,33 @@ function inlineTacticSentence(
     };
 }
 
+function isSanToken(value: string): boolean {
+    const token = value
+        .replace(/^[([{"'“”¿¡]+/, "")
+        .replace(/[\])},.;:!?"'“”]+$/, "");
+
+    return /^(?:O-O(?:-O)?|[KQRBN][a-h1-8]{0,2}x?[a-h][1-8](?:=[QRBN])?[+#]?|[a-h](?:x[a-h])?[1-8](?:=[QRBN])?[+#]?)$/.test(token);
+}
+
+/*
+ * The legacy detailed-comment layer can describe a PV with algebraic moves in
+ * classifications that do not qualify for an interactive tactic button (for
+ * example OK/inaccuracy/risky or a non-PV excellent move). Buttons replaced
+ * that presentation, so never expose a second multi-move SAN path in text.
+ */
+function containsMultiMoveSan(text: string): boolean {
+    let sanMoves = 0;
+
+    for (const token of text.split(/\s+/)) {
+        if (isSanToken(token)) {
+            sanMoves += 1;
+            if (sanMoves >= 2) return true;
+        }
+    }
+
+    return false;
+}
+
 function CoachMoveReaction() {
     const { t, i18n } = useTranslation("coach", { useSuspense: false });
 
@@ -160,10 +187,20 @@ function CoachMoveReaction() {
     );
 
     const message = useMemo(() => {
+        const detailedStatusLine = getDetailedCoachComment(
+            currentNode,
+            classification,
+            coach.id,
+            t,
+            i18n.resolvedLanguage
+        );
         const suppressLineNotation = !tacticInsight
-            && shouldSuppressCoachLineNotation(
-                currentNode,
-                classification
+            && (
+                shouldSuppressCoachLineNotation(
+                    currentNode,
+                    classification
+                )
+                || containsMultiMoveSan(detailedStatusLine)
             );
 
         const statusLine = suppressLineNotation
@@ -173,13 +210,7 @@ function CoachMoveReaction() {
                 coach.id,
                 t
             )
-            : getDetailedCoachComment(
-                currentNode,
-                classification,
-                coach.id,
-                t,
-                i18n.resolvedLanguage
-            );
+            : detailedStatusLine;
         const seed = `${currentNode.state.fen}|${moveSan || "start"}`;
 
         return addOccasionalCoachCatchphrase(
