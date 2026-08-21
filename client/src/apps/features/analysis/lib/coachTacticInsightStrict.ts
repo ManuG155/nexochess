@@ -2,10 +2,14 @@ import { Chess, Move, PieceSymbol } from "chess.js";
 
 import { Classification } from "shared/constants/Classification";
 import { getTopEngineLine } from "shared/types/game/position/EngineLine";
+import type { StateTreeNode } from
+    "shared/types/game/position/StateTreeNode";
 
 import {
-    CoachTacticInsight,
     getCoachTacticInsight as getLegacyCoachTacticInsight
+} from "./coachTacticInsight";
+import type {
+    CoachTacticInsight
 } from "./coachTacticInsight";
 
 
@@ -28,6 +32,12 @@ interface ParsedTacticalLine {
     longestQuietRun: number;
 }
 
+interface TacticCopy {
+    labels: Record<TacticKind, string>;
+    strongMovePrefix: string;
+    showSequence: string;
+}
+
 const PIECE_VALUES: Record<PieceSymbol, number> = {
     p: 1,
     n: 3,
@@ -45,22 +55,77 @@ const PIECE_VALUES: Record<PieceSymbol, number> = {
 const MAX_HUMAN_TACTIC_PLIES = 6;
 const MAX_HUMAN_MATE_PLIES = 8;
 
-const LABELS: Record<string, Record<TacticKind, string>> = {
-    en: { fork: "fork", tactic: "tactic", sacrifice: "sacrifice", mate: "mate" },
-    es: { fork: "tenedor", tactic: "táctica", sacrifice: "sacrificio", mate: "mate" },
-    fr: { fork: "fourchette", tactic: "tactique", sacrifice: "sacrifice", mate: "mat" },
-    de: { fork: "Gabel", tactic: "Taktik", sacrifice: "Opfer", mate: "Matt" },
-    pt: { fork: "garfo", tactic: "tática", sacrifice: "sacrifício", mate: "mate" },
-    ru: { fork: "вилка", tactic: "тактика", sacrifice: "жертва", mate: "мат" },
-    zh: { fork: "双攻", tactic: "战术", sacrifice: "弃子", mate: "将杀" },
-    vi: { fork: "chĩa", tactic: "chiến thuật", sacrifice: "thí quân", mate: "chiếu hết" },
-    hi: { fork: "फोर्क", tactic: "रणनीति", sacrifice: "बलिदान", mate: "मात" },
-    mr: { fork: "फोर्क", tactic: "डावपेच", sacrifice: "बलिदान", mate: "मात" },
-    pl: { fork: "widełki", tactic: "taktyka", sacrifice: "ofiara", mate: "mat" }
+const STRONG_CLASSIFICATIONS = new Set<Classification>([
+    Classification.BRILLIANT,
+    Classification.CRITICAL,
+    Classification.BEST,
+    Classification.EXCELLENT
+]);
+
+const COPIES: Record<string, TacticCopy> = {
+    en: {
+        labels: { fork: "fork", tactic: "tactic", sacrifice: "sacrifice", mate: "mate" },
+        strongMovePrefix: "This move has a concrete idea:",
+        showSequence: "Show the sequence on the board"
+    },
+    es: {
+        labels: { fork: "tenedor", tactic: "táctica", sacrifice: "sacrificio", mate: "mate" },
+        strongMovePrefix: "Esta jugada tiene una idea concreta:",
+        showSequence: "Mostrar la secuencia en el tablero"
+    },
+    fr: {
+        labels: { fork: "fourchette", tactic: "tactique", sacrifice: "sacrifice", mate: "mat" },
+        strongMovePrefix: "Ce coup a une idée concrète :",
+        showSequence: "Afficher la séquence sur l’échiquier"
+    },
+    de: {
+        labels: { fork: "Gabel", tactic: "Taktik", sacrifice: "Opfer", mate: "Matt" },
+        strongMovePrefix: "Dieser Zug hat eine konkrete Idee:",
+        showSequence: "Variante auf dem Brett zeigen"
+    },
+    pt: {
+        labels: { fork: "garfo", tactic: "tática", sacrifice: "sacrifício", mate: "mate" },
+        strongMovePrefix: "Este lance tem uma ideia concreta:",
+        showSequence: "Mostrar a sequência no tabuleiro"
+    },
+    ru: {
+        labels: { fork: "вилка", tactic: "тактика", sacrifice: "жертва", mate: "мат" },
+        strongMovePrefix: "У этого хода есть конкретная идея:",
+        showSequence: "Показать вариант на доске"
+    },
+    zh: {
+        labels: { fork: "双攻", tactic: "战术", sacrifice: "弃子", mate: "将杀" },
+        strongMovePrefix: "这步棋有一个明确的战术意图：",
+        showSequence: "在棋盘上演示变化"
+    },
+    vi: {
+        labels: { fork: "chĩa", tactic: "chiến thuật", sacrifice: "thí quân", mate: "chiếu hết" },
+        strongMovePrefix: "Nước đi này có một ý tưởng cụ thể:",
+        showSequence: "Hiển thị chuỗi nước đi trên bàn cờ"
+    },
+    hi: {
+        labels: { fork: "फोर्क", tactic: "रणनीति", sacrifice: "बलिदान", mate: "मात" },
+        strongMovePrefix: "इस चाल के पीछे एक स्पष्ट विचार है:",
+        showSequence: "चालों की श्रृंखला बोर्ड पर दिखाएँ"
+    },
+    mr: {
+        labels: { fork: "फोर्क", tactic: "डावपेच", sacrifice: "बलिदान", mate: "मात" },
+        strongMovePrefix: "या चालीमागे एक स्पष्ट कल्पना आहे:",
+        showSequence: "चालींची मालिका पटावर दाखवा"
+    },
+    pl: {
+        labels: { fork: "widełki", tactic: "taktyka", sacrifice: "ofiara", mate: "mat" },
+        strongMovePrefix: "Ten ruch ma konkretny pomysł:",
+        showSequence: "Pokaż wariant na szachownicy"
+    }
 };
 
 function normaliseLanguage(language?: string) {
     return language?.toLowerCase().replace("_", "-").split("-")[0] || "en";
+}
+
+function getCopy(language?: string): TacticCopy {
+    return COPIES[normaliseLanguage(language)] || COPIES.en;
 }
 
 function pieceValue(piece: PieceSymbol | undefined): number {
@@ -98,15 +163,78 @@ function moveCreatesFork(
     }
 }
 
+function evaluationMatesForColour(
+    evaluation: { type: string; value: number } | undefined,
+    colour: CoachCommentColour
+): boolean {
+    if (!evaluation || evaluation.type != "mate") return false;
+
+    const mateForWhite = evaluation.value > 0;
+    return mateForWhite == (colour == "w");
+}
+
 function lineForcesMate(
     startFen: string,
     evaluation: { type: string; value: number } | undefined
 ): boolean {
-    if (!evaluation || evaluation.type != "mate") return false;
+    return evaluationMatesForColour(
+        evaluation,
+        new Chess(startFen).turn() as CoachCommentColour
+    );
+}
 
-    const starter = new Chess(startFen).turn();
-    const mateForWhite = evaluation.value > 0;
-    return mateForWhite == (starter == "w");
+function playedUci(node: StateTreeNode): string | undefined {
+    if (node.state.move?.uci) return node.state.move.uci;
+    if (!node.parent || !node.state.move?.san) return;
+
+    try {
+        return new Chess(node.parent.state.fen).move(node.state.move.san).lan;
+    } catch {
+        return;
+    }
+}
+
+function strongMoveCandidate(
+    node: StateTreeNode,
+    classification: Classification | undefined,
+    language?: string
+): CoachTacticInsight | undefined {
+    if (
+        !classification
+        || !STRONG_CLASSIFICATIONS.has(classification)
+        || !node.parent
+    ) return;
+
+    const firstUci = playedUci(node);
+    if (!firstUci) return;
+
+    const continuation = getTopEngineLine(node.state.engineLines);
+    if (!continuation?.moves.length) return;
+
+    const mover = new Chess(node.parent.state.fen).turn() as CoachCommentColour;
+    const isMate = evaluationMatesForColour(
+        continuation.evaluation,
+        mover
+    );
+    const maxPlies = isMate
+        ? MAX_HUMAN_MATE_PLIES
+        : MAX_HUMAN_TACTIC_PLIES;
+    const uciMoves = [
+        firstUci,
+        ...continuation.moves
+            .slice(0, Math.max(0, maxPlies - 1))
+            .map(move => move.uci)
+    ];
+    const copy = getCopy(language);
+
+    return {
+        startNode: node.parent,
+        uciMoves,
+        prefix: copy.strongMovePrefix,
+        label: copy.labels.tactic,
+        suffix: ".",
+        actionTitle: copy.showSequence
+    };
 }
 
 function parseLine(insight: CoachTacticInsight): ParsedTacticalLine | undefined {
@@ -211,7 +339,7 @@ function parseLine(insight: CoachTacticInsight): ParsedTacticalLine | undefined 
         forcedMate: lineForcesMate(
             insight.startNode.state.fen,
             topLine?.evaluation
-        ),
+        ) || board.isCheckmate(),
         forcingPlies,
         longestQuietRun
     };
@@ -300,29 +428,30 @@ function classifyHumanTactic(
 }
 
 export function getStrictCoachTacticInsight(
-    node: Parameters<typeof getLegacyCoachTacticInsight>[0],
+    node: StateTreeNode,
     classification: Classification | undefined,
     language?: string
 ): CoachTacticInsight | undefined {
-    const legacy = getLegacyCoachTacticInsight(
+    const candidate = strongMoveCandidate(
+        node,
+        classification,
+        language
+    ) || getLegacyCoachTacticInsight(
         node,
         classification,
         language
     );
 
-    if (!legacy) return;
+    if (!candidate) return;
 
-    const parsed = parseLine(legacy);
+    const parsed = parseLine(candidate);
     if (!parsed) return;
 
     const kind = classifyHumanTactic(parsed, classification);
     if (!kind) return;
 
-    const languageKey = normaliseLanguage(language);
-    const labels = LABELS[languageKey] || LABELS.en;
-
     return {
-        ...legacy,
-        label: labels[kind]
+        ...candidate,
+        label: getCopy(language).labels[kind]
     };
 }
