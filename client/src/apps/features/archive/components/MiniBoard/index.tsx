@@ -12,9 +12,17 @@ import * as styles from "./MiniBoard.module.css";
 
 interface MiniBoardProps {
     fen: string;
+    highlightSquare?: string;
+    markerSquare?: string;
+    markerImage?: string;
 }
 
-function MiniBoard({ fen }: MiniBoardProps) {
+function MiniBoard({
+    fen,
+    highlightSquare,
+    markerSquare,
+    markerImage
+}: MiniBoardProps) {
     const { t } = useTranslation("otherPages");
     const boardColours = useSettingsStore(
         state => state.settings.themes.board
@@ -41,6 +49,9 @@ function MiniBoard({ fen }: MiniBoardProps) {
                 const rank = Math.floor(index / 8);
                 const file = index % 8;
                 const light = (rank + file) % 2 == 0;
+                const square = `${"abcdefgh"[file]}${8 - rank}`;
+                const highlighted = square == highlightSquare;
+                const marked = square == markerSquare && markerImage;
 
                 return (
                     <div
@@ -49,7 +60,10 @@ function MiniBoard({ fen }: MiniBoardProps) {
                         style={{
                             backgroundColor: light
                                 ? boardColours.lightSquareColour
-                                : boardColours.darkSquareColour
+                                : boardColours.darkSquareColour,
+                            boxShadow: highlighted
+                                ? "inset 0 0 0 3px rgba(27, 170, 166, 0.95)"
+                                : undefined
                         }}
                     >
                         {piece && (
@@ -60,6 +74,14 @@ function MiniBoard({ fen }: MiniBoardProps) {
                                     + piece.type.toUpperCase()
                                 ) as PieceCode}
                                 size="92%"
+                            />
+                        )}
+                        {marked && (
+                            <img
+                                className={styles.marker}
+                                src={markerImage}
+                                alt="!!"
+                                aria-hidden="true"
                             />
                         )}
                     </div>
