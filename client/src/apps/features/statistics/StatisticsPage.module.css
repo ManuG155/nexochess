@@ -1,0 +1,538 @@
+.page {
+    width: min(1480px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 32px 0 64px;
+    color: #eef6ff;
+}
+
+.hero {
+    display: flex;
+    justify-content: space-between;
+    gap: 28px;
+    align-items: flex-start;
+    margin-bottom: 22px;
+}
+
+.eyebrow {
+    color: #67adff;
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.hero h1 {
+    margin: 7px 0 6px;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1;
+}
+
+.hero p,
+.card p,
+.note {
+    margin: 0;
+    color: rgba(220, 235, 251, 0.68);
+    line-height: 1.55;
+}
+
+.sampleBox {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: min(620px, 48vw);
+    padding: 12px;
+    border: 1px solid rgba(108, 166, 224, 0.2);
+    border-radius: 12px;
+    background: rgba(8, 22, 37, 0.72);
+}
+
+.sampleBox > span {
+    color: rgba(210, 228, 247, 0.62);
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.sampleButtons,
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.sampleButtons button,
+.tabs button {
+    border: 1px solid rgba(114, 170, 229, 0.2);
+    border-radius: 8px;
+    background: rgba(12, 29, 47, 0.72);
+    color: rgba(231, 242, 253, 0.76);
+    font-weight: 750;
+    cursor: pointer;
+}
+
+.sampleButtons button {
+    padding: 7px 10px;
+    font-size: 0.76rem;
+}
+
+.tabs {
+    position: sticky;
+    top: 72px;
+    z-index: 5;
+    padding: 8px;
+    margin-bottom: 18px;
+    border: 1px solid rgba(110, 168, 228, 0.18);
+    border-radius: 12px;
+    background: rgba(7, 19, 32, 0.94);
+    backdrop-filter: blur(10px);
+}
+
+.tabs button {
+    flex: 1 1 120px;
+    min-height: 42px;
+    padding: 8px 14px;
+}
+
+.activeButton,
+.activeTab {
+    border-color: rgba(83, 155, 244, 0.7) !important;
+    background: linear-gradient(180deg, rgba(50, 112, 193, 0.46), rgba(34, 75, 132, 0.42)) !important;
+    color: #fff !important;
+    box-shadow: inset 0 -2px 0 #6caeff;
+}
+
+.detailProgress {
+    display: grid;
+    gap: 6px;
+    margin: 0 0 14px;
+    color: rgba(213, 231, 250, 0.72);
+    font-size: 0.78rem;
+}
+
+.detailProgress > div,
+.phaseBars > div > div {
+    height: 5px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(103, 160, 218, 0.14);
+}
+
+.detailProgress i,
+.phaseBars i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #4f9ef5, #69c2ff);
+}
+
+.stack {
+    display: grid;
+    gap: 16px;
+}
+
+.kpiGrid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.kpi,
+.card {
+    border: 1px solid rgba(97, 155, 215, 0.18);
+    border-radius: 14px;
+    background: linear-gradient(145deg, rgba(17, 37, 59, 0.88), rgba(8, 21, 35, 0.92));
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.kpi {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 112px;
+    padding: 15px;
+}
+
+.kpi > span,
+.kpi > small {
+    color: rgba(207, 225, 244, 0.62);
+}
+
+.kpi > span {
+    font-size: 0.76rem;
+    font-weight: 750;
+}
+
+.kpi > strong {
+    margin-top: 8px;
+    color: #fff;
+    font-size: 1.65rem;
+}
+
+.kpi > small {
+    margin-top: 4px;
+    font-size: 0.7rem;
+}
+
+.card {
+    padding: 20px;
+}
+
+.card h2 {
+    margin: 0 0 14px;
+    font-size: 1rem;
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.cardHeader > span,
+.cardHeader p {
+    color: rgba(209, 228, 248, 0.58);
+    font-size: 0.78rem;
+}
+
+.twoColumns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.chart {
+    width: 100%;
+    height: 170px;
+    overflow: visible;
+}
+
+.chart line {
+    stroke: rgba(124, 174, 224, 0.12);
+    stroke-width: 0.4;
+}
+
+.chart polyline {
+    fill: none;
+    stroke: #5caeff;
+    stroke-width: 1.8;
+    vector-effect: non-scaling-stroke;
+}
+
+.chartEmpty {
+    display: grid;
+    place-items: center;
+    height: 170px;
+    color: rgba(255,255,255,.35);
+}
+
+.sideCompare {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.sideBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 14px;
+    border-radius: 11px;
+    background: rgba(2, 13, 24, 0.42);
+}
+
+.sideBlock b {
+    font-size: 1.45rem;
+}
+
+.sideBlock span {
+    color: rgba(210, 228, 247, 0.58);
+    font-size: 0.76rem;
+}
+
+.phaseBars {
+    display: grid;
+    gap: 12px;
+}
+
+.phaseBars > div {
+    display: grid;
+    grid-template-columns: 120px 1fr 90px;
+    align-items: center;
+    gap: 12px;
+}
+
+.phaseBars > div > span {
+    font-weight: 700;
+}
+
+.phaseBars strong {
+    text-align: right;
+    font-size: 0.78rem;
+}
+
+.qualityGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.qualityGrid > div {
+    display: grid;
+    grid-template-columns: 9px 1fr auto;
+    align-items: center;
+    gap: 9px;
+    padding: 11px;
+    border-radius: 9px;
+    background: rgba(3, 14, 25, 0.42);
+}
+
+.qualityGrid > div > span {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+}
+
+.qualityGrid b {
+    font-size: 0.8rem;
+}
+
+.qualityGrid strong {
+    font-size: 1rem;
+}
+
+.openingTable,
+.phaseTable {
+    display: grid;
+    gap: 5px;
+    overflow-x: auto;
+}
+
+.tableHeader,
+.tableRow {
+    display: grid;
+    grid-template-columns: minmax(220px, 2fr) repeat(5, minmax(90px, .7fr));
+    gap: 10px;
+    align-items: center;
+    min-width: 760px;
+    padding: 10px 12px;
+}
+
+.phaseTable .tableHeader,
+.phaseTable .tableRow {
+    grid-template-columns: minmax(150px, 1.2fr) repeat(4, minmax(90px, .7fr));
+    min-width: 610px;
+}
+
+.tableHeader {
+    color: rgba(203, 223, 244, 0.56);
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.tableRow {
+    border-radius: 9px;
+    background: rgba(3, 14, 25, 0.4);
+    color: rgba(232, 242, 252, 0.78);
+    font-size: 0.82rem;
+}
+
+.tableRow strong {
+    color: #eff7ff;
+}
+
+.planCard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    border-color: rgba(88, 180, 143, 0.28);
+}
+
+.planCard a {
+    flex: 0 0 auto;
+    padding: 10px 14px;
+    border-radius: 9px;
+    background: rgba(50, 157, 113, 0.18);
+    color: #a9efd2;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.duelGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 8px;
+}
+
+.duelGrid > div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+    border-radius: 9px;
+    background: rgba(3, 14, 25, 0.42);
+}
+
+.duelGrid span {
+    color: rgba(212, 230, 248, 0.62);
+    font-size: 0.78rem;
+}
+
+.brilliantCount {
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: rgba(27, 170, 166, 0.14);
+    color: #70e0dc;
+}
+
+.brilliantGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.brilliantCard {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid rgba(27, 170, 166, 0.22);
+    border-radius: 12px;
+    background: rgba(5, 24, 36, 0.7);
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.brilliantCard:hover {
+    transform: translateY(-2px);
+    border-color: rgba(42, 205, 198, 0.54);
+    background: rgba(8, 35, 48, 0.9);
+}
+
+.brilliantCard > div {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 4px;
+}
+
+.brilliantCard strong {
+    color: #69d9d5;
+    font-size: 1.15rem;
+}
+
+.brilliantCard span,
+.brilliantCard small {
+    overflow: hidden;
+    color: rgba(215, 232, 248, 0.64);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.brilliantCard em,
+.gameHighlight em {
+    margin-top: 5px;
+    color: #7abaff;
+    font-size: 0.76rem;
+    font-style: normal;
+    font-weight: 800;
+}
+
+.gameHighlight {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 13px;
+    border: 0;
+    border-radius: 10px;
+    background: rgba(4, 17, 29, 0.46);
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.gameHighlight strong {
+    color: #79b8ff;
+    font-size: 1.3rem;
+}
+
+.empty,
+.emptyInline {
+    display: grid;
+    place-items: center;
+    min-height: 180px;
+    padding: 28px;
+    border: 1px dashed rgba(113, 166, 220, 0.24);
+    border-radius: 14px;
+    color: rgba(215, 232, 249, 0.62);
+    text-align: center;
+}
+
+.emptyInline {
+    min-height: 120px;
+    margin-top: 14px;
+}
+
+@media (max-width: 1150px) {
+    .hero {
+        flex-direction: column;
+    }
+
+    .sampleBox {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .kpiGrid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 760px) {
+    .page {
+        width: min(100% - 20px, 1480px);
+        padding-top: 20px;
+    }
+
+    .tabs {
+        top: 8px;
+    }
+
+    .kpiGrid,
+    .twoColumns,
+    .qualityGrid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .sideCompare {
+        grid-template-columns: 1fr;
+    }
+
+    .phaseBars > div {
+        grid-template-columns: 90px 1fr 70px;
+    }
+
+    .planCard {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .kpiGrid,
+    .qualityGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .sampleButtons button {
+        flex: 1 1 92px;
+    }
+}

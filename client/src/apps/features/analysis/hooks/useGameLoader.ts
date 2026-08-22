@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useShallow } from "zustand/react/shallow";
 
+import { getNodeChain } from "shared/types/game/position/StateTreeNode";
+
 import useAnalysisGameStore from "../stores/AnalysisGameStore";
 import useAnalysisBoardStore from "../stores/AnalysisBoardStore";
 import useRealtimeEngineStore from "../stores/RealtimeEngineStore";
@@ -32,12 +34,23 @@ function useGameLoader() {
         const { game } = await getArchivedGame(gameId);
         if (!game) return;
 
+        const requestedPly = Number.parseInt(
+            searchParams.get("ply") || "",
+            10
+        );
+        const chain = getNodeChain(game.stateTree);
+        const targetNode = Number.isFinite(requestedPly)
+            && requestedPly >= 0
+            && requestedPly < chain.length
+                ? chain[requestedPly]
+                : game.stateTree;
+
         setGameAnalysisOpen(true);
         setAnalysisGame(game);
-        setCurrentStateTreeNode(game.stateTree);
+        setCurrentStateTreeNode(targetNode);
         setDisplayedEngineLines(
-            game.stateTree.state.fen,
-            game.stateTree.state.engineLines
+            targetNode.state.fen,
+            targetNode.state.engineLines
         );
     }
 

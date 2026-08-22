@@ -21,12 +21,27 @@ const loadShareDialog = () => import("@analysis/components/ShareDialog");
 const Sidebar = lazy(loadSidebar);
 const ShareDialog = lazy(loadShareDialog);
 
+const STATISTICS_LABELS: Record<string, string> = {
+    en: "Statistics",
+    es: "Estadísticas",
+    fr: "Statistiques",
+    de: "Statistiken",
+    pt: "Estatísticas",
+    ru: "Статистика",
+    zh: "统计",
+    vi: "Thống kê",
+    hi: "आँकड़े",
+    mr: "आकडेवारी",
+    pl: "Statystyki"
+};
+
 type IconName =
     | "academy"
     | "analysis"
     | "engine"
     | "lessons"
     | "archive"
+    | "statistics"
     | "login"
     | "menu"
     | "puzzle"
@@ -66,6 +81,13 @@ function NavIcon({ name }: NavIconProps) {
             <path d="M4.5 8.5h15v11h-15z" />
             <path d="M3.5 4.5h17v4h-17z" />
             <path d="M9.5 12h5" />
+        </>,
+        statistics: <>
+            <path d="M4 20V10" />
+            <path d="M10 20V4" />
+            <path d="M16 20v-7" />
+            <path d="M22 20H2" />
+            <path d="m4 8 6-5 6 7 5-4" />
         </>,
         academy: <>
             <path d="m3 9 9-5 9 5-9 5z" />
@@ -168,17 +190,21 @@ function NavigationAction({ children, icon, onClick }: NavigationActionProps) {
 }
 
 function NavigationBar() {
-    const { t } = useTranslation(["common", "analysis", "lessons", "enginePlay", "repertoire"]);
+    const { t, i18n } = useTranslation(["common", "analysis", "lessons", "enginePlay", "repertoire"]);
     const { profile, status } = useAuthedProfile();
     const [sidebarMounted, setSidebarMounted] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [shareState, setShareState] = useState<ShareState | null>(null);
     const currentPathname = parseLanguagePathname(location.pathname).basePathname;
+    const language = (i18n.resolvedLanguage || i18n.language || "en")
+        .toLowerCase().split("-")[0];
+    const statisticsLabel = STATISTICS_LABELS[language] || STATISTICS_LABELS.en;
 
     const onAnalysisPage = currentPathname.startsWith("/analysis");
     const onEnginePage = currentPathname.startsWith("/engine");
     const onLessonsPage = currentPathname.startsWith("/lessons");
     const onArchivePage = currentPathname.startsWith("/archive");
+    const onStatisticsPage = currentPathname.startsWith("/statistics");
     const onAcademyPage = currentPathname.startsWith("/academy");
     const onSettingsPage = currentPathname.startsWith("/settings");
     const onPuzzlesPage = currentPathname.startsWith("/puzzles");
@@ -315,6 +341,9 @@ function NavigationBar() {
             </NavigationItem>
             <NavigationItem icon="archive" url="/archive" current={onArchivePage}>
                 {t("sidebar.archive", { ns: "common" })}
+            </NavigationItem>
+            <NavigationItem icon="statistics" url="/statistics" current={onStatisticsPage}>
+                {statisticsLabel}
             </NavigationItem>
             <NavigationItem icon="puzzle" url="/puzzles" current={onPuzzlesPage}>
                 {t("navigationBar.puzzles", { ns: "common" })}

@@ -15,27 +15,26 @@ import {
 } from "@/lib/gameArchive";
 
 import ArchiveGameCard from "../../components/ArchiveGameCard";
-import ProgressInsights from "../../components/ProgressInsights";
 import TrainingPlan from "../../components/TrainingPlan";
 import * as styles from "./Archive.module.css";
 
 import iconArchive from "@assets/img/icons/archive.png";
 import iconDelete from "@assets/img/interface/delete.svg";
 
-type ArchiveView = "games" | "progress" | "plan";
+type ArchiveView = "games" | "plan";
 
-const TAB_LABELS: Record<string, { games: string; progress: string; plan: string }> = {
-    en: { games: "Games", progress: "Progress", plan: "Training plan" },
-    es: { games: "Partidas", progress: "Progreso", plan: "Plan de entrenamiento" },
-    fr: { games: "Parties", progress: "Progression", plan: "Plan d’entraînement" },
-    de: { games: "Partien", progress: "Fortschritt", plan: "Trainingsplan" },
-    pt: { games: "Partidas", progress: "Progresso", plan: "Plano de treino" },
-    ru: { games: "Партии", progress: "Прогресс", plan: "План тренировок" },
-    zh: { games: "对局", progress: "进度", plan: "训练计划" },
-    vi: { games: "Ván đấu", progress: "Tiến bộ", plan: "Kế hoạch luyện tập" },
-    hi: { games: "बाज़ियाँ", progress: "प्रगति", plan: "प्रशिक्षण योजना" },
-    mr: { games: "डाव", progress: "प्रगती", plan: "प्रशिक्षण योजना" },
-    pl: { games: "Partie", progress: "Postęp", plan: "Plan treningowy" }
+const TAB_LABELS: Record<string, { games: string; plan: string }> = {
+    en: { games: "Games", plan: "Training plan" },
+    es: { games: "Partidas", plan: "Plan de entrenamiento" },
+    fr: { games: "Parties", plan: "Plan d’entraînement" },
+    de: { games: "Partien", plan: "Trainingsplan" },
+    pt: { games: "Partidas", plan: "Plano de treino" },
+    ru: { games: "Партии", plan: "План тренировок" },
+    zh: { games: "对局", plan: "训练计划" },
+    vi: { games: "Ván đấu", plan: "Kế hoạch luyện tập" },
+    hi: { games: "बाज़ियाँ", plan: "प्रशिक्षण योजना" },
+    mr: { games: "डाव", plan: "प्रशिक्षण योजना" },
+    pl: { games: "Partie", plan: "Plan treningowy" }
 };
 
 function Archive() {
@@ -72,7 +71,11 @@ function Archive() {
         });
     }, [archive]);
 
-    const [view, setView] = useState<ArchiveView>("games");
+    const [view, setView] = useState<ArchiveView>(() => (
+        new URLSearchParams(window.location.search).get("view") == "plan"
+            ? "plan"
+            : "games"
+    ));
     const [selectedGameIds, setSelectedGameIds] = useState<string[]>([]);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -143,18 +146,6 @@ function Archive() {
                 <button
                     type="button"
                     role="tab"
-                    aria-selected={view == "progress"}
-                    className={view == "progress" ? styles.viewTabActive : ""}
-                    onClick={() => {
-                        setSelectedGameIds([]);
-                        setView("progress");
-                    }}
-                >
-                    {tabLabels.progress}
-                </button>
-                <button
-                    type="button"
-                    role="tab"
                     aria-selected={view == "plan"}
                     className={view == "plan" ? styles.viewTabActive : ""}
                     onClick={() => {
@@ -175,10 +166,6 @@ function Archive() {
             )}
 
             {status == "pending" && <LoadingPlaceholder />}
-
-            {status == "success" && view == "progress" && archive && (
-                <ProgressInsights archive={archive} />
-            )}
 
             {status == "success" && view == "plan" && archive && (
                 <TrainingPlan archive={archive} />
