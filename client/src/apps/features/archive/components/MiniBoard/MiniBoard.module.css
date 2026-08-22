@@ -12,16 +12,33 @@
 }
 
 .square {
+    position: relative;
     display: grid;
     place-items: center;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: visible;
+}
+
+.marker {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    z-index: 3;
+    width: 18px;
+    height: 18px;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.55));
+    pointer-events: none;
 }
 
 @media (max-width: 650px) {
     .board {
         width: 92px;
         height: 92px;
+    }
+
+    .marker {
+        width: 16px;
+        height: 16px;
     }
 }
