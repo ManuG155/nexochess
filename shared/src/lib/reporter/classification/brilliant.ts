@@ -2,6 +2,7 @@ import {
     Chess,
     Color,
     KING,
+    PAWN,
     Move,
     PieceSymbol,
     Square
@@ -18,9 +19,9 @@ import { getAttackingMoves } from "../utils/attackers";
 import { isPieceSafe } from "../utils/pieceSafety";
 import type Evaluation from "@/types/game/position/Evaluation";
 
-const KING_DRAW_MATERIAL_DEFICIT = -3;
-const KING_DRAW_WINDOW = 0.35;
-const KING_DRAW_ALTERNATIVE_LOSS = -1.5;
+const DRAW_RESOURCE_MATERIAL_DEFICIT = -3;
+const DRAW_RESOURCE_WINDOW = 0.35;
+const DRAW_RESOURCE_ALTERNATIVE_LOSS = -1.5;
 const SACRIFICE_PV_PLIES = 8;
 const SOUND_POSITIONAL_COMPENSATION = 1.5;
 
@@ -75,17 +76,18 @@ function materialBalance(
     return balance;
 }
 
-function kingMoveSavesDraw(
+function isUniqueDrawingResource(
     previous: ExtractedPreviousNode,
-    current: ExtractedCurrentNode
+    current: ExtractedCurrentNode,
+    piece: PieceSymbol
 ) {
     const move = current.playedMove;
-    if (move.piece != KING) return false;
+    if (move.piece != piece) return false;
 
     const mover = move.color;
     const deficit = materialBalance(previous.board, mover);
 
-    if (deficit > KING_DRAW_MATERIAL_DEFICIT) {
+    if (deficit > DRAW_RESOURCE_MATERIAL_DEFICIT) {
         return false;
     }
 
@@ -96,7 +98,7 @@ function kingMoveSavesDraw(
 
     if (
         !Number.isFinite(bestScore)
-        || Math.abs(bestScore) > KING_DRAW_WINDOW
+        || Math.abs(bestScore) > DRAW_RESOURCE_WINDOW
     ) {
         return false;
     }
@@ -110,7 +112,18 @@ function kingMoveSavesDraw(
     );
 
     return alternativeScore
-        <= KING_DRAW_ALTERNATIVE_LOSS;
+        <= DRAW_RESOURCE_ALTERNATIVE_LOSS;
+}
+
+function kingMoveSavesDraw(
+    previous: ExtractedPreviousNode,
+    current: ExtractedCurrentNode
+) {
+    return isUniqueDrawingResource(
+        previous,
+        current,
+        KING
+    );
 }
 
 interface SacrificeContinuation {
@@ -190,13 +203,63 @@ function analyseSacrificeContinuation(
     };
 }
 
+function pawnSacrificeSavesDraw(
+    previous: ExtractedPreviousNode,
+    current: ExtractedCurrentNode
+) {
+    const move = current.playedMove;
+
+    if (
+        move.piece != PAWN
+        || move.promotion
+        || move.captured
+    ) {
+        return false;
+    }
+
+    if (!isUniqueDrawingResource(previous, current, PAWN)) {
+        return false;
+    }
+
+    const offeredPawn: BoardPiece = {
+        square: move.to,
+        type: PAWN,
+        color: move.color
+    };
+
+    if (
+        getAttackingMoves(
+            current.board,
+            offeredPawn,
+            false
+        ).length == 0
+    ) {
+        return false;
+    }
+
+    return analyseSacrificeContinuation(
+        current,
+        0
+    ).accepted;
+}
+
 function isSoundSacrifice(
     previous: ExtractedPreviousNode,
     current: ExtractedCurrentNode
 ) {
     const move = current.playedMove;
 
-    if (move.piece == KING || move.promotion) return false;
+    /*
+     * Pawn gambits and ordinary pawn sacrifices are intentionally excluded
+     * from Brilliant. A pawn can only receive !! through the exceptional
+     * drawing-resource rule above.
+     */
+    if (
+        move.piece == KING
+        || move.piece == PAWN
+        || move.promotion
+    ) return false;
+
     if (!isMoveCriticalCandidate(previous, current)) return false;
 
     const movedValue = pieceValues[move.piece as PieceSymbol] || 0;
@@ -266,12 +329,15 @@ function isSoundSacrifice(
 /**
  * Brilliant is deliberately rare and concrete:
  *
- * - a sound sacrifice that the principal variation actually accepts and
- *   whose continuation produces material, mating or clear positional
- *   compensation; or
- * - a king move that is the unique drawing resource while materially lost.
+ * - a sound sacrifice of a piece (not a pawn) that the principal variation
+ *   actually accepts and whose continuation produces material, mating or
+ *   clear positional compensation;
+ * - a king move that is the unique drawing resource while materially lost;
+ * - exceptionally, a real pawn sacrifice that is itself the unique drawing
+ *   resource in a materially lost position.
  *
- * Strong non-sacrificial moves remain Best/Excellent/Great instead.
+ * Strong non-sacrificial moves and ordinary pawn gambits remain
+ * Best/Excellent/Great instead.
  */
 export function considerBrilliantClassification(
     previous: ExtractedPreviousNode,
@@ -280,6 +346,10 @@ export function considerBrilliantClassification(
     if (current.playedMove.promotion) return false;
 
     if (kingMoveSavesDraw(previous, current)) {
+        return true;
+    }
+
+    if (pawnSacrificeSavesDraw(previous, current)) {
         return true;
     }
 
