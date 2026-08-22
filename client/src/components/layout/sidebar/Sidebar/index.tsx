@@ -11,9 +11,24 @@ import * as styles from "./Sidebar.module.css";
 import iconInterfaceClose from "@assets/img/interface/close.svg";
 import iconIconsAnalysis from "@assets/img/icons/analysis.png";
 import iconIconsArchive from "@assets/img/icons/archive.png";
+import iconIconsStatistics from "@assets/img/icons/statistics.svg";
 import iconIconsAcademy from "@assets/img/icons/academy.svg";
 import iconIconsPuzzles from "@assets/img/icons/puzzles.svg";
 import iconIconsSettings from "@assets/img/icons/settings.png";
+
+const STATISTICS_LABELS: Record<string, string> = {
+    en: "Statistics",
+    es: "Estadísticas",
+    fr: "Statistiques",
+    de: "Statistiken",
+    pt: "Estatísticas",
+    ru: "Статистика",
+    zh: "统计",
+    vi: "Thống kê",
+    hi: "आँकड़े",
+    mr: "आकडेवारी",
+    pl: "Statystyki"
+};
 
 const FOCUSABLE_SELECTOR = [
     "a[href]",
@@ -25,9 +40,12 @@ const FOCUSABLE_SELECTOR = [
 ].join(",");
 
 function Sidebar({ style, onClose, open = true }: SidebarProps) {
-    const { t } = useTranslation("common");
+    const { t, i18n } = useTranslation("common");
     const sidebarRef = useRef<HTMLDivElement>(null);
     const previousFocusRef = useRef<HTMLElement | null>(null);
+    const language = (i18n.resolvedLanguage || i18n.language || "en")
+        .toLowerCase().split("-")[0];
+    const statisticsLabel = STATISTICS_LABELS[language] || STATISTICS_LABELS.en;
 
     useEffect(() => {
         if (!open) return;
@@ -140,6 +158,16 @@ function Sidebar({ style, onClose, open = true }: SidebarProps) {
                     tabIndex={tabIndex}
                 >
                     {t("sidebar.archive")}
+                </SidebarTab>
+
+                <SidebarTab
+                    url="/statistics"
+                    icon={iconIconsStatistics}
+                    iconSize="21px"
+                    style={{ width: "100%" }}
+                    tabIndex={tabIndex}
+                >
+                    {statisticsLabel}
                 </SidebarTab>
 
                 <SidebarTab
