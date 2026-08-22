@@ -214,9 +214,16 @@ function StatisticsPage() {
         Object.entries(archive || {}).sort((a, b) => entryTimestamp(b[1]) - entryTimestamp(a[1]))
     ), [archive]);
 
-    const username = useMemo(() => (
-        normaliseName(profile?.username) || inferPrimaryUsername(allEntries)
-    ), [profile?.username, allEntries]);
+    const username = useMemo(() => {
+        const profileUsername = normaliseName(profile?.username);
+        const profileMatchesArchive = Boolean(
+            profileUsername
+            && allEntries.some(([, game]) => Boolean(playerSide(game, profileUsername)))
+        );
+
+        if (profileMatchesArchive) return profileUsername;
+        return inferPrimaryUsername(allEntries) || profileUsername;
+    }, [profile?.username, allEntries]);
 
     const personalAllEntries = useMemo(() => allEntries.filter(([, game]) => (
         Boolean(playerSide(game, username))
@@ -227,7 +234,10 @@ function StatisticsPage() {
         [personalAllEntries, sample]
     );
 
-    const selectedArchive = useMemo(() => new Map(selectedEntries), [selectedEntries]);
+    const selectedAllEntries = useMemo(
+        () => selectSample(allEntries, sample),
+        [allEntries, sample]
+    );
 
     useEffect(() => {
         let cancelled = false;
@@ -351,10 +361,7 @@ function StatisticsPage() {
             games: items.length,
             accuracy: average(items.map(item => item.accuracy)),
             performance: average(items.map(item => item.performance)),
-            score: sideScores.length ? average(sideScores)! * 100 : undefined,
-            blunders: details
-                ? Object.values(details.phases).reduce((sum, phase) => sum + phase.blunders, 0)
-                : undefined
+            score: sideScores.length ? average(sideScores)! * 100 : undefined
         };
     }
 
@@ -375,7 +382,13 @@ function StatisticsPage() {
         for (const item of personalStats) {
             const name = item.game.archiveSummary?.opening || c.unknownOpening;
             const row = grouped.get(name) || {
-                games: 0, accuracies: [], performances: [], scores: [], wins: 0, draws: 0, losses: 0
+                games: 0,
+                accuracies: [],
+                performances: [],
+                scores: [],
+                wins: 0,
+                draws: 0,
+                losses: 0
             };
             row.games += 1;
             if (typeof item.accuracy == "number") row.accuracies.push(item.accuracy);
@@ -407,15 +420,8 @@ function StatisticsPage() {
 
     const duelRows = useMemo(() => {
         const grouped = new Map<number, { wins: number; draws: number; losses: number }>();
-        const sampleIds = new Set(selectedEntries.map(([id]) => id));
 
-        for (const [id, game] of allEntries) {
-            if (sample != "all" && !sampleIds.has(id) && !sample.endsWith("d")) continue;
-            if (sample.endsWith("d")) {
-                const days = Number(sample.slice(0, -1));
-                if (entryTimestamp(game) < Date.now() - days * 86_400_000) continue;
-            }
-
+        for (const [, game] of selectedAllEntries) {
             const whiteElo = game.players.white.rating;
             const blackElo = game.players.black.rating;
             let engineSide: Colour | undefined;
@@ -438,8 +444,9 @@ function StatisticsPage() {
             if (kind == "loss") row.losses += 1;
             grouped.set(elo, row);
         }
+
         return [...grouped.entries()].sort((a, b) => a[0] - b[0]);
-    }, [allEntries, sample, selectedEntries]);
+    }, [selectedAllEntries]);
 
     const classificationCount = (classification: Classification) => (
         details?.classifications[classification] || 0
@@ -623,7 +630,14 @@ function StatisticsPage() {
                         <section className={styles.card}>
                             <h2>{c.sections.openings}</h2>
                             <div className={styles.openingTable}>
-                                <div className={styles.tableHeader}><span>{c.metrics.opening}</span><span>{c.metrics.games}</span><span>{c.metrics.accuracy}</span><span>{c.metrics.performance}</span><span>{c.metrics.score}</span><span>W-D-L</span></div>
+                                <div className={styles.tableHeader}>
+                                    <span>{c.metrics.opening}</span>
+                                    <span>{c.metrics.games}</span>
+                                    <span>{c.metrics.accuracy}</span>
+                                    <span>{c.metrics.performance}</span>
+                                    <span>{c.metrics.score}</span>
+                                    <span>W-D-L</span>
+                                </div>
                                 {openingRows.map(row => (
                                     <div key={row.name} className={styles.tableRow}>
                                         <strong>{row.name}</strong>
@@ -649,7 +663,7 @@ function StatisticsPage() {
                             </div>
                             <article className={styles.card}>
                                 <h2>{c.sections.puzzleSummary}</h2>
-                                <p className={styles.note}>NexoChess muestra aquí los datos que actualmente guarda Puzzles. Las tendencias por temática empezarán a ser fiables cuando exista historial temporal por intento; no se reconstruyen datos que nunca se almacenaron.</p>
+                                <p className={styles.note}>{c.puzzleHistoryNote}</p>
                             </article>
                         </section>
                     )}
@@ -666,7 +680,10 @@ function StatisticsPage() {
                                 <h2>{c.metrics.duel}</h2>
                                 <div className={styles.duelGrid}>
                                     {duelRows.length ? duelRows.map(([elo, row]) => (
-                                        <div key={elo}><strong>{elo} Elo</strong><span>{row.wins}W · {row.draws}D · {row.losses}L</span></div>
+                                        <div key={elo}>
+                                            <strong>{elo} Elo</strong>
+                                            <span>{row.wins}W · {row.draws}D · {row.losses}L</span>
+                                        </div>
                                     )) : <span>—</span>}
                                 </div>
                             </article>
@@ -722,28 +739,128 @@ function StatisticsPage() {
     );
 }
 
-function Kpi({ label, value, sub }: { label: string; value: React.ReactNode; sub?: string }) {
-    return <div className={styles.kpi}><span>{label}</span><strong>{value}</strong>{sub && <small>{sub}</small>}</div>;
+function Kpi({ label, value, sub }: {
+    label: string;
+    value: React.ReactNode;
+    sub?: string;
+}) {
+    return (
+        <div className={styles.kpi}>
+            <span>{label}</span>
+            <strong>{value}</strong>
+            {sub && <small>{sub}</small>}
+        </div>
+    );
 }
 
-function SideBlock({ title, games, accuracy, performance, score }: { title: string; games: number; accuracy?: number; performance?: number; score?: number }) {
-    return <div className={styles.sideBlock}><strong>{title}</strong><b>{formatNumber(accuracy)}%</b><span>{games} · {formatNumber(performance, 0)} Elo · {formatNumber(score)}%</span></div>;
+function SideBlock({ title, games, accuracy, performance, score }: {
+    title: string;
+    games: number;
+    accuracy?: number;
+    performance?: number;
+    score?: number;
+}) {
+    return (
+        <div className={styles.sideBlock}>
+            <strong>{title}</strong>
+            <b>{formatNumber(accuracy)}%</b>
+            <span>{games} · {formatNumber(performance, 0)} Elo · {formatNumber(score)}%</span>
+        </div>
+    );
 }
 
-function PhaseBars({ details, labels }: { details?: DetailedSummary; labels: ReturnType<typeof getStatisticsCopy>["metrics"] }) {
-    const rows: Array<[Phase, string]> = [["opening", labels.opening], ["middlegame", labels.middlegame], ["endgame", labels.endgame]];
-    const totals = rows.map(([phase]) => details ? details.phases[phase].mistakes + details.phases[phase].misses + details.phases[phase].blunders : 0);
+function PhaseBars({ details, labels }: {
+    details?: DetailedSummary;
+    labels: ReturnType<typeof getStatisticsCopy>["metrics"];
+}) {
+    const rows: Array<[Phase, string]> = [
+        ["opening", labels.opening],
+        ["middlegame", labels.middlegame],
+        ["endgame", labels.endgame]
+    ];
+    const totals = rows.map(([phase]) => details
+        ? details.phases[phase].mistakes
+            + details.phases[phase].misses
+            + details.phases[phase].blunders
+        : 0
+    );
     const total = totals.reduce((sum, value) => sum + value, 0);
-    return <div className={styles.phaseBars}>{rows.map(([phase, label], index) => <div key={phase}><span>{label}</span><div><i style={{ width: `${total ? totals[index] / total * 100 : 0}%` }} /></div><strong>{totals[index]} {total ? `· ${Math.round(totals[index] / total * 100)}%` : ""}</strong></div>)}</div>;
+
+    return (
+        <div className={styles.phaseBars}>
+            {rows.map(([phase, label], index) => (
+                <div key={phase}>
+                    <span>{label}</span>
+                    <div><i style={{ width: `${total ? totals[index] / total * 100 : 0}%` }} /></div>
+                    <strong>
+                        {totals[index]} {total ? `· ${Math.round(totals[index] / total * 100)}%` : ""}
+                    </strong>
+                </div>
+            ))}
+        </div>
+    );
 }
 
-function PhaseTable({ details, labels }: { details?: DetailedSummary; labels: ReturnType<typeof getStatisticsCopy>["metrics"] }) {
-    const rows: Array<[Phase, string]> = [["opening", labels.opening], ["middlegame", labels.middlegame], ["endgame", labels.endgame]];
-    return <div className={styles.phaseTable}><div className={styles.tableHeader}><span></span><span>{labels.mistakes}</span><span>{labels.misses}</span><span>{labels.blunders}</span><span>{labels.accuracy}</span></div>{rows.map(([phase, label]) => { const row = details?.phases[phase]; return <div className={styles.tableRow} key={phase}><strong>{label}</strong><span>{row?.mistakes ?? "—"}</span><span>{row?.misses ?? "—"}</span><span>{row?.blunders ?? "—"}</span><span>{row ? `${formatNumber(average(row.accuracies))}%` : "—"}</span></div>; })}</div>;
+function PhaseTable({ details, labels }: {
+    details?: DetailedSummary;
+    labels: ReturnType<typeof getStatisticsCopy>["metrics"];
+}) {
+    const rows: Array<[Phase, string]> = [
+        ["opening", labels.opening],
+        ["middlegame", labels.middlegame],
+        ["endgame", labels.endgame]
+    ];
+
+    return (
+        <div className={styles.phaseTable}>
+            <div className={styles.tableHeader}>
+                <span></span>
+                <span>{labels.mistakes}</span>
+                <span>{labels.misses}</span>
+                <span>{labels.blunders}</span>
+                <span>{labels.accuracy}</span>
+            </div>
+            {rows.map(([phase, label]) => {
+                const row = details?.phases[phase];
+                return (
+                    <div className={styles.tableRow} key={phase}>
+                        <strong>{label}</strong>
+                        <span>{row?.mistakes ?? "—"}</span>
+                        <span>{row?.misses ?? "—"}</span>
+                        <span>{row?.blunders ?? "—"}</span>
+                        <span>{row ? `${formatNumber(average(row.accuracies))}%` : "—"}</span>
+                    </div>
+                );
+            })}
+        </div>
+    );
 }
 
-function GameHighlight({ label, item, onOpen }: { label: string; item?: { id: string; accuracy?: number | null; game: ArchivedGameMetadata }; onOpen: (id: string) => void }) {
-    return <article className={styles.card}><h2>{label}</h2>{item ? <button type="button" className={styles.gameHighlight} onClick={() => onOpen(item.id)}><strong>{formatNumber(item.accuracy || undefined)}%</strong><span>{item.game.archiveSummary?.opening || "—"}</span><em>→</em></button> : <span>—</span>}</article>;
+function GameHighlight({ label, item, onOpen }: {
+    label: string;
+    item?: {
+        id: string;
+        accuracy?: number | null;
+        game: ArchivedGameMetadata;
+    };
+    onOpen: (id: string) => void;
+}) {
+    return (
+        <article className={styles.card}>
+            <h2>{label}</h2>
+            {item ? (
+                <button
+                    type="button"
+                    className={styles.gameHighlight}
+                    onClick={() => onOpen(item.id)}
+                >
+                    <strong>{formatNumber(item.accuracy ?? undefined)}%</strong>
+                    <span>{item.game.archiveSummary?.opening || "—"}</span>
+                    <em>→</em>
+                </button>
+            ) : <span>—</span>}
+        </article>
+    );
 }
 
 export default StatisticsPage;
