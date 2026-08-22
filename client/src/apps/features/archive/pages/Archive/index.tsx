@@ -71,7 +71,11 @@ function Archive() {
         });
     }, [archive]);
 
-    const [view, setView] = useState<ArchiveView>("games");
+    const [view, setView] = useState<ArchiveView>(() => (
+        new URLSearchParams(window.location.search).get("view") == "plan"
+            ? "plan"
+            : "games"
+    ));
     const [selectedGameIds, setSelectedGameIds] = useState<string[]>([]);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
