@@ -6,7 +6,7 @@ export const SUPPORTED_LANGUAGES = [
 export type SupportedLanguage = typeof SUPPORTED_LANGUAGES[number];
 
 const LOCALIZABLE_PATHS = new Set([
-    "/", "/home", "/about", "/faq", "/analysis", "/archive", "/academy",
+    "/", "/home", "/about", "/faq", "/analysis", "/archive", "/statistics", "/academy",
     "/engine", "/lessons", "/puzzles", "/repertoire", "/guides", "/help",
     "/signin", "/signup", "/settings", "/terms", "/privacy", "/source"
 ]);
