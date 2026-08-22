@@ -96,6 +96,10 @@
     overflow: hidden;
 }
 
+.reviewScrollAreaConclusions {
+    gap: 10px;
+}
+
 
 /*
  * GRÁFICO FIJO DE LA REVISIÓN.
@@ -173,10 +177,11 @@
 
     justify-content: flex-start;
     align-items: center;
+    gap: 10px;
 
     width: 100%;
 
-    min-height: 30px;
+    min-height: 34px;
 
     flex: 0 0 auto;
 }
@@ -261,6 +266,44 @@
         2px;
 }
 
+.reviewSubviewTabs {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 3px;
+    border: 1px solid rgba(104, 170, 255, 0.16);
+    border-radius: 9px;
+    background: rgba(6, 18, 31, 0.26);
+}
+
+.reviewSubviewTab {
+    min-height: 28px;
+    padding: 0 11px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.56);
+    font-size: 0.76rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background-color 150ms ease, color 150ms ease;
+}
+
+.reviewSubviewTab:hover {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.reviewSubviewTabActive {
+    background: rgba(70, 137, 224, 0.2);
+    color: #cfe7ff;
+    box-shadow: inset 0 0 0 1px rgba(91, 164, 255, 0.2);
+}
+
+.reviewSubviewTab:focus-visible {
+    outline: 2px solid rgba(114, 186, 255, 0.68);
+    outline-offset: 1px;
+}
+
 
 /*
  * CONTENEDOR DE LOS CINCO BOTONES.
@@ -316,6 +359,18 @@
         padding-bottom: 78px;
     }
 
+    .reviewHeader {
+        gap: 8px;
+    }
+
+    .reviewSubviewTabs {
+        flex: 1 1 auto;
+    }
+
+    .reviewSubviewTab {
+        flex: 1 1 0;
+        padding: 0 8px;
+    }
 
     .traverserContainer {
         position: fixed;
