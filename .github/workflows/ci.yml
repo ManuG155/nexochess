@@ -44,6 +44,9 @@ jobs:
       - name: Audit Lessons curriculum
         run: npm run check:lessons
 
+      - name: Audit Endgame Laboratory
+        run: npm run check:endgames
+
       - name: Audit puzzle backend
         run: npm run check:puzzles
 
@@ -156,6 +159,7 @@ jobs:
           node --check cloudflare/emailQueue.mjs
           node --check scripts/build-cloudflare.mjs
           node --check scripts/check-lessons.mjs
+          node --check scripts/check-endgame-lab.mjs
           node --check scripts/check-puzzle-backend.mjs
           node --check scripts/cloudflare-operations.mjs
           node --check scripts/portable-command-shim.mjs
