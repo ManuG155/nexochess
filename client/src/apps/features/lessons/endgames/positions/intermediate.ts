@@ -27,9 +27,9 @@ const positions: EndgamePosition[] = [
     { id: "minor-piece-pawns-4", tier: "intermediate", theme: "minor-piece-pawns", fen: "8/5k2/6p1/4P3/8/8/4K2N/6b1 w - - 0 1" },
 
     { id: "queen-vs-pawn-1", tier: "intermediate", theme: "queen-vs-pawn", fen: "8/5k2/6p1/8/8/8/4K2Q/8 w - - 0 1" },
-    { id: "queen-vs-pawn-2", tier: "intermediate", theme: "queen-vs-pawn", fen: "8/5k2/8/8/8/8/4K2Q/6p1 w - - 0 1" },
+    { id: "queen-vs-pawn-2", tier: "intermediate", theme: "queen-vs-pawn", fen: "8/5k2/8/8/8/6p1/4K2Q/8 w - - 0 1" },
     { id: "queen-vs-pawn-3", tier: "intermediate", theme: "queen-vs-pawn", fen: "8/2k5/1p6/8/8/8/3K4/Q7 w - - 0 1" },
-    { id: "queen-vs-pawn-4", tier: "intermediate", theme: "queen-vs-pawn", fen: "8/2k5/8/8/8/8/3K4/Qp6 w - - 0 1" }
+    { id: "queen-vs-pawn-4", tier: "intermediate", theme: "queen-vs-pawn", fen: "8/2k5/8/8/8/1p6/3K4/Q7 w - - 0 1" }
 ];
 
 export default positions;
