@@ -29,11 +29,16 @@ export function loadEndgameLabProgress(): EndgameLabProgress {
     try {
         const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "");
         if (parsed?.version != 1) return EMPTY;
+
+        const completedPositionIds: string[] = Array.isArray(parsed.completedPositionIds)
+            ? parsed.completedPositionIds.filter(
+                (id: unknown): id is string => typeof id == "string"
+            )
+            : [];
+
         return {
             version: 1,
-            completedPositionIds: Array.isArray(parsed.completedPositionIds)
-                ? [...new Set(parsed.completedPositionIds.filter((id: unknown): id is string => typeof id == "string"))]
-                : [],
+            completedPositionIds: [...new Set<string>(completedPositionIds)],
             themes: parsed.themes && typeof parsed.themes == "object"
                 ? parsed.themes
                 : {}
