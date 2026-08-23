@@ -1,6 +1,7 @@
 import React, {
     useCallback,
     useEffect,
+    useLayoutEffect,
     useMemo,
     useRef,
     useState
@@ -29,28 +30,33 @@ interface RectState {
     bottom: number;
 }
 
+interface CardPosition {
+    left: number;
+    top: number;
+}
+
 const NAV_FALLBACK = "header button[aria-controls=\"nexo-sidebar\"]";
+const VIEWPORT_GAP = 12;
+const TARGET_GAP = 16;
+const MIN_CARD_TOP = 78;
 
 const TOUR_STEPS: TourStep[] = [
     { key: "logo", selector: "header a[aria-label=\"NexoChess\"]" },
-    { key: "academy", selector: "header nav a[href=\"/academy\"]", fallbackSelector: NAV_FALLBACK },
-    { key: "lessons", selector: "header nav a[href=\"/lessons\"]", fallbackSelector: NAV_FALLBACK },
-    { key: "analysis", selector: "header nav a[href=\"/analysis\"]", fallbackSelector: NAV_FALLBACK },
-    { key: "engine", selector: "header nav a[href=\"/engine\"]", fallbackSelector: NAV_FALLBACK },
-    { key: "archive", selector: "header nav a[href=\"/archive\"]", fallbackSelector: NAV_FALLBACK },
-    { key: "statistics", selector: "header nav a[href=\"/statistics\"]", fallbackSelector: NAV_FALLBACK },
-    { key: "puzzles", selector: "header nav a[href=\"/puzzles\"]", fallbackSelector: NAV_FALLBACK },
-    { key: "repertoire", selector: "header nav a[href=\"/repertoire\"]", fallbackSelector: NAV_FALLBACK },
+    { key: "academy", selector: "header nav a[href$=\"/academy\"]", fallbackSelector: NAV_FALLBACK },
+    { key: "lessons", selector: "header nav a[href$=\"/lessons\"]", fallbackSelector: NAV_FALLBACK },
+    { key: "analysis", selector: "header nav a[href$=\"/analysis\"]", fallbackSelector: NAV_FALLBACK },
+    { key: "engine", selector: "header nav a[href$=\"/engine\"]", fallbackSelector: NAV_FALLBACK },
+    { key: "archive", selector: "header nav a[href$=\"/archive\"]", fallbackSelector: NAV_FALLBACK },
+    { key: "statistics", selector: "header nav a[href$=\"/statistics\"]", fallbackSelector: NAV_FALLBACK },
+    { key: "puzzles", selector: "header nav a[href$=\"/puzzles\"]", fallbackSelector: NAV_FALLBACK },
+    { key: "repertoire", selector: "header nav a[href$=\"/repertoire\"]", fallbackSelector: NAV_FALLBACK },
     { key: "support", selector: "header a[href^=\"https://ko-fi.com/nexochess\"]" },
-    { key: "settings", selector: "header a[href=\"/settings\"]" },
-    { key: "help", selector: "footer a[href=\"/help\"]" },
+    { key: "settings", selector: "header a[href$=\"/settings\"]" },
+    { key: "help", selector: "footer a[href$=\"/help\"]" },
     { key: "language", selector: "footer nav button:first-of-type" },
     { key: "contact", selector: "footer a[title=\"contact@nexochess.com\"]" },
     { key: "consent", selector: "footer nav button:nth-of-type(2)" },
-    { key: "about", selector: "footer a[href=\"/about\"]" },
-    { key: "terms", selector: "footer a[href=\"/terms\"]" },
-    { key: "privacy", selector: "footer a[href=\"/privacy\"]" },
-    { key: "source", selector: "footer a[href=\"/source\"]" }
+    { key: "about", selector: "footer a[href$=\"/about\"]" }
 ];
 
 function isVisibleElement(element: Element | null): element is HTMLElement {
@@ -86,6 +92,101 @@ function compactRect(rect: DOMRect): RectState {
     };
 }
 
+function clamp(value: number, minimum: number, maximum: number) {
+    if (maximum < minimum) return minimum;
+    return Math.min(maximum, Math.max(minimum, value));
+}
+
+function cardPositionForTarget(
+    target: RectState | undefined,
+    cardWidth: number,
+    cardHeight: number,
+    viewportWidth: number,
+    viewportHeight: number
+): CardPosition {
+    const maximumLeft = Math.max(
+        VIEWPORT_GAP,
+        viewportWidth - cardWidth - VIEWPORT_GAP
+    );
+    const maximumTop = Math.max(
+        MIN_CARD_TOP,
+        viewportHeight - cardHeight - VIEWPORT_GAP
+    );
+
+    if (!target) {
+        return {
+            left: clamp(
+                (viewportWidth - cardWidth) / 2,
+                VIEWPORT_GAP,
+                maximumLeft
+            ),
+            top: clamp(
+                (viewportHeight - cardHeight) / 2,
+                MIN_CARD_TOP,
+                maximumTop
+            )
+        };
+    }
+
+    const centredLeft = clamp(
+        target.left + target.width / 2 - cardWidth / 2,
+        VIEWPORT_GAP,
+        maximumLeft
+    );
+    const centredTop = clamp(
+        target.top + target.height / 2 - cardHeight / 2,
+        MIN_CARD_TOP,
+        maximumTop
+    );
+
+    const placements = [
+        {
+            name: "below",
+            room: viewportHeight - target.bottom,
+            left: centredLeft,
+            top: target.bottom + TARGET_GAP
+        },
+        {
+            name: "above",
+            room: target.top - MIN_CARD_TOP,
+            left: centredLeft,
+            top: target.top - cardHeight - TARGET_GAP
+        },
+        {
+            name: "right",
+            room: viewportWidth - target.right,
+            left: target.right + TARGET_GAP,
+            top: centredTop
+        },
+        {
+            name: "left",
+            room: target.left,
+            left: target.left - cardWidth - TARGET_GAP,
+            top: centredTop
+        }
+    ].sort((a, b) => b.room - a.room);
+
+    for (const placement of placements) {
+        const fitsHorizontally = placement.left >= VIEWPORT_GAP
+            && placement.left + cardWidth <= viewportWidth - VIEWPORT_GAP;
+        const fitsVertically = placement.top >= MIN_CARD_TOP
+            && placement.top + cardHeight <= viewportHeight - VIEWPORT_GAP;
+
+        if (fitsHorizontally && fitsVertically) {
+            return {
+                left: placement.left,
+                top: placement.top
+            };
+        }
+    }
+
+    const fallback = placements[0];
+    return {
+        left: clamp(fallback.left, VIEWPORT_GAP, maximumLeft),
+        top: clamp(fallback.top, MIN_CARD_TOP, maximumTop)
+    };
+}
+
 function routeHasMainMenu(routeName: string) {
     if (routeName == "analysis" || routeName == "analysis-entry") return true;
     if (["academy", "archive", "statistics"].includes(routeName)) return true;
@@ -115,7 +216,9 @@ function SiteTour({ routeName }: SiteTourProps) {
     const [active, setActive] = useState(false);
     const [stepIndex, setStepIndex] = useState(0);
     const [targetRect, setTargetRect] = useState<RectState>();
+    const [cardHeight, setCardHeight] = useState(260);
     const nextButtonRef = useRef<HTMLButtonElement>(null);
+    const cardRef = useRef<HTMLElement>(null);
     const rafRef = useRef<number>();
 
     const step = TOUR_STEPS[stepIndex];
@@ -205,6 +308,22 @@ function SiteTour({ routeName }: SiteTourProps) {
         };
     }, [active, refreshTarget, step]);
 
+    useLayoutEffect(() => {
+        if (!active || !cardRef.current) return;
+
+        const card = cardRef.current;
+        const measure = () => {
+            const nextHeight = Math.ceil(card.getBoundingClientRect().height);
+            setCardHeight(previous => previous == nextHeight ? previous : nextHeight);
+        };
+
+        measure();
+        const observer = new ResizeObserver(measure);
+        observer.observe(card);
+
+        return () => observer.disconnect();
+    }, [active, stepIndex, stepCopy.body, stepCopy.title]);
+
     useEffect(() => {
         if (!active) return;
         const timer = window.setTimeout(() => nextButtonRef.current?.focus(), 220);
@@ -234,52 +353,39 @@ function SiteTour({ routeName }: SiteTourProps) {
 
     if (!eligible) return null;
 
-    if (!active) {
-        return <button
-            type="button"
-            className={styles.launcher}
-            onClick={() => {
-                setStepIndex(0);
-                setActive(true);
-            }}
-            aria-label={copy.open}
-            title={copy.open}
-        >
-            ?
-        </button>;
-    }
+    const launcher = <button
+        type="button"
+        className={[
+            styles.launcher,
+            active ? styles.launcherActive : ""
+        ].filter(Boolean).join(" ")}
+        onClick={() => {
+            if (active) {
+                setActive(false);
+                return;
+            }
+            setStepIndex(0);
+            setActive(true);
+        }}
+        aria-label={active ? copy.close : copy.open}
+        title={active ? copy.close : copy.open}
+        aria-pressed={active}
+    >
+        ?
+    </button>;
+
+    if (!active) return launcher;
 
     const viewportWidth = typeof window == "undefined" ? 1280 : window.innerWidth;
     const viewportHeight = typeof window == "undefined" ? 800 : window.innerHeight;
     const cardWidth = Math.min(360, viewportWidth - 24);
-    const cardHeightEstimate = 238;
-    let cardLeft = Math.max(12, (viewportWidth - cardWidth) / 2);
-    let cardTop = Math.max(82, (viewportHeight - cardHeightEstimate) / 2);
-
-    if (targetRect) {
-        cardLeft = Math.min(
-            viewportWidth - cardWidth - 12,
-            Math.max(12, targetRect.left + targetRect.width / 2 - cardWidth / 2)
-        );
-
-        if (targetRect.bottom + cardHeightEstimate + 22 < viewportHeight) {
-            cardTop = targetRect.bottom + 16;
-        } else if (targetRect.top - cardHeightEstimate - 18 > 72) {
-            cardTop = targetRect.top - cardHeightEstimate - 14;
-        } else {
-            cardTop = Math.min(
-                viewportHeight - cardHeightEstimate - 12,
-                Math.max(82, targetRect.top + targetRect.height + 14)
-            );
-        }
-    }
-
-    const beaconLeft = targetRect
-        ? targetRect.left + Math.min(18, targetRect.width / 2)
-        : 24;
-    const beaconTop = targetRect
-        ? targetRect.top + Math.min(18, targetRect.height / 2)
-        : 92;
+    const cardPosition = cardPositionForTarget(
+        targetRect,
+        cardWidth,
+        cardHeight,
+        viewportWidth,
+        viewportHeight
+    );
 
     return <>
         {targetRect && <div
@@ -293,20 +399,14 @@ function SiteTour({ routeName }: SiteTourProps) {
             aria-hidden="true"
         />}
 
-        <div
-            className={styles.beacon}
-            style={{
-                left: `${beaconLeft}px`,
-                top: `${beaconTop}px`
-            }}
-            aria-hidden="true"
-        >?</div>
+        {launcher}
 
         <section
+            ref={cardRef}
             className={styles.card}
             style={{
-                left: `${cardLeft}px`,
-                top: `${cardTop}px`,
+                left: `${cardPosition.left}px`,
+                top: `${cardPosition.top}px`,
                 width: `${cardWidth}px`
             }}
             role="dialog"
