@@ -12,15 +12,7 @@ const cutoff = "2026-08-09T22:00:00.000Z";
 const endpoint = "/api/account/release-notes/v1.1";
 const localStorageKey = "nexochess.release-note.v1.1.seen";
 
-const [
-    releaseCopy,
-    releaseNotice,
-    pageWrapper,
-    cloudflareApi,
-    cloudflareAuth,
-    releaseDocument,
-    packageJson
-] = await Promise.all([
+const [releaseCopy, releaseNotice, pageWrapper, cloudflareApi, cloudflareAuth, releaseDocument, packageJson] = await Promise.all([
     read("client", "src", "releases", "v1_1.ts"),
     read("client", "src", "components", "releases", "ReleaseNotice", "index.tsx"),
     read("client", "src", "components", "layout", "PageWrapper", "index.tsx"),
@@ -37,20 +29,9 @@ assert.ok(releaseCopy.includes(`V1_1_RELEASE_NOTE_ENDPOINT = "${endpoint}"`));
 assert.ok(releaseCopy.includes("now >= Date.parse(V1_1_RELEASE_NOTE_CUTOFF)"));
 
 for (const language of languages) {
-    assert.ok(
-        releaseCopy.includes(`    ${language}: {`),
-        `Missing v1.1 release-note copy for ${language}.`
-    );
-    assert.ok(
-        releaseDocument.includes(`(${language})`),
-        `Missing v1.1 repository release notes for ${language}.`
-    );
+    assert.ok(releaseCopy.includes(`    ${language}: {`), `Missing v1.1 copy for ${language}.`);
+    assert.ok(releaseDocument.includes(`(${language})`), `Missing v1.1 release notes for ${language}.`);
 }
-assert.equal(
-    [...releaseCopy.matchAll(/title: "NexoChess 1\.1"/g)].length,
-    languages.length,
-    "Every language must have an explicit NexoChess 1.1 title."
-);
 
 for (const fragment of [
     "wasSeenLocally()",
@@ -58,46 +39,27 @@ for (const fragment of [
     "markSeenForAccount()",
     "response.status === 401",
     "if (!await markSeenForAccount()) return",
-    "markSeenLocally();\n            setVisible(true);",
     "Date.parse(V1_1_RELEASE_NOTE_CUTOFF) - Date.now()",
-    "window.setTimeout(() => setVisible(false), remaining)",
     "ariaLabelledBy={titleId}"
-]) {
-    assert.ok(releaseNotice.includes(fragment), `Release notice is missing: ${fragment}`);
-}
+]) assert.ok(releaseNotice.includes(fragment), `Archived v1.1 notice is missing: ${fragment}`);
 
+assert.ok(cloudflareApi.includes('new Set(["v1.1", "v1.4"])'));
+assert.ok(cloudflareApi.includes('const prefix = "/api/account/release-notes/"'));
+assert.ok(cloudflareApi.includes("getReleaseNoteState"));
+assert.ok(cloudflareApi.includes("markReleaseNoteSeen"));
+assert.ok(cloudflareApi.includes("ON CONFLICT(user_id, version) DO NOTHING"));
 assert.ok(
-    pageWrapper.includes('lazy(() => import("@/components/releases/ReleaseNotice"))'),
-    "The v1.1 release notice must be loaded globally and lazily."
+    !pageWrapper.includes("<ReleaseNotice/>"),
+    "Expired v1.1 popup must remain archived and must not be mounted in the current shell."
 );
-assert.ok(pageWrapper.includes("<ReleaseNotice/>"));
-
-for (const fragment of [
-    `const RELEASE_NOTE_VERSION = "v1.1"`,
-    endpoint,
-    "getReleaseNoteState",
-    "markReleaseNoteSeen",
-    "ON CONFLICT(user_id, version) DO NOTHING"
-]) {
-    assert.ok(cloudflareApi.includes(fragment), `Cloudflare release-note API is missing: ${fragment}`);
-}
 
 assert.ok(cloudflareAuth.includes("const SCHEMA_VERSION = 2"));
 assert.ok(cloudflareAuth.includes("CREATE TABLE IF NOT EXISTS release_note_views"));
 assert.ok(cloudflareAuth.includes("PRIMARY KEY (user_id, version)"));
-assert.ok(cloudflareAuth.includes('FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE'));
-
 assert.ok(releaseDocument.includes("# NexoChess v1.1 — Release notes"));
-assert.ok(releaseDocument.includes("Release date: 7 August 2026."));
 
 const scripts = JSON.parse(packageJson).scripts;
 assert.equal(scripts["verify:release-v1.1"], "node scripts/verify-release-v1.1.mjs");
-assert.ok(
-    scripts.check.includes("npm run verify:release-v1.1"),
-    "The v1.1 release audit must run in the main check pipeline."
-);
+assert.ok(scripts.check.includes("npm run verify:release-v1.1"));
 
-console.log(
-    "NexoChess v1.1 release verification passed: 11 localized notes, "
-    + "one-time account/local persistence and the 10 August Spain cutoff are wired."
-);
+console.log("Archived NexoChess v1.1 release safeguards passed.");

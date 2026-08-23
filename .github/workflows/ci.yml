@@ -131,6 +131,9 @@ jobs:
       - name: Verify v1.3 release safeguards
         run: npm run verify:release-v1.3
 
+      - name: Verify v1.4 release safeguards
+        run: npm run verify:release-v1.4
+
       - name: Verify v1.1 core hotfix regressions
         run: npm run verify:core-hotfix
 
@@ -196,6 +199,7 @@ jobs:
           node --check scripts/verify-release-v1.1.mjs
           node --check scripts/verify-release-v1.2.mjs
           node --check scripts/verify-release-v1.3.mjs
+          node --check scripts/verify-release-v1.4.mjs
           node --check scripts/verify-v1.1-core-hotfix.mjs
 
       - name: Prepare staging Cloudflare assets

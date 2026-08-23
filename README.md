@@ -3,29 +3,33 @@
 [![CI](https://github.com/ManuG155/nexochess/actions/workflows/ci.yml/badge.svg)](https://github.com/ManuG155/nexochess/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/ManuG155/nexochess/actions/workflows/codeql.yml/badge.svg)](https://github.com/ManuG155/nexochess/actions/workflows/codeql.yml)
 [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
-![Release](https://img.shields.io/badge/release-v1.3-4f8fe8.svg)
+![Release](https://img.shields.io/badge/release-v1.4-4f8fe8.svg)
 
-**NexoChess** is a free, open-source chess learning and analysis web application with Stockfish-powered game review, guided lessons, play against Stockfish, opening repertoires, puzzle training and progress tracking. It works without an account and is designed for desktop, tablet and mobile.
+**NexoChess** is a free, open-source chess learning and analysis web application with Stockfish-powered game review, guided lessons, endgame training, play against Stockfish, opening repertoires, puzzle training, historical statistics and personalised training guidance. It works without an account and is designed for desktop, tablet and mobile.
 
 - Public website: **https://www.nexochess.com**
 - Source code: **https://github.com/ManuG155/nexochess**
-- Current release: **[v1.3](docs/releases/v1.3.md)**
+- Current release: **[v1.4](docs/releases/v1.4.md)**
 - Contact: **contact@nexochess.com**
 
 NexoChess is an independent project. It is not affiliated with, sponsored by or endorsed by Chess.com or lichess.org.
 
-## Current release — v1.3
+## Current release — v1.4
 
-NexoChess v1.3 expands the project from game review into a broader chess-learning platform and introduces the first major mobile/tablet optimisation pass.
+NexoChess v1.4 connects individual game review with historical diagnosis and targeted training, while adding a dedicated Statistics center, an Endgame Laboratory and an optional guided tour of the platform.
 
 Highlights:
 
-- **Lessons:** 80 guided, playable lessons with realistic positions and coach-led practice.
-- **Duel:** play against Stockfish at selectable Elo levels with live move feedback, retry/continue after serious mistakes, Undo/Redo and saved unfinished games.
-- **More pedagogical Analysis:** tactical ideas can open as playable engine variations, important ideas use selective teaching arrows, and board annotations clear naturally after a tap or click.
-- **Mobile and tablet support:** dedicated responsive layouts across Analysis, Puzzles, Archive, Repertoire, Lessons, Duel and the rest of the main interface, with touch-friendly controls and mobile review flows.
-- **Better puzzles from your games:** generated training positions now focus on mistakes, misses and blunders rather than inaccuracies.
-- **Support action:** the navigation bar includes a compact Ko-fi button for optional project support.
+- **Statistics:** a first-class section with game/time filters, accuracy evolution, White/Black comparison, errors by phase, opening performance, puzzle/training data and a gallery of brilliant moves linked to their exact archived positions.
+- **Conclusions:** each analysed game can identify its decisive moment, most important error or pattern and a concrete recommendation, with direct jumps back to the relevant review position.
+- **Automatic training plan:** Archive detects recurring weaknesses conservatively across recent analysed games and turns them into short actionable training tasks.
+- **Endgame Laboratory:** 72 playable fundamental, intermediate and advanced positions, exact tablebase W/D/L feedback where supported, custom FEN loading, hints, retry and mastery by theme.
+- **Repertoire redesign:** a faster compact decision tree with progressive expansion, move popularity, transpositions, search, fullscreen study and semantic zoom for large opening courses.
+- **Stricter Analysis feedback:** tactical explanations follow engine lines more consistently and Brilliant is reserved for genuine sound sacrifices or exceptional drawing resources rather than ordinary pawn sacrifices.
+- **Guided tutorial:** an optional fixed-`?` tour briefly explains the main sections and controls without forcing the user to navigate away.
+- **Performance-first loading:** Statistics details, Endgame Laboratory packs and other heavier features are loaded progressively or lazily rather than inflating every initial page load.
+
+See the complete [v1.4 release notes](docs/releases/v1.4.md).
 
 ## Project status
 
@@ -43,20 +47,25 @@ The project no longer depends on a persistent application running on `localhost`
 - PGN and FEN import plus public Chess.com and Lichess game import.
 - In-browser analysis using Stockfish 17.
 - Evaluation, move classification, accuracy and estimated playing strength.
-- Game summary and move-by-move review.
+- Game summary, move-by-move review and deterministic per-game Conclusions.
 - Interactive tactical explanations and playable alternative engine lines.
 - Selective teaching arrows for important tactical and strategic ideas.
 - Four selectable coaches with translated feedback.
 - 80 guided playable Lessons.
+- Endgame Laboratory with fundamental, intermediate and advanced practice, tablebase feedback and custom FEN loading.
 - Duel mode against Stockfish with selectable Elo, live feedback and saved unfinished games.
 - Local Archive without an account and cloud synchronisation for signed-in users.
+- Automatic training plans derived from repeated weaknesses in analysed games.
+- Dedicated Statistics center for game, opening, puzzle and training history.
+- Brilliant-move gallery linked to the exact archived game and move.
 - Google OAuth and email/password accounts.
 - Verification, password recovery and account email flows.
 - Public profiles and shareable analysed games.
-- Repertoire tools for creating or importing opening lines, studying them move by move and practising guided opening courses.
+- Repertoire tools for creating or importing opening lines, studying compact decision trees and practising guided opening courses.
 - Puzzles generated from analysed mistakes, misses and blunders.
-- Redesigned thematic puzzle training with multi-theme and difficulty filters.
-- Progress, streaks and puzzle rating.
+- Thematic puzzle training with multi-theme and difficulty filters.
+- Puzzle rating, attempts and streak tracking.
+- Optional contextual tutorial explaining the main NexoChess sections and controls.
 - Responsive desktop, tablet and mobile layouts with touch-friendly controls.
 - Light and dark appearance.
 - Interface support for 11 languages.
@@ -114,6 +123,7 @@ shared/                 Shared chess analysis and reporting logic
 scripts/                Build, verification, import and operational scripts
 puzzle-data-worker/     Static puzzle catalogue Worker configuration
 docs/operations/        Deployment, recovery and canonical-domain runbooks
+docs/releases/          Release notes and release-level documentation
 legal/                  Corresponding-source and licence notices
 ```
 
