@@ -24,6 +24,18 @@ const BugReportingWidget = lazy(() => import("@/components/BugReportingWidget"))
 const ReleaseNotice = lazy(() => import("@/components/releases/ReleaseNotice"));
 const ReleaseNoticeV12 = lazy(() => import("@/components/releases/ReleaseNoticeV12"));
 const ReleaseNoticeV13 = lazy(() => import("@/components/releases/ReleaseNoticeV13"));
+const SiteTour = lazy(() => import("@/components/tutorial/SiteTour"));
+
+const SITE_TOUR_ROUTES = new Set([
+    "analysis",
+    "analysis-entry",
+    "academy",
+    "lessons",
+    "engine",
+    "archive",
+    "statistics",
+    "puzzles"
+]);
 
 function PageWrapper({
     children,
@@ -54,6 +66,7 @@ function PageWrapper({
             || "home";
 
     const releaseNoticesEnabled = routeName == "home";
+    const siteTourEnabled = SITE_TOUR_ROUTES.has(routeName);
 
     useEffect(() => initialiseAnalytics(), []);
 
@@ -133,6 +146,10 @@ function PageWrapper({
             <Suspense fallback={null}>
                 <Footer className={footerClassName} style={footerStyle} />
             </Suspense>
+
+            {siteTourEnabled && <Suspense fallback={null}>
+                <SiteTour routeName={routeName}/>
+            </Suspense>}
 
             {bugReportingMode && <Suspense fallback={null}>
                 <BugReportingWidget/>
