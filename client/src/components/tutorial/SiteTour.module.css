@@ -1,0 +1,347 @@
+.launcher,
+.beacon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 44px;
+    height: 44px;
+
+    border: 1px solid rgba(126, 169, 255, .48);
+    border-radius: 999px;
+
+    color: #f8fbff;
+    background:
+        radial-gradient(circle at 32% 28%, rgba(151, 190, 255, .33), transparent 42%),
+        linear-gradient(180deg, rgba(54, 101, 196, .98), rgba(36, 70, 142, .98));
+    box-shadow:
+        0 10px 28px rgba(6, 18, 45, .34),
+        inset 0 0 0 1px rgba(255, 255, 255, .07);
+
+    font: inherit;
+    font-size: 1.35rem;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.launcher {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    z-index: 1200;
+
+    cursor: pointer;
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease;
+}
+
+.launcher:hover {
+    transform: translateY(-2px) scale(1.03);
+    border-color: rgba(153, 190, 255, .78);
+    box-shadow:
+        0 14px 34px rgba(6, 18, 45, .42),
+        inset 0 0 0 1px rgba(255, 255, 255, .1);
+}
+
+.launcher:active {
+    transform: translateY(0) scale(.98);
+}
+
+.launcher:focus-visible,
+.card button:focus-visible {
+    outline: 2px solid rgba(125, 175, 255, .98);
+    outline-offset: 3px;
+}
+
+.spotlight {
+    position: fixed;
+    z-index: 1198;
+
+    border: 2px solid rgba(126, 176, 255, .96);
+    border-radius: 14px;
+    box-shadow:
+        0 0 0 9999px rgba(6, 10, 18, .58),
+        0 0 0 5px rgba(93, 145, 255, .16),
+        0 10px 34px rgba(0, 0, 0, .24);
+
+    pointer-events: none;
+    transition:
+        left .36s cubic-bezier(.2, .8, .2, 1),
+        top .36s cubic-bezier(.2, .8, .2, 1),
+        width .36s cubic-bezier(.2, .8, .2, 1),
+        height .36s cubic-bezier(.2, .8, .2, 1);
+}
+
+.beacon {
+    position: fixed;
+    z-index: 1202;
+
+    width: 34px;
+    height: 34px;
+
+    font-size: 1.05rem;
+
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    transition:
+        left .42s cubic-bezier(.2, .8, .2, 1),
+        top .42s cubic-bezier(.2, .8, .2, 1),
+        transform .18s ease;
+    animation: beaconPulse 1.7s ease-in-out infinite;
+}
+
+.card {
+    box-sizing: border-box;
+    position: fixed;
+    z-index: 1203;
+
+    padding: 18px;
+
+    color: #f4f7fb;
+    background:
+        linear-gradient(180deg, rgba(31, 37, 48, .99), rgba(23, 28, 37, .99));
+    border: 1px solid rgba(255, 255, 255, .1);
+    border-radius: 16px;
+    box-shadow:
+        0 24px 68px rgba(0, 0, 0, .46),
+        inset 0 0 0 1px rgba(255, 255, 255, .025);
+
+    transition:
+        left .28s ease,
+        top .28s ease;
+}
+
+.cardTopline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+.cardTopline > span {
+    color: #8eb4ff;
+    font-size: .72rem;
+    font-weight: 850;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+}
+
+.close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 30px;
+    height: 30px;
+    padding: 0;
+
+    border: 1px solid rgba(255, 255, 255, .08);
+    border-radius: 9px;
+
+    color: rgba(244, 247, 251, .72);
+    background: rgba(255, 255, 255, .035);
+
+    font: inherit;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, .075);
+}
+
+.card h2 {
+    margin: 0;
+
+    color: #fff;
+    font-size: 1.22rem;
+    line-height: 1.2;
+}
+
+.card p {
+    margin: 9px 0 15px;
+
+    color: rgba(229, 235, 245, .79);
+    font-size: .91rem;
+    line-height: 1.52;
+}
+
+.progressLine {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+
+    margin-top: 2px;
+}
+
+.progressLine > span {
+    color: rgba(220, 228, 242, .58);
+    font-size: .75rem;
+    font-weight: 650;
+    white-space: nowrap;
+}
+
+.progressTrack {
+    height: 5px;
+    overflow: hidden;
+
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .07);
+}
+
+.progressTrack i {
+    display: block;
+    height: 100%;
+
+    border-radius: inherit;
+    background: linear-gradient(90deg, #5b91f7, #8db5ff);
+    box-shadow: 0 0 12px rgba(91, 145, 247, .42);
+    transition: width .26s ease;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+
+    margin-top: 15px;
+}
+
+.actions button {
+    min-width: 88px;
+    height: 38px;
+    padding: 0 14px;
+
+    border: 1px solid rgba(255, 255, 255, .1);
+    border-radius: 10px;
+
+    color: rgba(245, 248, 252, .84);
+    background: rgba(255, 255, 255, .04);
+
+    font: inherit;
+    font-size: .86rem;
+    font-weight: 760;
+    cursor: pointer;
+}
+
+.actions button:hover:not(:disabled) {
+    color: #fff;
+    background: rgba(255, 255, 255, .075);
+}
+
+.actions button:disabled {
+    opacity: .38;
+    cursor: default;
+}
+
+.actions .primary {
+    color: #fff;
+    background: linear-gradient(180deg, #477fe8, #3567c9);
+    border-color: rgba(137, 178, 255, .4);
+    box-shadow: 0 7px 18px rgba(35, 76, 159, .25);
+}
+
+.actions .primary:hover:not(:disabled) {
+    background: linear-gradient(180deg, #568cf1, #3d70d4);
+}
+
+@keyframes beaconPulse {
+    0%, 100% {
+        box-shadow:
+            0 8px 24px rgba(6, 18, 45, .34),
+            0 0 0 0 rgba(104, 158, 255, .25);
+    }
+    50% {
+        box-shadow:
+            0 8px 24px rgba(6, 18, 45, .34),
+            0 0 0 8px rgba(104, 158, 255, 0);
+    }
+}
+
+:global(html[data-theme="light"]) .card,
+:global(body[data-theme="light"]) .card {
+    color: #162033;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, .99), rgba(244, 247, 252, .99));
+    border-color: rgba(31, 49, 79, .12);
+    box-shadow:
+        0 24px 60px rgba(55, 76, 111, .22),
+        inset 0 0 0 1px rgba(255, 255, 255, .82);
+}
+
+:global(html[data-theme="light"]) .card h2,
+:global(body[data-theme="light"]) .card h2 {
+    color: #13203a;
+}
+
+:global(html[data-theme="light"]) .card p,
+:global(body[data-theme="light"]) .card p {
+    color: rgba(32, 47, 72, .76);
+}
+
+:global(html[data-theme="light"]) .progressLine > span,
+:global(body[data-theme="light"]) .progressLine > span {
+    color: rgba(37, 52, 76, .56);
+}
+
+:global(html[data-theme="light"]) .progressTrack,
+:global(body[data-theme="light"]) .progressTrack {
+    background: rgba(28, 47, 78, .09);
+}
+
+:global(html[data-theme="light"]) .close,
+:global(body[data-theme="light"]) .close,
+:global(html[data-theme="light"]) .actions button,
+:global(body[data-theme="light"]) .actions button {
+    color: #31405c;
+    background: rgba(38, 64, 105, .045);
+    border-color: rgba(34, 57, 94, .11);
+}
+
+:global(html[data-theme="light"]) .actions .primary,
+:global(body[data-theme="light"]) .actions .primary {
+    color: #fff;
+    background: linear-gradient(180deg, #477fe8, #3567c9);
+    border-color: rgba(61, 105, 191, .34);
+}
+
+@media (max-width: 640px) {
+    .launcher {
+        left: 14px;
+        bottom: 14px;
+        width: 42px;
+        height: 42px;
+    }
+
+    .card {
+        padding: 16px;
+    }
+
+    .card p {
+        font-size: .88rem;
+    }
+
+    .actions button {
+        min-width: 82px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .launcher,
+    .spotlight,
+    .beacon,
+    .card,
+    .progressTrack i {
+        transition: none;
+    }
+
+    .beacon {
+        animation: none;
+    }
+}
