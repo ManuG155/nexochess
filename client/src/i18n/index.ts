@@ -7,7 +7,6 @@ import {
     DEFAULT_LANGUAGE,
     SUPPORTED_LANGUAGES,
     SupportedLanguage,
-    getUrlLanguage,
     installLocalizedLinkRouting,
     normaliseSupportedLanguage,
     parseLanguagePathname,
@@ -103,8 +102,9 @@ function detectBrowserLanguage(): SupportedLanguage {
 
 function getInitialLanguage(): SupportedLanguage {
     if (typeof window == "undefined") return DEFAULT_LANGUAGE;
-    const urlLanguage = getUrlLanguage(window.location.pathname);
-    if (urlLanguage) return urlLanguage;
+
+    const parsedPathname = parseLanguagePathname(window.location.pathname);
+    if (parsedPathname.explicitLanguage) return parsedPathname.language;
 
     const saved = normaliseSupportedLanguage(
         localStorage.getItem(LocalStorageKey.PREFERRED_LANGUAGE)
