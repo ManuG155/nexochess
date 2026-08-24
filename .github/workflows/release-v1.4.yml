@@ -63,23 +63,37 @@ jobs:
 
           exit 0
 
-      - name: Create v1.4 tag and GitHub release
+      - name: Create or correct v1.4 tag and GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
+          RELEASE_SHA: 172456dee0d569584f6339c6c8e95f0312dca56f
         run: |
-          if ! git ls-remote --exit-code --tags origin refs/tags/v1.4 >/dev/null 2>&1; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git tag -a v1.4 "$GITHUB_SHA" -m "NexoChess v1.4"
-            git push origin refs/tags/v1.4
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git fetch origin --tags --force
+          git cat-file -e "$RELEASE_SHA^{commit}"
+
+          current_tag_sha=""
+          if git rev-parse -q --verify 'refs/tags/v1.4^{}' >/dev/null 2>&1; then
+            current_tag_sha="$(git rev-parse 'refs/tags/v1.4^{}')"
+          fi
+
+          if [ "$current_tag_sha" != "$RELEASE_SHA" ]; then
+            echo "Correcting v1.4 tag from ${current_tag_sha:-missing} to $RELEASE_SHA."
+            git tag -fa v1.4 "$RELEASE_SHA" -m "NexoChess v1.4"
+            git push --force origin refs/tags/v1.4
+          else
+            echo "v1.4 tag already points to the final production release commit."
           fi
 
           if gh release view v1.4 >/dev/null 2>&1; then
-            echo "GitHub release v1.4 already exists."
-            exit 0
+            gh release edit v1.4 \
+              --title "NexoChess v1.4" \
+              --notes-file docs/releases/v1.4.md
+          else
+            gh release create v1.4 \
+              --verify-tag \
+              --title "NexoChess v1.4" \
+              --notes-file docs/releases/v1.4.md
           fi
-
-          gh release create v1.4 \
-            --verify-tag \
-            --title "NexoChess v1.4" \
-            --notes-file docs/releases/v1.4.md
