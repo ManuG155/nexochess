@@ -1,0 +1,98 @@
+.access {
+    width: min(1120px, calc(100% - 36px));
+    margin: 18px auto 8px;
+    padding: 0 10px;
+}
+
+.card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 16px;
+    align-items: center;
+    width: 100%;
+    padding: 16px 18px;
+    border: 1px solid rgba(91, 174, 255, 0.2);
+    border-radius: 16px;
+    background:
+        radial-gradient(circle at 90% 18%, rgba(69, 162, 255, 0.13), transparent 35%),
+        linear-gradient(150deg, rgba(18, 39, 64, 0.92), rgba(12, 27, 45, 0.94));
+    color: #eef7ff;
+    text-align: left;
+    cursor: pointer;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
+    transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.card:hover {
+    transform: translateY(-1px);
+    border-color: rgba(91, 174, 255, 0.46);
+    background:
+        radial-gradient(circle at 90% 18%, rgba(69, 162, 255, 0.18), transparent 35%),
+        linear-gradient(150deg, rgba(21, 46, 75, 0.96), rgba(13, 31, 52, 0.96));
+}
+
+.icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(105, 185, 255, 0.24);
+    border-radius: 13px;
+    background: rgba(69, 157, 239, 0.1);
+    color: #82caff;
+    font-size: 1.45rem;
+}
+
+.copy {
+    min-width: 0;
+}
+
+.copy strong,
+.copy span {
+    display: block;
+}
+
+.copy strong {
+    color: #fff;
+    font-size: 1rem;
+}
+
+.copy span {
+    margin-top: 4px;
+    color: rgba(220, 234, 249, 0.64);
+    font-size: 0.84rem;
+    line-height: 1.45;
+}
+
+.cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #83c8ff;
+    font-size: 0.82rem;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+    .access {
+        width: calc(100% - 20px);
+        padding: 0;
+    }
+
+    .card {
+        grid-template-columns: auto minmax(0, 1fr);
+        padding: 14px;
+    }
+
+    .cta {
+        grid-column: 2;
+        justify-self: start;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card {
+        transition: none;
+    }
+}

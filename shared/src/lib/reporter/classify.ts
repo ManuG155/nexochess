@@ -14,10 +14,6 @@ import {
 } from "@/constants/Classification";
 
 import {
-    adaptPieceColour
-} from "@/constants/PieceColour";
-
-import {
     extractPreviousStateTreeNode,
     extractCurrentStateTreeNode
 } from "./utils/extractNode";
@@ -25,10 +21,6 @@ import {
 import {
     getOpeningName
 } from "./utils/opening";
-
-import {
-    getExpectedPointsLoss
-} from "./expectedPoints";
 
 import {
     pointLossClassify
@@ -48,34 +40,17 @@ import {
 
 /*
  * ============================================================
- * CLASSIFICATION V10 - RATING-AWARE STABLE
+ * CLASSIFICATION V11 - ENGINE COHERENT
  * ============================================================
  *
- * V10 keeps the multi-game structural rules from V9 and adds a conservative
- * elite-rating correction only to standard classifications and Best.
+ * The move shown as Stockfish PV1 is the engine recommendation for the
+ * position. Review must never display that same move as an inaccuracy,
+ * mistake or miss merely because the next independently analysed position
+ * converged to a slightly different evaluation.
  *
- * It keeps the V8 standard EP calibration intact and changes only four
- * structural points that failed to generalise:
- *
- * 1. BOOK
- *    Early theoretical recaptures can extend book by one extra ply.
- *
- * 2. BEST
- *    A nominal engine top move is only Best when the post-move evaluation
- *    also confirms that it did not lose meaningful Expected Points.
- *    This reduces unstable low-depth false Best classifications.
- *
- * 3. MISS
- *    Miss is now conservative around Best/Excellent moves and the V9
- *    detector adds baseline/gap checks to reduce ordinary mistakes being
- *    stolen by Miss.
- *
- * 4. GREAT
- *    The detector is still an override from Best/Excellent, but critical.ts
- *    now permits genuinely critical captures while rejecting obvious
- *    valuable recaptures.
- *
- * Accuracy V2 and Game Rating V5 are not modified.
+ * Standard non-PV1 moves still use Expected Points loss. Miss, Great and
+ * Brilliant remain contextual overrides, but PV1 always starts from Best.
+ * Accuracy and Game Rating formulas are not changed here.
  */
 
 const MAX_THEORY_PLY = 16;
@@ -83,66 +58,6 @@ const THEORY_GAP_GRACE_PLIES = 3;
 const THEORY_GRACE_CUTOFF_PLY = 6;
 const THEORY_RECAPTURE_CUTOFF_PLY = 8;
 const THEORY_RECAPTURE_MAX_GAP_PLIES = 2;
-
-/*
- * Top-line instability guard.
- * A move can briefly appear as PV1 at one search depth yet evaluate worse
- * once the resulting position is analysed. V9 only grants Best when that
- * verification loss is tiny.
- */
-const BEST_BASE_MAX_VERIFICATION_EP_LOSS = 0.008;
-const BEST_ELITE_MAX_VERIFICATION_EP_LOSS = 0.014;
-const BEST_ELITE_TOLERANCE_START_RATING = 2200;
-const BEST_ELITE_TOLERANCE_FULL_RATING = 3000;
-
-function clamp(
-    value: number,
-    min: number,
-    max: number
-) {
-    return Math.min(
-        max,
-        Math.max(
-            min,
-            value
-        )
-    );
-}
-
-function getBestVerificationTolerance(
-    playerRating?: number
-) {
-    if (
-        playerRating == undefined
-        || !Number.isFinite(
-            playerRating
-        )
-    ) {
-        return BEST_BASE_MAX_VERIFICATION_EP_LOSS;
-    }
-
-    const eliteFactor =
-        clamp(
-            (
-                playerRating
-                - BEST_ELITE_TOLERANCE_START_RATING
-            )
-            /
-            (
-                BEST_ELITE_TOLERANCE_FULL_RATING
-                - BEST_ELITE_TOLERANCE_START_RATING
-            ),
-            0,
-            1
-        );
-
-    return BEST_BASE_MAX_VERIFICATION_EP_LOSS
-        + eliteFactor
-        * (
-            BEST_ELITE_MAX_VERIFICATION_EP_LOSS
-            - BEST_BASE_MAX_VERIFICATION_EP_LOSS
-        );
-}
 
 function getNodePly(
     node: StateTreeNode
@@ -242,9 +157,6 @@ function isStillInOpeningTheory(
             const gap =
                 ply - ancestorPly;
 
-            /*
-             * Original early grace used by V8.
-             */
             if (
                 ply <= THEORY_GRACE_CUTOFF_PLY
                 && gap <= THEORY_GAP_GRACE_PLIES
@@ -252,12 +164,6 @@ function isStillInOpeningTheory(
                 return true;
             }
 
-            /*
-             * Multi-game V9 addition:
-             * allow an early immediate recapture to remain theoretical.
-             * This captures opening lines such as the Smith-Morra-style
-             * Nxc3 recapture without turning an unrelated Bb5+ into Book.
-             */
             if (
                 ply <= THEORY_RECAPTURE_CUTOFF_PLY
                 && immediateRecapture
@@ -368,29 +274,18 @@ export function classify(
 
     /*
      * 4. STANDARD CLASSIFICATION
+     *
+     * Compare UCI/LAN first. SAN is retained only as a compatibility
+     * fallback. If the played move is PV1, it is the engine's Best move.
      */
     const topMovePlayed =
-        previous.topMove.san
-        == current.playedMove.san;
-
-    const topMoveVerificationLoss =
-        getExpectedPointsLoss(
-            previous.evaluation,
-            current.evaluation,
-            adaptPieceColour(
-                current.playedMove.color
-            )
-        );
-
-    const stableTopMove =
-        topMovePlayed
-        && topMoveVerificationLoss
-            <= getBestVerificationTolerance(
-                playerRating
-            );
+        previous.topMove.lan
+            == current.playedMove.lan
+        || previous.topMove.san
+            == current.playedMove.san;
 
     let classification =
-        stableTopMove
+        topMovePlayed
             ? Classification.BEST
             : pointLossClassify(
                 previous,
@@ -401,9 +296,9 @@ export function classify(
     /*
      * 5. MISS
      *
-     * A move already evaluated as Best or Excellent should not be stolen
-     * by a contextual Miss rule. This specifically reduces the kind of
-     * false Miss inflation observed in the acgoody benchmark.
+     * A Best or Excellent move cannot be stolen by the contextual Miss
+     * detector. In particular, PV1 can no longer be both the recommended
+     * arrow and an inaccuracy/miss in the move list.
      */
     const missEligible =
         classification

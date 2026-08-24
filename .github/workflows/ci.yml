@@ -44,6 +44,9 @@ jobs:
       - name: Audit Lessons curriculum
         run: npm run check:lessons
 
+      - name: Audit Endgame Laboratory
+        run: npm run check:endgames
+
       - name: Audit puzzle backend
         run: npm run check:puzzles
 
@@ -128,6 +131,9 @@ jobs:
       - name: Verify v1.3 release safeguards
         run: npm run verify:release-v1.3
 
+      - name: Verify v1.4 release safeguards
+        run: npm run verify:release-v1.4
+
       - name: Verify v1.1 core hotfix regressions
         run: npm run verify:core-hotfix
 
@@ -156,6 +162,7 @@ jobs:
           node --check cloudflare/emailQueue.mjs
           node --check scripts/build-cloudflare.mjs
           node --check scripts/check-lessons.mjs
+          node --check scripts/check-endgame-lab.mjs
           node --check scripts/check-puzzle-backend.mjs
           node --check scripts/cloudflare-operations.mjs
           node --check scripts/portable-command-shim.mjs
@@ -192,6 +199,7 @@ jobs:
           node --check scripts/verify-release-v1.1.mjs
           node --check scripts/verify-release-v1.2.mjs
           node --check scripts/verify-release-v1.3.mjs
+          node --check scripts/verify-release-v1.4.mjs
           node --check scripts/verify-v1.1-core-hotfix.mjs
 
       - name: Prepare staging Cloudflare assets

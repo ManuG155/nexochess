@@ -21,9 +21,19 @@ import "./Accessibility.css";
 const queryClient = new QueryClient();
 const Footer = lazy(() => import("@/components/layout/Footer"));
 const BugReportingWidget = lazy(() => import("@/components/BugReportingWidget"));
-const ReleaseNotice = lazy(() => import("@/components/releases/ReleaseNotice"));
-const ReleaseNoticeV12 = lazy(() => import("@/components/releases/ReleaseNoticeV12"));
-const ReleaseNoticeV13 = lazy(() => import("@/components/releases/ReleaseNoticeV13"));
+const ReleaseNoticeV14 = lazy(() => import("@/components/releases/ReleaseNoticeV14"));
+const SiteTour = lazy(() => import("@/components/tutorial/SiteTour"));
+
+const SITE_TOUR_ROUTES = new Set([
+    "analysis",
+    "analysis-entry",
+    "academy",
+    "lessons",
+    "engine",
+    "archive",
+    "statistics",
+    "puzzles"
+]);
 
 function PageWrapper({
     children,
@@ -54,6 +64,7 @@ function PageWrapper({
             || "home";
 
     const releaseNoticesEnabled = routeName == "home";
+    const siteTourEnabled = SITE_TOUR_ROUTES.has(routeName);
 
     useEffect(() => initialiseAnalytics(), []);
 
@@ -134,21 +145,17 @@ function PageWrapper({
                 <Footer className={footerClassName} style={footerStyle} />
             </Suspense>
 
+            {siteTourEnabled && <Suspense fallback={null}>
+                <SiteTour routeName={routeName}/>
+            </Suspense>}
+
             {bugReportingMode && <Suspense fallback={null}>
                 <BugReportingWidget/>
             </Suspense>}
 
-            {releaseNoticesEnabled && releaseNoticesReady && <>
-                <Suspense fallback={null}>
-                    <ReleaseNoticeV13/>
-                </Suspense>
-                <Suspense fallback={null}>
-                    <ReleaseNoticeV12/>
-                </Suspense>
-                <Suspense fallback={null}>
-                    <ReleaseNotice/>
-                </Suspense>
-            </>}
+            {releaseNoticesEnabled && releaseNoticesReady && <Suspense fallback={null}>
+                <ReleaseNoticeV14/>
+            </Suspense>}
             <CookieConsent/>
             <ToastContainer/>
         </div>

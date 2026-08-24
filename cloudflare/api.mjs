@@ -2,7 +2,7 @@ const MAX_ARCHIVE_BODY_BYTES = 500_000;
 const MAXIMUM_ARCHIVE_SIZE = 50;
 const MAX_DELETE_IDS = 50;
 const MAX_PROGRESS_COMPLETIONS = 20_000;
-const RELEASE_NOTE_VERSION = "v1.1";
+const RELEASE_NOTE_VERSIONS = new Set(["v1.1", "v1.4"]);
 const USERNAME_PATTERN = /^[a-z0-9_]{3,20}$/i;
 const PUBLIC_ARCHIVE_ID_PATTERN = /^[a-z0-9_-]{1,100}$/i;
 const MUTATING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
@@ -136,6 +136,14 @@ function publicArchiveId(url) {
     return PUBLIC_ARCHIVE_ID_PATTERN.test(id) ? id : null;
 }
 
+function releaseNoteVersion(pathname) {
+    const prefix = "/api/account/release-notes/";
+    if (!pathname.startsWith(prefix)) return null;
+
+    const version = pathname.slice(prefix.length);
+    return RELEASE_NOTE_VERSIONS.has(version) ? version : null;
+}
+
 async function getSession(auth, request) {
     try {
         return await auth.api.getSession({ headers: request.headers });
@@ -258,7 +266,7 @@ async function updateDateOfBirth(request, env, auth) {
     return empty(200);
 }
 
-async function getReleaseNoteState(request, env, auth) {
+async function getReleaseNoteState(request, env, auth, version) {
     const session = await requireSession(auth, request);
     if (!session) return empty(401);
 
@@ -267,12 +275,12 @@ async function getReleaseNoteState(request, env, auth) {
         FROM release_note_views
         WHERE user_id = ? AND version = ?
         LIMIT 1
-    `).bind(session.user.id, RELEASE_NOTE_VERSION).first();
+    `).bind(session.user.id, version).first();
 
     return json({ seen: Boolean(row?.seen) });
 }
 
-async function markReleaseNoteSeen(request, env, auth) {
+async function markReleaseNoteSeen(request, env, auth, version) {
     const session = await requireSession(auth, request);
     if (!session) return empty(401);
 
@@ -280,7 +288,7 @@ async function markReleaseNoteSeen(request, env, auth) {
         INSERT INTO release_note_views(user_id, version, seen_at)
         VALUES (?, ?, ?)
         ON CONFLICT(user_id, version) DO NOTHING
-    `).bind(session.user.id, RELEASE_NOTE_VERSION, Date.now()).run();
+    `).bind(session.user.id, version, Date.now()).run();
 
     return empty(200);
 }
@@ -558,7 +566,7 @@ function allowedMethods(pathname) {
     if (pathname === "/api/account/profile") return ["GET"];
     if (pathname.startsWith("/api/public/profile/")) return ["GET"];
     if (pathname === "/api/account/date-of-birth") return ["POST"];
-    if (pathname === "/api/account/release-notes/v1.1") return ["GET", "POST"];
+    if (releaseNoteVersion(pathname)) return ["GET", "POST"];
     if (pathname === "/api/analysis/archive") return ["GET"];
     if (pathname === "/api/analysis/archive/add") return ["POST"];
     if (pathname === "/api/analysis/archive/delete") return ["POST"];
@@ -582,10 +590,11 @@ async function routeApiRequest(request, url, pathname, env, auth) {
         return updateDateOfBirth(request, env, auth);
     }
 
-    if (pathname === "/api/account/release-notes/v1.1") {
+    const noteVersion = releaseNoteVersion(pathname);
+    if (noteVersion) {
         return request.method === "GET"
-            ? getReleaseNoteState(request, env, auth)
-            : markReleaseNoteSeen(request, env, auth);
+            ? getReleaseNoteState(request, env, auth, noteVersion)
+            : markReleaseNoteSeen(request, env, auth, noteVersion);
     }
 
     if (pathname === "/api/analysis/archive") {

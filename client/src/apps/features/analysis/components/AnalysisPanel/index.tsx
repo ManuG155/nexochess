@@ -53,14 +53,22 @@ function AnalysisPanel({
         state => state.setAutoplayEnabled
     );
 
+    const reviewRequested = new URLSearchParams(
+        window.location.search
+    ).get("review") == "1";
+
     const [
         sidePanelMode,
         setSidePanelMode
-    ] = useState<SidePanelMode>("summary");
+    ] = useState<SidePanelMode>(
+        reviewRequested ? "review" : "summary"
+    );
 
     useEffect(() => {
         if (!gameAnalysisOpen) {
-            setSidePanelMode("summary");
+            setSidePanelMode(
+                reviewRequested ? "review" : "summary"
+            );
             return;
         }
 
@@ -69,7 +77,11 @@ function AnalysisPanel({
         // focused on game selection and the board preview.
         void loadGameSummaryPanel();
         void loadReviewContent();
-    }, [gameAnalysisOpen]);
+
+        if (reviewRequested) {
+            setSidePanelMode("review");
+        }
+    }, [gameAnalysisOpen, reviewRequested]);
 
     useEffect(() => {
         onModeChange?.(sidePanelMode);

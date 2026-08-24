@@ -5,8 +5,6 @@ import React, {
 } from "react";
 import { useTranslation } from "react-i18next";
 
-import ads from "@/constants/advertisements";
-import Advertisement from "@/components/Advertisement";
 import SemanticDiscoverySection from
     "@/components/SemanticDiscoverySection/SemanticDiscoverySection";
 import { getSemanticDiscoveryCopy } from "@/i18n/semanticDiscoveryCopy";
@@ -84,15 +82,6 @@ function Analysis() {
         data-analysis-view={mobileView}
     >
         <div className={styles.analysisStage}>
-            <div className={`${styles.sideAdvertisement} ${styles.sideAdvertisementLeft}`}>
-                <Advertisement
-                    adUnitId={ads.analysis.side}
-                    format="vertical"
-                    fullWidthResponsive={false}
-                    style={{ width: "100%" }}
-                />
-            </div>
-
             <div
                 className={`${styles.analysisSection} nexo-analysis-layout`}
                 data-analysis-mobile-view={mobileView}
@@ -104,15 +93,6 @@ function Analysis() {
                 <AnalysisPanel
                     className={styles.panel}
                     onModeChange={setPanelMode}
-                />
-            </div>
-
-            <div className={`${styles.sideAdvertisement} ${styles.sideAdvertisementRight}`}>
-                <Advertisement
-                    adUnitId={ads.analysis.side}
-                    format="vertical"
-                    fullWidthResponsive={false}
-                    style={{ width: "100%" }}
                 />
             </div>
         </div>

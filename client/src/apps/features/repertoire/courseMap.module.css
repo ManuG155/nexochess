@@ -1,0 +1,883 @@
+.pageScrollCatalogue {
+    max-height: none !important;
+    overflow: visible !important;
+    padding-right: 2px !important;
+}
+
+.mapCard,
+.mapCard * {
+    box-sizing: border-box;
+}
+
+.mapCard {
+    position: relative;
+    padding: 16px;
+    border: 1px solid #293d55;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #0d1723 0%, #0a141f 100%);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, .16);
+    color: #eaf2fa;
+}
+
+.mapHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 10px;
+}
+
+.mapHeadText {
+    min-width: 0;
+}
+
+.mapHeadText strong {
+    display: block;
+    font-size: 1.08rem;
+}
+
+.mapHeadText span {
+    display: block;
+    margin-top: 4px;
+    color: #8fa2b6;
+    font-size: .9rem;
+    line-height: 1.35;
+}
+
+.mapHeadRight {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 9px;
+    min-width: 0;
+}
+
+.mapProgress {
+    flex: 0 0 auto;
+    color: #8fc3ff;
+    font-size: .92rem;
+    font-weight: 800;
+}
+
+.fullscreenButton,
+.semanticControls button {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid #304963;
+    border-radius: 8px;
+    background: #101d2b;
+    color: #b8c8d9;
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.fullscreenButton:hover,
+.semanticControls button:hover:not(:disabled) {
+    border-color: #478fdd;
+    background: #153354;
+    color: #fff;
+}
+
+.fullscreenButton:focus-visible,
+.semanticControls button:focus-visible {
+    outline: 2px solid #5ba7f4;
+    outline-offset: 2px;
+}
+
+.fullscreenButton svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.semanticControls {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px;
+    border: 1px solid #263c55;
+    border-radius: 10px;
+    background: #0b1724;
+}
+
+.semanticControls span {
+    min-width: 86px;
+    color: #91a5bb;
+    font-size: .72rem;
+    font-weight: 750;
+    text-align: center;
+}
+
+.semanticControls button {
+    width: 28px;
+    height: 27px;
+    border-radius: 6px;
+}
+
+.semanticControls button:disabled {
+    opacity: .35;
+    cursor: default;
+}
+
+.mapTrack {
+    height: 6px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #1a2a3e;
+}
+
+.mapTrack i {
+    display: block;
+    height: 100%;
+    background: #438fe4;
+}
+
+.searchWrap {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 9px;
+    width: min(760px, 100%);
+    margin: 0 auto 12px;
+    padding: 0 11px;
+    border: 1px solid #293f58;
+    border-radius: 10px;
+    background: #0a1521;
+}
+
+.searchWrap:focus-within {
+    border-color: #4c8fd5;
+    box-shadow: 0 0 0 2px rgba(76, 143, 213, .1);
+}
+
+.searchWrap svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: #7f96ad;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+}
+
+.searchWrap input {
+    width: 100%;
+    height: 42px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #eaf2fa;
+    font: inherit;
+    font-size: .88rem;
+}
+
+.searchWrap input::placeholder {
+    color: #75889d;
+}
+
+.searchWrap > span {
+    color: #7fb9f5;
+    font-size: .72rem;
+    font-weight: 750;
+    white-space: nowrap;
+}
+
+.searchResults {
+    width: min(900px, 100%);
+    max-height: 240px;
+    margin: 0 auto 12px;
+    padding: 6px;
+    overflow: auto;
+    border: 1px solid #293e56;
+    border-radius: 10px;
+    background: #091521;
+    scrollbar-width: thin;
+}
+
+.searchResults > p {
+    margin: 12px;
+    color: #8ea0b4;
+    text-align: center;
+    font-size: .82rem;
+}
+
+.searchResults > button {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+    padding: 8px 10px;
+    border: 0;
+    border-bottom: 1px solid #1e3044;
+    background: transparent;
+    color: #dce7f3;
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+}
+
+.searchResults > button:last-of-type {
+    border-bottom: 0;
+}
+
+.searchResults > button:hover {
+    background: #112840;
+}
+
+.searchResults > button span {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+}
+
+.searchResults strong,
+.searchResults small {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.searchResults strong {
+    font-size: .81rem;
+}
+
+.searchResults small {
+    color: #8295aa;
+    font-size: .68rem;
+}
+
+.searchResults em {
+    color: #72aff0;
+    font-size: .7rem;
+    font-style: normal;
+    font-weight: 800;
+}
+
+.moreMatches {
+    display: block;
+    padding: 7px 10px;
+    color: #8196ab;
+    font-size: .7rem;
+    text-align: center;
+}
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: min(980px, 100%);
+    margin: 0 auto 10px;
+    padding: 2px 1px 5px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+.breadcrumb > span {
+    color: #506a84;
+    font-size: .8rem;
+}
+
+.breadcrumb button {
+    flex: 0 0 auto;
+    padding: 5px 8px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: transparent;
+    color: #8399ae;
+    font: inherit;
+    font-size: .72rem;
+    cursor: pointer;
+}
+
+.breadcrumb button:hover {
+    border-color: #2e4c6b;
+    background: #10243a;
+    color: #cfe5fb;
+}
+
+.breadcrumb button[data-current="true"] {
+    border-color: #356a9d;
+    background: #132f4c;
+    color: #a9d4ff;
+}
+
+.focusViewport {
+    min-height: 360px;
+    padding: 24px 22px 28px;
+    border: 1px solid #22354b;
+    border-radius: 12px;
+    background-color: #08121c;
+    background-image: radial-gradient(circle at 1px 1px, rgba(105, 151, 198, .14) 1px, transparent 0);
+    background-size: 20px 20px;
+}
+
+.currentNode {
+    position: relative;
+    display: grid;
+    gap: 6px;
+    width: min(660px, 96%);
+    margin: 0 auto;
+    padding: 15px 18px;
+    border: 1px solid #4789c7;
+    border-radius: 13px;
+    background: linear-gradient(180deg, #15385a, #102840);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, .25);
+}
+
+.currentNode[data-ready="true"] {
+    border-color: #4a9a72;
+    background: linear-gradient(180deg, #153d31, #102b23);
+}
+
+.currentEyebrow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.currentEyebrow > span,
+.currentEyebrow > em {
+    font-size: .66rem;
+    font-weight: 850;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+}
+
+.currentEyebrow > span {
+    color: #7ab8f8;
+}
+
+.currentEyebrow > em {
+    padding: 3px 7px;
+    border: 1px solid rgba(119, 184, 248, .28);
+    border-radius: 999px;
+    background: rgba(15, 39, 62, .55);
+    color: #a9d5ff;
+    font-style: normal;
+}
+
+.currentNode[data-ready="true"] .currentEyebrow > span,
+.currentNode[data-ready="true"] .currentEyebrow > em {
+    color: #9ee0bb;
+}
+
+.currentNode[data-ready="true"] .currentEyebrow > em {
+    border-color: rgba(111, 202, 151, .3);
+    background: rgba(22, 63, 47, .55);
+}
+
+.currentNode > strong {
+    font-size: 1.05rem;
+}
+
+.currentNode > p {
+    margin: 1px 0 0;
+    color: #d5e7f8;
+    font-size: .88rem;
+    font-weight: 750;
+    line-height: 1.45;
+}
+
+.currentNode > small {
+    color: #87a0b8;
+    font-size: .72rem;
+}
+
+.lineReady {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 14px;
+    align-items: center;
+    width: min(760px, 96%);
+    margin: 12px auto 0;
+    padding: 12px 13px 12px 15px;
+    border: 1px solid #356c52;
+    border-radius: 11px;
+    background: #10251d;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .18);
+}
+
+.lineReady > div {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+}
+
+.lineReady span {
+    color: #82d5a5;
+    font-size: .69rem;
+    font-weight: 850;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+}
+
+.lineReady strong {
+    overflow: hidden;
+    color: #e6f7ed;
+    font-size: .88rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lineReady small {
+    color: #84a692;
+    font-size: .7rem;
+}
+
+.studyButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 40px;
+    padding: 8px 13px;
+    border: 1px solid #56a7f5;
+    border-radius: 8px;
+    background: #2676c7;
+    color: white;
+    font: inherit;
+    font-size: .78rem;
+    font-weight: 850;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.studyButton:hover {
+    background: #3488dc;
+}
+
+.studyButton b {
+    font-size: 1rem;
+}
+
+.fullPath {
+    width: min(900px, 96%);
+    margin: 12px auto 0;
+    padding: 9px 12px;
+    border: 1px solid #2a4057;
+    border-radius: 9px;
+    background: #0d1a27;
+}
+
+.fullPath > span {
+    display: block;
+    margin-bottom: 3px;
+    color: #6faef0;
+    font-size: .65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.fullPath > p {
+    margin: 0;
+    color: #aebed0;
+    font-size: .76rem;
+    line-height: 1.55;
+    text-align: center;
+}
+
+.branchSection {
+    width: min(920px, 100%);
+    margin: 18px auto 0;
+}
+
+.decisionHeader {
+    width: min(820px, 100%);
+    margin: 0 auto 12px;
+    padding: 0 2px;
+}
+
+.decisionHeader > span {
+    display: block;
+    color: #dceafa;
+    font-size: .88rem;
+    font-weight: 850;
+}
+
+.decisionHeader > p {
+    margin: 4px 0 0;
+    color: #8296aa;
+    font-size: .75rem;
+    line-height: 1.4;
+}
+
+.branchList {
+    position: relative;
+    display: grid;
+    gap: 10px;
+    width: min(820px, 100%);
+    margin: 0 auto;
+    padding-left: 34px;
+}
+
+.branchList::before {
+    content: "";
+    position: absolute;
+    left: 13px;
+    top: 22px;
+    bottom: 22px;
+    width: 2px;
+    border-radius: 999px;
+    background: #355d82;
+    opacity: .9;
+}
+
+.branchRow {
+    position: relative;
+    min-width: 0;
+}
+
+.branchRow::before {
+    content: "";
+    position: absolute;
+    left: -20px;
+    top: 50%;
+    width: 20px;
+    height: 2px;
+    transform: translateY(-1px);
+    background: #355d82;
+}
+
+.branchRow::after {
+    content: "";
+    position: absolute;
+    left: -25px;
+    top: 50%;
+    width: 9px;
+    height: 9px;
+    transform: translateY(-50%);
+    border: 2px solid #4b789f;
+    border-radius: 50%;
+    background: #0b1723;
+}
+
+.branchCard {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    min-height: 86px;
+    padding: 11px 13px;
+    border: 1px solid #2d445d;
+    border-radius: 10px;
+    background: #0e1b29;
+    color: #e9f2fb;
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease, transform .15s ease;
+}
+
+.branchCard:hover {
+    transform: translateX(3px);
+    border-color: #4e91d4;
+    background: #122a43;
+}
+
+.branchCard[data-recommended="true"] {
+    border-color: #4b91d5;
+    background: #123251;
+    box-shadow: 0 0 0 1px rgba(76, 151, 225, .13);
+}
+
+.branchCardCopy {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+}
+
+.branchCardTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-width: 0;
+}
+
+.branchMove {
+    min-width: 0;
+    color: #dcecff;
+    font-size: .88rem;
+    font-weight: 850;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.branchCardTop em {
+    flex: 0 0 auto;
+    padding: 3px 7px;
+    border: 1px solid #477faf;
+    border-radius: 999px;
+    background: #163a5d;
+    color: #9dceff;
+    font-size: .63rem;
+    font-style: normal;
+    font-weight: 850;
+    white-space: nowrap;
+}
+
+.branchCard strong {
+    display: block;
+    overflow: hidden;
+    color: #bdccdc;
+    font-size: .78rem;
+    line-height: 1.3;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.branchCard small {
+    display: block;
+    color: #7f95aa;
+    font-size: .69rem;
+}
+
+.branchArrow {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid #315372;
+    border-radius: 50%;
+    background: #11263a;
+    color: #8fc4f7;
+    font-size: 1rem;
+}
+
+.branchCard:hover .branchArrow {
+    border-color: #4e91d4;
+    background: #183a5a;
+    color: #fff;
+}
+
+.alternativesButton,
+.showLessButton {
+    width: 100%;
+    min-height: 58px;
+    padding: 10px 13px;
+    border: 1px dashed #3a6288;
+    border-radius: 10px;
+    background: #0b1a28;
+    color: #9bc8f4;
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+}
+
+.alternativesButton:hover,
+.showLessButton:hover {
+    border-color: #5092d1;
+    background: #102840;
+}
+
+.alternativesButton strong,
+.alternativesButton small {
+    display: block;
+}
+
+.alternativesButton strong {
+    font-size: .78rem;
+}
+
+.alternativesButton small {
+    margin-top: 3px;
+    color: #7891a8;
+    font-size: .68rem;
+}
+
+.showLessButton {
+    min-height: 42px;
+    color: #809bb5;
+    text-align: center;
+    font-size: .72rem;
+    font-weight: 750;
+}
+
+.focusViewport[data-level="0"] .branchCard {
+    min-height: 72px;
+}
+
+.focusViewport[data-level="0"] .branchCard strong {
+    display: none;
+}
+
+.focusViewport[data-level="2"] .branchCard,
+.focusViewport[data-level="3"] .branchCard {
+    min-height: 92px;
+}
+
+.fullscreenHint {
+    margin-top: 9px;
+    color: #7890a7;
+    font-size: .72rem;
+    text-align: center;
+}
+
+.mapEmpty {
+    min-height: 180px;
+    display: grid;
+    place-items: center;
+    color: #8da0b4;
+    text-align: center;
+}
+
+.mapCard:fullscreen {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    padding: 16px;
+    border: 0;
+    border-radius: 0;
+    background: #091522;
+}
+
+.mapCard:fullscreen .mapHead,
+.mapCard:fullscreen .mapTrack,
+.mapCard:fullscreen .searchWrap,
+.mapCard:fullscreen .breadcrumb,
+.mapCard:fullscreen .fullscreenHint {
+    flex: 0 0 auto;
+}
+
+.mapCard:fullscreen .focusViewport {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    scrollbar-width: thin;
+}
+
+.mapCard:fullscreen .searchResults {
+    position: absolute;
+    z-index: 20;
+    left: 50%;
+    top: 126px;
+    width: min(900px, calc(100% - 32px));
+    transform: translateX(-50%);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, .42);
+}
+
+@media (max-width: 900px) {
+    .mapHead {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .mapHeadRight {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    .focusViewport {
+        min-height: 340px;
+        padding: 20px 14px 24px;
+    }
+}
+
+@media (max-width: 620px) {
+    .mapCard {
+        padding: 11px;
+    }
+
+    .mapProgress {
+        font-size: .8rem;
+    }
+
+    .searchWrap {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .searchWrap > span {
+        display: none;
+    }
+
+    .focusViewport {
+        padding: 16px 9px 20px;
+    }
+
+    .currentNode {
+        width: 100%;
+    }
+
+    .currentEyebrow {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .lineReady {
+        grid-template-columns: 1fr;
+        width: 100%;
+    }
+
+    .studyButton {
+        width: 100%;
+    }
+
+    .branchList {
+        padding-left: 28px;
+    }
+
+    .branchList::before {
+        left: 10px;
+    }
+
+    .branchRow::before {
+        left: -18px;
+        width: 18px;
+    }
+
+    .branchRow::after {
+        left: -22px;
+    }
+
+    .branchCardTop {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .branchCard {
+        grid-template-columns: minmax(0, 1fr) 30px;
+        gap: 8px;
+    }
+
+    .branchArrow {
+        width: 30px;
+        height: 30px;
+    }
+
+    .mapHeadText span {
+        font-size: .8rem;
+    }
+
+    .mapCard:fullscreen {
+        padding: 9px;
+    }
+
+    .mapCard:fullscreen .mapHeadText span {
+        display: none;
+    }
+
+    .semanticControls span {
+        min-width: 70px;
+        font-size: .65rem;
+    }
+
+    .fullPath {
+        width: 100%;
+    }
+}

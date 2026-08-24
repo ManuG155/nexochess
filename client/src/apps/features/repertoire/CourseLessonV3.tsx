@@ -29,6 +29,7 @@ import { courseDepthCopy, formatDepthCopy } from "./courseDepthCopy";
 import { useRepertoireEnhancementCopy } from "./repertoireEnhancementCopy";
 import RepertoireEngineInsight from "./RepertoireEngineInsight";
 import { appendPvToPgn } from "./repertoireEngine";
+import { refreshCourseArrowRuntime } from "./courseArrowRuntime";
 import * as styles from "./courseV3.module.css";
 import * as balance from "./courseLessonBalance.module.css";
 import * as boardTools from "./repertoireBoardTools.module.css";
@@ -184,6 +185,11 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
     }, []);
 
     useEffect(() => {
+        const frame = window.requestAnimationFrame(refreshCourseArrowRuntime);
+        return () => window.cancelAnimationFrame(frame);
+    }, [activeFen, boardOrientation]);
+
+    useEffect(() => {
         if (mode != "practice" || transitioning || !expected || expected.color == learner) return;
         if (opponentTimer.current != undefined) window.clearTimeout(opponentTimer.current);
         setExpression("explaining");
@@ -311,10 +317,19 @@ function CourseLessonV3({ opening, lineNumber, lineTotal, progress, setProgress,
         if (transitioning || !expected || expected.color != learner) return false;
         if (expected.from != from || expected.to != to) {
             registerProblem();
+            if (opponentTimer.current != undefined) window.clearTimeout(opponentTimer.current);
+            if (resetTimer.current != undefined) window.clearTimeout(resetTimer.current);
+            setPracticeIndex(0);
+            setTransitioning(true);
             setExpression("worried");
-            setCoachKey("learn.hintMove");
-            setHint(true);
+            setCoachKey("learn.coach.practiceStart");
+            setHint(false);
             setSelected(undefined);
+            resetTimer.current = window.setTimeout(() => {
+                setTransitioning(false);
+                setExpression("thinking");
+                setCoachKey("learn.coach.practiceStart");
+            }, 450);
             return false;
         }
         setPracticeIndex(value => Math.min(value + 1, moves.length));

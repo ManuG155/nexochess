@@ -7,9 +7,10 @@ import React, {
 import { Chess } from "chess.js";
 import { useTranslation } from "react-i18next";
 
-import {
-    addChildMove
-} from "shared/types/game/position/StateTreeNode";
+import { Classification } from "shared/constants/Classification";
+import PieceColour from "shared/constants/PieceColour";
+import type { StateTreeNode } from
+    "shared/types/game/position/StateTreeNode";
 
 import useSettingsStore from
     "@/stores/SettingsStore";
@@ -22,11 +23,20 @@ import {
 } from "@analysis/lib/coach";
 
 import {
+    getDynamicCoachComment
+} from "@analysis/lib/coachComment";
+
+import {
     getDetailedCoachComment
 } from "@analysis/lib/coachCommentDetailed";
 
 import {
-    getCoachTacticInsight
+    removeUnsupportedTacticClaim
+} from "@analysis/lib/coachCommentSanitize";
+
+import {
+    getCoachTacticInsight,
+    shouldSuppressCoachLineNotation
 } from "@analysis/lib/coachTacticInsight";
 
 import {
@@ -106,6 +116,33 @@ function inlineTacticSentence(
     };
 }
 
+function isSanToken(value: string): boolean {
+    const token = value
+        .replace(/^[([{"'“”¿¡]+/, "")
+        .replace(/[\])},.;:!?"'“”]+$/, "");
+
+    return /^(?:O-O(?:-O)?|[KQRBN][a-h1-8]{0,2}x?[a-h][1-8](?:=[QRBN])?[+#]?|[a-h](?:x[a-h])?[1-8](?:=[QRBN])?[+#]?)$/.test(token);
+}
+
+/*
+ * The legacy detailed-comment layer can describe a PV with algebraic moves in
+ * classifications that do not qualify for an interactive tactic button (for
+ * example OK/inaccuracy/risky or a non-PV excellent move). Buttons replaced
+ * that presentation, so never expose a second multi-move SAN path in text.
+ */
+function containsMultiMoveSan(text: string): boolean {
+    let sanMoves = 0;
+
+    for (const token of text.split(/\s+/)) {
+        if (isSanToken(token)) {
+            sanMoves += 1;
+            if (sanMoves >= 2) return true;
+        }
+    }
+
+    return false;
+}
+
 function CoachMoveReaction() {
     const { t, i18n } = useTranslation("coach", { useSuspense: false });
 
@@ -137,14 +174,55 @@ function CoachMoveReaction() {
         settings.appearance.selectedCoach
     );
 
+    const tacticInsight = useMemo(
+        () => getCoachTacticInsight(
+            currentNode,
+            classification,
+            i18n.resolvedLanguage
+        ),
+        [
+            currentNode.state.fen,
+            currentStateTreeNodeUpdate,
+            currentNode.state.engineLines?.length ?? 0,
+            currentNode.parent?.state.engineLines?.length ?? 0,
+            classification,
+            i18n.resolvedLanguage
+        ]
+    );
+
     const message = useMemo(() => {
-        const statusLine = getDetailedCoachComment(
+        const rawDetailedStatusLine = getDetailedCoachComment(
             currentNode,
             classification,
             coach.id,
             t,
             i18n.resolvedLanguage
         );
+        const detailedStatusLine = tacticInsight
+            ? rawDetailedStatusLine
+            : removeUnsupportedTacticClaim(
+                rawDetailedStatusLine,
+                currentNode,
+                classification,
+                i18n.resolvedLanguage
+            );
+        const suppressLineNotation = !tacticInsight
+            && (
+                shouldSuppressCoachLineNotation(
+                    currentNode,
+                    classification
+                )
+                || containsMultiMoveSan(detailedStatusLine)
+            );
+
+        const statusLine = suppressLineNotation
+            ? getDynamicCoachComment(
+                currentNode,
+                classification,
+                coach.id,
+                t
+            )
+            : detailedStatusLine;
         const seed = `${currentNode.state.fen}|${moveSan || "start"}`;
 
         return addOccasionalCoachCatchphrase(
@@ -164,24 +242,9 @@ function CoachMoveReaction() {
         classification,
         coach.id,
         i18n.resolvedLanguage,
+        tacticInsight,
         t
     ]);
-
-    const tacticInsight = useMemo(
-        () => getCoachTacticInsight(
-            currentNode,
-            classification,
-            i18n.resolvedLanguage
-        ),
-        [
-            currentNode.state.fen,
-            currentStateTreeNodeUpdate,
-            currentNode.state.engineLines?.length ?? 0,
-            currentNode.parent?.state.engineLines?.length ?? 0,
-            classification,
-            i18n.resolvedLanguage
-        ]
-    );
 
     const tacticSentence = tacticInsight
         ? inlineTacticSentence(
@@ -210,19 +273,45 @@ function CoachMoveReaction() {
         setAutoplayEnabled(false);
 
         let cursor = tacticInsight.startNode;
-        const sequenceNodes = [];
+        const sequenceNodes: StateTreeNode[] = [];
+        const playbackId = Date.now();
 
-        for (const uci of tacticInsight.uciMoves) {
+        for (const [index, uci] of tacticInsight.uciMoves.entries()) {
             try {
                 const move = new Chess(cursor.state.fen).move(uci);
-                cursor = addChildMove(cursor, move.san);
-                sequenceNodes.push(cursor);
+                const node: StateTreeNode = {
+                    id: `coach-pv-${playbackId}-${index}`,
+                    mainline: false,
+                    parent: cursor,
+                    children: [],
+                    state: {
+                        fen: move.after,
+                        engineLines: [],
+                        move: {
+                            san: move.san,
+                            uci: move.lan
+                        },
+                        moveColour: move.color == "w"
+                            ? PieceColour.WHITE
+                            : PieceColour.BLACK,
+                        /*
+                         * These are detached principal-variation playback
+                         * nodes. Every ply comes directly from Stockfish's
+                         * selected PV, so it must never inherit an OK/error
+                         * classification from an unrelated real-game node.
+                         */
+                        classification: Classification.BEST
+                    }
+                };
+
+                cursor = node;
+                sequenceNodes.push(node);
             } catch {
                 break;
             }
         }
 
-        if (sequenceNodes.length == 0) return;
+        if (sequenceNodes.length != tacticInsight.uciMoves.length) return;
 
         dispatchCurrentNodeUpdate();
         setCurrentStateTreeNode(tacticInsight.startNode);

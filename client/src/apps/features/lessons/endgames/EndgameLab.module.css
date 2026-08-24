@@ -1,0 +1,602 @@
+.lab {
+    width: min(1220px, calc(100% - 36px));
+    margin: 0 auto;
+    padding: 34px 0 64px;
+    color: #edf4ff;
+}
+
+.hero,
+.compactHero,
+.playHeader {
+    position: relative;
+    border: 1px solid rgba(119, 180, 255, 0.2);
+    border-radius: 22px;
+    background:
+        radial-gradient(circle at 88% 12%, rgba(79, 160, 255, 0.16), transparent 34%),
+        linear-gradient(145deg, rgba(15, 30, 49, 0.97), rgba(9, 20, 35, 0.98));
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.2);
+}
+
+.hero {
+    padding: 42px 44px 36px;
+}
+
+.hero > span,
+.compactHero > span,
+.playHeader > div > span {
+    display: block;
+    margin-bottom: 8px;
+    color: #77bdff;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.hero h1,
+.compactHero h1,
+.playHeader h1 {
+    margin: 0;
+    color: #fff;
+    font-size: clamp(2rem, 4vw, 3.3rem);
+    line-height: 1.02;
+}
+
+.hero > p,
+.compactHero > p {
+    max-width: 760px;
+    margin: 15px 0 0;
+    color: rgba(230, 240, 252, 0.73);
+    font-size: 1rem;
+    line-height: 1.65;
+}
+
+.back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 22px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: rgba(221, 234, 249, 0.72);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.back:hover {
+    color: #fff;
+}
+
+.exactPill {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    width: fit-content;
+    margin-top: 24px;
+    padding: 10px 13px;
+    border: 1px solid rgba(78, 197, 169, 0.28);
+    border-radius: 12px;
+    background: rgba(38, 151, 129, 0.1);
+}
+
+.exactPill b {
+    color: #79dbc1;
+    font-size: 0.82rem;
+}
+
+.exactPill span {
+    color: rgba(226, 243, 238, 0.72);
+    font-size: 0.8rem;
+}
+
+.levelSection {
+    margin-top: 28px;
+}
+
+.sectionHeading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 14px;
+}
+
+.sectionHeading > div {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.sectionHeading span {
+    color: #5baeff;
+    font-weight: 900;
+}
+
+.sectionHeading h2,
+.customCard h2 {
+    margin: 0;
+    color: #fff;
+    font-size: 1.25rem;
+}
+
+.sectionHeading small {
+    max-width: 470px;
+    color: rgba(218, 231, 246, 0.52);
+    text-align: right;
+}
+
+.levelGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.levelCard,
+.themeCard {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(126, 178, 235, 0.17);
+    background: linear-gradient(160deg, rgba(21, 39, 62, 0.94), rgba(13, 27, 45, 0.96));
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.levelCard {
+    min-height: 218px;
+    padding: 24px;
+    border-radius: 18px;
+}
+
+.levelCard::after {
+    content: "";
+    position: absolute;
+    inset: auto -34px -48px auto;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: rgba(90, 171, 255, 0.08);
+}
+
+.levelCard:hover,
+.themeCard:hover {
+    transform: translateY(-2px);
+    border-color: rgba(100, 178, 255, 0.45);
+    background: linear-gradient(160deg, rgba(25, 48, 77, 0.98), rgba(14, 31, 52, 0.98));
+}
+
+.levelCard:disabled {
+    opacity: 0.55;
+    cursor: wait;
+}
+
+.levelNumber {
+    display: block;
+    color: rgba(116, 187, 255, 0.58);
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+}
+
+.levelCard > strong {
+    display: block;
+    margin-top: 14px;
+    color: #fff;
+    font-size: 1.32rem;
+}
+
+.levelCard > p {
+    min-height: 68px;
+    margin: 9px 0 20px;
+    color: rgba(219, 232, 247, 0.68);
+    line-height: 1.5;
+}
+
+.levelCard > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    color: rgba(215, 229, 245, 0.62);
+    font-size: 0.78rem;
+}
+
+.levelCard > div b {
+    color: #73c3ff;
+}
+
+.customCard {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr);
+    gap: 24px;
+    align-items: center;
+    margin-top: 18px;
+    padding: 24px;
+    border: 1px solid rgba(126, 178, 235, 0.15);
+    border-radius: 18px;
+    background: rgba(12, 27, 45, 0.78);
+}
+
+.customCard > div:first-child > span {
+    display: block;
+    margin-bottom: 7px;
+    color: #6db9ff;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.15em;
+}
+
+.customCard p {
+    margin: 8px 0 0;
+    color: rgba(219, 232, 247, 0.62);
+}
+
+.customForm {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 9px;
+}
+
+.customForm input {
+    min-width: 0;
+    padding: 12px 13px;
+    border: 1px solid rgba(129, 183, 241, 0.22);
+    border-radius: 10px;
+    outline: none;
+    background: rgba(7, 18, 31, 0.9);
+    color: #eef7ff;
+    font: inherit;
+}
+
+.customForm input:focus {
+    border-color: rgba(86, 174, 255, 0.68);
+}
+
+.customForm button,
+.actions button {
+    border: 1px solid rgba(96, 176, 255, 0.28);
+    border-radius: 10px;
+    background: rgba(72, 153, 232, 0.13);
+    color: #eaf5ff;
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.customForm button {
+    padding: 0 16px;
+}
+
+.customForm small {
+    grid-column: 1 / -1;
+    color: #ff9d9d;
+}
+
+.compactHero {
+    padding: 30px 34px;
+}
+
+.themeGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.themeCard {
+    display: grid;
+    grid-template-columns: 58px minmax(0, 1fr) auto;
+    gap: 14px;
+    align-items: center;
+    min-height: 88px;
+    padding: 15px 18px;
+    border-radius: 14px;
+}
+
+.themeSymbol {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(102, 179, 255, 0.22);
+    border-radius: 12px;
+    background: rgba(74, 158, 240, 0.1);
+    color: #86c9ff;
+    font-size: 1.45rem;
+}
+
+.themeCard div {
+    min-width: 0;
+}
+
+.themeCard div strong,
+.themeCard div span {
+    display: block;
+}
+
+.themeCard div strong {
+    overflow: hidden;
+    color: #fff;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.themeCard div span {
+    margin-top: 4px;
+    color: rgba(218, 231, 247, 0.57);
+    font-size: 0.78rem;
+}
+
+.themeCard > b {
+    color: #76c0ff;
+}
+
+.playPage {
+    width: min(1160px, calc(100% - 36px));
+}
+
+.playHeader {
+    display: grid;
+    grid-template-columns: 190px minmax(0, 1fr) auto;
+    gap: 22px;
+    align-items: center;
+    padding: 19px 24px;
+}
+
+.playHeader .back {
+    margin: 0;
+}
+
+.playHeader h1 {
+    font-size: clamp(1.55rem, 3vw, 2.25rem);
+}
+
+.positionCounter {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+    color: rgba(223, 235, 249, 0.66);
+    font-size: 0.8rem;
+}
+
+.positionCounter b {
+    color: #70d7bb;
+}
+
+.practiceLayout {
+    display: grid;
+    grid-template-columns: minmax(0, 700px) minmax(280px, 1fr);
+    gap: 20px;
+    align-items: start;
+    margin-top: 18px;
+}
+
+.boardColumn {
+    display: flex;
+    justify-content: center;
+}
+
+.boardFrame {
+    width: min(100%, 700px);
+    padding: 10px;
+    border: 1px solid rgba(121, 178, 235, 0.18);
+    border-radius: 18px;
+    background: rgba(8, 20, 34, 0.86);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
+}
+
+.practicePanel {
+    display: grid;
+    gap: 12px;
+}
+
+.outcomeBox,
+.feedback,
+.masteryPanel {
+    border: 1px solid rgba(124, 180, 238, 0.16);
+    border-radius: 14px;
+    background: rgba(12, 28, 47, 0.88);
+}
+
+.outcomeBox {
+    padding: 18px;
+}
+
+.outcomeBox span,
+.outcomeBox strong {
+    display: block;
+}
+
+.outcomeBox span {
+    color: rgba(215, 229, 246, 0.58);
+    font-size: 0.78rem;
+}
+
+.outcomeBox strong {
+    margin-top: 7px;
+    color: #fff;
+    font-size: 1.13rem;
+}
+
+.feedback {
+    padding: 16px;
+    color: rgba(237, 246, 255, 0.86);
+    line-height: 1.5;
+}
+
+.feedback[data-tone="good"] {
+    border-color: rgba(87, 210, 163, 0.28);
+    background: rgba(39, 147, 112, 0.11);
+    color: #b8f3db;
+}
+
+.feedback[data-tone="bad"] {
+    border-color: rgba(242, 103, 103, 0.3);
+    background: rgba(177, 59, 59, 0.12);
+    color: #ffc0c0;
+}
+
+.actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+}
+
+.actions button {
+    min-height: 44px;
+    padding: 10px 13px;
+}
+
+.actions button[data-primary="true"] {
+    grid-column: 1 / -1;
+    border-color: rgba(89, 176, 255, 0.58);
+    background: linear-gradient(180deg, rgba(73, 166, 255, 0.92), rgba(45, 126, 209, 0.92));
+    color: #fff;
+}
+
+.actions button:disabled {
+    opacity: 0.45;
+    cursor: wait;
+}
+
+.masteryPanel {
+    padding: 16px;
+}
+
+.masteryPanel > span {
+    color: rgba(215, 229, 246, 0.55);
+    font-size: 0.75rem;
+}
+
+.masteryPanel > strong {
+    float: right;
+    color: #82c8ff;
+}
+
+.masteryPanel > div {
+    clear: both;
+    height: 7px;
+    margin-top: 11px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(130, 168, 207, 0.15);
+}
+
+.masteryPanel i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #4a9fe8, #69d4bf);
+}
+
+.masteryPanel small {
+    display: block;
+    margin-top: 9px;
+    color: #7fe0c2;
+}
+
+@media (max-width: 980px) {
+    .levelGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .levelCard {
+        min-height: 0;
+    }
+
+    .levelCard > p {
+        min-height: 0;
+    }
+
+    .practiceLayout {
+        grid-template-columns: 1fr;
+    }
+
+    .practicePanel {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .outcomeBox,
+    .feedback,
+    .actions,
+    .masteryPanel {
+        min-width: 0;
+    }
+}
+
+@media (max-width: 720px) {
+    .lab,
+    .playPage {
+        width: min(100% - 20px, 1220px);
+        padding-top: 18px;
+    }
+
+    .hero,
+    .compactHero {
+        padding: 25px 20px;
+        border-radius: 16px;
+    }
+
+    .exactPill {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .sectionHeading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .sectionHeading small {
+        text-align: left;
+    }
+
+    .customCard {
+        grid-template-columns: 1fr;
+        padding: 18px;
+    }
+
+    .customForm {
+        grid-template-columns: 1fr;
+    }
+
+    .customForm button {
+        min-height: 42px;
+    }
+
+    .themeGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .playHeader {
+        grid-template-columns: 1fr auto;
+        padding: 16px;
+    }
+
+    .playHeader .back {
+        grid-column: 1 / -1;
+    }
+
+    .positionCounter {
+        align-self: end;
+    }
+
+    .practicePanel {
+        grid-template-columns: 1fr;
+    }
+
+    .boardFrame {
+        padding: 6px;
+        border-radius: 12px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .levelCard,
+    .themeCard {
+        transition: none;
+    }
+}

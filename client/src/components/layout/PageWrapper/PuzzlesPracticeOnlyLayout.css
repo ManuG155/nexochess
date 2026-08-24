@@ -1,0 +1,142 @@
+/* Practice-only setup layout. Loaded last by the Puzzles entrypoint. */
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-setup-main {
+    grid-template-columns: minmax(0, 1fr) !important;
+    column-gap: 0 !important;
+    row-gap: 18px !important;
+}
+
+/* Session options now own the full row; the removed source selector no longer leaves a blank column. */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-setup-main > div:has(> button[aria-pressed]) {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 18px 0 0 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-setup-main > div:has(> button[aria-pressed]) > button {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 108px !important;
+    height: auto !important;
+}
+
+/* The old header + div selector used to style the source cards. That div is now the theme picker. */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-setup-main > header + .nexo-puzzle-theme-picker,
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-setup-main > .nexo-puzzle-theme-picker {
+    grid-column: 1 / -1 !important;
+    grid-row: 3 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: none !important;
+    grid-auto-rows: auto !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 20px 0 0 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Categories first, evenly distributed. */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-tabs {
+    display: grid !important;
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    align-items: stretch !important;
+    justify-content: stretch !important;
+    gap: 8px !important;
+    width: 100% !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-tab {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 42px !important;
+    padding: 8px 10px !important;
+}
+
+/* Active category details and subthemes sit underneath, never beside the category list. */
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-panel {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+}
+
+[data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-options-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    width: 100% !important;
+}
+
+/* Difficulty and start action keep the same full-width visual axis. */
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-setup-main > .nexo-puzzle-theme-picker + div {
+    grid-column: 1 / -1 !important;
+    grid-row: 4 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+}
+
+[data-nexo-shell][data-route="puzzles"]
+.nexo-puzzle-setup-main > button:last-child {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 2px 0 0 !important;
+}
+
+[data-nexo-shell][data-theme="light"][data-route="puzzles"]
+.nexo-puzzle-setup-main > div:has(> button[aria-pressed]),
+[data-nexo-shell][data-theme="light"][data-route="puzzles"]
+.nexo-puzzle-setup-main > .nexo-puzzle-theme-picker {
+    border-top-color: rgba(39, 72, 109, 0.1) !important;
+}
+
+@media (max-width: 1320px) {
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-tabs,
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-options-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 820px) {
+    [data-nexo-shell][data-route="puzzles"]
+    .nexo-puzzle-setup-main > div:has(> button[aria-pressed]) {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"]
+    .nexo-puzzle-setup-main > div:has(> button[aria-pressed]) > button {
+        min-height: 82px !important;
+    }
+
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-tabs,
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-options-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 460px) {
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-tabs,
+    [data-nexo-shell][data-route="puzzles"] .nexo-puzzle-theme-options-grid {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+}

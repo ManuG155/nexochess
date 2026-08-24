@@ -1,105 +1,86 @@
 import { OpeningCatalogueEntry } from "./openingCatalogue";
-import { pgnMoveKeys } from "./courseDepth";
+import { fastPgnSanTokens } from "./courseDepth";
 
 interface ParsedLine {
     entry: OpeningCatalogueEntry;
     moves: string[];
 }
 
-interface BuiltLesson {
-    entry: OpeningCatalogueEntry;
-    ply: number;
-}
-
 interface TheoryNode {
     children: Map<string, TheoryNode>;
-    best?: ParsedLine;
 }
 
-const moveCache = new WeakMap<OpeningCatalogueEntry, string[]>();
-
 function movesFor(entry: OpeningCatalogueEntry) {
-    const cached = moveCache.get(entry);
-    if (cached) return cached;
-    const moves = pgnMoveKeys(entry.pgn);
-    moveCache.set(entry, moves);
-    return moves;
+    return fastPgnSanTokens(entry.pgn);
 }
 
 function priority(entry: OpeningCatalogueEntry) {
+    if (entry.eco == "USR") return 3;
     if (entry.name == entry.family) return 0;
     if (/\b(Main Line|Classical|Normal|Advance|Exchange|Accepted|Declined)\b/i.test(entry.name)) return 1;
     return 2;
-}
-
-function better(candidate: ParsedLine, current?: ParsedLine) {
-    if (!current) return true;
-    return candidate.moves.length > current.moves.length
-        || (candidate.moves.length == current.moves.length && priority(candidate.entry) < priority(current.entry))
-        || (candidate.moves.length == current.moves.length
-            && priority(candidate.entry) == priority(current.entry)
-            && candidate.entry.name.localeCompare(current.entry.name) < 0);
 }
 
 function createNode(): TheoryNode {
     return { children: new Map<string, TheoryNode>() };
 }
 
-function addToTrie(root: TheoryNode, line: ParsedLine) {
+function addToTrie(root: TheoryNode, moves: string[]) {
     let node = root;
-    if (better(line, node.best)) node.best = line;
-    for (const move of line.moves) {
+    for (const move of moves) {
         let child = node.children.get(move);
         if (!child) {
             child = createNode();
             node.children.set(move, child);
         }
         node = child;
-        if (better(line, node.best)) node.best = line;
     }
 }
 
-function nodeAt(root: TheoryNode, moves: string[]) {
-    let node: TheoryNode | undefined = root;
-    for (const move of moves) {
-        node = node.children.get(move);
-        if (!node) return undefined;
-    }
-    return node;
-}
-
-function checkpointsFor(root: TheoryNode, mainLine: string[]) {
+function checkpointsFor(root: TheoryNode, line: string[]) {
     const result: number[] = [];
     let node: TheoryNode | undefined = root;
-    for (let depth = 0; depth < mainLine.length; depth += 1) {
+
+    for (let depth = 0; depth < line.length; depth += 1) {
         if (!node) break;
         if (depth >= 2 && node.children.size > 1) result.push(depth);
-        node = node.children.get(mainLine[depth]);
+        node = node.children.get(line[depth]);
     }
+
     return result;
 }
 
-function representativeFrom(candidates: ParsedLine[]) {
-    return [...candidates].sort((a, b) => {
-        const aPly = a.moves.length;
-        const bPly = b.moves.length;
-        const aDistance = aPly <= 14 ? 14 - aPly : aPly - 14 + 20;
-        const bDistance = bPly <= 14 ? 14 - bPly : bPly - 14 + 20;
-        return aDistance - bDistance || bPly - aPly;
-    })[0];
+export function courseLessonSequenceKey(entry: OpeningCatalogueEntry) {
+    return movesFor(entry).join(" ");
 }
 
-export function countCourseLessonsFast(lines: OpeningCatalogueEntry[], maximum = 28) {
-    const standardNames = new Set<string>();
-    let personal = 0;
+function fastPgnKey(pgn: string) {
+    return pgn.trim().replace(/\s+/g, " ");
+}
+
+export function countCourseLessonsFast(
+    lines: OpeningCatalogueEntry[],
+    maximum = Number.POSITIVE_INFINITY
+) {
+    const sequences = new Set<string>();
     for (const line of lines) {
-        if (line.eco == "USR") personal += 1;
-        else standardNames.add(line.name);
+        const key = fastPgnKey(line.pgn);
+        if (key) sequences.add(key);
+        if (sequences.size >= maximum) return maximum;
     }
-    return Math.min(maximum, standardNames.size) + personal;
+    return sequences.size;
 }
 
-export function buildCourseLessonsIndexed(lines: OpeningCatalogueEntry[], maximum = 28) {
+/*
+ * Indexing a course is intentionally syntax-only. The opening source already
+ * provides legal SAN, so building checkpoints and de-duplicating paths must
+ * not instantiate hundreds of chess.js boards on the UI thread. A selected
+ * lesson is still validated by the normal chess.js parser when it is played.
+ */
+export function buildCourseLessonsIndexed(
+    lines: OpeningCatalogueEntry[],
+    maximum = Number.POSITIVE_INFINITY
+) {
     const parsed = lines
         .map(entry => ({ entry, moves: movesFor(entry) }))
         .filter(item => item.moves.length > 0);
@@ -111,41 +92,44 @@ export function buildCourseLessonsIndexed(lines: OpeningCatalogueEntry[], maximu
         else byFamily.set(item.entry.family, [item]);
     }
 
-    const result: BuiltLesson[] = [];
-
+    const result: Array<{ entry: OpeningCatalogueEntry; ply: number }> = [];
     for (const familyLines of byFamily.values()) {
         const root = createNode();
-        familyLines.forEach(line => addToTrie(root, line));
+        familyLines.forEach(line => addToTrie(root, line.moves));
 
-        const byName = new Map<string, ParsedLine[]>();
+        const bySequence = new Map<string, ParsedLine>();
         for (const item of familyLines) {
-            const group = byName.get(item.entry.name);
-            if (group) group.push(item);
-            else byName.set(item.entry.name, [item]);
+            const key = item.moves.join(" ");
+            const current = bySequence.get(key);
+            if (
+                !current
+                || priority(item.entry) < priority(current.entry)
+                || (
+                    priority(item.entry) == priority(current.entry)
+                    && item.entry.name.localeCompare(current.entry.name) < 0
+                )
+            ) bySequence.set(key, item);
         }
 
-        for (const group of byName.values()) {
-            const representative = representativeFrom(group);
-            if (!representative) continue;
-            const prefixNode = nodeAt(root, representative.moves);
-            const deepest = prefixNode?.best || representative;
+        for (const item of bySequence.values()) {
             result.push({
                 entry: {
-                    ...representative.entry,
-                    pgn: deepest.entry.pgn,
-                    depthCheckpoints: checkpointsFor(root, deepest.moves)
+                    ...item.entry,
+                    depthCheckpoints: checkpointsFor(root, item.moves)
                 },
-                ply: deepest.moves.length
+                ply: item.moves.length
             });
         }
     }
 
-    return result
-        .sort((a, b) => (
-            priority(a.entry) - priority(b.entry)
-            || a.ply - b.ply
-            || a.entry.name.localeCompare(b.entry.name)
-        ))
-        .slice(0, maximum)
-        .map(item => item.entry);
+    const ordered = result.sort((a, b) => (
+        priority(a.entry) - priority(b.entry)
+        || a.ply - b.ply
+        || a.entry.name.localeCompare(b.entry.name)
+        || a.entry.pgn.localeCompare(b.entry.pgn)
+    ));
+
+    return Number.isFinite(maximum)
+        ? ordered.slice(0, maximum).map(item => item.entry)
+        : ordered.map(item => item.entry);
 }

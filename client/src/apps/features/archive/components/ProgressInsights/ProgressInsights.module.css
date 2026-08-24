@@ -1,0 +1,464 @@
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+    min-width: 0;
+}
+
+.headerRow {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 4px 0 2px;
+}
+
+.headerRow > div:first-child {
+    min-width: 0;
+}
+
+.headerRow h2 {
+    max-width: 720px;
+    margin: 4px 0 5px;
+    color: rgba(255, 255, 255, 0.94);
+    font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+    line-height: 1.18;
+}
+
+.headerRow small,
+.muted,
+.note,
+.sectionTitle small {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.eyebrow,
+.sectionTitle span {
+    color: #78a6ff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.periods {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.periods button {
+    min-height: 34px;
+    padding: 7px 10px;
+    color: rgba(255, 255, 255, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.025);
+    font: inherit;
+    font-size: 0.78rem;
+    cursor: pointer;
+}
+
+.periods button:hover,
+.periods .periodActive {
+    color: #edf4ff;
+    border-color: rgba(92, 145, 241, 0.45);
+    background: rgba(70, 125, 232, 0.15);
+}
+
+.kpis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.kpis article,
+.section {
+    box-sizing: border-box;
+    min-width: 0;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
+    background: rgba(8, 12, 18, 0.27);
+}
+
+.kpis article {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 108px;
+    padding: 15px 16px;
+}
+
+.kpis span {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.78rem;
+}
+
+.kpis strong {
+    margin-top: auto;
+    color: rgba(255, 255, 255, 0.96);
+    font-size: 1.65rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.kpis small {
+    color: rgba(255, 255, 255, 0.38);
+}
+
+.section {
+    padding: 17px;
+}
+
+.sectionTitle {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 14px;
+}
+
+.sectionTitle h3 {
+    margin: 3px 0 0;
+    color: rgba(255, 255, 255, 0.94);
+    font-size: 1.08rem;
+}
+
+.sectionTitle strong {
+    color: #eef4ff;
+    font-size: 1.35rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.chart {
+    width: 100%;
+    height: 170px;
+    overflow: visible;
+}
+
+.chart line {
+    stroke: rgba(255, 255, 255, 0.055);
+    stroke-width: 0.35;
+}
+
+.chart polyline {
+    fill: none;
+    stroke: #73a5ff;
+    stroke-width: 1.15;
+    vector-effect: non-scaling-stroke;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.twoColumns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.phaseGrid,
+.sideGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.phaseGrid > div,
+.sideGrid > div {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+    padding: 12px;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.phaseGrid > div > strong,
+.sideGrid > div > span {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.84rem;
+}
+
+.phaseGrid span {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.75rem;
+}
+
+.phaseGrid b {
+    color: rgba(255, 255, 255, 0.86);
+    font-variant-numeric: tabular-nums;
+}
+
+.sideGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sideGrid > div > strong {
+    color: #f1f5ff;
+    font-size: 1.35rem;
+}
+
+.sideGrid small {
+    color: rgba(255, 255, 255, 0.47);
+}
+
+.note {
+    display: block;
+    margin-top: 10px;
+    font-size: 0.7rem;
+    line-height: 1.4;
+}
+
+.openingList {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.openingList > div {
+    display: grid;
+    grid-template-columns: minmax(220px, 1.6fr) repeat(4, minmax(92px, auto));
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.022);
+}
+
+.openingList strong {
+    min-width: 0;
+    color: rgba(255, 255, 255, 0.9);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.openingList span {
+    color: rgba(255, 255, 255, 0.48);
+    font-size: 0.74rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.trainingStats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.trainingStats span {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.025);
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.73rem;
+}
+
+.trainingStats b {
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 1.08rem;
+}
+
+.actionLink,
+.actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    margin-top: 12px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    background: rgba(70, 125, 232, 0.16);
+    color: #b7ceff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.actionLink:hover,
+.actions a:hover {
+    background: rgba(70, 125, 232, 0.24);
+}
+
+.progressBar {
+    height: 9px;
+    margin: 22px 0 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.progressBar i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #4d84eb, #78aaff);
+}
+
+.duelGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+}
+
+.duelGrid > div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 11px 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.duelGrid strong {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.duelGrid span {
+    color: rgba(255, 255, 255, 0.48);
+    font-size: 0.75rem;
+}
+
+.focus {
+    border-color: rgba(99, 151, 248, 0.22);
+    background:
+        radial-gradient(circle at 100% 0%, rgba(70, 125, 232, 0.12), transparent 26rem),
+        rgba(8, 12, 18, 0.3);
+}
+
+.focus ol {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding-left: 22px;
+    color: rgba(255, 255, 255, 0.78);
+    line-height: 1.45;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.empty {
+    padding: 54px 20px;
+    color: rgba(255, 255, 255, 0.58);
+    text-align: center;
+}
+
+:global(html[data-theme="light"]) .headerRow h2,
+:global(html[data-theme="light"]) .kpis strong,
+:global(html[data-theme="light"]) .sectionTitle h3,
+:global(html[data-theme="light"]) .sectionTitle strong,
+:global(html[data-theme="light"]) .phaseGrid > div > strong,
+:global(html[data-theme="light"]) .phaseGrid b,
+:global(html[data-theme="light"]) .sideGrid > div > span,
+:global(html[data-theme="light"]) .sideGrid > div > strong,
+:global(html[data-theme="light"]) .openingList strong,
+:global(html[data-theme="light"]) .trainingStats b,
+:global(html[data-theme="light"]) .duelGrid strong {
+    color: #172334;
+}
+
+:global(html[data-theme="light"]) .headerRow small,
+:global(html[data-theme="light"]) .muted,
+:global(html[data-theme="light"]) .note,
+:global(html[data-theme="light"]) .kpis span,
+:global(html[data-theme="light"]) .kpis small,
+:global(html[data-theme="light"]) .phaseGrid span,
+:global(html[data-theme="light"]) .sideGrid small,
+:global(html[data-theme="light"]) .openingList span,
+:global(html[data-theme="light"]) .trainingStats span,
+:global(html[data-theme="light"]) .duelGrid span {
+    color: #65768c;
+}
+
+:global(html[data-theme="light"]) .kpis article,
+:global(html[data-theme="light"]) .section {
+    border-color: rgba(39, 72, 109, 0.11);
+    background: rgba(247, 250, 254, 0.78);
+}
+
+:global(html[data-theme="light"]) .phaseGrid > div,
+:global(html[data-theme="light"]) .sideGrid > div,
+:global(html[data-theme="light"]) .openingList > div,
+:global(html[data-theme="light"]) .trainingStats span,
+:global(html[data-theme="light"]) .duelGrid > div {
+    background: rgba(48, 86, 132, 0.045);
+}
+
+:global(html[data-theme="light"]) .periods button {
+    color: #5d6f86;
+    border-color: rgba(39, 72, 109, 0.12);
+    background: rgba(247, 250, 254, 0.8);
+}
+
+:global(html[data-theme="light"]) .periods .periodActive {
+    color: #204f91;
+    border-color: rgba(53, 111, 196, 0.34);
+    background: rgba(70, 125, 232, 0.1);
+}
+
+:global(html[data-theme="light"]) .chart line {
+    stroke: rgba(39, 72, 109, 0.09);
+}
+
+@media (max-width: 860px) {
+    .headerRow {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .periods {
+        justify-content: flex-start;
+    }
+
+    .kpis,
+    .twoColumns {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .openingList > div {
+        grid-template-columns: minmax(0, 1fr) repeat(2, auto);
+    }
+
+    .openingList span:nth-of-type(n+3) {
+        display: none;
+    }
+}
+
+@media (max-width: 560px) {
+    .kpis,
+    .twoColumns,
+    .phaseGrid,
+    .sideGrid,
+    .trainingStats {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .section,
+    .kpis article {
+        padding: 13px;
+    }
+
+    .chart {
+        height: 130px;
+    }
+
+    .openingList > div {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .openingList span:nth-of-type(n+2) {
+        display: none;
+    }
+}

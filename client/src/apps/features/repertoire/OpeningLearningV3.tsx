@@ -6,7 +6,8 @@ import CourseHomeV3 from "./CourseHomeV3";
 import CourseLessonV3 from "./CourseLessonV3";
 import CourseReviewV3 from "./CourseReviewV3";
 import { OpeningCatalogueEntry, getFallbackOpeningCatalogue, loadOpeningCatalogue } from "./openingCatalogue";
-import { buildCourseLessonsIndexed } from "./courseLessonIndex";
+import { buildCourseLessonsIndexed, countCourseLessonsFast } from "./courseLessonIndex";
+import { canonicalCourseFamily } from "./courseFamily";
 import { localizeOpeningName, repertoireLanguage } from "./openingLocalization";
 import { CustomCourseLine, addCustomCourseLine, readCustomCourseLines, writeCustomCourseLines } from "./customCourseLines";
 import { CourseProgressStore, createLessonId, findLessonProgress, readCourseProgress, writeCourseProgress } from "./courseProgress";
@@ -17,6 +18,8 @@ interface Props { mode?: PanelMode; onAddToRepertoire: (opening: OpeningCatalogu
 interface Family { name: string; lines: OpeningCatalogueEntry[]; }
 
 const LINE_WORD: Record<string,string> = { en:"Line", es:"Línea", fr:"Ligne", de:"Variante", pt:"Linha", ru:"Вариант", zh:"路线", vi:"Biến", hi:"लाइन", mr:"लाईन", pl:"Wariant" };
+const EXCLUDED_COURSES = new Set(["King's Pawn Game"]);
+const MIN_PUBLIC_COURSE_LINES = 4;
 
 function normalizedHistory(pgn: string) {
     try {
@@ -59,11 +62,19 @@ function OpeningLearningV3({ mode = "learn", onAddToRepertoire, onFocusChange }:
     const families = useMemo<Family[]>(() => {
         const grouped = new Map<string, OpeningCatalogueEntry[]>();
         for (const item of allLines) {
-            const existing = grouped.get(item.family);
-            if (existing) existing.push(item);
-            else grouped.set(item.family, [item]);
+            const family = canonicalCourseFamily(item.family);
+            const normalized = family == item.family ? item : { ...item, family };
+            const existing = grouped.get(family);
+            if (existing) existing.push(normalized);
+            else grouped.set(family, [normalized]);
         }
-        return Array.from(grouped, ([name, lines]) => ({ name, lines })).sort((a, b) => localizeOpeningName(a.name, language).localeCompare(localizeOpeningName(b.name, language)));
+        return Array.from(grouped, ([name, lines]) => ({ name, lines }))
+            .filter(item => {
+                if (item.lines.some(line => line.eco == "USR")) return true;
+                if (EXCLUDED_COURSES.has(item.name)) return false;
+                return countCourseLessonsFast(item.lines, MIN_PUBLIC_COURSE_LINES) >= MIN_PUBLIC_COURSE_LINES;
+            })
+            .sort((a, b) => localizeOpeningName(a.name, language).localeCompare(localizeOpeningName(b.name, language)));
     }, [allLines, language]);
     const family = familyName ? families.find(item => item.name == familyName) : undefined;
     const lines = useMemo(() => {
@@ -78,45 +89,51 @@ function OpeningLearningV3({ mode = "learn", onAddToRepertoire, onFocusChange }:
         return findLessonProgress(progress, item)?.side || fallback;
     }
     function openFamily(name: string, side?: RepertoireSide) {
-        setFamilyName(name); setPreferredSide(side); setOpening(undefined); setReviewQueue([]); setReviewIndex(0); setBlindPractice(false); setQuery("");
+        const family = canonicalCourseFamily(name);
+        setFamilyName(family); setPreferredSide(side); setOpening(undefined); setReviewQueue([]); setReviewIndex(0); setBlindPractice(false); setQuery("");
         window.scrollTo({ top: 0, behavior: "auto" });
     }
     function openLine(item: OpeningCatalogueEntry, side?: RepertoireSide, startPractice = false, blind = false) {
-        setFamilyName(item.family); setPreferredSide(sideFor(item, side)); setPractice(startPractice); setBlindPractice(blind); setReviewQueue([]); setReviewIndex(0); setOpening(item);
+        const family = canonicalCourseFamily(item.family);
+        const normalized = family == item.family ? item : { ...item, family };
+        setFamilyName(family); setPreferredSide(sideFor(normalized, side)); setPractice(startPractice); setBlindPractice(blind); setReviewQueue([]); setReviewIndex(0); setOpening(normalized);
         window.scrollTo({ top: 0, behavior: "auto" });
     }
     function startReview(items: OpeningCatalogueEntry[]) {
         if (!items.length) return;
         const queue = [...items].sort(() => Math.random() - .5);
         const first = queue[0];
-        setReviewQueue(queue); setReviewIndex(0); setFamilyName(first.family); setPreferredSide(sideFor(first)); setPractice(true); setBlindPractice(true); setOpening(first);
+        setReviewQueue(queue); setReviewIndex(0); setFamilyName(canonicalCourseFamily(first.family)); setPreferredSide(sideFor(first)); setPractice(true); setBlindPractice(true); setOpening(first);
         window.scrollTo({ top: 0, behavior: "auto" });
     }
     function advanceReview() {
         const nextIndex = reviewIndex + 1;
         const next = reviewQueue[nextIndex];
         if (!next) return;
-        setReviewIndex(nextIndex); setFamilyName(next.family); setPreferredSide(sideFor(next)); setPractice(true); setBlindPractice(true); setOpening(next);
+        setReviewIndex(nextIndex); setFamilyName(canonicalCourseFamily(next.family)); setPreferredSide(sideFor(next)); setPractice(true); setBlindPractice(true); setOpening(next);
         window.scrollTo({ top: 0, behavior: "auto" });
     }
     function closeLesson() {
         setOpening(undefined); setPractice(false); setBlindPractice(false); setReviewQueue([]); setReviewIndex(0);
     }
     function genericCustomName(familyValue: string) {
+        const family = canonicalCourseFamily(familyValue);
         const word = LINE_WORD[lang] || LINE_WORD.en;
-        const count = customLines.filter(item => item.family == familyValue).length + 1;
+        const count = customLines.filter(item => canonicalCourseFamily(item.family) == family).length + 1;
         return `${word} ${count}`;
     }
     function suggestionFor(pgn: string, familyValue: string) {
+        const family = canonicalCourseFamily(familyValue);
         const history = normalizedHistory(pgn);
         if (history) {
-            const exact = catalogue.find(item => item.family == familyValue && normalizedHistory(item.pgn) == history);
+            const exact = catalogue.find(item => canonicalCourseFamily(item.family) == family && normalizedHistory(item.pgn) == history);
             if (exact) return localizeOpeningName(exact.name, language);
         }
-        return genericCustomName(familyValue);
+        return genericCustomName(family);
     }
     function saveCustomLine(payload: { opening: OpeningCatalogueEntry; side: RepertoireSide; pgn: string; name: string }) {
-        const synthetic: OpeningCatalogueEntry = { eco: "USR", family: payload.opening.family, name: payload.name, pgn: payload.pgn };
+        const family = canonicalCourseFamily(payload.opening.family);
+        const synthetic: OpeningCatalogueEntry = { eco: "USR", family, name: payload.name, pgn: payload.pgn };
         setCustomLines(previous => addCustomCourseLine(previous, synthetic));
         onAddToRepertoire(synthetic, payload.side);
     }
@@ -128,7 +145,7 @@ function OpeningLearningV3({ mode = "learn", onAddToRepertoire, onFocusChange }:
         const customSuggestion = genericCustomName(opening.family);
         return <CourseLessonV3 key={`${createLessonId(opening.eco, opening.name, opening.pgn)}|${practice}|${blindPractice}|${reviewIndex}`} opening={opening} lineNumber={reviewing ? reviewIndex + 1 : Math.max(1, selectedIndex + 1)} lineTotal={reviewing ? reviewQueue.length : Math.max(1, lines.length)} progress={progress} setProgress={setProgress} preferredSide={preferredSide} startInPractice={practice} blindPractice={blindPractice} customLineSuggestedName={customSuggestion} onSaveCustomLine={payload => saveCustomLine({ ...payload, name: payload.name || suggestionFor(payload.pgn, payload.opening.family) })} onLearned={onAddToRepertoire} onBack={closeLesson} onNext={hasReviewNext ? advanceReview : !blindPractice && next ? () => openLine(next, preferredSide) : undefined}/>;
     }
-    if (family) return <CourseFamilyV3 name={family.name} lines={lines} progress={progress} preferredSide={preferredSide} onBack={() => { setFamilyName(undefined); setPreferredSide(undefined); }} onOpen={openLine} onReviewFamily={startReview}/>;
+    if (family) return <CourseFamilyV3 name={family.name} lines={lines} progress={progress} preferredSide={preferredSide} onBack={() => { setFamilyName(undefined); setPreferredSide(undefined); }} onOpen={openLine} onReviewFamily={startReview} onAddToRepertoire={onAddToRepertoire}/>;
     if (mode == "review") return <CourseReviewV3 progress={progress} onOpen={(item, side, startPractice) => openLine(item, side, startPractice, true)} onReviewAll={startReview}/>;
     return <CourseHomeV3 catalogue={allLines} families={families} progress={progress} loading={loading} query={query} onQuery={setQuery} onFamily={openFamily}/>;
 }

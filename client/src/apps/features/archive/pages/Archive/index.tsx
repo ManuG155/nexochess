@@ -15,13 +15,34 @@ import {
 } from "@/lib/gameArchive";
 
 import ArchiveGameCard from "../../components/ArchiveGameCard";
+import TrainingPlan from "../../components/TrainingPlan";
 import * as styles from "./Archive.module.css";
 
 import iconArchive from "@assets/img/icons/archive.png";
 import iconDelete from "@assets/img/interface/delete.svg";
 
+type ArchiveView = "games" | "plan";
+
+const TAB_LABELS: Record<string, { games: string; plan: string }> = {
+    en: { games: "Games", plan: "Training plan" },
+    es: { games: "Partidas", plan: "Plan de entrenamiento" },
+    fr: { games: "Parties", plan: "Plan d’entraînement" },
+    de: { games: "Partien", plan: "Trainingsplan" },
+    pt: { games: "Partidas", plan: "Plano de treino" },
+    ru: { games: "Партии", plan: "План тренировок" },
+    zh: { games: "对局", plan: "训练计划" },
+    vi: { games: "Ván đấu", plan: "Kế hoạch luyện tập" },
+    hi: { games: "बाज़ियाँ", plan: "प्रशिक्षण योजना" },
+    mr: { games: "डाव", plan: "प्रशिक्षण योजना" },
+    pl: { games: "Partie", plan: "Plan treningowy" }
+};
+
 function Archive() {
-    const { t } = useTranslation(["otherPages", "common"]);
+    const { t, i18n } = useTranslation(["otherPages", "common"]);
+    const language = (i18n.resolvedLanguage || i18n.language || "en")
+        .toLowerCase()
+        .split("-")[0];
+    const tabLabels = TAB_LABELS[language] || TAB_LABELS.en;
 
     const { data: archive, status, refetch } = useQuery({
         queryKey: ["archive"],
@@ -50,6 +71,11 @@ function Archive() {
         });
     }, [archive]);
 
+    const [view, setView] = useState<ArchiveView>(() => (
+        new URLSearchParams(window.location.search).get("view") == "plan"
+            ? "plan"
+            : "games"
+    ));
     const [selectedGameIds, setSelectedGameIds] = useState<string[]>([]);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -69,7 +95,7 @@ function Archive() {
                         {t("archive.description")}
                     </span>
 
-                    {archive && selectedGameIds.length > 0 && (
+                    {view == "games" && archive && selectedGameIds.length > 0 && (
                         <span className={styles.selection}>
                             {t("archive.selected", {
                                 amount: selectedGameIds.length
@@ -87,7 +113,7 @@ function Archive() {
                     )}
                 </div>
 
-                {selectedGameIds.length > 0 && (
+                {view == "games" && selectedGameIds.length > 0 && (
                     <div className={styles.toolbarRight}>
                         <Button onClick={() => setSelectedGameIds([])}>
                             {t("cancel", { ns: "common" })}
@@ -107,6 +133,30 @@ function Archive() {
                 )}
             </div>
 
+            <div className={styles.viewTabs} role="tablist" aria-label={t("archive.title")}>
+                <button
+                    type="button"
+                    role="tab"
+                    aria-selected={view == "games"}
+                    className={view == "games" ? styles.viewTabActive : ""}
+                    onClick={() => setView("games")}
+                >
+                    {tabLabels.games}
+                </button>
+                <button
+                    type="button"
+                    role="tab"
+                    aria-selected={view == "plan"}
+                    className={view == "plan" ? styles.viewTabActive : ""}
+                    onClick={() => {
+                        setSelectedGameIds([]);
+                        setView("plan");
+                    }}
+                >
+                    {tabLabels.plan}
+                </button>
+            </div>
+
             <Separator />
 
             {status == "error" && (
@@ -117,7 +167,11 @@ function Archive() {
 
             {status == "pending" && <LoadingPlaceholder />}
 
-            {status == "success" && sortedArchive.length == 0 && (
+            {status == "success" && view == "plan" && archive && (
+                <TrainingPlan archive={archive} />
+            )}
+
+            {status == "success" && view == "games" && sortedArchive.length == 0 && (
                 <div className={styles.emptyState}>
                     <b>{t("archive.emptyTitle")}</b>
                     <span>{t("archive.emptyDescription")}</span>
@@ -127,34 +181,36 @@ function Archive() {
                 </div>
             )}
 
-            <div className={styles.games}>
-                {sortedArchive.map(([id, game]) => (
-                    <ArchiveGameCard
-                        key={id}
-                        id={id}
-                        game={game}
-                        selected={selectedGameIds.includes(id)}
-                        onOpen={() => {
-                            location.href = `/analysis?game=${encodeURIComponent(id)}`;
-                        }}
-                        onSelect={selected => {
-                            if (selected) {
-                                setSelectedGameIds([
-                                    ...selectedGameIds,
-                                    id
-                                ]);
-                                return;
-                            }
+            {status == "success" && view == "games" && (
+                <div className={styles.games}>
+                    {sortedArchive.map(([id, game]) => (
+                        <ArchiveGameCard
+                            key={id}
+                            id={id}
+                            game={game}
+                            selected={selectedGameIds.includes(id)}
+                            onOpen={() => {
+                                location.href = `/analysis?game=${encodeURIComponent(id)}`;
+                            }}
+                            onSelect={selected => {
+                                if (selected) {
+                                    setSelectedGameIds([
+                                        ...selectedGameIds,
+                                        id
+                                    ]);
+                                    return;
+                                }
 
-                            setSelectedGameIds(
-                                selectedGameIds.filter(
-                                    selectedId => selectedId != id
-                                )
-                            );
-                        }}
-                    />
-                ))}
-            </div>
+                                setSelectedGameIds(
+                                    selectedGameIds.filter(
+                                        selectedId => selectedId != id
+                                    )
+                                );
+                            }}
+                        />
+                    ))}
+                </div>
+            )}
 
             {deleteDialogOpen && (
                 <ConfirmDialog

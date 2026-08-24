@@ -3,10 +3,12 @@ import { useTranslation } from "react-i18next";
 import PlayerOpeningProfile from "./PlayerOpeningProfile";
 import { OpeningCatalogueEntry, OpeningCategory, featuredFamiliesForCategory } from "./openingCatalogue";
 import { countCourseLessonsFast } from "./courseLessonIndex";
+import { canonicalCourseFamily } from "./courseFamily";
 import { localizeOpeningName } from "./openingLocalization";
 import { CourseProgressStore, getLearnedCount, getMasteredCount } from "./courseProgress";
 import { RepertoireSide } from "./courseV3Model";
 import * as styles from "./courseV3.module.css";
+import * as mapStyles from "./courseMap.module.css";
 
 interface Family { name: string; lines: OpeningCatalogueEntry[]; }
 interface Props { catalogue: OpeningCatalogueEntry[]; families: Family[]; progress: CourseProgressStore; loading: boolean; query: string; onQuery: (value: string) => void; onFamily: (name: string, side?: RepertoireSide) => void; }
@@ -31,14 +33,22 @@ function CourseHomeV3({ catalogue, families, progress, loading, query, onQuery, 
     const copy = FILTER_COPY[language] || FILTER_COPY.en;
     const q = query.trim().toLocaleLowerCase();
     const learned = getLearnedCount(progress);
-    const learnedOpenings = useMemo(() => new Set(
-        Object.values(progress).map(item => `${item.eco}|${item.openingName}`)
-    ), [progress]);
+    const learnedByFamily = useMemo(() => {
+        const grouped = new Map<string, Set<string>>();
+        for (const item of Object.values(progress)) {
+            if (!(item.learnedPly || item.repetitions)) continue;
+            const familyName = canonicalCourseFamily(item.family);
+            const family = grouped.get(familyName) || new Set<string>();
+            family.add(`${item.eco}|${item.openingName}|${item.pgn}`);
+            grouped.set(familyName, family);
+        }
+        return grouped;
+    }, [progress]);
     const sorted = useMemo(() => [...families].sort((a, b) => popularity(a.name) - popularity(b.name) || localizeOpeningName(a.name, language).localeCompare(localizeOpeningName(b.name, language))), [families, language]);
     const visible = useMemo(() => {
         let result = sorted;
         if (filter != "all") {
-            const names = new Set(featuredFamiliesForCategory(filter));
+            const names = new Set(featuredFamiliesForCategory(filter).map(canonicalCourseFamily));
             result = result.filter(item => names.has(item.name));
         }
         if (q) result = result.filter(item => {
@@ -65,17 +75,10 @@ function CourseHomeV3({ catalogue, families, progress, loading, query, onQuery, 
                 </div>}
             </div>
         </div>
-        <div className={styles.catalogueViewport}>
+        <div className={`${styles.catalogueViewport} ${mapStyles.pageScrollCatalogue}`}>
             <div className={styles.familyGrid} data-repertoire-tour="family-grid">{visible.map(item => {
                 const total = countCourseLessonsFast(item.lines);
-                const learnedNames = new Set<string>();
-                let learnedPersonal = 0;
-                for (const line of item.lines) {
-                    if (!learnedOpenings.has(`${line.eco}|${line.name}`)) continue;
-                    if (line.eco == "USR") learnedPersonal += 1;
-                    else learnedNames.add(line.name);
-                }
-                const done = Math.min(total, Math.min(28, learnedNames.size) + learnedPersonal);
+                const done = Math.min(total, learnedByFamily.get(item.name)?.size || 0);
                 return <button key={item.name} onClick={() => onFamily(item.name)}><span>{item.lines.find(line => line.eco != "USR")?.eco || item.lines[0]?.eco}</span><strong>{localizeOpeningName(item.name, language)}</strong><small>{t("learn.lessons", { count: total })}</small>{done > 0 && <em>{t("learn.progress", { completed: done, total })}</em>}</button>;
             })}</div>
         </div>
