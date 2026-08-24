@@ -23,36 +23,6 @@
     margin: 0 auto;
 }
 
-.sideAdvertisement {
-    display: none;
-    position: absolute;
-    top: 50%;
-    z-index: 2;
-    width: clamp(64px, calc((100vw - 1150px) / 2), 120px);
-    min-height: 420px;
-    transform: translateY(-50%);
-}
-
-.sideAdvertisement > * {
-    width: 100%;
-    min-height: 420px;
-    height: min(520px, calc(100vh - 180px));
-}
-
-.sideAdvertisementLeft {
-    left: 8px;
-}
-
-.sideAdvertisementRight {
-    right: 8px;
-}
-
-@media (min-width: 1280px) {
-    .sideAdvertisement {
-        display: block;
-    }
-}
-
 @media (max-width: 900px) {
     .analysisSection {
         flex-direction: column;
