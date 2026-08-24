@@ -4,7 +4,7 @@ This directory contains versioned release notes for the public NexoChess release
 
 ## Current release line
 
-### [v1.4](v1.4.md) — 23 August 2026
+### [v1.4](v1.4.md) — 24 August 2026
 
 Historical diagnosis and targeted training become first-class product areas:
 

@@ -6,7 +6,7 @@ All notable changes to NexoChess are documented here. The project follows semant
 
 - Final search-indexing, sitemap and Search Console troubleshooting remains a separate operational pass after the v1.4 product work.
 
-## [1.4] - 2026-08-23
+## [1.4] - 2026-08-24
 
 ### Added
 
