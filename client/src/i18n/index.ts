@@ -103,8 +103,12 @@ function detectBrowserLanguage(): SupportedLanguage {
 
 function getInitialLanguage(): SupportedLanguage {
     if (typeof window == "undefined") return DEFAULT_LANGUAGE;
+
+    const parsedPathname = parseLanguagePathname(window.location.pathname);
     const urlLanguage = getUrlLanguage(window.location.pathname);
-    if (urlLanguage) return urlLanguage;
+    if (parsedPathname.explicitLanguage) {
+        return urlLanguage || parsedPathname.language;
+    }
 
     const saved = normaliseSupportedLanguage(
         localStorage.getItem(LocalStorageKey.PREFERRED_LANGUAGE)
