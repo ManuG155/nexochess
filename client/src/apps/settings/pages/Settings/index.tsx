@@ -3,6 +3,11 @@ import { useTranslation } from "react-i18next";
 import { Outlet, useNavigate } from "react-router-dom";
 
 import CategoryTab from "@/apps/settings/components/CategoryTab";
+import {
+    DEFAULT_LANGUAGE,
+    localizeHref,
+    normaliseSupportedLanguage
+} from "@/i18n/routing";
 
 import * as styles from "./Settings.module.css";
 
@@ -31,7 +36,7 @@ function PrivacyIcon() {
 }
 
 function Settings() {
-    const { t } = useTranslation(["settings", "helpCenter"]);
+    const { t, i18n } = useTranslation(["settings", "helpCenter"]);
     const navigate = useNavigate();
     const path = location.pathname;
 
@@ -109,7 +114,13 @@ function Settings() {
 
                     <CategoryTab
                         className={styles.categoryTab}
-                        onClick={() => { location.href = "/help"; }}
+                        onClick={() => {
+                            const language = normaliseSupportedLanguage(
+                                i18n.resolvedLanguage || i18n.language
+                            ) || DEFAULT_LANGUAGE;
+
+                            location.href = localizeHref("/help", language);
+                        }}
                     >
                         <span className={styles.categoryLabel}>
                             <span className={styles.categoryIcon} aria-hidden="true">?</span>
