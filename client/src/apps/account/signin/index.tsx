@@ -5,6 +5,7 @@ import I18nGate from "@/components/layout/I18nGate";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import PageWrapper from "@/components/layout/PageWrapper";
+import { getLanguageRouterBasename } from "@/i18n/routing";
 import { removeDefaultConsentLink } from "@/lib/consent";
 
 const SignUp = lazy(() => import("./pages/SignUp"));
@@ -22,7 +23,9 @@ function App() {
         removeDefaultConsentLink();
     }, []);
 
-    return <BrowserRouter>
+    const basename = getLanguageRouterBasename(window.location.pathname);
+
+    return <BrowserRouter basename={basename}>
         <PageWrapper>
             <Suspense fallback={null}>
                 <Routes>
