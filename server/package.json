@@ -7,7 +7,7 @@
         "@express-rate-limit/cluster-memory-store": "^0.3.1",
         "altcha-lib": "^1.2.0",
         "bcrypt": "^6.0.0",
-        "better-auth": "^1.6.25",
+        "better-auth": "^1.7.7",
         "chess.js": "^1.4.0",
         "compress-json": "^3.2.0",
         "cookie-parser": "^1.4.6",
